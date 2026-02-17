@@ -88,7 +88,10 @@ const Home = () => {
       try {
         const res = await authFetch("/api/workforce");
         if (!res.ok) return;
-        const data: Workforce[] = await res.json();
+        const data: Workforce[] = (await res.json()).map((w: any) => ({
+          id: w.id,
+          name: w.name ?? w.id,
+        }));
         setWorkforces(data);
         if (data.length > 0) setSelectedId(data[0].id);
       } catch {
