@@ -14,11 +14,15 @@ export default defineConfig(({ mode }) => {
       mode === "development" && componentTagger(),
     ].filter(Boolean),
     server: {
-      // This allows the dev server to accept connections from any host,
-      // useful for development across networks or in containers.
       host: true,
       port: parseInt(env.VITE_APP_PORT ? env.VITE_APP_PORT : "5173"),
       allowedHosts: [".timbal.ai"],
+      proxy: {
+        "/api": {
+          target: env.VITE_API_PROXY_TARGET || "http://localhost:8000",
+          changeOrigin: true,
+        },
+      },
     },
     preview: {
       host: true,
