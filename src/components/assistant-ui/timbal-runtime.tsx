@@ -356,16 +356,27 @@ export function TimbalRuntimeProvider({ workforceId, children }: TimbalRuntimePr
       const input = textPart.text;
       const userId = crypto.randomUUID();
       const assistantId = crypto.randomUUID();
-      const parentId = findParentId(messagesRef.current);
 
-      setMessages((prev) => [
-        ...prev,
+      // When editing a message, parentId points to the last assistant message
+      // before the edited user message — truncate the conversation to that point.
+      let base = messagesRef.current;
+      if (message.parentId !== null) {
+        const parentIdx = base.findIndex((m) => m.id === message.parentId);
+        if (parentIdx >= 0) {
+          base = base.slice(0, parentIdx + 1);
+        }
+      }
+
+      const parentId = findParentId(base);
+
+      setMessages([
+        ...base,
         { id: userId, role: "user", content: [{ type: "text", text: input }] },
       ]);
       setIsRunning(true);
       setMessages((prev) => [
         ...prev,
-        { id: assistantId, role: "assistant", content: [] },
+        { id: assistantId, role: "assistant" as const, content: [] },
       ]);
 
       const controller = new AbortController();
