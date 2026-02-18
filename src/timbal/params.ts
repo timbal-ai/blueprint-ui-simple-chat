@@ -52,10 +52,12 @@ export interface RunParams {
   input: Record<string, any>;
 
   /**
-   * Optional parent run ID for conversation memory/persistence.
-   * Pass the run_id from a previous run's events to chain conversations.
+   * Optional context for conversation threading.
    */
-  parentRunId?: string;
+  context?: {
+    /** Previous run's run_id to chain conversations for memory. */
+    parent_id?: string | null;
+  };
 }
 
 /**

@@ -286,8 +286,6 @@ export class Timbal {
       baseUrlOverride = `http://localhost:${this.config.fsPort}`;
     }
 
-    // TODO We need to generate the context in here
-
     return this.request<OutputEvent>(
       `/orgs/${orgId}/apps/${params.appId}/runs/collect`,
       {
@@ -296,7 +294,7 @@ export class Timbal {
         body: JSON.stringify({
           versionId: params.versionId ?? null,
           input: params.input,
-          ...(params.parentRunId && { parent_run_id: params.parentRunId }),
+          ...(params.context && { context: params.context }),
         }),
       },
       0,
@@ -437,8 +435,6 @@ export class Timbal {
       baseUrlOverride = `http://localhost:${this.config.fsPort}`;
     }
 
-    // TODO Generate the context from here
-
     const endpoint = `/orgs/${orgId}/apps/${params.appId}/runs/stream`;
     const options: RequestInit = {
       method: "POST",
@@ -446,7 +442,7 @@ export class Timbal {
       body: JSON.stringify({
         versionId: params.versionId ?? null,
         input: params.input,
-        ...(params.parentRunId && { parent_run_id: params.parentRunId }),
+        ...(params.context && { context: params.context }),
       }),
     };
 
