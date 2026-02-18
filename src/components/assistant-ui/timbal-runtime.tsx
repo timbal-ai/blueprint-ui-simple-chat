@@ -7,6 +7,9 @@ import {
 } from "@assistant-ui/react";
 import { authFetch } from "@/auth/tokens";
 
+const USE_FAKE_LONG_STREAM = import.meta.env.VITE_FAKE_LONG_STREAM === "true";
+const FAKE_STREAM_DELAY_MS = Number(import.meta.env.VITE_FAKE_STREAM_DELAY_MS ?? 75);
+
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -31,6 +34,76 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => ({
   id: message.id,
 });
 
+function buildFakeLongResponse(input: string): string {
+  const safeInput = input.trim() || "your request";
+  const base = [
+    `Fake streaming fallback enabled. You asked: "${safeInput}".`,
+    "",
+    "This is a deliberately long response used to test rendering, scrolling, cancellation, and streaming UX behavior.",
+    "",
+    "What this stream is exercising:",
+    "- Frequent tiny token updates",
+    "- Long markdown paragraphs",
+    "- Bullet list rendering",
+    "- UI action bar behavior while running",
+    "- Stop button and abort flow",
+    "",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae mi at augue pulvinar porta. Praesent ullamcorper felis at nibh tincidunt, id sagittis mauris interdum. Integer nec semper dui. Curabitur sed fermentum libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+    "",
+    "Aliquam luctus purus non bibendum faucibus. Donec at elit eget massa feugiat ultricies. Quisque condimentum, libero in egestas varius, purus justo aliquam sem, vitae feugiat nunc lorem a justo. Sed non tempor est. In hac habitasse platea dictumst.",
+    "",
+    "If you can read this arriving progressively, the fallback is working as intended.",
+  ].join("\n");
+
+  // Repeat once to make the thread roughly 2x longer.
+  return `${base}\n\n---\n\n${base}`;
+}
+
+function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+  if (signal.aborted) {
+    throw new DOMException("The operation was aborted.", "AbortError");
+  }
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+
+    const onAbort = () => {
+      clearTimeout(timeoutId);
+      reject(new DOMException("The operation was aborted.", "AbortError"));
+    };
+
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
+async function streamFakeLongResponse(
+  input: string,
+  signal: AbortSignal,
+  onDelta: (delta: string) => void,
+): Promise<void> {
+  const fullResponse = buildFakeLongResponse(input);
+  let cursor = 0;
+
+  while (cursor < fullResponse.length) {
+    if (signal.aborted) {
+      throw new DOMException("The operation was aborted.", "AbortError");
+    }
+
+    const chunkSize = Math.min(
+      fullResponse.length - cursor,
+      Math.floor(Math.random() * 12) + 2,
+    );
+    const delta = fullResponse.slice(cursor, cursor + chunkSize);
+    cursor += chunkSize;
+    onDelta(delta);
+
+    await waitWithAbort(FAKE_STREAM_DELAY_MS, signal);
+  }
+}
+
 interface TimbalRuntimeProviderProps {
   workforceId: string;
   children: ReactNode;
@@ -44,39 +117,33 @@ export function TimbalRuntimeProvider({
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  const onNew = useCallback(
-    async (message: AppendMessage) => {
-      const textPart = message.content.find((c) => c.type === "text");
-      if (!textPart || textPart.type !== "text") return;
-
-      const input = textPart.text;
-      const userId = crypto.randomUUID();
-      const assistantId = crypto.randomUUID();
-
-      setMessages((prev) => [
-        ...prev,
-        { id: userId, role: "user", content: input },
-      ]);
-
-      setIsRunning(true);
-      setMessages((prev) => [
-        ...prev,
-        { id: assistantId, role: "assistant", content: "" },
-      ]);
-
-      const controller = new AbortController();
-      abortRef.current = controller;
-
+  const streamAssistantResponse = useCallback(
+    async (input: string, assistantId: string, signal: AbortSignal) => {
       let assistantContent = "";
+      const updateAssistantMessage = (nextContent: string) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: nextContent } : m,
+          ),
+        );
+      };
 
       try {
+        if (USE_FAKE_LONG_STREAM) {
+          await streamFakeLongResponse(input, signal, (delta) => {
+            assistantContent += delta;
+            updateAssistantMessage(assistantContent);
+          });
+          return;
+        }
+
         const res = await authFetch(
           `/api/workforce/${workforceId}/stream`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: input }),
-            signal: controller.signal,
+            signal,
           },
         );
 
@@ -108,21 +175,11 @@ export function TimbalRuntimeProvider({
                 typeof item.text_delta === "string"
               ) {
                 assistantContent += item.text_delta;
-                const snapshot = assistantContent;
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantId ? { ...m, content: snapshot } : m,
-                  ),
-                );
+                updateAssistantMessage(assistantContent);
               }
             } else if (eventType === "CHUNK") {
               assistantContent += String(event.chunk);
-              const snapshot = assistantContent;
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId ? { ...m, content: snapshot } : m,
-                ),
-              );
+              updateAssistantMessage(assistantContent);
             } else if (eventType === "OUTPUT") {
               if (!assistantContent && event.output) {
                 const outputText =
@@ -130,13 +187,7 @@ export function TimbalRuntimeProvider({
                     ? event.output
                     : JSON.stringify(event.output);
                 assistantContent = outputText;
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantId
-                      ? { ...m, content: outputText }
-                      : m,
-                  ),
-                );
+                updateAssistantMessage(outputText);
               }
             }
           }
@@ -153,23 +204,13 @@ export function TimbalRuntimeProvider({
               typeof event.output === "string"
                 ? event.output
                 : JSON.stringify(event.output);
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantId
-                  ? { ...m, content: outputText }
-                  : m,
-              ),
-            );
+            updateAssistantMessage(outputText);
           }
         }
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
           const errorMsg = assistantContent || "Something went wrong.";
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantId ? { ...m, content: errorMsg } : m,
-            ),
-          );
+          updateAssistantMessage(errorMsg);
         }
       } finally {
         setIsRunning(false);
@@ -177,6 +218,61 @@ export function TimbalRuntimeProvider({
       }
     },
     [workforceId],
+  );
+
+  const onNew = useCallback(
+    async (message: AppendMessage) => {
+      const textPart = message.content.find((c) => c.type === "text");
+      if (!textPart || textPart.type !== "text") return;
+
+      const input = textPart.text;
+      const userId = crypto.randomUUID();
+      const assistantId = crypto.randomUUID();
+
+      setMessages((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: input },
+      ]);
+
+      setIsRunning(true);
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "" },
+      ]);
+
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      await streamAssistantResponse(input, assistantId, controller.signal);
+    },
+    [streamAssistantResponse],
+  );
+
+  const onReload = useCallback(
+    async (parentId: string | null) => {
+      const parentIdx = parentId
+        ? messages.findIndex((m) => m.id === parentId)
+        : messages.length - 2;
+
+      const userMessage = parentIdx >= 0 ? messages[parentIdx] : null;
+      if (!userMessage || userMessage.role !== "user") return;
+
+      const input = userMessage.content;
+      const assistantId = crypto.randomUUID();
+
+      setMessages((prev) => {
+        const trimmed = prev.slice(0, parentIdx + 1);
+        return [...trimmed, { id: assistantId, role: "assistant" as const, content: "" }];
+      });
+
+      setIsRunning(true);
+
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      await streamAssistantResponse(input, assistantId, controller.signal);
+    },
+    [messages, streamAssistantResponse],
   );
 
   const onCancel = useCallback(async () => {
@@ -188,6 +284,7 @@ export function TimbalRuntimeProvider({
     messages,
     convertMessage,
     onNew,
+    onReload,
     onCancel,
   });
 

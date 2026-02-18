@@ -49,33 +49,42 @@ const Home = () => {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       {/* Header */}
-      <header className="flex shrink-0 items-center justify-between border-b border-border/60 bg-background/80 px-6 py-3 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
+      <header className="flex shrink-0 items-center justify-between border-b border-border/50 bg-background/90 px-5 py-2 backdrop-blur-md">
+        <div className="flex items-center">
           <img
             src={currentTheme === "dark" ? "/timbal_w.svg" : "/timbal_b.svg"}
             alt="Timbal"
-            className="h-5 w-auto"
+            className="h-4 w-auto"
           />
           {workforces.length > 0 && (
-            <Select value={selectedId} onValueChange={setSelectedId}>
-              <SelectTrigger className="w-[220px]">
-                <SelectValue placeholder="Select agent" />
-              </SelectTrigger>
-              <SelectContent>
-                {workforces.map((w) => (
-                  <SelectItem key={w.id} value={w.id}>
-                    {w.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <>
+              <div className="mx-3.5 h-3.5 w-px bg-border" />
+              <Select value={selectedId} onValueChange={setSelectedId}>
+                <SelectTrigger className="h-7 w-auto min-w-0 gap-1.5 border-none bg-transparent px-1.5 text-xs font-medium text-muted-foreground shadow-none ring-0 hover:text-foreground focus:ring-0 [&>svg]:size-3">
+                  <SelectValue placeholder="Select agent" />
+                </SelectTrigger>
+                <SelectContent>
+                  {workforces.map((w) => (
+                    <SelectItem key={w.id} value={w.id}>
+                      {w.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-0.5">
           <ModeToggle />
           {isAuthEnabled && (
-            <Button variant="ghost" size="icon" onClick={logout} title="Logout">
-              <LogOut className="size-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={logout}
+              title="Logout"
+              className="size-8 text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="size-3.5" />
             </Button>
           )}
         </div>
