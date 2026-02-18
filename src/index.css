@@ -210,6 +210,17 @@
   }
 }
 
+/* Typing indicator bounce */
+@keyframes chat-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+/* Markdown code inline highlight for light mode */
+.dark code:not(pre code) {
+  background-color: oklch(0.269 0 0 / 0.8);
+}
+
 /* Custom Timbal font */
 body {
   font-family: 'Satoshi', sans-serif;

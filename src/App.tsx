@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useTitle } from "@/hooks/use-title";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthGuard } from "@/auth/AuthGuard";
 import { SessionProvider, isAuthEnabled } from "@/auth/provider";
 
@@ -19,6 +20,7 @@ function App() {
       attribute="class"
     >
       <SessionProvider>
+        <TooltipProvider>
         <Toaster position="top-right" duration={3000} />
         <BrowserRouter>
           <Routes>
@@ -40,6 +42,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </TooltipProvider>
       </SessionProvider>
     </ThemeProvider>
   );
