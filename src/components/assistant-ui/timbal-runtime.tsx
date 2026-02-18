@@ -10,10 +10,25 @@ import { authFetch } from "@/auth/tokens";
 const USE_FAKE_LONG_STREAM = import.meta.env.VITE_FAKE_LONG_STREAM === "true";
 const FAKE_STREAM_DELAY_MS = Number(import.meta.env.VITE_FAKE_STREAM_DELAY_MS ?? 75);
 
+type TextContentPart = {
+  type: "text";
+  text: string;
+};
+
+type ToolCallContentPart = {
+  type: "tool-call";
+  toolCallId: string;
+  toolName: string;
+  argsText: string;
+  result?: unknown;
+};
+
+type ContentPart = TextContentPart | ToolCallContentPart;
+
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
-  content: string;
+  content: ContentPart[];
 }
 
 function parseLine(line: string): Record<string, unknown> | null {
@@ -30,7 +45,7 @@ function parseLine(line: string): Record<string, unknown> | null {
 
 const convertMessage = (message: ChatMessage): ThreadMessageLike => ({
   role: message.role,
-  content: [{ type: "text", text: message.content }],
+  content: message.content,
   id: message.id,
 });
 
@@ -119,20 +134,52 @@ export function TimbalRuntimeProvider({
 
   const streamAssistantResponse = useCallback(
     async (input: string, assistantId: string, signal: AbortSignal) => {
-      let assistantContent = "";
-      const updateAssistantMessage = (nextContent: string) => {
+      const contentParts: ContentPart[] = [];
+      const toolCallMap = new Map<string, number>();
+
+      const getOrCreateTextPart = (): TextContentPart => {
+        const lastPart = contentParts[contentParts.length - 1];
+        if (lastPart && lastPart.type === "text") {
+          return lastPart;
+        }
+        const newTextPart: TextContentPart = { type: "text", text: "" };
+        contentParts.push(newTextPart);
+        return newTextPart;
+      };
+
+      const updateAssistantMessage = () => {
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId ? { ...m, content: nextContent } : m,
+            m.id === assistantId ? { ...m, content: [...contentParts] } : m,
           ),
         );
       };
 
       try {
         if (USE_FAKE_LONG_STREAM) {
+          const fakeToolCallId = `call_${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+
+          contentParts.push({
+            type: "tool-call",
+            toolCallId: fakeToolCallId,
+            toolName: "get_datetime",
+            argsText: "{}",
+          });
+          toolCallMap.set(fakeToolCallId, contentParts.length - 1);
+          updateAssistantMessage();
+
+          await waitWithAbort(2000, signal);
+
+          const toolPart = contentParts[toolCallMap.get(fakeToolCallId)!] as ToolCallContentPart;
+          toolPart.result = `Current datetime (from tool): ${new Date().toISOString()}`;
+          updateAssistantMessage();
+
+          await waitWithAbort(300, signal);
+
           await streamFakeLongResponse(input, signal, (delta) => {
-            assistantContent += delta;
-            updateAssistantMessage(assistantContent);
+            const textPart = getOrCreateTextPart();
+            textPart.text += delta;
+            updateAssistantMessage();
           });
           return;
         }
@@ -170,24 +217,84 @@ export function TimbalRuntimeProvider({
 
             if (eventType === "DELTA") {
               const item = event.item as Record<string, unknown> | undefined;
-              if (
-                item?.type === "text_delta" &&
-                typeof item.text_delta === "string"
-              ) {
-                assistantContent += item.text_delta;
-                updateAssistantMessage(assistantContent);
+              if (!item) continue;
+
+              const itemType = item.type as string | undefined;
+
+              if (itemType === "text_delta" && typeof item.text_delta === "string") {
+                const textPart = getOrCreateTextPart();
+                textPart.text += item.text_delta;
+                updateAssistantMessage();
+              } else if (itemType === "tool_use") {
+                const toolCallId = (item.id as string) || `tool-${crypto.randomUUID()}`;
+                const toolName = (item.name as string) || "unknown";
+                const inputStr = typeof item.input === "string" ? item.input : JSON.stringify(item.input ?? {});
+                
+                const toolCallPart: ToolCallContentPart = {
+                  type: "tool-call",
+                  toolCallId,
+                  toolName,
+                  argsText: inputStr,
+                };
+                const idx = contentParts.length;
+                contentParts.push(toolCallPart);
+                toolCallMap.set(toolCallId, idx);
+                updateAssistantMessage();
+              } else if (itemType === "tool_use_delta") {
+                const toolCallId = item.id as string;
+                const inputDelta = item.input_delta as string | undefined;
+                if (toolCallId && inputDelta) {
+                  const idx = toolCallMap.get(toolCallId);
+                  if (idx !== undefined) {
+                    const part = contentParts[idx] as ToolCallContentPart;
+                    part.argsText += inputDelta;
+                    updateAssistantMessage();
+                  }
+                }
               }
             } else if (eventType === "CHUNK") {
-              assistantContent += String(event.chunk);
-              updateAssistantMessage(assistantContent);
+              const textPart = getOrCreateTextPart();
+              textPart.text += String(event.chunk);
+              updateAssistantMessage();
             } else if (eventType === "OUTPUT") {
-              if (!assistantContent && event.output) {
-                const outputText =
-                  typeof event.output === "string"
-                    ? event.output
-                    : JSON.stringify(event.output);
-                assistantContent = outputText;
-                updateAssistantMessage(outputText);
+              const output = event.output as Record<string, unknown> | string | undefined;
+              if (output) {
+                if (typeof output === "object" && output.content) {
+                  const outputContent = output.content as Array<Record<string, unknown>>;
+                  for (const part of outputContent) {
+                    if (part.type === "tool_use") {
+                      const toolCallId = (part.id as string) || `tool-${crypto.randomUUID()}`;
+                      const existingIdx = toolCallMap.get(toolCallId);
+                      if (existingIdx !== undefined) {
+                        const existingPart = contentParts[existingIdx] as ToolCallContentPart;
+                        existingPart.result = "Tool executed";
+                      } else {
+                        const toolName = (part.name as string) || "unknown";
+                        const inputData = part.input;
+                        const inputStr = typeof inputData === "string" ? inputData : JSON.stringify(inputData ?? {});
+                        const toolCallPart: ToolCallContentPart = {
+                          type: "tool-call",
+                          toolCallId,
+                          toolName,
+                          argsText: inputStr,
+                          result: "Tool executed",
+                        };
+                        contentParts.push(toolCallPart);
+                        toolCallMap.set(toolCallId, contentParts.length - 1);
+                      }
+                    } else if (part.type === "text" && typeof part.text === "string") {
+                      const textPart = getOrCreateTextPart();
+                      if (!textPart.text) {
+                        textPart.text = part.text;
+                      }
+                    }
+                  }
+                  updateAssistantMessage();
+                } else if (contentParts.length === 0) {
+                  const outputText = typeof output === "string" ? output : JSON.stringify(output);
+                  contentParts.push({ type: "text", text: outputText });
+                  updateAssistantMessage();
+                }
               }
             }
           }
@@ -195,22 +302,21 @@ export function TimbalRuntimeProvider({
 
         if (buffer.trim()) {
           const event = parseLine(buffer);
-          if (
-            event?.type === "OUTPUT" &&
-            !assistantContent &&
-            event.output
-          ) {
+          if (event?.type === "OUTPUT" && contentParts.length === 0 && event.output) {
             const outputText =
               typeof event.output === "string"
                 ? event.output
                 : JSON.stringify(event.output);
-            updateAssistantMessage(outputText);
+            contentParts.push({ type: "text", text: outputText });
+            updateAssistantMessage();
           }
         }
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          const errorMsg = assistantContent || "Something went wrong.";
-          updateAssistantMessage(errorMsg);
+          if (contentParts.length === 0) {
+            contentParts.push({ type: "text", text: "Something went wrong." });
+          }
+          updateAssistantMessage();
         }
       } finally {
         setIsRunning(false);
@@ -231,13 +337,13 @@ export function TimbalRuntimeProvider({
 
       setMessages((prev) => [
         ...prev,
-        { id: userId, role: "user", content: input },
+        { id: userId, role: "user", content: [{ type: "text", text: input }] },
       ]);
 
       setIsRunning(true);
       setMessages((prev) => [
         ...prev,
-        { id: assistantId, role: "assistant", content: "" },
+        { id: assistantId, role: "assistant", content: [] },
       ]);
 
       const controller = new AbortController();
@@ -257,12 +363,15 @@ export function TimbalRuntimeProvider({
       const userMessage = parentIdx >= 0 ? messages[parentIdx] : null;
       if (!userMessage || userMessage.role !== "user") return;
 
-      const input = userMessage.content;
+      const textPart = userMessage.content.find((c) => c.type === "text");
+      if (!textPart || textPart.type !== "text") return;
+
+      const input = textPart.text;
       const assistantId = crypto.randomUUID();
 
       setMessages((prev) => {
         const trimmed = prev.slice(0, parentIdx + 1);
-        return [...trimmed, { id: assistantId, role: "assistant" as const, content: "" }];
+        return [...trimmed, { id: assistantId, role: "assistant" as const, content: [] }];
       });
 
       setIsRunning(true);
