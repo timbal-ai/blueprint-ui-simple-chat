@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       allowedHosts: [".timbal.ai"],
       proxy: {
         "/api": {
-          target: env.VITE_API_PROXY_TARGET || "http://localhost:8000",
+          target: env.VITE_API_PROXY_TARGET || "http://localhost:3000",
           changeOrigin: true,
         },
       },
