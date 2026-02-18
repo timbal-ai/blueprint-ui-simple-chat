@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import {
   useExternalStoreRuntime,
   type ThreadMessageLike,
@@ -29,6 +29,7 @@ interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: ContentPart[];
+  runId?: string;
 }
 
 function parseLine(line: string): Record<string, unknown> | null {
@@ -131,10 +132,20 @@ export function TimbalRuntimeProvider({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
-  const parentRunIdRef = useRef<string | null>(null);
+  const messagesRef = useRef<ChatMessage[]>([]);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const streamAssistantResponse = useCallback(
-    async (input: string, assistantId: string, signal: AbortSignal) => {
+    async (
+      input: string,
+      userId: string,
+      assistantId: string,
+      parentId: string | null,
+      signal: AbortSignal,
+    ) => {
       const contentParts: ContentPart[] = [];
       const toolCallMap = new Map<string, number>();
 
@@ -148,10 +159,21 @@ export function TimbalRuntimeProvider({
         return newTextPart;
       };
 
-      const updateAssistantMessage = () => {
+      const updateAssistantMessage = (runId?: string) => {
+        setMessages((prev) =>
+          prev.map((m) => {
+            if (m.id === assistantId) {
+              return { ...m, content: [...contentParts], ...(runId && { runId }) };
+            }
+            return m;
+          }),
+        );
+      };
+
+      const stampRunId = (runId: string) => {
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId ? { ...m, content: [...contentParts] } : m,
+            m.id === userId || m.id === assistantId ? { ...m, runId } : m,
           ),
         );
       };
@@ -192,7 +214,7 @@ export function TimbalRuntimeProvider({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               prompt: input,
-              ...(parentRunIdRef.current && { parent_run_id: parentRunIdRef.current }),
+              ...(parentId && { parent_id: parentId }),
             }),
             signal,
           },
@@ -220,8 +242,15 @@ export function TimbalRuntimeProvider({
             if (!event) continue;
             const eventType = event.type as string | undefined;
 
-            if (!capturedRunId && typeof event.run_id === "string") {
+            if (
+              !capturedRunId &&
+              eventType === "START" &&
+              typeof event.run_id === "string" &&
+              typeof event.path === "string" &&
+              !event.path.includes(".")
+            ) {
               capturedRunId = event.run_id;
+              stampRunId(capturedRunId);
             }
 
             if (eventType === "DELTA") {
@@ -311,9 +340,6 @@ export function TimbalRuntimeProvider({
 
         if (buffer.trim()) {
           const event = parseLine(buffer);
-          if (!capturedRunId && event && typeof event.run_id === "string") {
-            capturedRunId = event.run_id;
-          }
           if (event?.type === "OUTPUT" && contentParts.length === 0 && event.output) {
             const outputText =
               typeof event.output === "string"
@@ -322,10 +348,6 @@ export function TimbalRuntimeProvider({
             contentParts.push({ type: "text", text: outputText });
             updateAssistantMessage();
           }
-        }
-
-        if (capturedRunId) {
-          parentRunIdRef.current = capturedRunId;
         }
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
@@ -351,6 +373,11 @@ export function TimbalRuntimeProvider({
       const userId = crypto.randomUUID();
       const assistantId = crypto.randomUUID();
 
+      const assistantMessages = messagesRef.current.filter(
+        (msg) => msg.role === "assistant",
+      );
+      const parentId = assistantMessages[assistantMessages.length - 1]?.runId ?? null;
+
       setMessages((prev) => [
         ...prev,
         { id: userId, role: "user", content: [{ type: "text", text: input }] },
@@ -365,18 +392,19 @@ export function TimbalRuntimeProvider({
       const controller = new AbortController();
       abortRef.current = controller;
 
-      await streamAssistantResponse(input, assistantId, controller.signal);
+      await streamAssistantResponse(input, userId, assistantId, parentId, controller.signal);
     },
     [streamAssistantResponse],
   );
 
   const onReload = useCallback(
-    async (parentId: string | null) => {
-      const parentIdx = parentId
-        ? messages.findIndex((m) => m.id === parentId)
-        : messages.length - 2;
+    async (messageId: string | null) => {
+      const currentMessages = messagesRef.current;
+      const messageIdx = messageId
+        ? currentMessages.findIndex((m) => m.id === messageId)
+        : currentMessages.length - 2;
 
-      const userMessage = parentIdx >= 0 ? messages[parentIdx] : null;
+      const userMessage = messageIdx >= 0 ? currentMessages[messageIdx] : null;
       if (!userMessage || userMessage.role !== "user") return;
 
       const textPart = userMessage.content.find((c) => c.type === "text");
@@ -385,8 +413,13 @@ export function TimbalRuntimeProvider({
       const input = textPart.text;
       const assistantId = crypto.randomUUID();
 
+      const assistantMessages = currentMessages
+        .slice(0, messageIdx)
+        .filter((msg) => msg.role === "assistant");
+      const parentId = assistantMessages[assistantMessages.length - 1]?.runId ?? null;
+
       setMessages((prev) => {
-        const trimmed = prev.slice(0, parentIdx + 1);
+        const trimmed = prev.slice(0, messageIdx + 1);
         return [...trimmed, { id: assistantId, role: "assistant" as const, content: [] }];
       });
 
@@ -395,9 +428,9 @@ export function TimbalRuntimeProvider({
       const controller = new AbortController();
       abortRef.current = controller;
 
-      await streamAssistantResponse(input, assistantId, controller.signal);
+      await streamAssistantResponse(input, userMessage.id, assistantId, parentId, controller.signal);
     },
-    [messages, streamAssistantResponse],
+    [streamAssistantResponse],
   );
 
   const onCancel = useCallback(async () => {
