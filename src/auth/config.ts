@@ -29,9 +29,10 @@ export const authConfig = {
  * Auth is enabled when VITE_AUTH_ENABLED is "true" or when any auth method is configured
  */
 export const isAuthEnabled =
-  import.meta.env.VITE_AUTH_ENABLED === "true" ||
-  authConfig.methods.oauth ||
-  authConfig.methods.magicLink;
+  !!authConfig.projectId &&
+  (import.meta.env.VITE_AUTH_ENABLED === "true" ||
+    authConfig.methods.oauth ||
+    authConfig.methods.magicLink);
 
 export const hasAnyAuthMethod =
   authConfig.methods.magicLink || authConfig.methods.oauth;
