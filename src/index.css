@@ -246,9 +246,131 @@
   border-radius: var(--radius-xl);
 }
 
-/* Markdown code inline highlight for light mode */
+/* ── Markdown code inline highlight ── */
 .dark code:not(pre code) {
   background-color: oklch(0.269 0 0 / 0.8);
+}
+
+/* ── Shiki dual-theme support ── */
+.shiki-wrapper pre {
+  background: var(--shiki-light-bg, oklch(0.98 0 0)) !important;
+}
+.shiki-wrapper code {
+  color: var(--shiki-light, inherit);
+}
+.shiki-wrapper code span {
+  color: var(--shiki-light);
+}
+.dark .shiki-wrapper pre {
+  background: var(--shiki-dark-bg, oklch(0.13 0 0)) !important;
+}
+.dark .shiki-wrapper code {
+  color: var(--shiki-dark, inherit);
+}
+.dark .shiki-wrapper code span {
+  color: var(--shiki-dark);
+}
+
+/* Code block line numbers effect */
+.shiki-wrapper code {
+  counter-reset: line;
+}
+.shiki-wrapper code > .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1.5rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: oklch(0.556 0 0 / 0.3);
+  font-size: 0.7em;
+  user-select: none;
+}
+.dark .shiki-wrapper code > .line::before {
+  color: oklch(0.556 0 0 / 0.25);
+}
+
+/* ── KaTeX math rendering ── */
+.katex-display {
+  margin: 1.25rem 0 !important;
+  padding: 1rem 1.25rem;
+  background: oklch(0.97 0 0 / 0.6);
+  border: 1px solid oklch(0.922 0 0);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.dark .katex-display {
+  background: oklch(0.2 0 0 / 0.5);
+  border-color: oklch(1 0 0 / 0.08);
+}
+.katex-display > .katex {
+  text-align: center;
+}
+.katex {
+  font-size: 1.05em !important;
+}
+.katex-display .katex {
+  font-size: 1.15em !important;
+}
+
+/* Inline math subtle styling */
+.katex:not(.katex-display .katex) {
+  padding: 0 0.15em;
+}
+
+/* ── Enhanced markdown table styling ── */
+.aui-md-table tbody tr:nth-child(even) {
+  background: oklch(0.97 0 0 / 0.4);
+}
+.dark .aui-md-table tbody tr:nth-child(even) {
+  background: oklch(0.2 0 0 / 0.3);
+}
+
+/* ── Code header polish ── */
+.aui-code-header {
+  backdrop-filter: blur(8px);
+}
+
+/* ── Smooth transitions on links ── */
+.aui-md-a {
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+/* ── Blockquote left border gradient ── */
+.aui-md-blockquote {
+  border-image: linear-gradient(to bottom, oklch(0.488 0.243 264.376 / 0.6), oklch(0.627 0.265 303.9 / 0.3)) 1;
+}
+
+/* ── Task list checkboxes (GFM) ── */
+.aui-md-li input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid oklch(0.556 0 0 / 0.4);
+  border-radius: 4px;
+  margin-right: 0.4em;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  cursor: default;
+  transition: all 0.15s ease;
+}
+.aui-md-li input[type="checkbox"]:checked {
+  background: oklch(0.488 0.243 264.376);
+  border-color: oklch(0.488 0.243 264.376);
+}
+.aui-md-li input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 3px;
+  height: 6px;
+  border: solid white;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 /* Custom Timbal font */

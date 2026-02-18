@@ -3,11 +3,12 @@
 import { memo, useCallback, useRef, useState } from "react";
 import {
   AlertCircleIcon,
-  CheckIcon,
+  CheckCircle2Icon,
   ChevronDownIcon,
-  LoaderIcon,
+  WrenchIcon,
   XCircleIcon,
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   useScrollLock,
   type ToolCallMessagePartStatus,
@@ -18,6 +19,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Shimmer } from "@/components/ui/shimmer";
 import { cn } from "@/lib/utils";
 
 const ANIMATION_DURATION = 200;
@@ -84,8 +86,8 @@ function ToolFallbackRoot({
 type ToolStatus = ToolCallMessagePartStatus["type"];
 
 const statusIconMap: Record<ToolStatus, React.ElementType> = {
-  running: LoaderIcon,
-  complete: CheckIcon,
+  running: WrenchIcon,
+  complete: CheckCircle2Icon,
   incomplete: XCircleIcon,
   "requires-action": AlertCircleIcon,
 };
@@ -101,53 +103,89 @@ function ToolFallbackTrigger({
 }) {
   const statusType = status?.type ?? "complete";
   const isRunning = statusType === "running";
+  const isComplete = statusType === "complete";
   const isCancelled =
     status?.type === "incomplete" && status.reason === "cancelled";
 
   const Icon = statusIconMap[statusType];
-  const label = isCancelled ? "Cancelled tool" : "Used tool";
 
   return (
     <CollapsibleTrigger
       data-slot="tool-fallback-trigger"
       className={cn(
-        "aui-tool-fallback-trigger group/trigger flex w-full items-center gap-2 px-4 text-sm transition-colors",
+        "aui-tool-fallback-trigger group/trigger flex w-full items-center gap-2.5 px-4 text-sm transition-colors",
         className,
       )}
       {...props}
     >
-      <Icon
-        data-slot="tool-fallback-trigger-icon"
-        className={cn(
-          "aui-tool-fallback-trigger-icon size-4 shrink-0",
-          isCancelled && "text-muted-foreground",
-          isRunning && "animate-spin",
-        )}
-      />
+      <div className="relative flex shrink-0 items-center justify-center">
+        <AnimatePresence mode="wait">
+          {isRunning ? (
+            <motion.div
+              key="running"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative"
+            >
+              <motion.div
+                className="absolute -inset-1.5 rounded-full border-2 border-primary/20 border-t-primary/60"
+                animate={{ rotate: 360 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.2,
+                  ease: "linear",
+                }}
+              />
+              <WrenchIcon className="size-4 text-primary/70" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="done"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Icon
+                className={cn(
+                  "size-4",
+                  isComplete && "text-emerald-500",
+                  isCancelled && "text-muted-foreground",
+                  statusType === "requires-action" && "text-amber-500",
+                  statusType === "incomplete" &&
+                    !isCancelled &&
+                    "text-destructive",
+                )}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <span
         data-slot="tool-fallback-trigger-label"
         className={cn(
-          "aui-tool-fallback-trigger-label-wrapper relative inline-block grow text-left leading-none",
+          "relative inline-block grow text-left leading-none",
           isCancelled && "text-muted-foreground line-through",
         )}
       >
-        <span>
-          {label}: <b>{toolName}</b>
-        </span>
-        {isRunning && (
-          <span
-            aria-hidden
-            data-slot="tool-fallback-trigger-shimmer"
-            className="aui-tool-fallback-trigger-shimmer shimmer pointer-events-none absolute inset-0 motion-reduce:animate-none"
-          >
-            {label}: <b>{toolName}</b>
+        {isRunning ? (
+          <Shimmer as="span" duration={1.8} spread={2.5}>
+            {`Using tool: ${toolName}`}
+          </Shimmer>
+        ) : (
+          <span>
+            {isCancelled ? "Cancelled tool" : "Used tool"}:{" "}
+            <b>{toolName}</b>
           </span>
         )}
       </span>
+
       <ChevronDownIcon
         data-slot="tool-fallback-trigger-chevron"
         className={cn(
-          "aui-tool-fallback-trigger-chevron size-4 shrink-0",
+          "aui-tool-fallback-trigger-chevron size-4 shrink-0 text-muted-foreground/60",
           "transition-transform duration-(--animation-duration) ease-out",
           "group-data-[state=closed]/trigger:-rotate-90",
           "group-data-[state=open]/trigger:rotate-0",
@@ -274,12 +312,17 @@ const ToolFallbackImpl: ToolCallMessagePartComponent = ({
   result,
   status,
 }) => {
+  const isRunning = status?.type === "running";
   const isCancelled =
     status?.type === "incomplete" && status.reason === "cancelled";
 
   return (
     <ToolFallbackRoot
-      className={cn(isCancelled && "border-muted-foreground/30 bg-muted/30")}
+      className={cn(
+        "transition-colors duration-200",
+        isRunning && "border-primary/20 bg-primary/[0.03]",
+        isCancelled && "border-muted-foreground/30 bg-muted/30",
+      )}
     >
       <ToolFallbackTrigger toolName={toolName} status={status} />
       <ToolFallbackContent>
