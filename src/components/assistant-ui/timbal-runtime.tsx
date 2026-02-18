@@ -131,6 +131,7 @@ export function TimbalRuntimeProvider({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const [runId] = useState(() => crypto.randomUUID());
 
   const streamAssistantResponse = useCallback(
     async (input: string, assistantId: string, signal: AbortSignal) => {
@@ -189,7 +190,7 @@ export function TimbalRuntimeProvider({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: input }),
+            body: JSON.stringify({ prompt: input, run_id: runId }),
             signal,
           },
         );
@@ -323,7 +324,7 @@ export function TimbalRuntimeProvider({
         abortRef.current = null;
       }
     },
-    [workforceId],
+    [workforceId, runId],
   );
 
   const onNew = useCallback(

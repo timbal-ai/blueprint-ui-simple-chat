@@ -296,6 +296,7 @@ export class Timbal {
         body: JSON.stringify({
           versionId: params.versionId ?? null,
           input: params.input,
+          ...(params.runId && { run_id: params.runId }),
         }),
       },
       0,
@@ -445,6 +446,7 @@ export class Timbal {
       body: JSON.stringify({
         versionId: params.versionId ?? null,
         input: params.input,
+        ...(params.runId && { run_id: params.runId }),
       }),
     };
 
