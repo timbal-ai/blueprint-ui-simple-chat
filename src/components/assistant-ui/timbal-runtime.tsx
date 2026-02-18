@@ -131,7 +131,7 @@ export function TimbalRuntimeProvider({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
-  const [runId] = useState(() => crypto.randomUUID());
+  const parentRunIdRef = useRef<string | null>(null);
 
   const streamAssistantResponse = useCallback(
     async (input: string, assistantId: string, signal: AbortSignal) => {
@@ -190,7 +190,10 @@ export function TimbalRuntimeProvider({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: input, run_id: runId }),
+            body: JSON.stringify({
+              prompt: input,
+              ...(parentRunIdRef.current && { parent_run_id: parentRunIdRef.current }),
+            }),
             signal,
           },
         );
@@ -202,6 +205,7 @@ export function TimbalRuntimeProvider({
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
+        let capturedRunId: string | null = null;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -215,6 +219,10 @@ export function TimbalRuntimeProvider({
             const event = parseLine(line);
             if (!event) continue;
             const eventType = event.type as string | undefined;
+
+            if (!capturedRunId && typeof event.run_id === "string") {
+              capturedRunId = event.run_id;
+            }
 
             if (eventType === "DELTA") {
               const item = event.item as Record<string, unknown> | undefined;
@@ -303,6 +311,9 @@ export function TimbalRuntimeProvider({
 
         if (buffer.trim()) {
           const event = parseLine(buffer);
+          if (!capturedRunId && event && typeof event.run_id === "string") {
+            capturedRunId = event.run_id;
+          }
           if (event?.type === "OUTPUT" && contentParts.length === 0 && event.output) {
             const outputText =
               typeof event.output === "string"
@@ -311,6 +322,10 @@ export function TimbalRuntimeProvider({
             contentParts.push({ type: "text", text: outputText });
             updateAssistantMessage();
           }
+        }
+
+        if (capturedRunId) {
+          parentRunIdRef.current = capturedRunId;
         }
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
@@ -324,7 +339,7 @@ export function TimbalRuntimeProvider({
         abortRef.current = null;
       }
     },
-    [workforceId, runId],
+    [workforceId],
   );
 
   const onNew = useCallback(
