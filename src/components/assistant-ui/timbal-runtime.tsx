@@ -426,6 +426,7 @@ export function TimbalRuntimeProvider({ workforceId, children }: TimbalRuntimePr
     messages,
     convertMessage,
     onNew,
+    onEdit: onNew,
     onReload,
     onCancel,
   });
