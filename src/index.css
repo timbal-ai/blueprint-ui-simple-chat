@@ -1,4 +1,4 @@
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -375,11 +375,7 @@
 
 /* Custom Timbal font */
 body {
-  font-family: 'Satoshi', sans-serif;
-}
-
-.font-satoshi {
-  font-family: 'Satoshi', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Buttons cursor */

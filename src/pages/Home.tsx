@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { LogOut } from "lucide-react";
+import type { WorkforceItem } from "@timbal-ai/timbal-sdk";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,17 +16,12 @@ import { authFetch } from "@/auth/tokens";
 import { Thread } from "@/components/assistant-ui/thread";
 import { TimbalRuntimeProvider } from "@/components/assistant-ui/timbal-runtime";
 
-interface Workforce {
-  id: string;
-  name: string;
-}
-
 const Home = () => {
   const { theme, systemTheme } = useTheme();
   const { logout } = useSession();
   const currentTheme = theme === "system" ? systemTheme : theme;
 
-  const [workforces, setWorkforces] = useState<Workforce[]>([]);
+  const [workforces, setWorkforces] = useState<WorkforceItem[]>([]);
   const [selectedId, setSelectedId] = useState("");
 
   useEffect(() => {
@@ -33,12 +29,13 @@ const Home = () => {
       try {
         const res = await authFetch("/api/workforce");
         if (!res.ok) return;
-        const data: Workforce[] = (await res.json()).map((w: any) => ({
-          id: w.id,
-          name: w.name ?? w.id,
-        }));
+        const data: WorkforceItem[] = await res.json();
         setWorkforces(data);
-        if (data.length > 0) setSelectedId(data[0].id);
+        if (data.length > 0) {
+          const agent = data.find((w) => w.type === "agent");
+          const item = agent ?? data[0];
+          setSelectedId(item.id ?? item.uid ?? item.name ?? "");
+        }
       } catch {
         // silently fail
       }
@@ -64,11 +61,14 @@ const Home = () => {
                   <SelectValue placeholder="Select agent" />
                 </SelectTrigger>
                 <SelectContent>
-                  {workforces.map((w) => (
-                    <SelectItem key={w.id} value={w.id}>
-                      {w.name}
-                    </SelectItem>
-                  ))}
+                  {workforces.map((w) => {
+                    const val = w.id ?? w.uid ?? w.name ?? "";
+                    return (
+                      <SelectItem key={val} value={val}>
+                        {w.name ?? val}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </>
@@ -91,7 +91,7 @@ const Home = () => {
       </header>
 
       {/* Chat */}
-      <TimbalRuntimeProvider workforceId={selectedId}>
+      <TimbalRuntimeProvider workforceId={selectedId} key={selectedId}>
         <div className="min-h-0 flex-1">
           <Thread />
         </div>

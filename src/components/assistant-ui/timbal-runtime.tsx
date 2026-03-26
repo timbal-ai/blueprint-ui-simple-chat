@@ -5,6 +5,7 @@ import {
   type AppendMessage,
   AssistantRuntimeProvider,
 } from "@assistant-ui/react";
+import { parseSSELine } from "@timbal-ai/timbal-sdk";
 import { authFetch } from "@/auth/tokens";
 
 const USE_FAKE_LONG_STREAM = import.meta.env.VITE_FAKE_LONG_STREAM === "true";
@@ -37,17 +38,7 @@ interface ChatMessage {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function parseLine(line: string): Record<string, unknown> | null {
-  let json = line.trim();
-  if (!json) return null;
-  if (json.startsWith("data: ")) json = json.substring(6);
-  if (json === "[DONE]") return null;
-  try {
-    return JSON.parse(json);
-  } catch {
-    return null;
-  }
-}
+const parseLine = parseSSELine;
 
 const convertMessage = (message: ChatMessage): ThreadMessageLike => ({
   role: message.role,

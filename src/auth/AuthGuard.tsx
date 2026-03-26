@@ -1,6 +1,6 @@
 import React from "react";
-import { Navigate } from "react-router";
-import { useSession, isAuthEnabled } from "./provider";
+import { isAuthEnabled } from "./config";
+import { useSession } from "./provider";
 import { Loader2 } from "lucide-react";
 
 interface AuthGuardProps {
@@ -27,11 +27,10 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   }
 
   if (requireAuth && !isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
-  }
-
-  if (!requireAuth && isAuthenticated) {
-    return <Navigate to="/" replace />;
+    // Redirect to the API's login page, preserving the current path
+    const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.href = `/api/auth/login?return_to=${returnTo}`;
+    return null;
   }
 
   return children;

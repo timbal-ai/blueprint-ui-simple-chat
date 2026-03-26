@@ -1,39 +1,21 @@
-const AUTH_API_BASE = import.meta.env.VITE_TIMBAL_BASE_URL;
-const REFRESH_TOKEN_KEY = "timbal_refresh_token";
+import type { Session } from "@timbal-ai/timbal-sdk";
+
+const ACCESS_TOKEN_KEY = "timbal_project_access_token";
+const REFRESH_TOKEN_KEY = "timbal_project_refresh_token";
 
 // ============================================
-// Token storage
-// Access token: in-memory (short-lived)
-// Refresh token: localStorage (survives refresh)
+// Token storage (all in localStorage)
 // ============================================
 
-let accessToken: string | null = null;
-let refreshToken: string | null =
-  localStorage.getItem(REFRESH_TOKEN_KEY) ?? null;
+export const getAccessToken = (): string | null =>
+  localStorage.getItem(ACCESS_TOKEN_KEY);
 
-export const getAccessToken = () => accessToken;
-export const getRefreshToken = () => refreshToken;
-
-export const setTokens = (access: string, refresh: string) => {
-  accessToken = access;
-  refreshToken = refresh;
-  localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
-};
+export const getRefreshToken = (): string | null =>
+  localStorage.getItem(REFRESH_TOKEN_KEY);
 
 export const clearTokens = () => {
-  accessToken = null;
-  refreshToken = null;
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
-};
-
-// ============================================
-// Timbal SDK sync helper
-// ============================================
-
-export const syncTimbalToken = (token?: string) => {
-  import("@/timbal/client").then(({ timbal }) => {
-    timbal.updateSessionToken(token);
-  });
 };
 
 // ============================================
@@ -43,18 +25,16 @@ export const syncTimbalToken = (token?: string) => {
 let refreshPromise: Promise<boolean> | null = null;
 
 export const refreshAccessToken = async (): Promise<boolean> => {
+  const refreshToken = getRefreshToken();
   if (!refreshToken) return false;
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = (async () => {
     try {
-      const res = await fetch(`${AUTH_API_BASE}/oauth/token`, {
+      const res = await fetch("/api/auth/refresh", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          grant_type: "refresh_token",
-          refresh_token: refreshToken!,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: refreshToken }),
       });
 
       if (!res.ok) {
@@ -63,13 +43,12 @@ export const refreshAccessToken = async (): Promise<boolean> => {
       }
 
       const data = await res.json();
-      accessToken = data.access_token;
+      if (data.access_token) {
+        localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
+      }
       if (data.refresh_token) {
-        refreshToken = data.refresh_token;
         localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
       }
-
-      syncTimbalToken(accessToken ?? undefined);
       return true;
     } catch {
       clearTokens();
@@ -84,28 +63,31 @@ export const refreshAccessToken = async (): Promise<boolean> => {
 
 // ============================================
 // Authenticated fetch wrapper
+// Attaches Bearer token, auto-refreshes on 401
 // ============================================
 
 export const authFetch = async (
   url: string,
   options?: RequestInit,
 ): Promise<Response> => {
+  const token = getAccessToken();
   let res = await fetch(url, {
     ...options,
     headers: {
       ...options?.headers,
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
 
-  if (res.status === 401 && refreshToken) {
+  if (res.status === 401 && getRefreshToken()) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
+      const newToken = getAccessToken();
       res = await fetch(url, {
         ...options,
         headers: {
           ...options?.headers,
-          Authorization: `Bearer ${accessToken}`,
+          ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
         },
       });
     }
@@ -115,124 +97,21 @@ export const authFetch = async (
 };
 
 // ============================================
-// Errors
-// ============================================
-
-export class AccessDeniedError extends Error {
-  constructor(message = "You don't have access to this application") {
-    super(message);
-    this.name = "AccessDeniedError";
-  }
-}
-
-// ============================================
 // API helpers
 // ============================================
 
-export interface TimbalUser {
-  [key: string]: unknown;
-}
-
 /**
- * Validate token via GET /me
+ * Get current user session via GET /api/me.
  */
-export const fetchCurrentUser = async (
-  token?: string,
-): Promise<TimbalUser | null> => {
-  const tk = token ?? accessToken;
-  if (!tk) return null;
-
+export const fetchCurrentUser = async (): Promise<Session | null> => {
   try {
-    const res = await fetch(`${AUTH_API_BASE}/me`, {
-      headers: { Authorization: `Bearer ${tk}` },
+    const token = getAccessToken();
+    const res = await fetch("/api/me", {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     if (!res.ok) return null;
     return await res.json();
   } catch {
     return null;
   }
-};
-
-/**
- * Check if user has access to the configured org/project.
- * Throws AccessDeniedError if the user is authenticated but not authorized.
- * Skipped when orgId or projectId are not configured.
- */
-export const checkProjectAccess = async (
-  token: string,
-  orgId?: string,
-  projectId?: string,
-): Promise<void> => {
-  if (!orgId || !projectId) return; // no authorization configured, skip
-
-  const res = await fetch(
-    `${AUTH_API_BASE}/orgs/${orgId}/projects/${projectId}`,
-    { method: "HEAD", headers: { Authorization: `Bearer ${token}` } },
-  );
-
-  if (res.status === 403 || res.status === 404) {
-    throw new AccessDeniedError();
-  }
-
-  if (!res.ok) {
-    throw new Error("Failed to verify project access");
-  }
-};
-
-/**
- * Full validation: authenticate + authorize.
- * Returns user object or throws.
- * Deduplicates concurrent calls with the same token.
- */
-let _validatePromise: Promise<TimbalUser> | null = null;
-let _validateToken: string | null = null;
-
-export const validateUser = async (
-  token: string,
-  orgId?: string,
-  projectId?: string,
-): Promise<TimbalUser> => {
-  // Return existing promise if same token is already being validated
-  if (_validatePromise && _validateToken === token) {
-    return _validatePromise;
-  }
-
-  _validateToken = token;
-  _validatePromise = (async () => {
-    try {
-      const user = await fetchCurrentUser(token);
-      if (!user) throw new Error("Invalid token");
-
-      await checkProjectAccess(token, orgId, projectId);
-      return user;
-    } finally {
-      _validatePromise = null;
-      _validateToken = null;
-    }
-  })();
-
-  return _validatePromise;
-};
-
-export const requestMagicLink = async (email: string): Promise<void> => {
-  const res = await fetch(`${AUTH_API_BASE}/auth/magic-link`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email,
-      redirect_uri: `${window.location.origin}/auth/callback`,
-    }),
-  });
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(
-      data.detail ?? data.message ?? "Failed to send magic link",
-    );
-  }
-};
-
-export const getOAuthUrl = (provider: string): string => {
-  const redirectUri = `${window.location.origin}/auth/callback`;
-  return `${AUTH_API_BASE}/oauth/authorize?provider=${provider}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 };

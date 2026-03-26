@@ -1,14 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTitle } from "@/hooks/use-title";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthGuard } from "@/auth/AuthGuard";
-import { SessionProvider, isAuthEnabled } from "@/auth/provider";
+import { SessionProvider } from "@/auth/provider";
 
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
-import AuthRoutes from "@/auth/AuthRoutes";
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -30,13 +29,6 @@ function App() {
                 <AuthGuard requireAuth>
                   <Home />
                 </AuthGuard>
-              }
-            />
-            {/* AUTH routes: callback is always accessible, login only when not authenticated */}
-            <Route
-              path="/auth/*"
-              element={
-                isAuthEnabled ? <AuthRoutes /> : <Navigate to="/" />
               }
             />
             <Route path="*" element={<NotFound />} />
