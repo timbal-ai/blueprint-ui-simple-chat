@@ -3,7 +3,6 @@ import { useTheme } from "next-themes";
 import { LogOut } from "lucide-react";
 import type { WorkforceItem } from "@timbal-ai/timbal-sdk";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -11,10 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { isAuthEnabled, useSession } from "@/auth/provider";
-import { authFetch } from "@/auth/tokens";
-import { Thread } from "@/components/assistant-ui/thread";
-import { TimbalRuntimeProvider } from "@/components/assistant-ui/timbal-runtime";
+import {
+  TimbalChat,
+  Button,
+  authFetch,
+  useSession,
+} from "@timbal-ai/timbal-react";
+
+const isAuthEnabled = !!import.meta.env.VITE_TIMBAL_PROJECT_ID;
 
 const Home = () => {
   const { theme, systemTheme } = useTheme();
@@ -91,11 +94,15 @@ const Home = () => {
       </header>
 
       {/* Chat */}
-      <TimbalRuntimeProvider workforceId={selectedId} key={selectedId}>
-        <div className="min-h-0 flex-1">
-          <Thread />
-        </div>
-      </TimbalRuntimeProvider>
+      <TimbalChat
+        workforceId={selectedId}
+        key={selectedId}
+        className="min-h-0 flex-1"
+        welcome={{
+          heading: import.meta.env.VITE_WELCOME_HEADING || "How can I help you today?",
+          subheading: import.meta.env.VITE_WELCOME_SUBHEADING || "Send a message to start a conversation.",
+        }}
+      />
     </div>
   );
 };

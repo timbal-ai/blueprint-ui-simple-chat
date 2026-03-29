@@ -2,12 +2,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTitle } from "@/hooks/use-title";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthGuard } from "@/auth/AuthGuard";
-import { SessionProvider } from "@/auth/provider";
+import {
+  TooltipProvider,
+  SessionProvider,
+  AuthGuard,
+} from "@timbal-ai/timbal-react";
 
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
+
+const isAuthEnabled = !!import.meta.env.VITE_TIMBAL_PROJECT_ID;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -18,22 +22,22 @@ function App() {
       storageKey="timbal-theme"
       attribute="class"
     >
-      <SessionProvider>
+      <SessionProvider enabled={isAuthEnabled}>
         <TooltipProvider>
-        <Toaster position="top-right" duration={3000} />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              index
-              element={
-                <AuthGuard requireAuth>
-                  <Home />
-                </AuthGuard>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+          <Toaster position="top-right" duration={3000} />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                index
+                element={
+                  <AuthGuard requireAuth enabled={isAuthEnabled}>
+                    <Home />
+                  </AuthGuard>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </TooltipProvider>
       </SessionProvider>
     </ThemeProvider>

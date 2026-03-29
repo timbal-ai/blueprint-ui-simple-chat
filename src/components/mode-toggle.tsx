@@ -1,15 +1,15 @@
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@timbal-ai/timbal-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTheme } from "next-themes"
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -29,5 +29,5 @@ export function ModeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

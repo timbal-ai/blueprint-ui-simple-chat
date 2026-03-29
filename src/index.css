@@ -2,6 +2,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@source "../node_modules/@timbal-ai/timbal-react/dist";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
