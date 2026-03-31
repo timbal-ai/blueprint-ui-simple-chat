@@ -28,7 +28,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.1.17",
     "@timbal-ai/timbal-react": "0.2.1",
-    "@timbal-ai/timbal-sdk": "0.4.12",
+    "@timbal-ai/timbal-sdk": "0.4.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "katex": "^0.16.28",
