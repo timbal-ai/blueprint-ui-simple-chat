@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       allowedHosts: [".timbal.ai"],
       proxy: {
         "/api": {
-          target: env.VITE_API_PROXY_TARGET || "http://localhost:3000",
+          target: env.VITE_API_PROXY_TARGET || (process.env.TIMBAL_START_API_PORT ? `http://localhost:${process.env.TIMBAL_START_API_PORT}` : "http://localhost:3000"),
           changeOrigin: true,
           // Forward the original host so the API constructs correct
           // OAuth callback URLs pointing back to the UI dev server
