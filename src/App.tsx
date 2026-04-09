@@ -8,10 +8,9 @@ import {
   AuthGuard,
 } from "@timbal-ai/timbal-react";
 
+import { isAuthEnabled } from "@/config";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
-
-const isAuthEnabled = !!import.meta.env.VITE_TIMBAL_PROJECT_ID;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;

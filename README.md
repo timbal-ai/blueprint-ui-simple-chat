@@ -21,31 +21,28 @@ bun install
 bun run dev
 ```
 
-The app runs on `http://localhost:3737` by default.
+The dev server listens on **port 5173** by default. Override with `VITE_APP_PORT` in `.env`.
 
 ## Configuration
 
-Copy `.env` and configure:
+Copy `.env.example` to `.env` and adjust values.
 
-```env
-VITE_APP_TITLE=Your App Name
-VITE_AUTH_ENABLED=true
-VITE_TIMBAL_BASE_URL=https://api.timbal.ai
-VITE_TIMBAL_API_KEY=your-api-key
-VITE_TIMBAL_ORG_ID=your-org-id
-VITE_TIMBAL_PROJECT_ID=your-project-id
-```
+This app reads `VITE_*` variables at build time. Auth (`SessionProvider`, `AuthGuard`, logout) is enabled when **`VITE_TIMBAL_PROJECT_ID`** is set. Other Timbal settings are consumed by `@timbal-ai/timbal-react` / your deployment; see `.env.example` for common keys.
+
+In development, `/api` is proxied to `VITE_API_PROXY_TARGET`, or `http://localhost:3000`, or the port from `TIMBAL_START_API_PORT` — see `vite.config.ts`.
 
 ## Project Structure
 
 ```
 src/
-├── auth/           # Authentication (OAuth, guards, tokens)
-├── components/ui/  # Reusable UI components
-├── hooks/          # Custom React hooks
-├── pages/          # Route pages
-├── timbal/         # Timbal SDK client & utilities
-└── lib/            # Utility functions
+├── components/     # mode-toggle, ui (shadcn-style)
+├── hooks/
+├── lib/
+├── pages/          # Home, NotFound
+├── config.ts       # shared flags derived from env
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
 
 ## Scripts

@@ -16,8 +16,7 @@ import {
   authFetch,
   useSession,
 } from "@timbal-ai/timbal-react";
-
-const isAuthEnabled = !!import.meta.env.VITE_TIMBAL_PROJECT_ID;
+import { isAuthEnabled } from "@/config";
 
 const Home = () => {
   const { theme, systemTheme } = useTheme();
