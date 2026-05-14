@@ -13,6 +13,7 @@
   "homepage": "https://timbal.ai",
   "scripts": {
     "dev": "vite",
+    "prebuild": "find src -name '.nfs*' -delete 2>/dev/null || true",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

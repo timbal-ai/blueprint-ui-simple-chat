@@ -19,5 +19,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts"],
+  "exclude": ["node_modules", "dist", ".nfs*", "**/.nfs*"]
 }

@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: parseInt(env.VITE_APP_PORT ? env.VITE_APP_PORT : "5173"),
       allowedHosts: [".timbal.ai"],
+      watch: {
+        ignored: ["**/.nfs*"],
+      },
       proxy: {
         "/api": {
           target: env.VITE_API_PROXY_TARGET || (process.env.TIMBAL_START_API_PORT ? `http://localhost:${process.env.TIMBAL_START_API_PORT}` : "http://localhost:3000"),
