@@ -1,8 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-import './index.css'
-import App from './App.tsx'
+import "@assistant-ui/react-markdown/styles/dot.css";
+import "katex/dist/katex.min.css";
+import "@timbal-ai/timbal-react/styles.css";
+
+import "./index.css";
+import App from "./App.tsx";
 
 
 window.addEventListener('message', (event) => {

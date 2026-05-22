@@ -45,25 +45,26 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --radius: 0.75rem;
+  /* Studio light — aligned with timbal-platform HeroUI light theme (#fefefe / #F9F9FB) */
+  --background: oklch(0.995 0 0);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(0.995 0 0);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.995 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.975 0.002 260);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --muted: oklch(0.975 0.002 260);
+  --muted-foreground: oklch(0.52 0.014 260);
+  --accent: oklch(0.965 0.002 260);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.91 0.004 260);
+  --input: oklch(0.91 0.004 260);
+  --ring: oklch(0.55 0.014 260);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -73,44 +74,45 @@
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.975 0.002 260);
   --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-border: oklch(0.91 0.004 260);
+  --sidebar-ring: oklch(0.55 0.014 260);
 }
 
 .dark {
+  /* Studio dark — #121212 page, content1 #1C1C1F */
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.19 0.005 260);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.19 0.005 260);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.22 0.005 260);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.22 0.005 260);
+  --muted-foreground: oklch(0.72 0.01 260);
+  --accent: oklch(0.25 0.008 260);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.55 0.01 260);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0.19 0.005 260);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.25 0.008 260);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.55 0.01 260);
 }
 
 /* Login page animations */
@@ -210,169 +212,6 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* Typing indicator bounce */
-@keyframes chat-bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
-}
-
-/* AI icon animations */
-@keyframes ai-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.72; }
-  50% { transform: scale(1.1); opacity: 1; }
-}
-
-@keyframes ai-ring-glow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-
-@keyframes ai-pulse-ring {
-  0%   { box-shadow: 0 0 0 0 oklch(from var(--primary) l c h / 0.18); }
-  65%  { box-shadow: 0 0 0 8px oklch(from var(--primary) l c h / 0); }
-  100% { box-shadow: 0 0 0 0 oklch(from var(--primary) l c h / 0); }
-}
-
-.animate-ai-breathe {
-  animation: ai-breathe 3.2s ease-in-out infinite;
-}
-
-.animate-ai-ring-glow {
-  animation: ai-ring-glow 3.2s ease-in-out infinite;
-}
-
-.animate-ai-pulse-ring {
-  animation: ai-pulse-ring 3.2s ease-in-out infinite;
-  border-radius: var(--radius-xl);
-}
-
-/* ── Markdown code inline highlight ── */
-.dark code:not(pre code) {
-  background-color: oklch(0.269 0 0 / 0.8);
-}
-
-/* ── Shiki dual-theme support ── */
-.shiki-wrapper pre {
-  background: var(--shiki-light-bg, oklch(0.98 0 0)) !important;
-}
-.shiki-wrapper code {
-  color: var(--shiki-light, inherit);
-}
-.shiki-wrapper code span {
-  color: var(--shiki-light);
-}
-.dark .shiki-wrapper pre {
-  background: var(--shiki-dark-bg, oklch(0.13 0 0)) !important;
-}
-.dark .shiki-wrapper code {
-  color: var(--shiki-dark, inherit);
-}
-.dark .shiki-wrapper code span {
-  color: var(--shiki-dark);
-}
-
-/* Code block line numbers effect */
-.shiki-wrapper code {
-  counter-reset: line;
-}
-.shiki-wrapper code > .line::before {
-  counter-increment: line;
-  content: counter(line);
-  display: inline-block;
-  width: 1.5rem;
-  margin-right: 1rem;
-  text-align: right;
-  color: oklch(0.556 0 0 / 0.3);
-  font-size: 0.7em;
-  user-select: none;
-}
-.dark .shiki-wrapper code > .line::before {
-  color: oklch(0.556 0 0 / 0.25);
-}
-
-/* ── KaTeX math rendering ── */
-.katex-display {
-  margin: 1.25rem 0 !important;
-  padding: 1rem 1.25rem;
-  background: oklch(0.97 0 0 / 0.6);
-  border: 1px solid oklch(0.922 0 0);
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-.dark .katex-display {
-  background: oklch(0.2 0 0 / 0.5);
-  border-color: oklch(1 0 0 / 0.08);
-}
-.katex-display > .katex {
-  text-align: center;
-}
-.katex {
-  font-size: 1.05em !important;
-}
-.katex-display .katex {
-  font-size: 1.15em !important;
-}
-
-/* Inline math subtle styling */
-.katex:not(.katex-display .katex) {
-  padding: 0 0.15em;
-}
-
-/* ── Enhanced markdown table styling ── */
-.aui-md-table tbody tr:nth-child(even) {
-  background: oklch(0.97 0 0 / 0.4);
-}
-.dark .aui-md-table tbody tr:nth-child(even) {
-  background: oklch(0.2 0 0 / 0.3);
-}
-
-/* ── Code header polish ── */
-.aui-code-header {
-  backdrop-filter: blur(8px);
-}
-
-/* ── Smooth transitions on links ── */
-.aui-md-a {
-  transition: color 0.15s ease, text-decoration-color 0.15s ease;
-}
-
-/* ── Blockquote left border gradient ── */
-.aui-md-blockquote {
-  border-image: linear-gradient(to bottom, oklch(0.488 0.243 264.376 / 0.6), oklch(0.627 0.265 303.9 / 0.3)) 1;
-}
-
-/* ── Task list checkboxes (GFM) ── */
-.aui-md-li input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid oklch(0.556 0 0 / 0.4);
-  border-radius: 4px;
-  margin-right: 0.4em;
-  vertical-align: middle;
-  position: relative;
-  top: -1px;
-  cursor: default;
-  transition: all 0.15s ease;
-}
-.aui-md-li input[type="checkbox"]:checked {
-  background: oklch(0.488 0.243 264.376);
-  border-color: oklch(0.488 0.243 264.376);
-}
-.aui-md-li input[type="checkbox"]:checked::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  width: 3px;
-  height: 6px;
-  border: solid white;
-  border-width: 0 1.5px 1.5px 0;
-  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 /* Custom Timbal font */
@@ -494,4 +333,130 @@ button {
 
 .dark .scrollbar-enhanced:hover::-webkit-scrollbar-thumb {
   background: oklch(0.708 0 0 / 0.5);
+}
+
+/* ── Studio chat overrides (timbal-react / assistant-ui) ── */
+
+.aui-thread-root {
+  background: transparent !important;
+}
+
+/* Footer must stay transparent — default timbal-react footer uses rounded-t-3xl +
+   bg-background, which creates a visible band behind the input in light mode. */
+.aui-thread-viewport-footer {
+  background: transparent !important;
+  border-radius: 0 !important;
+  gap: 0.5rem !important;
+  padding-bottom: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .aui-thread-viewport-footer {
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+/* Thread body copy — user bubble and assistant markdown share one scale (16px / 1.7) */
+.aui-user-message-content,
+.aui-assistant-message-content {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* timbal-react sets leading-relaxed on assistant content — align with markdown body */
+.aui-assistant-message-content.leading-relaxed {
+  line-height: 1.7;
+}
+
+.aui-assistant-message-content .aui-md {
+  font-size: inherit;
+}
+
+/* User bubble: shrink-wrap text; long messages wrap inside max-w-[80%] */
+.aui-user-message-content {
+  overflow-wrap: break-word;
+  word-break: normal;
+  vertical-align: top;
+}
+
+.aui-user-message-attachments-end {
+  width: 100%;
+}
+
+/* Default timbal tool rows ship a wrench — studio uses flat timeline text only. */
+.aui-assistant-message-content .aui-tool-fallback-running > svg,
+.aui-assistant-message-content .aui-tool-fallback-header > svg:first-child {
+  display: none !important;
+}
+
+/* “Using” shimmer — high-contrast sweep (timbal Shimmer uses bg-clip + page bg, invisible here). */
+@keyframes aui-studio-tool-shimmer {
+  0% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+.aui-studio-tool-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    var(--muted-foreground) 0%,
+    var(--muted-foreground) 36%,
+    var(--foreground) 50%,
+    var(--muted-foreground) 64%,
+    var(--muted-foreground) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aui-studio-tool-shimmer 1.85s linear infinite;
+}
+
+/* Compose toolbar buttons use TimbalV2Button layered fills — no flat overrides needed. */
+
+/* Scroll-to-bottom — opaque studio pill (not translucent outline). */
+.aui-thread-scroll-to-bottom {
+  border-radius: 9999px !important;
+  border: 1px solid oklch(0.88 0.004 260 / 0.9) !important;
+  background-color: #ffffff !important;
+  background-image: linear-gradient(
+    to bottom,
+    #ffffff,
+    oklch(0.975 0.002 260)
+  ) !important;
+  box-shadow: 0 1px 2px -0.5px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: none !important;
+  opacity: 1 !important;
+}
+
+.aui-thread-scroll-to-bottom:hover {
+  background-color: oklch(0.98 0.002 260) !important;
+  background-image: linear-gradient(
+    to bottom,
+    oklch(0.99 0.002 260),
+    oklch(0.96 0.002 260)
+  ) !important;
+}
+
+.dark .aui-thread-scroll-to-bottom {
+  border-color: oklch(1 0 0 / 12%) !important;
+  background-color: oklch(0.21 0.005 285) !important;
+  background-image: linear-gradient(
+    to bottom,
+    oklch(0.27 0.005 285),
+    oklch(0.21 0.005 285)
+  ) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+.dark .aui-thread-scroll-to-bottom:hover {
+  background-color: oklch(0.24 0.005 285) !important;
+  background-image: linear-gradient(
+    to bottom,
+    oklch(0.3 0.006 285),
+    oklch(0.24 0.005 285)
+  ) !important;
 }
