@@ -27,6 +27,27 @@ button {
 }
 
 /* =============================================================== *
+ * Chat composer — solid surface (light)                           *
+ * =============================================================== */
+
+:root:not(.dark) {
+  --composer-bg: #ffffff;
+}
+
+/* Footer is transparent in the library so it matches bg-background; that
+   lets scrolled assistant action bars show through the composer chrome. */
+:root:not(.dark) .aui-thread-viewport-footer {
+  background: #ffffff !important;
+}
+
+:root:not(.dark) .aui-composer-root > *,
+:root:not(.dark) .aui-composer-input,
+:root:not(.dark) .aui-composer-action-wrapper,
+:root:not(.dark) .aui-composer-attachments {
+  background-color: #ffffff;
+}
+
+/* =============================================================== *
  * Login page (kept separate — not part of the chat surface)       *
  * =============================================================== */
 
