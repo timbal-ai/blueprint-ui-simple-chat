@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 
 import "@assistant-ui/react-markdown/styles/dot.css";
 import "katex/dist/katex.min.css";
-import "@timbal-ai/timbal-react/styles.css";
 
 import "./index.css";
 import App from "./App.tsx";

@@ -2,120 +2,34 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* The library ships the complete @theme inline token set + .aui-* polish
+   inside its own styles.css. Importing it here (instead of from JS) means
+   Tailwind sees the token names while processing this file, so utilities
+   like `border-border` and `bg-background` are available in app CSS too. */
+@import "@timbal-ai/timbal-react/styles.css";
+
+/* Tailwind needs to scan the library's pre-built dist/ for the utility
+   classes that the components use at runtime. */
 @source "../node_modules/@timbal-ai/timbal-react/dist";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
 }
 
-:root {
-  --radius: 0.75rem;
-  /* Studio light — aligned with timbal-platform HeroUI light theme (#fefefe / #F9F9FB) */
-  --background: oklch(0.995 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(0.995 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(0.995 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.975 0.002 260);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.975 0.002 260);
-  --muted-foreground: oklch(0.52 0.014 260);
-  --accent: oklch(0.965 0.002 260);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.004 260);
-  --input: oklch(0.91 0.004 260);
-  --ring: oklch(0.55 0.014 260);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.975 0.002 260);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.91 0.004 260);
-  --sidebar-ring: oklch(0.55 0.014 260);
+button {
+  cursor: pointer;
 }
 
-.dark {
-  /* Studio dark — #121212 page, content1 #1C1C1F */
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.19 0.005 260);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.19 0.005 260);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.22 0.005 260);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.22 0.005 260);
-  --muted-foreground: oklch(0.72 0.01 260);
-  --accent: oklch(0.25 0.008 260);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.55 0.01 260);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.19 0.005 260);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.985 0 0);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.25 0.008 260);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.55 0.01 260);
-}
+/* =============================================================== *
+ * Login page (kept separate — not part of the chat surface)       *
+ * =============================================================== */
 
-/* Login page animations */
 @keyframes border-flow-up {
   0% { background-position: 0% 0%; }
   100% { background-position: 0% 100%; }
@@ -134,7 +48,6 @@
   animation: scroll-logos 20s linear infinite;
 }
 
-/* Logo slider fade edges */
 .logo-slider-container::before,
 .logo-slider-container::after {
   content: "";
@@ -156,7 +69,6 @@
   background: linear-gradient(to left, #030303 0%, transparent 100%);
 }
 
-/* Terms checkbox */
 .terms-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -194,7 +106,6 @@
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* Auth card mobile override */
 @media (max-width: 900px) {
   .auth-card {
     max-width: 100% !important;
@@ -203,260 +114,4 @@
     box-shadow: none !important;
     padding: 1.5rem 0 !important;
   }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Custom Timbal font */
-body {
-  font-family: 'Inter', sans-serif;
-}
-
-/* Buttons cursor */
-button {
-  cursor: pointer;
-}
-
-/* Beautiful custom scrollbars */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: oklch(0.708 0 0 / 0.3) transparent;
-}
-
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 4px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.3);
-  border-radius: 4px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-  transition: all 0.2s ease;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.708 0 0 / 0.5);
-  background-clip: content-box;
-}
-
-*::-webkit-scrollbar-thumb:active {
-  background: oklch(0.708 0 0 / 0.7);
-  background-clip: content-box;
-}
-
-*::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-/* Dark theme scrollbars */
-.dark * {
-  scrollbar-color: oklch(0.708 0 0 / 0.4) transparent;
-}
-
-.dark *::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.4);
-}
-
-.dark *::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.708 0 0 / 0.6);
-}
-
-.dark *::-webkit-scrollbar-thumb:active {
-  background: oklch(0.708 0 0 / 0.8);
-}
-
-/* Utility classes for different scrollbar styles */
-.scrollbar-hide {
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-thin {
-  scrollbar-width: thin;
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.scrollbar-thick {
-  scrollbar-width: auto;
-}
-
-.scrollbar-thick::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-/* Enhanced scrollbar for hover interactions */
-.scrollbar-enhanced::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.scrollbar-enhanced::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.2);
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.scrollbar-enhanced:hover::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.scrollbar-enhanced:hover::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.4);
-}
-
-.dark .scrollbar-enhanced::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.3);
-}
-
-.dark .scrollbar-enhanced:hover::-webkit-scrollbar-thumb {
-  background: oklch(0.708 0 0 / 0.5);
-}
-
-/* ── Studio chat overrides (timbal-react / assistant-ui) ── */
-
-.aui-thread-root {
-  background: transparent !important;
-}
-
-/* Footer must stay transparent — default timbal-react footer uses rounded-t-3xl +
-   bg-background, which creates a visible band behind the input in light mode. */
-.aui-thread-viewport-footer {
-  background: transparent !important;
-  border-radius: 0 !important;
-  gap: 0.5rem !important;
-  padding-bottom: 1rem !important;
-}
-
-@media (min-width: 768px) {
-  .aui-thread-viewport-footer {
-    padding-bottom: 1.5rem !important;
-  }
-}
-
-/* Thread body copy — user bubble and assistant markdown share one scale (16px / 1.7) */
-.aui-user-message-content,
-.aui-assistant-message-content {
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-/* timbal-react sets leading-relaxed on assistant content — align with markdown body */
-.aui-assistant-message-content.leading-relaxed {
-  line-height: 1.7;
-}
-
-.aui-assistant-message-content .aui-md {
-  font-size: inherit;
-}
-
-/* User bubble: shrink-wrap text; long messages wrap inside max-w-[80%] */
-.aui-user-message-content {
-  overflow-wrap: break-word;
-  word-break: normal;
-  vertical-align: top;
-}
-
-.aui-user-message-attachments-end {
-  width: 100%;
-}
-
-/* Default timbal tool rows ship a wrench — studio uses flat timeline text only. */
-.aui-assistant-message-content .aui-tool-fallback-running > svg,
-.aui-assistant-message-content .aui-tool-fallback-header > svg:first-child {
-  display: none !important;
-}
-
-/* “Using” shimmer — high-contrast sweep (timbal Shimmer uses bg-clip + page bg, invisible here). */
-@keyframes aui-studio-tool-shimmer {
-  0% {
-    background-position: 100% center;
-  }
-  100% {
-    background-position: 0% center;
-  }
-}
-
-.aui-studio-tool-shimmer {
-  background-image: linear-gradient(
-    90deg,
-    var(--muted-foreground) 0%,
-    var(--muted-foreground) 36%,
-    var(--foreground) 50%,
-    var(--muted-foreground) 64%,
-    var(--muted-foreground) 100%
-  );
-  background-size: 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: aui-studio-tool-shimmer 1.85s linear infinite;
-}
-
-/* Compose toolbar buttons use TimbalV2Button layered fills — no flat overrides needed. */
-
-/* Scroll-to-bottom — opaque studio pill (not translucent outline). */
-.aui-thread-scroll-to-bottom {
-  border-radius: 9999px !important;
-  border: 1px solid oklch(0.88 0.004 260 / 0.9) !important;
-  background-color: #ffffff !important;
-  background-image: linear-gradient(
-    to bottom,
-    #ffffff,
-    oklch(0.975 0.002 260)
-  ) !important;
-  box-shadow: 0 1px 2px -0.5px rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: none !important;
-  opacity: 1 !important;
-}
-
-.aui-thread-scroll-to-bottom:hover {
-  background-color: oklch(0.98 0.002 260) !important;
-  background-image: linear-gradient(
-    to bottom,
-    oklch(0.99 0.002 260),
-    oklch(0.96 0.002 260)
-  ) !important;
-}
-
-.dark .aui-thread-scroll-to-bottom {
-  border-color: oklch(1 0 0 / 12%) !important;
-  background-color: oklch(0.21 0.005 285) !important;
-  background-image: linear-gradient(
-    to bottom,
-    oklch(0.27 0.005 285),
-    oklch(0.21 0.005 285)
-  ) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
-}
-
-.dark .aui-thread-scroll-to-bottom:hover {
-  background-color: oklch(0.24 0.005 285) !important;
-  background-image: linear-gradient(
-    to bottom,
-    oklch(0.3 0.006 285),
-    oklch(0.24 0.005 285)
-  ) !important;
 }
