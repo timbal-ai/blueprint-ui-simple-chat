@@ -22,7 +22,7 @@
     "@assistant-ui/react": "^0.12.10",
     "@assistant-ui/react-markdown": "^0.12.3",
     "@tailwindcss/vite": "^4.1.17",
-    "@timbal-ai/timbal-react": "^0.5.2",
+    "@timbal-ai/timbal-react": "^0.5.3",
     "@timbal-ai/timbal-sdk": "^0.6.3",
     "clsx": "^2.1.1",
     "katex": "^0.16.28",
