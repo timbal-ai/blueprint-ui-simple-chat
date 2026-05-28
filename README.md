@@ -70,7 +70,7 @@ bun run lint     # ESLint
 
 ## Production checklist
 
-- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.5.3`); use `file:../timbal-react` only for local dev against a sibling checkout
+- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.5.4`); use `file:../timbal-react` only for local dev against a sibling checkout
 - [ ] `bun run build` and `bun run lint` pass
 - [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required
