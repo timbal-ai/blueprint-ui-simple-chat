@@ -30,17 +30,32 @@ button {
  * Chat composer — solid surface (light)                           *
  * =============================================================== */
 
+/*
+ * TimbalChatShell passes `bg-transparent` on the thread, which wins over the
+ * library's `bg-background` via tailwind-merge. The playground gradient and
+ * scrolled messages then bleed through the composer border (semi-transparent).
+ */
 :root:not(.dark) {
   --composer-bg: #ffffff;
+  --composer-border: #e4e4e7;
+  --composer-border-focus: #a1a1aa;
 }
 
-/* Footer is transparent in the library so it matches bg-background; that
-   lets scrolled assistant action bars show through the composer chrome. */
+:root:not(.dark) .aui-chat-shell .aui-thread-root {
+  background-color: var(--background);
+}
+
 :root:not(.dark) .aui-thread-viewport-footer {
   background: #ffffff !important;
 }
 
-:root:not(.dark) .aui-composer-root > *,
+:root:not(.dark) .aui-composer-root > * {
+  position: relative;
+  z-index: 1;
+  background-color: #ffffff;
+  border-color: var(--composer-border);
+}
+
 :root:not(.dark) .aui-composer-input,
 :root:not(.dark) .aui-composer-action-wrapper,
 :root:not(.dark) .aui-composer-attachments {
