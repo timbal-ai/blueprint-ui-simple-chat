@@ -27,7 +27,6 @@ Copy `.env.example` to `.env`.
 |----------|---------|
 | `VITE_TIMBAL_PROJECT_ID` | Enables auth (`SessionProvider`, `AuthGuard`) |
 | `VITE_WELCOME_HEADING` / `VITE_WELCOME_SUBHEADING` | Welcome screen copy |
-| `VITE_STUDIO_UI_ONLY` | Mock workforces in dev when no API (default on without project id) |
 | `VITE_STUDIO_SIDEBAR` | `true` → floating sidebar (`TimbalStudioShell`); default is top bar only |
 | `VITE_API_PROXY_TARGET` | Where `/api` proxies in dev (`vite.config.ts`) |
 
@@ -52,8 +51,7 @@ src/
 │   ├── studio-topbar-brand.tsx   # Blueprint-only: welcome mark + topbar “new chat”
 │   └── ui/sonner.tsx
 ├── lib/
-│   ├── studio-chat-chrome.tsx    # Welcome + composer slots
-│   └── ui-only.ts                # Mock fetch for UI-only dev
+│   └── studio-chat-chrome.tsx    # Welcome + composer slots
 ├── pages/Home.tsx                # TimbalChatShell / optional TimbalStudioShell
 ├── config.ts
 ├── App.tsx
@@ -74,7 +72,7 @@ bun run lint     # ESLint
 
 - [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.5.3`); use `file:../timbal-react` only for local dev against a sibling checkout
 - [ ] `bun run build` and `bun run lint` pass
-- [ ] Backend serves `/api/workforce` and stream routes (or disable `VITE_STUDIO_UI_ONLY` and run `timbal start`)
+- [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required
 
 ## License

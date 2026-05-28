@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes";
-import type { ThreadSuggestion, UiEventEnvelope } from "@timbal-ai/timbal-react";
+import type { UiEventEnvelope } from "@timbal-ai/timbal-react";
 import {
   ARTIFACT_AGENT_INSTRUCTIONS,
   ModeToggle,
@@ -8,9 +8,8 @@ import {
 } from "@timbal-ai/timbal-react";
 
 import { StudioTopbarBrandAnchor } from "@/components/studio-topbar-brand";
-import { isStudioSidebarEnabled, isStudioUiOnly } from "@/config";
+import { isStudioSidebarEnabled } from "@/config";
 import { studioChatComponents } from "@/lib/studio-chat-chrome";
-import { studioUiOnlyFetch, studioUiPreviewSuggestions } from "@/lib/ui-only";
 
 /** Re-export so workforce / agent system prompts can paste it into timbal.yaml. */
 export { ARTIFACT_AGENT_INSTRUCTIONS };
@@ -32,23 +31,17 @@ function handleArtifactEvent(event: UiEventEnvelope) {
 const Home = () => {
   const { resolvedTheme, setTheme } = useTheme();
 
-  const suggestions: ThreadSuggestion[] | undefined = isStudioUiOnly
-    ? studioUiPreviewSuggestions
-    : undefined;
-
   const headerActions = (
     <ModeToggle theme={resolvedTheme} setTheme={setTheme} />
   );
 
   const chatProps = {
     welcome,
-    suggestions,
     composerPlaceholder: "Send a message...",
     attachments: true as const,
     debug: import.meta.env.DEV,
     onArtifactEvent: handleArtifactEvent,
     headerActions,
-    fetch: isStudioUiOnly ? studioUiOnlyFetch : undefined,
     components: studioChatComponents,
   };
 
@@ -57,8 +50,6 @@ const Home = () => {
     return (
       <TimbalStudioShell
         {...chatProps}
-        workforcesFetch={chatProps.fetch}
-        sidebarEmptyCaption="Blueprint UI preview"
         headerStart={<StudioTopbarBrandAnchor />}
       />
     );
