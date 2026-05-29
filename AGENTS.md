@@ -90,14 +90,6 @@ const isRunning = useThread((s) => s.isRunning);
 - Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.6.0`). Use `file:../timbal-react` + `bun run dev:linked` only for local library dev.
 - Add `motion` if you import `motion/react` (see `studio-topbar-brand.tsx`).
 
-## Vite: `use-sync-external-store` / preview startup
-
-Radix (`@radix-ui/react-use-is-hydrated`) and zustand import **`use-sync-external-store/shim`**, which is **CJS-only**. Timbal UI preview and other environments that serve raw `node_modules` over `/@fs/...` without pre-bundling will throw:
-
-`does not provide an export named 'useSyncExternalStore'`
-
-**Keep** the aliases + `optimizeDeps.include` in `vite.config.ts` (`src/vite-shims/*`). When copying this blueprint, do not remove them. For platform preview runners: either use the app’s `vite.config.ts` or pre-bundle `use-sync-external-store/shim` and `@radix-ui/react-use-is-hydrated`.
-
 ## Verify before finishing
 
 ```bash
