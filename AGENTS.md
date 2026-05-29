@@ -2,7 +2,7 @@
 
 This repo is the **canonical shell** for Timbal chat apps. UI generators (Composer, Cursor, etc.) should follow these rules when adding or changing chat UI.
 
-## Package surface (`@timbal-ai/timbal-react` 0.6+)
+## Package surface (`@timbal-ai/timbal-react` 0.7+)
 
 | Subpath | Use in this repo |
 |---------|------------------|
@@ -87,7 +87,7 @@ const isRunning = useThread((s) => s.isRunning);
 
 ## Dependencies
 
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.6.0`). Use `file:../timbal-react` + `bun run dev:linked` only for local library dev.
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.7.0`). Use `file:../timbal-react` + `bun run dev:linked` only for local library dev.
 - Add `motion` if you import `motion/react` (see `studio-topbar-brand.tsx`).
 
 ## Verify before finishing
