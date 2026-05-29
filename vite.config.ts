@@ -1,5 +1,4 @@
 import path from "node:path";
-import { timbalReactLocalDev } from "@timbal-ai/timbal-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
@@ -13,7 +12,7 @@ const assistantUiRoot = path.join(root, "node_modules/@assistant-ui/react");
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
-    plugins: [timbalReactLocalDev(), react(), tailwindcss()],
+    plugins: [react(), tailwindcss()],
     server: {
       host: true,
       port: parseInt(env.VITE_APP_PORT ? env.VITE_APP_PORT : "5173"),
