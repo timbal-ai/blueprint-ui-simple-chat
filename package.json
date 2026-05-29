@@ -13,6 +13,7 @@
   "homepage": "https://timbal.ai",
   "scripts": {
     "dev": "vite",
+    "dev:linked": "node ../timbal-react/scripts/dev-linked.mjs vite",
     "prebuild": "find src -name '.nfs*' -delete 2>/dev/null || true",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -22,7 +23,7 @@
     "@assistant-ui/react": "^0.12.10",
     "@assistant-ui/react-markdown": "^0.12.3",
     "@tailwindcss/vite": "^4.1.17",
-    "@timbal-ai/timbal-react": "^0.5.5",
+    "@timbal-ai/timbal-react": "^0.6.0",
     "@timbal-ai/timbal-sdk": "^0.6.3",
     "clsx": "^2.1.1",
     "katex": "^0.16.28",
