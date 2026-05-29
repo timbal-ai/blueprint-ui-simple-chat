@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTitle } from "@/hooks/use-title";
 import { ThemeProvider } from "next-themes";
@@ -8,9 +9,13 @@ import {
   AuthGuard,
 } from "@timbal-ai/timbal-react";
 
-import { isAuthEnabled } from "@/config";
+import { isAppKitDemoEnabled, isAuthEnabled } from "@/config";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
+
+const AppKitDemo = isAppKitDemoEnabled
+  ? lazy(() => import("@/examples/app-kit-demo/AppKitDemo"))
+  : null;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -34,6 +39,18 @@ function App() {
                   </AuthGuard>
                 }
               />
+              {AppKitDemo ? (
+                <Route
+                  path="/demo/app-kit"
+                  element={
+                    <AuthGuard requireAuth enabled={isAuthEnabled}>
+                      <Suspense fallback={null}>
+                        <AppKitDemo />
+                      </Suspense>
+                    </AuthGuard>
+                  }
+                />
+              ) : null}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
