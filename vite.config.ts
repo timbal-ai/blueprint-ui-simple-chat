@@ -8,6 +8,23 @@ const root = path.resolve(__dirname);
 const reactRoot = path.join(root, "node_modules/react");
 const reactDomRoot = path.join(root, "node_modules/react-dom");
 const assistantUiRoot = path.join(root, "node_modules/@assistant-ui/react");
+const useSyncExternalStoreShim = path.join(
+  root,
+  "src/vite-shims/use-sync-external-store-shim.ts",
+);
+const useSyncExternalStoreShimWithSelector = path.join(
+  root,
+  "src/vite-shims/use-sync-external-store-shim-with-selector.ts",
+);
+
+/** Radix + zustand import CJS-only `use-sync-external-store/shim/*` as ESM named exports. */
+const useSyncExternalStoreAliases = {
+  "use-sync-external-store/shim": useSyncExternalStoreShim,
+  "use-sync-external-store/shim/index.js": useSyncExternalStoreShim,
+  "use-sync-external-store/shim/with-selector": useSyncExternalStoreShimWithSelector,
+  "use-sync-external-store/shim/with-selector.js":
+    useSyncExternalStoreShimWithSelector,
+} as const;
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -53,10 +70,19 @@ export default defineConfig(({ mode }) => {
         "react/jsx-runtime": path.join(reactRoot, "jsx-runtime.js"),
         "react/jsx-dev-runtime": path.join(reactRoot, "jsx-dev-runtime.js"),
         "@assistant-ui/react": assistantUiRoot,
+        ...useSyncExternalStoreAliases,
       },
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "@assistant-ui/react"],
+      include: [
+        "react",
+        "react-dom",
+        "@assistant-ui/react",
+        "@radix-ui/react-use-is-hydrated",
+        "use-sync-external-store/shim",
+        "use-sync-external-store/shim/with-selector",
+        "use-sync-external-store/with-selector",
+      ],
     },
   };
 });
