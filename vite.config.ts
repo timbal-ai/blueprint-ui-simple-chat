@@ -1,4 +1,5 @@
 import path from "node:path";
+import { timbalReactLocalDev } from "@timbal-ai/timbal-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
@@ -12,7 +13,7 @@ const assistantUiRoot = path.join(root, "node_modules/@assistant-ui/react");
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [timbalReactLocalDev(), react(), tailwindcss()],
     server: {
       host: true,
       port: parseInt(env.VITE_APP_PORT ? env.VITE_APP_PORT : "5173"),
@@ -55,7 +56,18 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "@assistant-ui/react"],
+      // Pre-bundle the CJS-only `use-sync-external-store/shim` chain (reached via
+      // `radix-ui` -> `@radix-ui/react-use-is-hydrated`) so it never leaks to the
+      // browser as a raw ESM named import in previews (`bun run dev`).
+      include: [
+        "react",
+        "react-dom",
+        "@assistant-ui/react",
+        "radix-ui",
+        "@radix-ui/react-use-is-hydrated",
+        "use-sync-external-store/shim",
+        "use-sync-external-store/shim/with-selector",
+      ],
     },
   };
 });
