@@ -1,6 +1,8 @@
 # Blueprint UI
 
-Canonical React + Vite template for Timbal chat apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.5.0`); this repo is a thin shell composers and teams clone.
+Canonical React + Vite template for Timbal chat apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.5.5`); this repo is a thin shell composers and teams clone.
+
+**Codegen / Composer agents:** read [`AGENTS.md`](./AGENTS.md) before overriding chat message slots.
 
 ## Tech stack
 
@@ -43,6 +45,16 @@ Do **not** duplicate color tokens in this repo. Import the library stylesheet an
 
 Toggle dark mode with `next-themes` (`attribute="class"`) or by toggling `.dark` on `<html>`.
 
+## Custom message slots (Composer / generated apps)
+
+Overriding `components.AssistantMessage` or `components.UserMessage` removes the built-in centered column. Import layout helpers so messages line up with the composer:
+
+```tsx
+import { assistantMessageRootClass, assistantMessageContentClass } from "@/lib/thread-message-layout";
+```
+
+Defaults match `Thread` (`max-w-(--thread-max-width)`, usually **44rem**). Full rules and examples: [`AGENTS.md`](./AGENTS.md).
+
 ## Project structure
 
 ```
@@ -51,7 +63,8 @@ src/
 │   ├── studio-topbar-brand.tsx   # Blueprint-only: welcome mark + topbar “new chat”
 │   └── ui/sonner.tsx
 ├── lib/
-│   └── studio-chat-chrome.tsx    # Welcome + composer slots
+│   ├── studio-chat-chrome.tsx    # Welcome + composer slots
+│   └── thread-message-layout.ts  # Column classes for custom User/Assistant messages
 ├── pages/Home.tsx                # TimbalChatShell / optional TimbalStudioShell
 ├── config.ts
 ├── App.tsx
@@ -70,7 +83,7 @@ bun run lint     # ESLint
 
 ## Production checklist
 
-- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.5.4`); use `file:../timbal-react` only for local dev against a sibling checkout
+- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.5.5`); use `file:../timbal-react` only for local dev against a sibling checkout
 - [ ] `bun run build` and `bun run lint` pass
 - [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required
