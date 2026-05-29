@@ -2,17 +2,6 @@
 
 This repo is the **canonical shell** for Timbal chat apps. UI generators (Composer, Cursor, etc.) should follow these rules when adding or changing chat UI.
 
-## Package surface (`@timbal-ai/timbal-react` 0.6+)
-
-| Subpath | Use in this repo |
-|---------|------------------|
-| `@timbal-ai/timbal-react` | Default chat shells, auth, artifacts (`Home.tsx`) |
-| `@timbal-ai/timbal-react/chat` | Layout helpers (`thread-message-layout.ts`) |
-| `@timbal-ai/timbal-react/studio` | Only in `src/examples/app-kit-demo/` |
-| `@timbal-ai/timbal-react/app` | Only in `src/examples/app-kit-demo/` |
-
-Chat chrome improvements (playground gradient, composer opacity) ship in the package — no local CSS forks.
-
 ## Thread layout (do not skip)
 
 `TimbalChatShell` / `Thread` set `--thread-max-width` (default **44rem**). The **composer** and **default messages** are centered with:
@@ -21,9 +10,9 @@ Chat chrome improvements (playground gradient, composer opacity) ship in the pac
 
 If you override `components.AssistantMessage` or `components.UserMessage`, you **replace** that layout. Content will stick to the left edge unless you add the column classes yourself.
 
-### Always use the official layout helpers
+### Always use the blueprint helpers
 
-Import from `@/lib/thread-message-layout` (re-exports `@timbal-ai/timbal-react/chat`) or directly:
+Import from `@/lib/thread-message-layout`:
 
 ```tsx
 import { MessagePrimitive } from "@timbal-ai/timbal-react";
@@ -60,15 +49,6 @@ Do **not** hardcode `max-w-[44rem]` unless `THREAD_MAX_WIDTH` / `maxWidth` on th
 
 Add the component to `studioChatComponents` in `src/lib/studio-chat-chrome.tsx` (or pass `components` from `Home.tsx`).
 
-## Dashboard expansion (optional)
-
-Do **not** replace `Home.tsx` with app kit. The default app stays chat-first.
-
-When the user needs sidebar + page content + floating copilot, point to:
-
-- Env: `VITE_APP_KIT_DEMO=true` → route `/demo/app-kit`
-- Reference: `src/examples/app-kit-demo/AppKitDemo.tsx`
-
 ## Custom actions during streaming
 
 Buttons such as “Guardar plan” should not appear while the assistant is still generating. Use assistant-ui thread state, e.g.:
@@ -87,7 +67,7 @@ const isRunning = useThread((s) => s.isRunning);
 
 ## Dependencies
 
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.6.0`). Use `file:../timbal-react` + `bun run dev:linked` only for local library dev.
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.5.5`). Use `file:../timbal-react` only for local library dev.
 - Add `motion` if you import `motion/react` (see `studio-topbar-brand.tsx`).
 
 ## Verify before finishing
