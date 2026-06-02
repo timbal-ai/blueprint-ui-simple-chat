@@ -1,6 +1,6 @@
 # Blueprint UI
 
-Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.7.0`); this repo is a thin shell composers and teams clone.
+Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.8.0`); this repo is a thin shell composers and teams clone.
 
 **Codegen / Composer agents:** read [`AGENTS.md`](./AGENTS.md) before overriding chat message slots.
 
@@ -9,7 +9,7 @@ Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@tim
 - React 19 + TypeScript
 - Vite 7
 - Tailwind CSS 4
-- `@timbal-ai/timbal-react` — chat shells, theme tokens, studio chrome, and the `./app` app kit (dashboards, tables, settings, analytics)
+- `@timbal-ai/timbal-react` — chat shells, theme tokens, studio chrome, the `./app` app kit (dashboards, tables, settings, analytics), and the `./ui` primitives (`Button`, `Dialog`, `DropdownMenu`, `Popover`, `Select`, `Tooltip`, `Avatar`) — no shadcn install needed
 - `next-themes` — light / dark via `.dark` on `<html>`
 
 ## Getting started
@@ -45,7 +45,7 @@ Copy `.env.example` to `.env`.
 
 ## Beyond chat — dashboards, settings, analytics (app kit)
 
-The default route (`/`) is a full-page chat shell (`TimbalChatShell` or `TimbalStudioShell`). But this template is **not chat-only**: for any data/dashboard/settings/analytics/integrations/admin UI, build real pages with the **0.7 app kit** (`@timbal-ai/timbal-react/app`) — `AppShell`, `Page`, `Section`, `MetricRow`, `MetricChartCard`, `DataTable`, `SettingsSection`, `IntegrationCard`, `ResourceCard`, `LineAreaChart`, and a floating `AppChatPanel` copilot. These are first-class building blocks, not a demo.
+The default route (`/`) is a full-page chat shell (`TimbalChatShell` or `TimbalStudioShell`). But this template is **not chat-only**: for any data/dashboard/settings/analytics/integrations/admin UI, build real pages with the **app kit** (`@timbal-ai/timbal-react/app`) — `AppShell`, `Page`, `Section`, `MetricRow`, `MetricChartCard`, `DataTable`, `SettingsSection`, `IntegrationCard`, `ResourceCard`, `LineAreaChart`, and a floating `AppChatPanel` copilot. These are first-class building blocks, not a demo.
 
 Add app-kit pages as new routes in `App.tsx` (e.g. `src/pages/Dashboard.tsx`). To study a fully wired example, set `VITE_APP_KIT_DEMO=true` and open **http://localhost:5173/demo/app-kit** ([`src/examples/app-kit-demo/`](src/examples/app-kit-demo/)). The complete component menu + props live in `APP_KIT_AGENT_INSTRUCTIONS` and the [`timbal-react` `examples/app-kit`](https://github.com/timbal-ai/timbal-react/tree/main/examples/app-kit) recipes. See [`AGENTS.md`](./AGENTS.md) for the surface-selection rule.
 
@@ -118,7 +118,7 @@ bun run lint         # ESLint
 
 ## Production checklist
 
-- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.7.0`); use `file:../timbal-react` + `dev:linked` only for local library dev
+- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.8.0`); use `file:../timbal-react` + `dev:linked` only for local library dev
 - [ ] `bun run build` and `bun run lint` pass
 - [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required

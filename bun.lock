@@ -8,7 +8,7 @@
         "@assistant-ui/react": "^0.12.10",
         "@assistant-ui/react-markdown": "^0.12.3",
         "@tailwindcss/vite": "^4.1.17",
-        "@timbal-ai/timbal-react": "^0.7.1",
+        "@timbal-ai/timbal-react": "^0.8.0",
         "@timbal-ai/timbal-sdk": "^0.6.3",
         "clsx": "^2.1.1",
         "katex": "^0.16.28",
@@ -408,7 +408,7 @@
 
     "@tailwindcss/vite": ["@tailwindcss/vite@4.2.2", "", { "dependencies": { "@tailwindcss/node": "4.2.2", "@tailwindcss/oxide": "4.2.2", "tailwindcss": "4.2.2" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7 || ^8" } }, "sha512-mEiF5HO1QqCLXoNEfXVA1Tzo+cYsrqV7w9Juj2wdUFyW07JRenqMG225MvPwr3ZD9N1bFQj46X7r33iHxLUW0w=="],
 
-    "@timbal-ai/timbal-react": ["@timbal-ai/timbal-react@0.7.1", "", { "dependencies": { "@assistant-ui/react-markdown": "^0.12.3", "@paper-design/shaders-react": "^0.0.76", "@radix-ui/react-avatar": "^1.1.11", "@radix-ui/react-dialog": "^1.1.15", "@radix-ui/react-slot": "^1.2.4", "@radix-ui/react-tooltip": "^1.2.8", "class-variance-authority": "^0.7.1", "clsx": "^2.1.1", "katex": "^0.16.28", "lucide-react": "^0.574.0", "motion": "^12.23.24", "radix-ui": "^1.4.3", "rehype-katex": "^7.0.1", "remark-gfm": "^4.0.1", "remark-math": "^6.0.0", "shiki": "^3.15.0", "tailwind-merge": "^3.4.0", "zustand": "^5.0.11" }, "peerDependencies": { "@assistant-ui/react": ">=0.12", "@timbal-ai/timbal-sdk": ">=0.4", "react": ">=19", "react-dom": ">=19" } }, "sha512-tY7pnH1zV4etpZzZRDmrzt4PzcQqQsPBlh/+PRzCfStZtdcbVfhim6SY8ootl6+WchdhPOTPUVBh/hkHDWOhZg=="],
+    "@timbal-ai/timbal-react": ["@timbal-ai/timbal-react@0.8.0", "", { "dependencies": { "@assistant-ui/react-markdown": "^0.12.3", "@paper-design/shaders-react": "^0.0.76", "@radix-ui/react-avatar": "^1.1.11", "@radix-ui/react-dialog": "^1.1.15", "@radix-ui/react-slot": "^1.2.4", "@radix-ui/react-tooltip": "^1.2.8", "class-variance-authority": "^0.7.1", "clsx": "^2.1.1", "katex": "^0.16.28", "lucide-react": "^0.574.0", "motion": "^12.23.24", "radix-ui": "^1.4.3", "rehype-katex": "^7.0.1", "remark-gfm": "^4.0.1", "remark-math": "^6.0.0", "shiki": "^3.15.0", "tailwind-merge": "^3.4.0", "zustand": "^5.0.11" }, "peerDependencies": { "@assistant-ui/react": ">=0.12", "@timbal-ai/timbal-sdk": ">=0.4", "react": ">=19", "react-dom": ">=19" } }, "sha512-xHRbETLqPthO5/MzJeelDD+vk2k+iMxivnpYenkR6EG+GGulqEGpssvNn7Bu0bAAySVZX677K6EyE7MgabtLVw=="],
 
     "@timbal-ai/timbal-sdk": ["@timbal-ai/timbal-sdk@0.6.3", "", { "peerDependencies": { "elysia": ">=1.0.0" }, "optionalPeers": ["elysia"] }, "sha512-k2I/YNWH3OmnNZ5pHMcfKFWEnliuE6Y0gxicLrV+JJ9khDxA1+yYn7xAvjNgjcNz9gPjt9nOnKmW+PrVo4RMCg=="],
 

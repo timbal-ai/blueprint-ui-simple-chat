@@ -42,8 +42,15 @@ function statusTone(status: string): "success" | "warn" {
 }
 
 /**
- * Optional expansion sample: workforce sidebar + dashboard page + floating copilot.
- * Enable with VITE_APP_KIT_DEMO=true — route `/demo/app-kit`.
+ * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
+ * analytics / settings / admin screen. This is NOT a throwaway demo: it is the exact,
+ * correct way to assemble a data UI with the app kit:
+ *   AppShell + StudioSidebar (native sidebar) + AppShellTopbar + AppChatPanel (floating
+ *   copilot) + Page/Section + DataTable/StatTile/StatusBadge/FilterBar.
+ * Do NOT hand-roll app-sidebar.tsx, a custom NavLink rail, raw <table>, or bare <input>.
+ * Gated to route `/demo/app-kit` via VITE_APP_KIT_DEMO only so the default app stays chat —
+ * the *pattern* applies to every dashboard you build. Compose for the user's domain; don't
+ * clone the "Operations" copy or the mock workforce list.
  */
 export default function AppKitDemo() {
   const [tab, setTab] = useState("overview");
