@@ -28,6 +28,15 @@ This repo's default route is a chat shell, but **chat is not the only thing you 
 
 When the app is fundamentally a data/admin UI, **add real app-kit pages and routes** (or replace `Home.tsx`) — do not force it into a chat box. The full component menu, props, and recipes are in `APP_KIT_AGENT_INSTRUCTIONS` (`@timbal-ai/timbal-react/app`) and `examples/app-kit/recipes/` in the package. The `timbal-ui` skill carries the same menu.
 
+## CRM / dashboard / leads — copy AppKitDemo, do not hand-roll HTML
+
+For dashboards, leads tables, pipeline views, settings, analytics, or any admin screen:
+
+1. **Read `src/examples/app-kit-demo/AppKitDemo.tsx` first** — that is the canonical wiring (`AppShell` + **`StudioSidebar`** + `AppShellTopbar` + `AppChatPanel` + `Page`/`Section`/`DataTable`).
+2. **Do not create** `app-sidebar.tsx`, `SalesLayout.tsx`, or raw `<table>` / bare `<input>` layouts when app-kit components exist (`DataTable`, `FieldInput`, `MetricRow`, `StatTile`, …).
+3. **Sidebar = `StudioSidebar`** in `AppShell.sidebar`. Pass `{ id, name }[]` nav items; `onSelect` → React Router `navigate`. Not a custom `NavLink` rail.
+4. **Styling preflight:** before editing pages, confirm `src/index.css` still has `@import "@timbal-ai/timbal-react/styles.css"` and `@source "../node_modules/@timbal-ai/timbal-react/dist"`. Deleting either → **completely unstyled UI**. Do not replace with a hand-written OKLCH block.
+
 ## Thread layout (do not skip)
 
 `TimbalChatShell` / `Thread` set `--thread-max-width` (default **44rem**). The **composer** and **default messages** are centered with:
