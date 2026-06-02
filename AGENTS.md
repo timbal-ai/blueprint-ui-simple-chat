@@ -6,12 +6,27 @@ This repo is the **canonical shell** for Timbal chat apps. UI generators (Compos
 
 | Subpath | Use in this repo |
 |---------|------------------|
-| `@timbal-ai/timbal-react` | Default chat shells, auth, artifacts (`Home.tsx`) |
+| `@timbal-ai/timbal-react` | Chat shells, auth, artifacts (`Home.tsx`); re-exports everything below |
 | `@timbal-ai/timbal-react/chat` | Layout helpers (`thread-message-layout.ts`) |
-| `@timbal-ai/timbal-react/studio` | Only in `src/examples/app-kit-demo/` |
-| `@timbal-ai/timbal-react/app` | Only in `src/examples/app-kit-demo/` |
+| `@timbal-ai/timbal-react/studio` | `StudioSidebar`, `ModeToggle`, `TimbalMark` — first-class for any app with a sidebar |
+| `@timbal-ai/timbal-react/app` | **App kit** — `AppShell`, `Page`, `DataTable`, `MetricRow`, settings/integrations/surfaces/charts. First-class for any data/dashboard/settings UI, not demo-only |
+
+**Everything imports from the root `@timbal-ai/timbal-react`** — chat shells, studio chrome (`StudioSidebar`, `ModeToggle`), AND the full app kit (`AppShell`, `Page`, `DataTable`, `MetricRow`, `SettingsSection`, `IntegrationCard`, charts, …). The `/chat`, `/studio`, `/app` subpaths are optional and only useful for tree-shaking clarity — you never need them to access a component. When in doubt, import from the root.
 
 Chat chrome improvements (playground gradient, composer opacity) ship in the package — no local CSS forks.
+
+## Pick the surface before you build (read this first)
+
+This repo's default route is a chat shell, but **chat is not the only thing you build here.** Choose by what the user is making:
+
+| User wants | Build with |
+|---|---|
+| Plain assistant / Q&A | `TimbalChatShell` (default `Home.tsx`) |
+| Chat + persistent workforce sidebar | `TimbalStudioShell` (`VITE_STUDIO_SIDEBAR=true`) |
+| **Dashboard, data table, analytics, settings, integrations, billing, admin/ops screen** | **App kit** (`@timbal-ai/timbal-react/app`): `AppShell` + `Page`/`Section` + the component menu |
+| Data app that also needs an assistant | App kit + floating `AppChatPanel` copilot |
+
+When the app is fundamentally a data/admin UI, **add real app-kit pages and routes** (or replace `Home.tsx`) — do not force it into a chat box. The full component menu, props, and recipes are in `APP_KIT_AGENT_INSTRUCTIONS` (`@timbal-ai/timbal-react/app`) and `examples/app-kit/recipes/` in the package. The `timbal-ui` skill carries the same menu.
 
 ## Thread layout (do not skip)
 
@@ -60,14 +75,17 @@ Do **not** hardcode `max-w-[44rem]` unless `THREAD_MAX_WIDTH` / `maxWidth` on th
 
 Add the component to `studioChatComponents` in `src/lib/studio-chat-chrome.tsx` (or pass `components` from `Home.tsx`).
 
-## Dashboard expansion (optional)
+## Dashboards / data UIs — build them with the app kit
 
-Do **not** replace `Home.tsx` with app kit. The default app stays chat-first.
+The default `/` route stays a chat shell, but when the user wants a **dashboard, data table, analytics, settings, integrations, billing, or admin/ops UI, build it with the app kit** (`@timbal-ai/timbal-react/app`) — `AppShell` + `Page`/`Section` + `MetricRow`/`DataTable`/`SettingsSection`/`IntegrationCard`/charts, with a floating `AppChatPanel` copilot when an assistant is needed. Do **not** cram a data/admin app into a chat box, and do **not** hand-roll cards/tables/KPIs with raw `div`s when a native component exists.
 
-When the user needs sidebar + page content + floating copilot, point to:
+How to wire it in:
 
-- Env: `VITE_APP_KIT_DEMO=true` → route `/demo/app-kit`
-- Reference: `src/examples/app-kit-demo/AppKitDemo.tsx`
+- Add a new route + page component (e.g. `src/pages/Dashboard.tsx`) and register it in `App.tsx`, or replace `Home.tsx` when the app is fundamentally a dashboard rather than a chat.
+- Learn the exact props from `APP_KIT_AGENT_INSTRUCTIONS` (`@timbal-ai/timbal-react/app`) and the package's `examples/app-kit/recipes/` (one pattern per file). The `timbal-ui` skill carries the same component menu.
+- `src/examples/app-kit-demo/AppKitDemo.tsx` (env `VITE_APP_KIT_DEMO=true` → `/demo/app-kit`) is a **wired reference** to study — not a boundary that confines app-kit to a demo route.
+
+Compose creatively for the user's domain; don't clone the demo's "Operations" layout or its mock workforce list.
 
 ## Custom actions during streaming
 

@@ -9,7 +9,7 @@ Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@tim
 - React 19 + TypeScript
 - Vite 7
 - Tailwind CSS 4
-- `@timbal-ai/timbal-react` — chat, theme tokens, studio chrome (optional `./app` subpath for dashboards)
+- `@timbal-ai/timbal-react` — chat shells, theme tokens, studio chrome, and the `./app` app kit (dashboards, tables, settings, analytics)
 - `next-themes` — light / dark via `.dark` on `<html>`
 
 ## Getting started
@@ -43,13 +43,19 @@ Copy `.env.example` to `.env`.
 | `VITE_APP_KIT_DEMO` | `true` → registers `/demo/app-kit` (dashboard + floating copilot sample) |
 | `VITE_API_PROXY_TARGET` | Where `/api` proxies in dev (`vite.config.ts`) |
 
-## Expanding beyond chat
+## Beyond chat — dashboards, settings, analytics (app kit)
 
-The default route (`/`) is a full-page chat shell (`TimbalChatShell` or `TimbalStudioShell`).
+The default route (`/`) is a full-page chat shell (`TimbalChatShell` or `TimbalStudioShell`). But this template is **not chat-only**: for any data/dashboard/settings/analytics/integrations/admin UI, build real pages with the **0.7 app kit** (`@timbal-ai/timbal-react/app`) — `AppShell`, `Page`, `Section`, `MetricRow`, `MetricChartCard`, `DataTable`, `SettingsSection`, `IntegrationCard`, `ResourceCard`, `LineAreaChart`, and a floating `AppChatPanel` copilot. These are first-class building blocks, not a demo.
 
-To explore **dashboard + workforce sidebar + floating assistant** (0.7 app kit), set `VITE_APP_KIT_DEMO=true` and open **http://localhost:5173/demo/app-kit**. Implementation: [`src/examples/app-kit-demo/`](src/examples/app-kit-demo/). Full component gallery: [`timbal-react` `examples/app-kit`](https://github.com/timbal-ai/timbal-react/tree/main/examples/app-kit).
+Add app-kit pages as new routes in `App.tsx` (e.g. `src/pages/Dashboard.tsx`). To study a fully wired example, set `VITE_APP_KIT_DEMO=true` and open **http://localhost:5173/demo/app-kit** ([`src/examples/app-kit-demo/`](src/examples/app-kit-demo/)). The complete component menu + props live in `APP_KIT_AGENT_INSTRUCTIONS` and the [`timbal-react` `examples/app-kit`](https://github.com/timbal-ai/timbal-react/tree/main/examples/app-kit) recipes. See [`AGENTS.md`](./AGENTS.md) for the surface-selection rule.
 
-Subpath imports (optional, for tree-shaking clarity):
+**Every component is available from the root `@timbal-ai/timbal-react`** — chat shells, `StudioSidebar`/`ModeToggle`, and the full app kit (`AppShell`, `Page`, `DataTable`, `MetricRow`, `SettingsSection`, `IntegrationCard`, charts, …):
+
+```tsx
+import { AppShell, Page, DataTable, MetricRow, StudioSidebar, TimbalChatShell } from "@timbal-ai/timbal-react";
+```
+
+The `/chat`, `/studio`, `/app` subpaths are optional (tree-shaking clarity only) — you never need them to reach a component:
 
 ```tsx
 import { threadMessageColumnClass } from "@timbal-ai/timbal-react/chat";
