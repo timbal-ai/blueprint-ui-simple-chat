@@ -16,6 +16,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Inter is the default brand font. Setting VITE_THEME_PRESET (or calling
+     applyTimbalTheme / createTimbalTheme with `typography`) injects an unlayered
+     `font-family: var(--font-sans)` rule that overrides this @layer base pin. */
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;

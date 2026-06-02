@@ -1,6 +1,6 @@
 # Blueprint UI
 
-Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.8.1`); this repo is a thin shell composers and teams clone.
+Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^0.8.2`); this repo is a thin shell composers and teams clone.
 
 **Codegen / Composer agents:** read [`AGENTS.md`](./AGENTS.md) before overriding chat message slots.
 
@@ -118,7 +118,7 @@ bun run lint         # ESLint
 
 ## Production checklist
 
-- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.8.1`); use `file:../timbal-react` + `dev:linked` only for local library dev
+- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^0.8.2`); use `file:../timbal-react` + `dev:linked` only for local library dev
 - [ ] `bun run build` and `bun run lint` pass
 - [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required

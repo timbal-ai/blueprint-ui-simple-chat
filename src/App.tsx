@@ -7,9 +7,11 @@ import {
   TooltipProvider,
   SessionProvider,
   AuthGuard,
+  TimbalThemeStyle,
+  type TimbalThemePresetId,
 } from "@timbal-ai/timbal-react";
 
-import { isAppKitDemoEnabled, isAuthEnabled } from "@/config";
+import { isAppKitDemoEnabled, isAuthEnabled, themePreset } from "@/config";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 
@@ -26,6 +28,9 @@ function App() {
       storageKey="timbal-theme"
       attribute="class"
     >
+      {themePreset ? (
+        <TimbalThemeStyle preset={themePreset as TimbalThemePresetId} />
+      ) : null}
       <SessionProvider enabled={isAuthEnabled}>
         <TooltipProvider>
           <Toaster position="top-right" duration={3000} />

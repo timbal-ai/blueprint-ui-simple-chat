@@ -37,6 +37,7 @@ src/
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` (sidebar) instead of `TimbalChatShell` |
 | `VITE_APP_KIT_DEMO` | mounts the dashboard reference at `/demo/app-kit` |
+| `VITE_THEME_PRESET` | brand personality applied at root via `TimbalThemeStyle` — `indigo`/`violet`/`forest`/`warm`/`slate`/`folio`/`carbon` (empty = neutral) |
 | `VITE_APP_TITLE` | document title |
 
 ## Thread layout gotcha (blueprint-specific)
@@ -46,6 +47,6 @@ src/
 ## Imports, deps, verify
 
 - **Import from the root `@timbal-ai/timbal-react`** unless you want tree-shaking clarity (`/chat`, `/studio`, `/app`, `/ui`). Don't run `npx shadcn` or author primitives in `src/components/ui/` — primitives ship from `/ui` wired to the tokens.
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.8.1`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
-- Theming / rebranding: override CSS variables; don't duplicate palette tokens (recipe in the skill).
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.8.2`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
+- Theming / rebranding (0.8+): generate a full personality (color + roundness + shadows + fonts) with `createTimbalTheme({ brand, radius?, shadow?, typography? })` + `themeToCss`/`applyTimbalTheme`, or apply a preset (`VITE_THEME_PRESET`, `applyThemePreset`, `ThemePresetGallery`). **Never hand-author OKLCH** or paired `:root`/`.dark` blocks. `TimbalThemeStyle`/`applyTimbalTheme` auto-load the preset's web font. Full recipe in the `timbal-ui` skill.
 - Before finishing: `bun run build` and `bun run lint` (use the project's `tsc`, not `bunx tsc`).
