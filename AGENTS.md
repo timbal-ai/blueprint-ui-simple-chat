@@ -46,6 +46,6 @@ src/
 ## Imports, deps, verify
 
 - **Import from the root `@timbal-ai/timbal-react`** unless you want tree-shaking clarity (`/chat`, `/studio`, `/app`, `/ui`). Don't run `npx shadcn` or author primitives in `src/components/ui/` — primitives ship from `/ui` wired to the tokens.
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.8.0`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^0.8.1`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
 - Theming / rebranding: override CSS variables; don't duplicate palette tokens (recipe in the skill).
 - Before finishing: `bun run build` and `bun run lint` (use the project's `tsc`, not `bunx tsc`).
