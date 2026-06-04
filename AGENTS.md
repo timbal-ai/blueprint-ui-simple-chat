@@ -47,6 +47,6 @@ src/
 ## Imports, deps, verify
 
 - **Import from the root `@timbal-ai/timbal-react`** unless you want tree-shaking clarity (`/chat`, `/studio`, `/app`, `/ui`). Don't run `npx shadcn` or author primitives in `src/components/ui/` — primitives ship from `/ui` wired to the tokens.
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^1.2.0`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^1.3.0`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
 - Theming / rebranding (0.8+): generate a full personality (color + roundness + shadows + fonts) with `createTimbalTheme({ brand, radius?, shadow?, typography? })` + `themeToCss`/`applyTimbalTheme`, or apply a preset (`VITE_THEME_PRESET`, `applyThemePreset`, `ThemePresetGallery`). **Never hand-author OKLCH** or paired `:root`/`.dark` blocks. `TimbalThemeStyle`/`applyTimbalTheme` auto-load the preset's web font. Full recipe in the `timbal-ui` skill.
 - Before finishing: `bun run build` and `bun run lint` (use the project's `tsc`, not `bunx tsc`).
