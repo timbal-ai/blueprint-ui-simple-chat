@@ -4,7 +4,6 @@ import {
   AppChatPanel,
   AppCopilotProvider,
   AppShell,
-  AppShellTopbar,
   Breadcrumbs,
   DataTable,
   FilterBar,
@@ -45,7 +44,7 @@ function statusTone(status: string): "success" | "warn" {
  * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
  * analytics / settings / admin screen. This is NOT a throwaway demo: it is the exact,
  * correct way to assemble a data UI with the app kit:
- *   AppShell + StudioSidebar (native sidebar) + AppShellTopbar + AppChatPanel (floating
+ *   AppShell + StudioSidebar (native sidebar) + topbar slot + AppChatPanel (floating
  *   copilot) + Page/Section + DataTable/StatTile/StatusBadge/FilterBar.
  * Do NOT hand-roll app-sidebar.tsx, a custom NavLink rail, raw <table>, or bare <input>.
  * Gated to route `/demo/app-kit` via VITE_APP_KIT_DEMO only so the default app stays chat —
@@ -108,9 +107,9 @@ export default function AppKitDemo() {
           />
         }
         topbar={
-          <AppShellTopbar
-            start={
-              isMobile && !mobileSidebarOpen ? (
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              {isMobile && !mobileSidebarOpen ? (
                 <TimbalV2Button
                   variant="secondary"
                   size="sm"
@@ -122,10 +121,12 @@ export default function AppKitDemo() {
                 >
                   <Menu className="size-4" />
                 </TimbalV2Button>
-              ) : null
-            }
-            actions={<ModeToggle />}
-          />
+              ) : null}
+            </div>
+            <div className="flex items-center gap-2">
+              <ModeToggle />
+            </div>
+          </div>
         }
         chat={
           <AppChatPanel

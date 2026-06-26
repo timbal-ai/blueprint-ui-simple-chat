@@ -10,7 +10,7 @@ This repo is the **canonical shell** for Timbal apps. **The `timbal-ui` skill is
 
 ## Dashboard reference — copy this, don't reinvent
 
-`src/examples/app-kit-demo/AppKitDemo.tsx` is the **canonical dashboard wiring** (`AppShell` + `StudioSidebar` + `AppShellTopbar` + `AppChatPanel` + `Page`/`Section`/`DataTable`). Copy its structure for any dashboard / CRM / admin screen; compose for the user's domain (don't clone the "Operations" copy or its mock workforce list). The sidebar is **`StudioSidebar`** in `AppShell.sidebar` — pass `{ id, name }[]` nav items and route in `onSelect`; it is **not** a custom `NavLink` rail.
+`src/examples/app-kit-demo/AppKitDemo.tsx` is the **canonical dashboard wiring** (`AppShell` + `StudioSidebar` + `topbar` slot + `AppChatPanel` + `Page`/`Section`/`DataTable`). Copy its structure for any dashboard / CRM / admin screen; compose for the user's domain (don't clone the "Operations" copy or its mock workforce list). The sidebar is **`StudioSidebar`** in `AppShell.sidebar` — pass `{ id, name }[]` nav items and route in `onSelect`; it is **not** a custom `NavLink` rail.
 
 ## Scaffold layout
 
