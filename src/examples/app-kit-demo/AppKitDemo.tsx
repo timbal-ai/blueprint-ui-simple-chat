@@ -14,7 +14,6 @@ import {
   StatusBadge,
   SubNav,
 } from "@timbal-ai/timbal-react/app";
-import { ModeToggle } from "@timbal-ai/timbal-react/studio";
 import {
   StudioSidebar,
   StudioSidebarBackdrop,
@@ -107,26 +106,21 @@ export default function AppKitDemo() {
           />
         }
         topbar={
-          <div className="flex w-full items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              {isMobile && !mobileSidebarOpen ? (
-                <TimbalV2Button
-                  variant="secondary"
-                  size="sm"
-                  isIconOnly
-                  className="size-[var(--studio-chrome-pill-height)] min-h-[var(--studio-chrome-pill-height)] min-w-[var(--studio-chrome-pill-height)] shrink-0"
-                  onClick={() => setMobileSidebarOpen(true)}
-                  aria-label="Open menu"
-                  aria-expanded={false}
-                >
-                  <Menu className="size-4" />
-                </TimbalV2Button>
-              ) : null}
+          isMobile && !mobileSidebarOpen ? (
+            <div className="flex w-full items-center gap-2">
+              <TimbalV2Button
+                variant="secondary"
+                size="sm"
+                isIconOnly
+                className="size-[var(--studio-chrome-pill-height)] min-h-[var(--studio-chrome-pill-height)] min-w-[var(--studio-chrome-pill-height)] shrink-0"
+                onClick={() => setMobileSidebarOpen(true)}
+                aria-label="Open menu"
+                aria-expanded={false}
+              >
+                <Menu className="size-4" />
+              </TimbalV2Button>
             </div>
-            <div className="flex items-center gap-2">
-              <ModeToggle />
-            </div>
-          </div>
+          ) : undefined
         }
         chat={
           <AppChatPanel
