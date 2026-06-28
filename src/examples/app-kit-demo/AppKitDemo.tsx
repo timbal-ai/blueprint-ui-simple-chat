@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { Menu } from "lucide-react";
+import { useMemo, useState } from "react";
 import {
   AppChatPanel,
   AppCopilotProvider,
@@ -14,11 +13,8 @@ import {
   StatusBadge,
   SubNav,
 } from "@timbal-ai/timbal-react/app";
-import {
-  StudioSidebar,
-  StudioSidebarBackdrop,
-} from "@timbal-ai/timbal-react/studio";
-import { Button, TimbalV2Button } from "@timbal-ai/timbal-react/ui";
+import { StudioSidebar } from "@timbal-ai/timbal-react/studio";
+import { Button } from "@timbal-ai/timbal-react/ui";
 
 import { SampleCharts } from "./sample-charts";
 
@@ -33,8 +29,6 @@ const rows = [
   { id: "2", name: "Beta", status: "Paused" },
 ];
 
-const MOBILE_BP = 768;
-
 function statusTone(status: string): "success" | "warn" {
   return status === "Active" ? "success" : "warn";
 }
@@ -43,8 +37,11 @@ function statusTone(status: string): "success" | "warn" {
  * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
  * analytics / settings / admin screen. This is NOT a throwaway demo: it is the exact,
  * correct way to assemble a data UI with the app kit:
- *   AppShell + StudioSidebar (native sidebar) + topbar slot + AppChatPanel (floating
- *   copilot) + Page/Section + DataTable/StatTile/StatusBadge/FilterBar.
+ *   AppShell + StudioSidebar (native sidebar) + AppChatPanel (floating copilot)
+ *   + Page/Section + DataTable/StatTile/StatusBadge/FilterBar.
+ * No topbar is needed: AppShell renders the mobile menu button itself and the
+ * sidebar drawer syncs to it automatically — do NOT add a topbar just for the
+ * hamburger, and do NOT wire mobileOpen/StudioSidebarBackdrop by hand.
  * Do NOT hand-roll app-sidebar.tsx, a custom NavLink rail, raw <table>, or bare <input>.
  * Gated to route `/demo/app-kit` via VITE_APP_KIT_DEMO only so the default app stays chat —
  * the *pattern* applies to every dashboard you build. Compose for the user's domain; don't
@@ -53,8 +50,6 @@ function statusTone(status: string): "success" | "warn" {
 export default function AppKitDemo() {
   const [tab, setTab] = useState("overview");
   const [selectedWorkforce, setSelectedWorkforce] = useState(MOCK_WORKFORCES[0]!.id);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [rowFilter, setRowFilter] = useState("");
 
   const filteredRows = useMemo(() => {
@@ -77,50 +72,17 @@ export default function AppKitDemo() {
     [tab, selectedWorkforce, rowFilter, filteredRows.length],
   );
 
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < MOBILE_BP);
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
   return (
     <AppCopilotProvider value={copilotContext}>
-      <StudioSidebarBackdrop
-        open={isMobile && mobileSidebarOpen}
-        onClose={() => setMobileSidebarOpen(false)}
-      />
       <AppShell
         sidebar={
           <StudioSidebar
             workforces={MOCK_WORKFORCES}
             selectedId={selectedWorkforce}
-            onSelect={(id) => {
-              setSelectedWorkforce(id);
-              if (isMobile) setMobileSidebarOpen(false);
-            }}
-            mobileOpen={mobileSidebarOpen}
-            onMobileOpenChange={setMobileSidebarOpen}
+            onSelect={setSelectedWorkforce}
             emptyCaption="Blueprint app-kit demo"
             persistKey={null}
           />
-        }
-        topbar={
-          isMobile && !mobileSidebarOpen ? (
-            <div className="flex w-full items-center gap-2">
-              <TimbalV2Button
-                variant="secondary"
-                size="sm"
-                isIconOnly
-                className="size-[var(--studio-chrome-pill-height)] min-h-[var(--studio-chrome-pill-height)] min-w-[var(--studio-chrome-pill-height)] shrink-0"
-                onClick={() => setMobileSidebarOpen(true)}
-                aria-label="Open menu"
-                aria-expanded={false}
-              >
-                <Menu className="size-4" />
-              </TimbalV2Button>
-            </div>
-          ) : undefined
         }
         chat={
           <AppChatPanel
