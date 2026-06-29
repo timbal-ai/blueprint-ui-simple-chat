@@ -137,7 +137,7 @@ export default function AppKitDemo() {
       <AppShell
         sidebar={
           <StudioSidebar
-            workforces={[...MOCK_WORKFORCES]}
+            items={[...MOCK_WORKFORCES]}
             selectedId={selectedWorkforce}
             onSelect={(id) => setSelectedWorkforce(id as WorkforceId)}
             emptyCaption="Blueprint app-kit demo"
