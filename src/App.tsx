@@ -33,7 +33,8 @@ function App() {
   useTitle(appTitle || "");
   return (
     <ThemeProvider
-      defaultTheme="system"
+      defaultTheme="light"
+      enableSystem={false}
       storageKey="timbal-theme"
       attribute="class"
     >

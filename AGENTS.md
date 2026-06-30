@@ -4,13 +4,15 @@ This repo is the **canonical shell** for Timbal apps. **The `timbal-ui` skill is
 
 ## Non-negotiables (full detail + component menu live in the `timbal-ui` skill)
 
-1. **Pick the surface first.** Chat → `TimbalChatShell` / `TimbalStudioShell`. Dashboard / table / analytics / settings / admin → **app kit** (`@timbal-ai/timbal-react/app`: `AppShell` + `Page` + `DataTable`/`MetricRow`/…), plus a floating `AppChatPanel` copilot if it also needs an assistant. Don't force a data app into a chat box.
+1. **Pick the surface first.** Chat → `TimbalChatShell` / `TimbalStudioShell`. Dashboard / table / analytics / settings / admin → **app kit** (`@timbal-ai/timbal-react/app`: `AppShell` + `Page` + the blocks `FilteredDataTable`/`StatGrid`/… or `DataTable`/`MetricRow`/…), plus a self-mounting `<AppCopilot>` floating copilot if it also needs an assistant. Don't force a data app into a chat box.
 2. **Never hand-roll what the package ships.** No raw `<table>`, bare `<input>`/`<select>`, KPI `<div>` grids, custom `app-sidebar.tsx`, or `npx shadcn`. Use `DataTable`, `Field*`, `MetricRow`/`StatTile`, `StudioSidebar`, and the `/ui` primitives (`DropdownMenu`, `Popover`, `Select`, `Dialog`).
 3. **Styling preflight.** `src/index.css` must keep `@import "@timbal-ai/timbal-react/styles.css"` and `@source "../node_modules/@timbal-ai/timbal-react/dist"`. Deleting either → completely unstyled UI. Never replace with a hand-written OKLCH palette.
 
 ## Dashboard reference — copy this, don't reinvent
 
-`src/examples/app-kit-demo/AppKitDemo.tsx` is the **canonical dashboard wiring** (`AppShell` + `StudioSidebar` + `topbar` slot + `AppChatPanel` + `Page`/`Section`/`DataTable`). Copy its structure for any dashboard / CRM / admin screen; compose for the user's domain (don't clone the "Operations" copy or its mock workforce list). The sidebar is **`StudioSidebar`** in `AppShell.sidebar` — pass `{ id, name }[]` nav items and route in `onSelect`; it is **not** a custom `NavLink` rail.
+`src/examples/app-kit-demo/AppKitDemo.tsx` is the **canonical dashboard wiring** (`AppShell` layout-only + `StudioSidebar` icon nav + `Page`/`Section` + the `FilteredDataTable`/`ResourceGallery` **blocks** + a self-mounting `<AppCopilot>`). Copy its structure for any dashboard / CRM / admin screen; compose for the user's domain (don't clone the "Operations" copy or its mock workforce list). The sidebar is **`StudioSidebar`** in `AppShell.sidebar` — pass `{ id, name, icon? }[]` nav items and route in `onSelect`; it is **not** a custom `NavLink` rail. The copilot is the self-mounting `<AppCopilot workforceId="…" />` dropped inside the shell — **not** an `AppShell chat` prop (that was removed in 2.0), and there is **no `AppShellTopbar`** (`topbar` is a `ReactNode`).
+
+**Reach for blocks before primitives, and read the catalog before inventing an export.** The kit is self-describing — `APP_KIT_CATALOG` (machine-readable: every `importFrom` resolves, blocks carry `composedOf` + a `source` to fork) and `APP_KIT_AGENT_INSTRUCTIONS` (full menu + anti-slop rules) are exported from `@timbal-ai/timbal-react/app`. New blocks/layouts added to the package surface there automatically, so the catalog — not memory — is the source of truth.
 
 ## Scaffold layout
 
@@ -22,7 +24,7 @@ src/
 ├── lib/studio-chat-chrome.tsx # `components={...}` slot overrides for the chat
 ├── lib/thread-message-layout.ts
 ├── examples/app-kit-demo/     # dashboard reference (gated by VITE_APP_KIT_DEMO)
-├── App.tsx                    # ThemeProvider + SessionProvider + AuthGuard + Router + Toaster
+├── App.tsx                    # ThemeProvider (defaultTheme="light", enableSystem={false}) + SessionProvider + AuthGuard + Router + Toaster
 ├── config.ts                  # isAuthEnabled / isStudioSidebarEnabled / isAppKitDemoEnabled
 ├── main.tsx                   # entry + CSS imports
 └── index.css                  # token import (see preflight above)
@@ -47,6 +49,6 @@ src/
 ## Imports, deps, verify
 
 - **Import from the root `@timbal-ai/timbal-react`** unless you want tree-shaking clarity (`/chat`, `/studio`, `/app`, `/ui`). Don't run `npx shadcn` or author primitives in `src/components/ui/` — primitives ship from `/ui` wired to the tokens.
-- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^1.3.0`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
+- Pin `@timbal-ai/timbal-react` to a **published** version (e.g. `^2.0.0`); use `file:../timbal-react` + `bun run dev:linked` only for local library dev. Add `motion` if you import `motion/react`.
 - Theming / rebranding (0.8+): generate a full personality (color + roundness + shadows + fonts) with `createTimbalTheme({ brand, radius?, shadow?, typography? })` + `themeToCss`/`applyTimbalTheme`, or apply a preset (`VITE_THEME_PRESET`, `applyThemePreset`, `ThemePresetGallery`). **Never hand-author OKLCH** or paired `:root`/`.dark` blocks. `TimbalThemeStyle`/`applyTimbalTheme` auto-load the preset's web font. Full recipe in the `timbal-ui` skill.
 - Before finishing: `bun run build` and `bun run lint` (use the project's `tsc`, not `bunx tsc`).

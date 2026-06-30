@@ -1,26 +1,22 @@
 import { useMemo, useState } from "react";
 import {
   AlertCard,
-  AppChatPanel,
+  AppCopilot,
   AppCopilotProvider,
   AppShell,
   Breadcrumbs,
-  DataTable,
   DescriptionList,
-  FilterBar,
-  FilterDropdown,
+  FilteredDataTable,
   InfoCard,
   MetricChartCard,
   MetricRow,
   Page,
-  ResourceCard,
-  SearchInput,
+  ResourceGallery,
   Section,
   StatusBadge,
   StatusDot,
   SubNav,
   Timeline,
-  type FilterValues,
 } from "@timbal-ai/timbal-react/app";
 import { StudioSidebar } from "@timbal-ai/timbal-react/studio";
 import { Button } from "@timbal-ai/timbal-react/ui";
@@ -74,15 +70,18 @@ function regionDot(region: WorkforceRow["region"]) {
 
 /**
  * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
- * analytics / settings / admin screen. Compose with app-kit blocks only:
- *   AppShell + StudioSidebar + AppChatPanel + Page/Section
- *   + MetricRow / MetricChartCard + DataTable + surfaces (AlertCard, ResourceCard, …).
+ * analytics / settings / admin screen. Composes only shipped app-kit pieces:
+ *   AppShell (layout-only) + StudioSidebar (icon nav) + Page/Section
+ *   + MetricRow / MetricChartCard + the FilteredDataTable & ResourceGallery BLOCKS
+ *   + surfaces (AlertCard, Timeline, DescriptionList)
+ *   + a self-mounting <AppCopilot /> (the copilot is NOT an AppShell prop in 2.0).
+ *
+ * Prefer the importable blocks (FilteredDataTable, StatGrid, IntegrationsGrid,
+ * ResourceGallery, SettingsLayout) over re-assembling primitives — see APP_KIT_CATALOG.
  */
 export default function AppKitDemo() {
   const [tab, setTab] = useState("overview");
   const [selectedWorkforce, setSelectedWorkforce] = useState<WorkforceId>("operations");
-  const [rowFilter, setRowFilter] = useState("");
-  const [tableFilters, setTableFilters] = useState<FilterValues>({});
   const [activeChartMetric, setActiveChartMetric] = useState<string | undefined>();
 
   const rows = WORKFORCE_ROWS[selectedWorkforce];
@@ -95,38 +94,17 @@ export default function AppKitDemo() {
     [selectedWorkforce],
   );
 
-  const filteredRows = useMemo(() => {
-    let result = rows;
-    const q = rowFilter.trim().toLowerCase();
-    if (q) {
-      result = result.filter(
-        (row) =>
-          row.name.toLowerCase().includes(q) ||
-          row.status.toLowerCase().includes(q) ||
-          row.region.toLowerCase().includes(q),
-      );
-    }
-    const statusFilter = tableFilters.status;
-    if (Array.isArray(statusFilter) && statusFilter.length > 0) {
-      result = result.filter((row) => statusFilter.includes(row.status));
-    }
-    const regionFilter = tableFilters.region;
-    if (Array.isArray(regionFilter) && regionFilter.length > 0) {
-      result = result.filter((row) => regionFilter.includes(row.region));
-    }
-    return result;
-  }, [rows, rowFilter, tableFilters]);
-
+  // Page context for copilot tooling — provided via AppCopilotProvider, read by
+  // descendants (and the copilot) through useAppCopilotContext.
   const copilotContext = useMemo(
     () => ({
       page: "Operations",
       tab,
       workforceId: selectedWorkforce,
-      filters: { rowFilter, tableFilters },
-      rowCount: filteredRows.length,
+      rowCount: rows.length,
       activeChartMetric,
     }),
-    [tab, selectedWorkforce, rowFilter, tableFilters, filteredRows.length, activeChartMetric],
+    [tab, selectedWorkforce, rows.length, activeChartMetric],
   );
 
   const workforceLabel =
@@ -137,6 +115,7 @@ export default function AppKitDemo() {
       <AppShell
         sidebar={
           <StudioSidebar
+            brand="Blueprint"
             items={[...MOCK_WORKFORCES]}
             selectedId={selectedWorkforce}
             onSelect={(id) => setSelectedWorkforce(id as WorkforceId)}
@@ -144,18 +123,6 @@ export default function AppKitDemo() {
             persistKey={null}
           />
         }
-        chat={
-          <AppChatPanel
-            workforceId={selectedWorkforce}
-            debug={import.meta.env.DEV}
-            welcome={{
-              heading: `Ask about ${workforceLabel}`,
-              subheading: "Questions about metrics, workloads, and alerts on this page.",
-            }}
-          />
-        }
-        chatTriggerLabel="Assistant"
-        chatCollapsible
       >
         <Page
           title={workforceLabel}
@@ -249,26 +216,22 @@ export default function AppKitDemo() {
 
               <Section
                 title="Connected resources"
-                description="Knowledge bases and integrations wired to this workforce."
+                description="The ResourceGallery block: a responsive ResourceCard grid."
               >
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {CONNECTED_RESOURCES.map((resource) => (
-                    <ResourceCard
-                      key={resource.id}
-                      title={resource.title}
-                      subtitle={resource.subtitle}
-                      media={
-                        <span className="text-xs font-medium text-muted-foreground">
-                          {resource.title.slice(0, 2).toUpperCase()}
-                        </span>
-                      }
-                      badge={
-                        <StatusBadge tone="success">{resource.badge}</StatusBadge>
-                      }
-                      footer={resource.footer}
-                    />
-                  ))}
-                </div>
+                <ResourceGallery
+                  resources={CONNECTED_RESOURCES.map((resource) => ({
+                    id: resource.id,
+                    title: resource.title,
+                    subtitle: resource.subtitle,
+                    media: (
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {resource.title.slice(0, 2).toUpperCase()}
+                      </span>
+                    ),
+                    badge: <StatusBadge tone="success">{resource.badge}</StatusBadge>,
+                    footer: resource.footer,
+                  }))}
+                />
               </Section>
 
               <Section title="Recent activity">
@@ -287,7 +250,7 @@ export default function AppKitDemo() {
                     },
                     {
                       label: "Copilot context",
-                      value: `${filteredRows.length} visible workloads`,
+                      value: `${rows.length} workloads`,
                     },
                   ]}
                 />
@@ -296,22 +259,24 @@ export default function AppKitDemo() {
           ) : null}
 
           {tab === "workloads" ? (
-            <Section title="Workloads" description="Filterable registry for this workforce.">
-              <FilterBar>
-                <SearchInput
-                  placeholder="Search workloads…"
-                  value={rowFilter}
-                  onChange={(event) => setRowFilter(event.target.value)}
-                  aria-label="Search workloads"
-                />
-                <FilterDropdown
-                  fields={FILTER_FIELDS}
-                  value={tableFilters}
-                  onChange={setTableFilters}
-                  label="Filter"
-                />
-              </FilterBar>
-              <DataTable
+            <Section
+              title="Workloads"
+              description="The FilteredDataTable block: search + faceted filters + sortable table, wired for you."
+            >
+              <FilteredDataTable
+                searchPlaceholder="Search workloads…"
+                searchPredicate={(row, q) => {
+                  const needle = q.toLowerCase();
+                  return (
+                    row.name.toLowerCase().includes(needle) ||
+                    row.status.toLowerCase().includes(needle) ||
+                    row.region.toLowerCase().includes(needle)
+                  );
+                }}
+                filterFields={FILTER_FIELDS}
+                getFilterValue={(row, fieldId) =>
+                  fieldId === "status" ? row.status : fieldId === "region" ? row.region : undefined
+                }
                 columns={[
                   {
                     id: "name",
@@ -358,7 +323,7 @@ export default function AppKitDemo() {
                     align: "right",
                   },
                 ]}
-                rows={filteredRows}
+                rows={rows}
                 getRowKey={(r) => r.id}
                 emptyMode="inline"
                 emptyTitle="No workloads match"
@@ -411,6 +376,17 @@ export default function AppKitDemo() {
             </>
           ) : null}
         </Page>
+
+        {/* Self-mounting floating copilot — portals its own overlay + pill trigger.
+            No AppShell wiring; reads page context from AppCopilotProvider above. */}
+        <AppCopilot
+          workforceId={selectedWorkforce}
+          debug={import.meta.env.DEV}
+          welcome={{
+            heading: `Ask about ${workforceLabel}`,
+            subheading: "Questions about metrics, workloads, and alerts on this page.",
+          }}
+        />
       </AppShell>
     </AppCopilotProvider>
   );
