@@ -7,7 +7,6 @@ import {
   TimbalStudioShell,
 } from "@timbal-ai/timbal-react";
 
-import { StudioTopbarBrandAnchor } from "@/components/studio-topbar-brand";
 import { isStudioSidebarEnabled } from "@/config";
 import { studioChatComponents } from "@/lib/studio-chat-chrome";
 
@@ -47,20 +46,10 @@ const Home = () => {
 
   // Sidebar is opt-in: set VITE_STUDIO_SIDEBAR=true to use the full studio shell.
   if (isStudioSidebarEnabled) {
-    return (
-      <TimbalStudioShell
-        {...chatProps}
-        headerStart={<StudioTopbarBrandAnchor />}
-      />
-    );
+    return <TimbalStudioShell {...chatProps} />;
   }
 
-  return (
-    <TimbalChatShell
-      {...chatProps}
-      brand={<StudioTopbarBrandAnchor />}
-    />
-  );
+  return <TimbalChatShell {...chatProps} />;
 };
 
 export default Home;
