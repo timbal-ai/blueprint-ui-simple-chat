@@ -14,7 +14,9 @@ export const isAppKitDemoEnabled =
  * app root via `TimbalThemeStyle`. One of the `TIMBAL_THEME_PRESETS` ids
  * (`indigo`, `violet`, `forest`, `warm`, `slate`, `folio`, `carbon`). Empty /
  * `platform` keeps the shipped neutral look. The preset's web font is loaded
- * automatically. Override individual tokens in `index.css` for finer control.
+ * automatically. For finer control use `createTimbalTheme({ brand, …,
+ * overrides })` — one-off tokens must be token-referential (`var()` /
+ * `color-mix()`), never literal colors in `index.css`.
  */
 export const themePreset = import.meta.env.VITE_THEME_PRESET as
   | string
