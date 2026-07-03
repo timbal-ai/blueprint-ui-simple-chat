@@ -71,7 +71,7 @@ function regionDot(region: WorkforceRow["region"]) {
 /**
  * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
  * analytics / settings / admin screen. Composes only shipped app-kit pieces:
- *   AppShell (layout-only) + StudioSidebar (icon nav) + Page/Section
+ *   AppShell (layout-only) + StudioSidebar flush rail (default variant) + Page/Section
  *   + MetricRow / MetricChartCard + the FilteredDataTable & ResourceGallery BLOCKS
  *   + surfaces (AlertCard, Timeline, DescriptionList)
  *   + a self-mounting <AppCopilot /> (the copilot is NOT an AppShell prop in 2.0).
