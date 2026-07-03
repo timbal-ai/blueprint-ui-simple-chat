@@ -69,12 +69,16 @@ function regionDot(region: WorkforceRow["region"]) {
 }
 
 /**
- * CANONICAL DASHBOARD REFERENCE — copy this wiring for ANY dashboard / CRM / leads /
- * analytics / settings / admin screen. Composes only shipped app-kit pieces:
- *   AppShell (layout-only) + StudioSidebar flush rail (default variant) + Page/Section
- *   + MetricRow / MetricChartCard + the FilteredDataTable & ResourceGallery BLOCKS
- *   + surfaces (AlertCard, Timeline, DescriptionList)
- *   + a self-mounting <AppCopilot /> (the copilot is NOT an AppShell prop in 2.0).
+ * DASHBOARD WIRING REFERENCE — shows correct plumbing, NOT a layout template.
+ *
+ * Canonical here: shell slots (StudioSidebar in AppShell.sidebar), Page/Section
+ * composition, block props (FilteredDataTable, ResourceGallery), and the
+ * self-mounting <AppCopilot /> (the copilot is NOT an AppShell prop in 2.0).
+ *
+ * NOT canonical: the layout. Sidebar + metric row + full-width table is one
+ * archetype among several (bento overview, split master–detail, focused
+ * no-chrome, topbar nav, section-switcher). Compose the shape that fits the
+ * user's domain — don't reproduce this structure or its "Operations" copy.
  *
  * Prefer the importable blocks (FilteredDataTable, StatGrid, IntegrationsGrid,
  * ResourceGallery, SettingsLayout) over re-assembling primitives — see APP_KIT_CATALOG.
