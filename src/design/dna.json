@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "Blueprint default",
+    "summary": "Neutral product default — calm, readable, works for chat and dashboards."
+  },
+  "personality": {
+    "minimal_expressive": 0.35,
+    "flat_dimensional": 0.45,
+    "cool_warm": 0.5,
+    "dense_airy": 0.5,
+    "serious_playful": 0.35
+  },
+  "color": {
+    "brand": "#18181b",
+    "surfaces": "panel",
+    "defaultMode": "light",
+    "status": "signal",
+    "charts": "categorical"
+  },
+  "typography": {
+    "pairing": "inter"
+  },
+  "shape": {
+    "radius": 0.625,
+    "controls": "rounded"
+  },
+  "elevation": {
+    "level": "soft",
+    "strategy": "both"
+  },
+  "spacing": {
+    "density": "comfortable"
+  },
+  "motion": {
+    "preset": "snappy"
+  },
+  "layout": {
+    "shell": "flexible",
+    "pageWidth": "boxed",
+    "notes": "Pick a shell archetype per domain during build — do not default to sidebar+table."
+  },
+  "voice": {
+    "case": "sentence",
+    "tone": "direct, domain-specific labels"
+  }
+}

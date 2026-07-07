@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "welcome",
+  "type": "registry:component",
+  "title": "welcome",
+  "description": "Timbal blueprint component: welcome. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@timbal-ai/timbal-react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/chat/welcome.tsx",
+      "content": "import { useThread, type ThreadWelcomeProps } from \"@timbal-ai/timbal-react\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Project-owned chat welcome (empty state). Registered via the `components`\n * slot in `src/lib/studio-chat-chrome.tsx` — edit THIS file to restyle the\n * first screen users see: brand mark, heading, layout, suggestion placement.\n *\n * The runtime passes `config` (heading/subheading/icon from the shell's\n * `welcome` prop) and the resolved `Suggestions` component; streaming and\n * message state stay in `@timbal-ai/timbal-react`.\n */\nexport function ChatWelcome({\n  config,\n  suggestions,\n  showWelcomeSuggestions = true,\n  Suggestions,\n}: ThreadWelcomeProps) {\n  const isEmpty = useThread((s) => s.messages.length === 0);\n  if (!isEmpty) return null;\n\n  return (\n    <div\n      data-slot=\"chat-welcome\"\n      className=\"flex w-full flex-1 flex-col items-center justify-center gap-3 px-4 py-12 text-center\"\n    >\n      {config?.icon ? (\n        <div className=\"mb-2 [&_svg:not([class*='size-'])]:size-8\">\n          {config.icon}\n        </div>\n      ) : null}\n      <h1\n        className={cn(\n          \"max-w-xl text-2xl text-foreground\",\n          !config?.heading && \"text-muted-foreground\",\n        )}\n      >\n        {config?.heading ?? \"How can I help?\"}\n      </h1>\n      {config?.subheading ? (\n        <p className=\"max-w-md text-sm text-muted-foreground\">\n          {config.subheading}\n        </p>\n      ) : null}\n      {showWelcomeSuggestions && Suggestions ? (\n        <div className=\"mt-6 w-full max-w-xl\">\n          <Suggestions suggestions={suggestions} />\n        </div>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "src/components/chat/welcome.tsx"
+    }
+  ]
+}

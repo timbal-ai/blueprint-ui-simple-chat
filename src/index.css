@@ -1,27 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* The library ships the complete @theme inline token set + .aui-* polish
-   inside its own styles.css. Importing it here (instead of from JS) means
-   Tailwind sees the token names while processing this file, so utilities
-   like `border-border` and `bg-background` are available in app CSS too. */
+/* Web fonts (Inter, JetBrains Mono) load from index.html — not tokens.css —
+   PostCSS requires @import to precede all other CSS, and tokens.css is pulled
+   in after Tailwind expands. */
+
+/* The library ships the chat/studio polish (.aui-*) and its own token set.
+   It loads FIRST so the project-owned design system below wins the cascade. */
 @import "@timbal-ai/timbal-react/styles.css";
 
+/* Design DNA — the project-owned design system. GENERATED from
+   src/design/dna.json by `bun run dna:compile`; never hand-edit tokens.css.
+   To change any color, font, radius, shadow, density, or motion value:
+   edit dna.json and recompile. This import must come after the library's
+   styles.css so DNA tokens override the shipped defaults. */
+@import "./design/tokens.css";
+
 /* Tailwind needs to scan the library's pre-built dist/ for the utility
-   classes that the components use at runtime. */
+   classes its components use at runtime. */
 @source "../node_modules/@timbal-ai/timbal-react/dist";
+
+/* The `dark` custom variant ships from the library styles.css import above. */
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  /* Inter is the default brand font. Setting VITE_THEME_PRESET (or calling
-     applyTimbalTheme / createTimbalTheme with `typography`) injects an unlayered
-     `font-family: var(--font-sans)` rule that overrides this @layer base pin. */
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--tracking-display);
   }
 }
 

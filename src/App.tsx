@@ -7,11 +7,13 @@ import {
   TooltipProvider,
   SessionProvider,
   AuthGuard,
-  TimbalThemeStyle,
-  type TimbalThemePresetId,
 } from "@timbal-ai/timbal-react";
 
-import { isAppKitDemoEnabled, isAuthEnabled, themePreset } from "@/config";
+import {
+  isAppKitDemoEnabled,
+  isAuthEnabled,
+  isGalleryEnabled,
+} from "@/config";
 // COMPOSER: `Home` is the ready-made chat shell. The index route below renders a
 // neutral `<Placeholder />` so a fresh build doesn't mislead users with a chat
 // they didn't ask for. When you build the UI, replace `<Placeholder />` on the
@@ -28,6 +30,8 @@ const AppKitDemo = isAppKitDemoEnabled
   ? lazy(() => import("@/examples/app-kit-demo/AppKitDemo"))
   : null;
 
+const Gallery = isGalleryEnabled ? lazy(() => import("@/pages/Gallery")) : null;
+
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
   useTitle(appTitle || "");
@@ -38,9 +42,6 @@ function App() {
       storageKey="timbal-theme"
       attribute="class"
     >
-      {themePreset ? (
-        <TimbalThemeStyle preset={themePreset as TimbalThemePresetId} />
-      ) : null}
       <SessionProvider enabled={isAuthEnabled}>
         <TooltipProvider>
           <Toaster position="top-right" duration={3000} />
@@ -63,6 +64,16 @@ function App() {
                         <AppKitDemo />
                       </Suspense>
                     </AuthGuard>
+                  }
+                />
+              ) : null}
+              {Gallery ? (
+                <Route
+                  path="/gallery"
+                  element={
+                    <Suspense fallback={null}>
+                      <Gallery />
+                    </Suspense>
                   }
                 />
               ) : null}

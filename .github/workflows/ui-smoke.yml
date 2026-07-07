@@ -1,0 +1,44 @@
+name: UI smoke
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: DNA drift check
+        run: bunx timbal-dna check
+
+      - name: Lint (correctness gate)
+        run: bunx timbal-ui-lint src/components/**/*.tsx src/pages/*.tsx
+
+      - name: Build with gallery enabled
+        run: bun run build
+        env:
+          VITE_GALLERY: "true"
+
+      - name: Install playwright chromium
+        run: |
+          bun add -d playwright
+          bunx playwright install --with-deps chromium
+
+      - name: Screenshot smoke (1280 + 375, light + dark)
+        run: node scripts/screenshot-smoke.mjs --out screenshots
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-screenshots
+          path: screenshots/
+          retention-days: 14

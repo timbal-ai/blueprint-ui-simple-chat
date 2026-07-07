@@ -1,0 +1,391 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "timbal-blueprint",
+  "homepage": "https://timbal.ai",
+  "items": [
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "alert",
+      "description": "Timbal blueprint ui: alert. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "avatar",
+      "description": "Timbal blueprint ui: avatar. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "badge",
+      "description": "Timbal blueprint ui: badge. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "breadcrumb",
+      "description": "Timbal blueprint ui: breadcrumb. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "button",
+      "description": "Timbal blueprint ui: button. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "card",
+      "description": "Timbal blueprint ui: card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "checkbox",
+      "description": "Timbal blueprint ui: checkbox. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "data table",
+      "description": "Timbal blueprint ui: data-table. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "dialog",
+      "description": "Timbal blueprint ui: dialog. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "dropdown menu",
+      "description": "Timbal blueprint ui: dropdown-menu. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "empty state",
+      "description": "Timbal blueprint ui: empty-state. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "input",
+      "description": "Timbal blueprint ui: input. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "label",
+      "description": "Timbal blueprint ui: label. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "page",
+      "type": "registry:component",
+      "title": "page",
+      "description": "Timbal blueprint component: page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/app/page.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "popover",
+      "description": "Timbal blueprint ui: popover. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "scroll area",
+      "description": "Timbal blueprint ui: scroll-area. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/scroll-area.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "select",
+      "description": "Timbal blueprint ui: select. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "separator",
+      "description": "Timbal blueprint ui: separator. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "sheet",
+      "description": "Timbal blueprint ui: sheet. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "sidebar",
+      "description": "Timbal blueprint ui: sidebar. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "skeleton",
+      "description": "Timbal blueprint ui: skeleton. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "sonner",
+      "description": "Timbal blueprint ui: sonner. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/sonner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "spinner",
+      "description": "Timbal blueprint ui: spinner. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/spinner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stat",
+      "type": "registry:component",
+      "title": "stat",
+      "description": "Timbal blueprint component: stat. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/app/stat.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "switch",
+      "description": "Timbal blueprint ui: switch. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "table",
+      "description": "Timbal blueprint ui: table. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "tabs",
+      "description": "Timbal blueprint ui: tabs. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "textarea",
+      "description": "Timbal blueprint ui: textarea. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "tooltip",
+      "description": "Timbal blueprint ui: tooltip. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "use mobile",
+      "description": "Timbal blueprint hook: use-mobile. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "hooks/use-mobile.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "user-message",
+      "type": "registry:component",
+      "title": "user message",
+      "description": "Timbal blueprint component: user-message. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/chat/user-message.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "welcome",
+      "type": "registry:component",
+      "title": "welcome",
+      "description": "Timbal blueprint component: welcome. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/chat/welcome.tsx",
+          "type": "registry:component"
+        }
+      ]
+    }
+  ]
+}

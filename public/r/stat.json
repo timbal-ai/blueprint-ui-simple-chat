@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat",
+  "type": "registry:component",
+  "title": "stat",
+  "description": "Timbal blueprint component: stat. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/app/stat.tsx",
+      "content": "import * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Single KPI tile. Value stays normal weight — hierarchy comes from size and\n * spacing. Add a `delta` only when the change itself is the message.\n */\nfunction Stat({\n  label,\n  value,\n  delta,\n  deltaTone = \"neutral\",\n  hint,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  label: string;\n  value: React.ReactNode;\n  /** Optional change indicator, e.g. \"+8.2%\". Keep it muted by default. */\n  delta?: string;\n  deltaTone?: \"positive\" | \"negative\" | \"neutral\";\n  /** Secondary context under the value, e.g. \"vs last month\". */\n  hint?: string;\n}) {\n  return (\n    <div\n      data-slot=\"stat\"\n      className={cn(\n        \"flex flex-col gap-1 rounded-lg border border-border bg-card p-4 shadow-xs\",\n        className,\n      )}\n      {...props}\n    >\n      <span className=\"text-xs text-muted-foreground\">{label}</span>\n      <div className=\"flex items-baseline gap-2\">\n        <span className=\"text-2xl font-normal tabular-nums text-foreground\">\n          {value}\n        </span>\n        {delta ? (\n          <span\n            className={cn(\n              \"text-xs tabular-nums\",\n              deltaTone === \"positive\" && \"text-success-subtle-foreground\",\n              deltaTone === \"negative\" && \"text-destructive\",\n              deltaTone === \"neutral\" && \"text-muted-foreground\",\n            )}\n          >\n            {delta}\n          </span>\n        ) : null}\n      </div>\n      {hint ? <span className=\"text-xs text-muted-foreground\">{hint}</span> : null}\n    </div>\n  );\n}\n\n/** Responsive row of Stat tiles. Collapses to a 2-col grid, then 1-col. */\nfunction StatGrid({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"stat-grid\"\n      className={cn(\n        \"grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4\",\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}\n\nexport { Stat, StatGrid };\n",
+      "type": "registry:component",
+      "target": "src/components/app/stat.tsx"
+    }
+  ]
+}

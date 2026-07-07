@@ -10,14 +10,14 @@ export const isAppKitDemoEnabled =
   import.meta.env.VITE_APP_KIT_DEMO === "true";
 
 /**
- * Brand personality preset (color + roundness + shadows + font) applied at the
- * app root via `TimbalThemeStyle`. One of the `TIMBAL_THEME_PRESETS` ids
- * (`indigo`, `violet`, `forest`, `warm`, `slate`, `folio`, `carbon`). Empty /
- * `platform` keeps the shipped neutral look. The preset's web font is loaded
- * automatically. For finer control use `createTimbalTheme({ brand, …,
- * overrides })` — one-off tokens must be token-referential (`var()` /
- * `color-mix()`), never literal colors in `index.css`.
+ * Registers `/gallery` — every project-owned component in its states, used by
+ * the screenshot smoke check (1280 + 375 px). Dev/CI surface, off by default;
+ * never ship it enabled to end users.
  */
-export const themePreset = import.meta.env.VITE_THEME_PRESET as
-  | string
-  | undefined;
+export const isGalleryEnabled = import.meta.env.VITE_GALLERY === "true";
+
+// Theming note: this blueprint is fork-first — ALL theming flows from
+// src/design/dna.json (compiled to tokens.css). The legacy VITE_THEME_PRESET /
+// TimbalThemeStyle mechanism is intentionally not wired: a runtime preset
+// would silently override the DNA and split the design into two sources of
+// truth. To rebrand, edit dna.json and run `bun run dna:compile`.
