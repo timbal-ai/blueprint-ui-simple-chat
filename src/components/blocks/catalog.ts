@@ -55,6 +55,17 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/data-table", "ui/input", "ui/select", "ui/button", "ui/checkbox"],
   },
+  "hero-metric": {
+    importFrom: "@/components/blocks/hero-metric",
+    exports: ["HeroMetricCard", "ProportionBar", "ProportionLegend"],
+    purpose:
+      "Gradient banner card for THE headline metric (the 'Networth 2025 vs 2026' reference): title + muted context, big value + caption, an edge-to-edge chart slot (pair with DemoComparisonChart — solid vs dotted white lines), and a translucent footer strip. ProportionBar/ProportionLegend render a segmented distribution (rounded pills sized by share, DNA chart tones) — usable standalone on white cards too.",
+    useWhen: [
+      "The top of a dashboard needs one dominant number with trend context",
+      "Showing a distribution/breakdown as a segmented bar instead of a pie",
+    ],
+    composes: ["blocks/chart-demos DemoComparisonChart", "ui/chart"],
+  },
   "bulk-action-bar": {
     importFrom: "@/components/blocks/bulk-action-bar",
     exports: ["BulkActionBar"],
@@ -115,6 +126,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     exports: [
       "DemoAreaChart",
       "DemoBarChart",
+      "DemoComparisonChart",
       "DemoComposedChart",
       "DemoDonutChart",
       "DemoLineChart",
@@ -123,7 +135,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "DemoStackedBarChart",
     ],
     purpose:
-      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, and radar — fork one and swap data/config rather than writing Recharts from scratch. House chart grammar: NO legends (tooltips only), zero side margins (edge-less inside ChartCard), gradient fills via <defs> linearGradient.",
+      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, radar, and comparison (solid vs dotted white lines, for HeroMetricCard) — fork one and swap data/config rather than writing Recharts from scratch. House chart grammar: NO legends (tooltips only), NO Y-axis numbers (they collide with edge-less plots — magnitudes live in the tooltip), zero side margins (edge-less inside ChartCard), gradient fills via <defs> linearGradient.",
     useWhen: [
       "Adding any chart — copy the closest recipe, keep ChartContainer",
       "Referencing correct tooltip/gradient/color wiring",

@@ -148,7 +148,7 @@ function DataTable<TData, TValue>({
             )}
           >
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              <TableRow key={headerGroup.id} className="hover:[&>td]:bg-transparent">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
@@ -170,7 +170,7 @@ function DataTable<TData, TValue>({
           <TableBody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
+                <TableRow key={`skeleton-${i}`} className="hover:[&>td]:bg-transparent">
                   {Array.from({ length: columnCount }).map((_, j) => (
                     <TableCell key={j}>
                       <Skeleton className="h-4 w-full max-w-32" />
@@ -194,7 +194,7 @@ function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow className="hover:bg-transparent">
+              <TableRow className="hover:[&>td]:bg-transparent">
                 <TableCell colSpan={columnCount} className="h-32 p-0">
                   {empty ?? (
                     <EmptyState

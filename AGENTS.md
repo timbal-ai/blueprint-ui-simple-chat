@@ -128,6 +128,24 @@ chat reference), not by reimplementing the thread.
 - **Overlay discipline:** one overlay at a time — never nest a Select (or a
   second popover) inside a Popover; use checkbox rows like `FilteredTable`'s
   `moreFilters`.
+- **Mistakes we keep seeing — NEVER do these:**
+  - **Unnecessary topbars.** Inset pages own their header (`PageHeader`).
+    Do not add a topbar that only holds a brand chip and one button — the
+    brand lives in the sidebar, the primary action lives in `PageHeader`
+    `actions` (or the table's `toolbarEnd`). Use `AppShell`'s `topbar` slot
+    only when the product genuinely needs persistent global chrome
+    (workspace switcher, global search).
+  - **Tinted chat composer.** The chat input and the band around it stay
+    on the plain surface — never give the composer row a colored/tinted
+    background. The chat shells already style the composer; don't wrap them.
+  - **Chart clutter.** No legends, no Y-axis numbers (they collide with
+    edge-less plots), no bordered chart wrappers inside cards — tooltip
+    carries the detail.
+  - **Bulk actions in the toolbar.** Selection actions live in the floating
+    `BulkActionBar`, not as disabled toolbar buttons.
+  - **Squared hovers.** Row and column hovers are rounded (built into
+    `TableRow`/`DataTableColumnHeader`) — don't override with square
+    full-bleed highlights.
 - **Blocks first, primitives second, raw HTML last.** Read
   `src/components/blocks/catalog.ts` and compose the screen from blocks:
   `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a

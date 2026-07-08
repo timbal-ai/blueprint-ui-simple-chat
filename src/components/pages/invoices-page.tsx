@@ -370,7 +370,7 @@ function InvoiceDetailSheet({
               <DetailSection title="Line items">
                 <Table>
                   <TableHeader className="[&_tr]:border-0">
-                    <TableRow className="hover:bg-transparent">
+                    <TableRow className="hover:[&>td]:bg-transparent">
                       <TableHead className="rounded-l-lg bg-muted">Description</TableHead>
                       <TableHead className="bg-muted text-right">Qty</TableHead>
                       <TableHead className="rounded-r-lg bg-muted text-right">Amount</TableHead>

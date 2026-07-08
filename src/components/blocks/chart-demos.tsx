@@ -15,7 +15,6 @@ import {
   Radar,
   RadarChart,
   XAxis,
-  YAxis,
 } from "recharts";
 
 import {
@@ -33,6 +32,8 @@ import {
  * House chart grammar:
  * - NO legends — tooltips carry the labels. Keep series count low enough
  *   that color alone communicates.
+ * - NO Y-axis numbers — they collide with edge-less plots; magnitudes live
+ *   in the tooltip. X-axis category labels stay.
  * - Edge-less plots — zero left/right margins so lines/areas bleed to the
  *   card edges; the wrapping Card supplies the breathing room.
  * - Gradient fills — areas and bars fade downward from the series color
@@ -219,7 +220,8 @@ function DemoComposedChart({ className }: { className?: string }) {
         </defs>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-        <YAxis tickLine={false} axisLine={false} tickMargin={4} width={36} />
+        {/* No YAxis — edge-less plots make axis numbers collide with the
+            series; magnitudes live in the tooltip. */}
         <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
         <Bar
           dataKey="hires"
@@ -332,6 +334,72 @@ function DemoDonutChart() {
 }
 
 /* ---------------------------------------------------------------------------
+ * Comparison line — this year (solid) vs last year (dotted), white lines on
+ * a dark/gradient surface. Built for the HeroMetricCard chart slot: no
+ * axes, no numbers, vertical hairline grid, tooltip only.
+ * ------------------------------------------------------------------------- */
+
+const comparison = [
+  { month: "Jan", current: 640, previous: 555 },
+  { month: "Feb", current: 655, previous: 570 },
+  { month: "Mar", current: 662, previous: 585 },
+  { month: "Apr", current: 660, previous: 578 },
+  { month: "May", current: 672, previous: 588 },
+  { month: "Jun", current: 690, previous: 580 },
+  { month: "Jul", current: 704, previous: 610 },
+  { month: "Aug", current: 712, previous: 618 },
+  { month: "Sep", current: 725, previous: 612 },
+  { month: "Oct", current: 738, previous: 630 },
+  { month: "Nov", current: 746, previous: 642 },
+  { month: "Dec", current: 754, previous: 655 },
+];
+
+const comparisonConfig = {
+  current: { label: "2026", color: "white" },
+  previous: {
+    label: "2025",
+    color: "color-mix(in srgb, white 55%, transparent)",
+  },
+} satisfies ChartConfig;
+
+function DemoComparisonChart({ className }: { className?: string }) {
+  return (
+    <ChartContainer
+      config={comparisonConfig}
+      className={
+        className ??
+        "h-40 w-full [&_.recharts-cartesian-grid_line]:stroke-white/20"
+      }
+    >
+      <LineChart
+        accessibilityLayer
+        data={comparison}
+        margin={{ top: 8, bottom: 8, left: 0, right: 0 }}
+      >
+        <CartesianGrid horizontal={false} vertical />
+        <XAxis dataKey="month" hide />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          dataKey="previous"
+          type="monotone"
+          stroke="var(--color-previous)"
+          strokeWidth={2}
+          strokeDasharray="2 5"
+          dot={false}
+        />
+        <Line
+          dataKey="current"
+          type="monotone"
+          stroke="var(--color-current)"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  );
+}
+
+/* ---------------------------------------------------------------------------
  * Radar — multi-dimension comparison (skills, category scores).
  * ------------------------------------------------------------------------- */
 
@@ -376,6 +444,7 @@ function DemoRadarChart() {
 export {
   DemoAreaChart,
   DemoBarChart,
+  DemoComparisonChart,
   DemoComposedChart,
   DemoDonutChart,
   DemoLineChart,

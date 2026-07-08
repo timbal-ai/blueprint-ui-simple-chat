@@ -16,6 +16,7 @@ export * from "./chart-demos";
 export * from "./detail-panel";
 export * from "./entity-form";
 export * from "./filtered-table";
+export * from "./hero-metric";
 export * from "./list-detail";
 export * from "./page-header";
 export * from "./resource-grid";

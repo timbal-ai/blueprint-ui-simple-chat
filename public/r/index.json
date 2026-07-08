@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "index",
+  "type": "registry:block",
+  "title": "index",
+  "description": "Timbal blueprint block: index. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/blocks/index.ts",
+      "content": "/**\n * Block kit barrel — one import surface for the whole kit:\n *\n *   import { AppShell, FilteredTable, BulkActionBar } from \"@/components/blocks\";\n *\n * Agents: pair this with BLOCKS_CATALOG (also exported here) to discover\n * what exists before building anything by hand. Page templates live in\n * `@/components/pages/*` and are imported by path.\n */\n\nexport * from \"./app-shell\";\nexport * from \"./assistant\";\nexport * from \"./bulk-action-bar\";\nexport * from \"./catalog\";\nexport * from \"./chart-demos\";\nexport * from \"./detail-panel\";\nexport * from \"./entity-form\";\nexport * from \"./filtered-table\";\nexport * from \"./hero-metric\";\nexport * from \"./list-detail\";\nexport * from \"./page-header\";\nexport * from \"./resource-grid\";\nexport * from \"./settings-page\";\nexport * from \"./sidebar-user\";\nexport * from \"./stat-overview\";\n",
+      "type": "registry:block",
+      "target": "src/components/blocks/index.ts"
+    }
+  ]
+}

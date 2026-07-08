@@ -54,8 +54,12 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
       data-slot="table-row"
+      // Hover/selection tint lives on the CELLS (a tr background cannot be
+      // rounded) with rounded end caps — the house rounded-hover grammar.
       className={cn(
-        "border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "border-b border-border transition-colors",
+        "[&>td]:transition-colors [&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg",
+        "hover:[&>td]:bg-muted/50 data-[state=selected]:[&>td]:bg-muted",
         className,
       )}
       {...props}

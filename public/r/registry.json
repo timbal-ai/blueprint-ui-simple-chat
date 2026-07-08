@@ -112,6 +112,18 @@
       ]
     },
     {
+      "name": "bulk-action-bar",
+      "type": "registry:block",
+      "title": "bulk action bar",
+      "description": "Timbal blueprint block: bulk-action-bar. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/bulk-action-bar.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "button",
@@ -400,6 +412,18 @@
       ]
     },
     {
+      "name": "hero-metric",
+      "type": "registry:block",
+      "title": "hero metric",
+      "description": "Timbal blueprint block: hero-metric. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/hero-metric.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "hover card",
@@ -419,6 +443,18 @@
       "files": [
         {
           "path": "components/pages/hr-dashboard-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "index",
+      "type": "registry:block",
+      "title": "index",
+      "description": "Timbal blueprint block: index. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/index.ts",
           "type": "registry:block"
         }
       ]
