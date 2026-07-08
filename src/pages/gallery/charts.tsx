@@ -9,6 +9,7 @@ import {
   DemoLineChart,
   DemoPieChart,
   DemoRadarChart,
+  DemoScatterChart,
   DemoStackedBarChart,
 } from "@/components/blocks/chart-demos";
 import {
@@ -17,6 +18,7 @@ import {
   ProportionLegend,
 } from "@/components/blocks/hero-metric";
 import { ChartCard } from "@/components/blocks/stat-overview";
+import { ScoreGauge } from "@/components/app/score-gauge";
 
 import { GalleryPage } from "./section";
 
@@ -77,6 +79,27 @@ export default function GalleryCharts() {
         </ChartCard>
         <ChartCard title="Radar" description="Multi-dimension comparison" height="auto">
           <DemoRadarChart />
+        </ChartCard>
+        <ChartCard
+          title="Scatter"
+          description="Two-dimensional distribution — tooltip via ChartTooltipContent, never hand-rolled"
+          height="auto"
+          bleed={false}
+        >
+          <DemoScatterChart />
+        </ChartCard>
+        <ChartCard
+          title="Score gauges"
+          description="app/score-gauge — the house semicircle; never hand-roll SVG arcs"
+          height="auto"
+          bleed={false}
+        >
+          <div className="flex h-64 flex-wrap items-center justify-evenly gap-4">
+            <ScoreGauge value={100} label="AI heat score" />
+            <ScoreGauge value={65} label="Health score" />
+            <ScoreGauge value={30} label="Coverage" />
+            <ScoreGauge value={82} tone="selection" label="Completion" />
+          </div>
         </ChartCard>
       </div>
     </GalleryPage>

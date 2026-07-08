@@ -146,6 +146,18 @@ chat reference), not by reimplementing the thread.
   - **Squared hovers.** Row and column hovers are rounded (built into
     `TableRow`/`DataTableColumnHeader`) — don't override with square
     full-bleed highlights.
+  - **Hand-rolled gauges.** Any semicircle/ring score visual is
+    `ScoreGauge` (`@/components/app/score-gauge`) — never draw SVG arcs by
+    hand (broken geometry, raw colors, misaligned caps every time).
+  - **Native browser pickers.** `<input type="date">` (and time/month/
+    color) and native `<select>` are lint-banned — use `ui/date-picker`
+    (DatePicker + DatePickerButton + DatePickerCalendar) and `ui/select`.
+  - **Hand-rolled chart tooltips.** Chart tooltips are ALWAYS
+    `ChartTooltipContent` — a custom tooltip div is how you get an
+    illegible colored box with duplicated rows.
+  - **Tinted info cards.** Summary/value cards inside sheets and pages
+    stay `bg-card` (white) — never wash them with a blue/colored tint.
+    Color belongs to badges, gauges, and charts, not card backgrounds.
 - **Blocks first, primitives second, raw HTML last.** Read
   `src/components/blocks/catalog.ts` and compose the screen from blocks:
   `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a

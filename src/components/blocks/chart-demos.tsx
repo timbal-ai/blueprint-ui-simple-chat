@@ -14,7 +14,11 @@ import {
   PolarGrid,
   Radar,
   RadarChart,
+  Scatter,
+  ScatterChart,
   XAxis,
+  YAxis,
+  ZAxis,
 } from "recharts";
 
 import {
@@ -334,6 +338,67 @@ function DemoDonutChart() {
 }
 
 /* ---------------------------------------------------------------------------
+ * Scatter — two-dimensional distribution (score vs value). The tooltip is
+ * ALWAYS ChartTooltipContent — never a hand-rolled div (custom tooltips
+ * are how you end up with illegible colored boxes). One <Scatter> per
+ * series; Y axis hidden per the house grammar (values live in the
+ * tooltip), X kept as the scale reference.
+ * ------------------------------------------------------------------------- */
+
+const scatter = [
+  { score: 32, value: 8_200, name: "Acme Co" },
+  { score: 45, value: 21_500, name: "Globex" },
+  { score: 51, value: 15_800, name: "Initech" },
+  { score: 58, value: 36_400, name: "Umbrella" },
+  { score: 66, value: 28_900, name: "Hooli" },
+  { score: 71, value: 54_000, name: "Stark Industries" },
+  { score: 78, value: 61_200, name: "Wayne Corp" },
+  { score: 84, value: 45_000, name: "Skynet Tech" },
+  { score: 91, value: 120_000, name: "Weyland-Yutani" },
+  { score: 96, value: 88_500, name: "Tyrell Corp" },
+];
+
+const scatterConfig = {
+  value: { label: "Deal value", color: "var(--chart-1)" },
+} satisfies ChartConfig;
+
+function DemoScatterChart() {
+  return (
+    <ChartContainer config={scatterConfig} className="h-64 w-full">
+      <ScatterChart
+        accessibilityLayer
+        margin={{ top: 8, bottom: 0, left: 0, right: 8 }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis
+          type="number"
+          dataKey="score"
+          name="Score"
+          domain={[0, 100]}
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis type="number" dataKey="value" hide />
+        <ZAxis type="category" dataKey="name" name="Account" />
+        <ChartTooltip
+          cursor={false}
+          content={
+            <ChartTooltipContent
+              hideIndicator
+              labelFormatter={(_, payload) =>
+                String(payload?.[0]?.payload?.name ?? "")
+              }
+            />
+          }
+        />
+        <Scatter data={scatter} fill="var(--color-value)" />
+      </ScatterChart>
+    </ChartContainer>
+  );
+}
+
+/* ---------------------------------------------------------------------------
  * Comparison line — this year (solid) vs last year (dotted), white lines on
  * a dark/gradient surface. Built for the HeroMetricCard chart slot: no
  * axes, no numbers, vertical hairline grid, tooltip only.
@@ -450,5 +515,6 @@ export {
   DemoLineChart,
   DemoPieChart,
   DemoRadarChart,
+  DemoScatterChart,
   DemoStackedBarChart,
 };

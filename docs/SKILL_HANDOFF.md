@@ -68,8 +68,10 @@ skill's job is to stop the agent from overriding it. Paste-ready:
 - Badges are vibrant tonal chips (solid-tone text, tinted fill, darker
   same-tone outline). Checkboxes/radios check in the DNA selection blue.
 - Charts: through `ChartContainer` only, DNA `--chart-*` tokens, NO
-  legends, NO Y-axis numbers, edge-less plots, gradient fills. Fork a
-  `chart-demos` recipe. One `HeroMetricCard` max per screen.
+  legends, NO Y-axis numbers, edge-less plots, gradient fills, tooltips
+  ALWAYS via `ChartTooltipContent`. Fork a `chart-demos` recipe. Score
+  gauges via `ScoreGauge` — never hand-drawn arcs. One `HeroMetricCard`
+  max per screen.
 - Sheets float (inset, rounded, `size` presets sm→full). One overlay at a
   time — never nest a Select inside a Popover.
 - Icons only from `@/components/icons` (Nucleo). New glyph = one re-export.
@@ -91,6 +93,10 @@ them as hard NEVERs, each with the correction:
 | **Bulk actions as toolbar buttons** | Floating `BulkActionBar`, appears on selection. |
 | **Squared full-bleed hovers** | Rounded hovers are built into `TableRow`/`DataTableColumnHeader` — don't override. |
 | **Gray inputs / bold titles / washed-out badges** | White controls, medium-weight titles, vivid tonal badges — all defaults; don't fight them. |
+| **Hand-rolled SVG gauges/arcs** (broken geometry, raw colors) | `ScoreGauge` from `@/components/app/score-gauge` — token tones, auto thresholds, solved geometry. |
+| **Native browser pickers** (`<input type="date">`, native `<select>`) | Lint-banned in the blueprint (`no-restricted-syntax`). Use `ui/date-picker` + `ui/select`/`Combobox`. |
+| **Hand-rolled chart tooltips** (illegible colored boxes, duplicate rows) | `ChartTooltipContent` only — see `DemoScatterChart` for a custom label done right. |
+| **Tinted info/value cards** (blue-washed summary tiles) | Cards stay `bg-card` white; color lives in badges, gauges, charts — never card backgrounds. |
 
 ## 5. Chat + assistant conventions
 

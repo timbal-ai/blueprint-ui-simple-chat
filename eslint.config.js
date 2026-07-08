@@ -19,6 +19,24 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Native pickers are unstyled, off-brand, and inconsistent across
+      // browsers — the kit has styled equivalents for all of them.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "JSXOpeningElement[name.name='input'] JSXAttribute[name.name='type'][value.value=/^(date|datetime-local|month|week|time|color)$/]",
+          message:
+            'Native browser pickers are banned. Use ui/date-picker (DatePicker + DatePickerButton + DatePickerCalendar) for dates, ui/select for choices.',
+        },
+        {
+          selector: "JSXOpeningElement[name.name='select']",
+          message:
+            'Native <select> is banned. Use the styled Select from @/components/ui/select (or Combobox for searchable lists).',
+        },
+      ],
+    },
   },
   // shadcn/ui re-exports CVA configs and helpers alongside components; fast-refresh warns on that pattern.
   {

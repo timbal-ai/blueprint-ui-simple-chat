@@ -55,6 +55,17 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/data-table", "ui/input", "ui/select", "ui/button", "ui/checkbox"],
   },
+  "score-gauge": {
+    importFrom: "@/components/app/score-gauge",
+    exports: ["ScoreGauge"],
+    purpose:
+      "The house semicircle gauge for a single 0–max score (AI heat score, health, completion): token-toned arc with rounded caps, centered value, caption below. Tone is auto (destructive <40 ≤ warning <70 ≤ success) or explicit (success/warning/destructive/info/selection). NEVER hand-roll an SVG arc or use a raw-color ring — the geometry and tokens are already solved here.",
+    useWhen: [
+      "A record card/sheet shows one scored metric (lead score, health, %)",
+      "Any semicircle/ring 'gauge' visual — do not draw arcs by hand",
+    ],
+    composes: [],
+  },
   "hero-metric": {
     importFrom: "@/components/blocks/hero-metric",
     exports: ["HeroMetricCard", "ProportionBar", "ProportionLegend"],
@@ -132,10 +143,11 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "DemoLineChart",
       "DemoPieChart",
       "DemoRadarChart",
+      "DemoScatterChart",
       "DemoStackedBarChart",
     ],
     purpose:
-      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, radar, and comparison (solid vs dotted white lines, for HeroMetricCard) — fork one and swap data/config rather than writing Recharts from scratch. House chart grammar: NO legends (tooltips only), NO Y-axis numbers (they collide with edge-less plots — magnitudes live in the tooltip), zero side margins (edge-less inside ChartCard), gradient fills via <defs> linearGradient.",
+      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, radar, scatter, and comparison (solid vs dotted white lines, for HeroMetricCard) — fork one and swap data/config rather than writing Recharts from scratch. House chart grammar: NO legends (tooltips only), NO Y-axis numbers (they collide with edge-less plots — magnitudes live in the tooltip), zero side margins (edge-less inside ChartCard), gradient fills via <defs> linearGradient, and tooltips are ALWAYS ChartTooltipContent — never a hand-rolled div.",
     useWhen: [
       "Adding any chart — copy the closest recipe, keep ChartContainer",
       "Referencing correct tooltip/gradient/color wiring",

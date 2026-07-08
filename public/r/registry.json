@@ -676,6 +676,18 @@
       ]
     },
     {
+      "name": "score-gauge",
+      "type": "registry:component",
+      "title": "score gauge",
+      "description": "Timbal blueprint component: score-gauge. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/app/score-gauge.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "scroll-area",
       "type": "registry:ui",
       "title": "scroll area",
