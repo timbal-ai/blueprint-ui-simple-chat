@@ -30,7 +30,7 @@ mostly needs to point at files, not restate them.
 
 | Piece | Required | Why |
 |---|---|---|
-| `@timbal-ai/timbal-react` | **≥ 4.2.0** | DNA compiler v1.2.0: `color.selection` field (checkbox/radio house blue). 4.1.0 CLIs false-flag v1.2.0 tokens as drift. |
+| `@timbal-ai/timbal-react` | **≥ 4.2.0** | DNA compiler v1.3.0: `color.selection` field (checkbox/radio house blue) + pure-neutral defaults (no brand-tinted hovers/canvases). Older CLIs false-flag v1.3.0 tokens as drift. |
 | Blueprint tarball | repack from `blueprint-ui-simple-chat` `main` (this commit) | Ships the block kit, catalog, registry, Nucleo icons, HR dashboard + invoices templates. |
 | Screenshot tool | `browser_screenshot` available to the agent | The verify loop is visual; without it taste regresses. |
 
@@ -98,6 +98,7 @@ them as hard NEVERs, each with the correction:
 | **Native browser pickers** (`<input type="date">`, native `<select>`) | Lint-banned in the blueprint (`no-restricted-syntax`). Use `ui/date-picker` + `ui/select`/`Combobox`. |
 | **Hand-rolled chart tooltips** (illegible colored boxes, duplicate rows) | `ChartTooltipContent` only — see `DemoScatterChart` for a custom label done right. |
 | **Tinted info/value cards** (blue-washed summary tiles) | Cards stay `bg-card` white; color lives in badges, gauges, charts — never card backgrounds. |
+| **Blue-washed surfaces** (brand-tinted canvas, dropdown hovers, mobile sheets) | Compiler-enforced since DNA v1.3.0: neutrals default to pure gray and `color.accent` never tints hover surfaces. Never re-tint via overrides; explicit `color.neutrals.chroma` is the only opt-in. |
 
 ## 5. Chat + assistant conventions
 

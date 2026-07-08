@@ -170,6 +170,13 @@ chat reference), not by reimplementing the thread.
   - **Tinted info cards.** Summary/value cards inside sheets and pages
     stay `bg-card` (white) — never wash them with a blue/colored tint.
     Color belongs to badges, gauges, and charts, not card backgrounds.
+  - **Blue-washed surfaces.** Canvases, dropdown/menu hovers, sidebar
+    active items, and mobile sheets are neutral white/gray/dark — never
+    brand-tinted. The DNA compiler (v1.3.0+) enforces this: neutrals
+    default to pure gray (`chroma: 0`) and `color.accent` never tints
+    hover surfaces. Do not "fix" it back with overrides or utility
+    classes; tinted neutrals require an explicit
+    `color.neutrals.chroma` opt-in.
 - **Blocks first, primitives second, raw HTML last.** Read
   `src/components/blocks/catalog.ts` and compose the screen from blocks:
   `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a
