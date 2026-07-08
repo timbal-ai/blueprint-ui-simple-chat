@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "detail-panel",
+  "type": "registry:block",
+  "title": "detail panel",
+  "description": "Timbal blueprint block: detail-panel. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "components/blocks/detail-panel.tsx",
+      "content": "import * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\nimport { Separator } from \"@/components/ui/separator\";\n\n/**\n * DetailPanel primitives — structured content for a record's detail surface\n * (the right column of ListDetailLayout, a Sheet, or a full page).\n *\n * `FieldList`/`Field` is a description list with a fixed label column so\n * values align; labels never truncate values. `ActivityFeed` is a compact\n * timeline. Compose them under a heading per section, separated by\n * `DetailSection`.\n */\n\nfunction DetailSection({\n  title,\n  action,\n  children,\n  className,\n}: {\n  title: string;\n  /** Optional inline action, e.g. an \"Edit\" ghost button. */\n  action?: React.ReactNode;\n  children: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <section className={cn(\"flex flex-col gap-3\", className)}>\n      <div className=\"flex items-center justify-between gap-2\">\n        <h3 className=\"text-sm font-medium text-foreground\">{title}</h3>\n        {action}\n      </div>\n      {children}\n    </section>\n  );\n}\n\n/** Vertical list of label/value rows. */\nfunction FieldList({ className, children }: React.ComponentProps<\"dl\">) {\n  return <dl className={cn(\"flex flex-col gap-2.5\", className)}>{children}</dl>;\n}\n\nfunction Field({\n  label,\n  children,\n  className,\n}: {\n  label: string;\n  children: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <div className={cn(\"grid grid-cols-[7rem_1fr] items-baseline gap-3\", className)}>\n      <dt className=\"truncate text-sm text-muted-foreground\">{label}</dt>\n      <dd className=\"min-w-0 text-sm break-words text-foreground\">{children}</dd>\n    </div>\n  );\n}\n\ninterface ActivityItem {\n  id: string;\n  /** Short event line, e.g. \"Status changed to Paid\". */\n  title: React.ReactNode;\n  /** Relative or absolute timestamp string. */\n  timestamp: string;\n  /** Optional avatar/icon slot (keep it size-6). */\n  leading?: React.ReactNode;\n}\n\n/** Compact vertical timeline with a connecting rail. */\nfunction ActivityFeed({\n  items,\n  className,\n}: {\n  items: ActivityItem[];\n  className?: string;\n}) {\n  return (\n    <ol className={cn(\"flex flex-col\", className)}>\n      {items.map((item, i) => (\n        <li key={item.id} className=\"relative flex gap-3 pb-4 last:pb-0\">\n          {i < items.length - 1 ? (\n            <span\n              aria-hidden\n              className=\"absolute top-6 left-3 h-[calc(100%-1.5rem)] w-px -translate-x-1/2 bg-border\"\n            />\n          ) : null}\n          <span className=\"flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-card text-muted-foreground [&_svg]:size-3.5\">\n            {item.leading ?? <span className=\"size-1.5 rounded-full bg-muted-foreground\" />}\n          </span>\n          <div className=\"flex min-w-0 flex-col gap-0.5 pt-0.5\">\n            <span className=\"text-sm text-foreground\">{item.title}</span>\n            <span className=\"text-xs text-muted-foreground\">{item.timestamp}</span>\n          </div>\n        </li>\n      ))}\n    </ol>\n  );\n}\n\n/** Muted divider between DetailSections. */\nfunction DetailDivider({ className }: { className?: string }) {\n  return <Separator className={cn(\"my-1\", className)} />;\n}\n\nexport { ActivityFeed, DetailDivider, DetailSection, Field, FieldList };\nexport type { ActivityItem };\n",
+      "type": "registry:block",
+      "target": "src/components/blocks/detail-panel.tsx"
+    }
+  ]
+}

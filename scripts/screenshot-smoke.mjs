@@ -27,6 +27,10 @@ const VIEWPORTS = [
   { name: "mobile", width: 375, height: 812 },
 ];
 const MODES = ["light", "dark"];
+const ROUTES = [
+  { path: "/gallery", name: "gallery" },
+  { path: "/gallery/blocks", name: "blocks" },
+];
 
 async function waitForServer(url, timeoutMs = 30_000) {
   const start = Date.now();
@@ -80,28 +84,31 @@ async function main() {
       });
       page.on("pageerror", (err) => consoleErrors.push(`pageerror: ${err.message}`));
 
-      await page.goto(`${base}/gallery`, { waitUntil: "networkidle" });
-      const mounted = await page
-        .waitForSelector("[data-slot=page]", { timeout: 10_000 })
-        .then(() => true)
-        .catch(() => false);
-      // Let fonts + entrance transitions settle before the shot.
-      await page.waitForTimeout(800);
+      for (const route of ROUTES) {
+        const label = `${route.name}/${vp.name}/${mode}`;
+        await page.goto(`${base}${route.path}`, { waitUntil: "networkidle" });
+        const mounted = await page
+          .waitForSelector("[data-slot=page]", { timeout: 10_000 })
+          .then(() => true)
+          .catch(() => false);
+        // Let fonts + entrance transitions settle before the shot.
+        await page.waitForTimeout(800);
 
-      const file = `${outDir}/gallery-${vp.name}-${mode}.png`;
-      await page.screenshot({ path: file, fullPage: true });
-      console.log(`shot ${file}`);
+        const file = `${outDir}/${route.name}-${vp.name}-${mode}.png`;
+        await page.screenshot({ path: file, fullPage: true });
+        console.log(`shot ${file}`);
 
-      if (!mounted) failures.push(`${vp.name}/${mode}: gallery page did not mount`);
-      for (const e of consoleErrors) failures.push(`${vp.name}/${mode}: ${e}`);
+        if (!mounted) failures.push(`${label}: page did not mount`);
+        for (const e of consoleErrors.splice(0)) failures.push(`${label}: ${e}`);
 
-      // Horizontal page overflow at mobile width = a layout bug.
-      if (vp.name === "mobile") {
-        const overflow = await page.evaluate(
-          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        );
-        if (overflow > 1) {
-          failures.push(`${vp.name}/${mode}: page overflows horizontally by ${overflow}px`);
+        // Horizontal page overflow at mobile width = a layout bug.
+        if (vp.name === "mobile") {
+          const overflow = await page.evaluate(
+            () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          );
+          if (overflow > 1) {
+            failures.push(`${label}: page overflows horizontally by ${overflow}px`);
+          }
         }
       }
 

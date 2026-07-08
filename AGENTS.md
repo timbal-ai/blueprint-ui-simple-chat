@@ -24,6 +24,11 @@ Three layers, all in this repo:
      data-table, sidebar, tabs, sheet, tooltip, …). shadcn-shaped, wired to
      DNA tokens (`bg-primary`, `h-control`, `rounded-control`, `shadow-xs`,
      bare `transition-*` inherits DNA motion).
+   - `blocks/` — **the block kit: screen-level patterns. Compose from these
+     FIRST.** `catalog.ts` (`BLOCKS_CATALOG`) is the machine-readable index —
+     read it before building any screen. `AppShell`, `ListDetailLayout`,
+     `FilteredTable`, detail-panel sections, `FormSheet`/`FormField`,
+     settings scaffolding, `StatOverview`/`ChartCard`.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
    - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
      `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
@@ -65,14 +70,20 @@ chat reference), not by reimplementing the thread.
 
 - **Pick the surface first.** Chat product → `TimbalChatShell` /
   `TimbalStudioShell` in `Home.tsx`. Screens with content (data, settings,
-  admin, catalog) → `SidebarProvider`+`Sidebar` (or a topbar, or neither) +
-  `Page`/`Section` + local components, with `<AppCopilot>` when it also needs
-  an assistant. Don't force a data app into a chat box.
-- **Compose from `src/components/ui` before hand-rolling raw HTML** —
-  `DataTable` over `<table>`, `Select`/`Input`+`Label` over bare controls,
-  `Stat`/`StatGrid` over KPI div grids, `Sidebar` over a custom rail. They're
-  token-wired, responsive, and accessible. When nothing fits, build a new
-  component in the same style — that's the point of owning the source.
+  admin, catalog) → `AppShell` (from `blocks/`) + `Page`/`Section` + blocks,
+  with `<AppCopilot>` in the `dock` slot when it also needs an assistant.
+  Don't force a data app into a chat box.
+- **Blocks first, primitives second, raw HTML last.** Read
+  `src/components/blocks/catalog.ts` and compose the screen from blocks:
+  `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a
+  hand-rolled toolbar+table, `ListDetailLayout` over ad-hoc split panes,
+  `FormSheet`/`FormField` over bare forms, `SettingsSection`/`SettingsRow`
+  over toggle lists, `StatOverview`/`ChartCard` over KPI div grids. Drop to
+  `src/components/ui` primitives for the gaps between blocks; hand-roll only
+  when neither fits, in the same style. `/gallery/blocks` (VITE_GALLERY)
+  shows the intended composition.
+- **Fork, don't fight.** If a block is 80% right, fork the file and adjust —
+  don't rebuild the pattern from primitives.
 - **Empty/loading/error states are part of every screen** — `EmptyState`,
   `Skeleton`, `Alert`, `Spinner` exist for this.
 - **Responsive by default:** 375 px must work. The sidebar collapses to a
@@ -85,9 +96,10 @@ src/
 ├── design/            # dna.json (edit) · tokens.css (generated) · DESIGN.md (update)
 ├── components/
 │   ├── ui/            # project-owned primitives (fork freely)
+│   ├── blocks/        # block kit + catalog.ts — compose screens from these first
 │   ├── app/           # page scaffold, sections, stats
 │   └── chat/          # chat chrome slots (welcome, user bubble)
-├── pages/             # Home (chat shell) · Placeholder (replace!) · Gallery (dev/CI) · NotFound
+├── pages/             # Home (chat shell) · Placeholder (replace!) · Gallery + GalleryBlocks (dev/CI) · NotFound
 ├── lib/               # cn(), studio-chat-chrome (chat slot registration), thread layout classes
 ├── hooks/             # use-mobile, use-title
 ├── App.tsx            # providers + router
@@ -104,7 +116,7 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts `/gallery` (component states, used by the screenshot smoke CI) |
+| `VITE_GALLERY` | mounts `/gallery` (primitive states) + `/gallery/blocks` (block kit composed as a screen); both are shot by the screenshot smoke CI |
 | `VITE_APP_TITLE` | document title |
 
 There is **no theme preset flag** — theming has exactly one source of truth:

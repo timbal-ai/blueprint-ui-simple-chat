@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "settings-page",
+  "type": "registry:block",
+  "title": "settings page",
+  "description": "Timbal blueprint block: settings-page. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "card"
+  ],
+  "files": [
+    {
+      "path": "components/blocks/settings-page.tsx",
+      "content": "import * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\";\n\n/**\n * Settings page scaffolding — sectioned cards with aligned label/control\n * rows, plus a visually distinct danger zone.\n *\n * `SettingsSection` is one card per topic (\"Profile\", \"Notifications\").\n * `SettingsRow` puts the label + description on the left and the control on\n * the right, stacking on narrow screens so controls never get crushed.\n */\n\nfunction SettingsSection({\n  title,\n  description,\n  children,\n  className,\n}: {\n  title: string;\n  description?: string;\n  children: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <Card className={cn(\"max-w-3xl\", className)}>\n      <CardHeader>\n        <CardTitle>{title}</CardTitle>\n        {description ? <CardDescription>{description}</CardDescription> : null}\n      </CardHeader>\n      <CardContent className=\"flex flex-col\">{children}</CardContent>\n    </Card>\n  );\n}\n\nfunction SettingsRow({\n  label,\n  description,\n  children,\n  className,\n}: {\n  label: string;\n  description?: string;\n  /** The control — Switch, Select, Input, Button. Keep it a single control. */\n  children: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <div\n      className={cn(\n        \"flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between\",\n        \"not-last:border-b not-last:border-border\",\n        className,\n      )}\n    >\n      <div className=\"flex min-w-0 flex-col gap-0.5\">\n        <span className=\"text-sm font-medium text-foreground\">{label}</span>\n        {description ? (\n          <span className=\"text-sm text-muted-foreground\">{description}</span>\n        ) : null}\n      </div>\n      <div className=\"flex shrink-0 items-center gap-2\">{children}</div>\n    </div>\n  );\n}\n\n/** Destructive actions, visually quarantined at the bottom of the page. */\nfunction DangerZone({\n  title = \"Danger zone\",\n  children,\n  className,\n}: {\n  title?: string;\n  children: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <Card className={cn(\"max-w-3xl border-destructive/40\", className)}>\n      <CardHeader>\n        <CardTitle className=\"text-destructive\">{title}</CardTitle>\n      </CardHeader>\n      <CardContent className=\"flex flex-col\">{children}</CardContent>\n    </Card>\n  );\n}\n\n/** Vertical stack of settings sections with page-level rhythm. */\nfunction SettingsStack({ className, children }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"flex flex-col gap-6\", className)}>{children}</div>;\n}\n\nexport { DangerZone, SettingsRow, SettingsSection, SettingsStack };\n",
+      "type": "registry:block",
+      "target": "src/components/blocks/settings-page.tsx"
+    }
+  ]
+}

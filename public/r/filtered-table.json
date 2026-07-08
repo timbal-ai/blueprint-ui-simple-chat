@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "filtered-table",
+  "type": "registry:block",
+  "title": "filtered table",
+  "description": "Timbal blueprint block: filtered-table. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@tanstack/react-table",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button",
+    "data-table",
+    "input",
+    "select"
+  ],
+  "files": [
+    {
+      "path": "components/blocks/filtered-table.tsx",
+      "content": "import * as React from \"react\";\nimport { SearchIcon, XIcon } from \"lucide-react\";\n\nimport { cn } from \"@/lib/utils\";\nimport { Button } from \"@/components/ui/button\";\nimport { DataTable, type ColumnDef } from \"@/components/ui/data-table\";\nimport { Input } from \"@/components/ui/input\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nimport type { Row } from \"@tanstack/react-table\";\n\n/**\n * FilteredTable — search + faceted filters + DataTable, wired together.\n *\n * The toolbar wraps instead of overflowing, search is debounced into the\n * table's global filter, and facet filtering happens here so column defs stay\n * presentation-only. Fork when you need server-side filtering — keep the\n * toolbar structure.\n */\n\ninterface TableFacet<TData> {\n  id: string;\n  label: string;\n  options: { value: string; label: string }[];\n  /** Returns the row's value for this facet. */\n  getValue: (row: TData) => string;\n}\n\nfunction FilteredTable<TData, TValue>({\n  columns,\n  data,\n  facets = [],\n  searchPlaceholder = \"Search…\",\n  toolbarEnd,\n  onRowClick,\n  loading,\n  empty,\n  className,\n  ...tableProps\n}: {\n  columns: ColumnDef<TData, TValue>[];\n  data: TData[];\n  facets?: TableFacet<TData>[];\n  searchPlaceholder?: string;\n  /** Right side of the toolbar — primary action (\"New invoice\"), export, etc. */\n  toolbarEnd?: React.ReactNode;\n  onRowClick?: (row: Row<TData>) => void;\n  loading?: boolean;\n  empty?: React.ReactNode;\n  className?: string;\n} & Pick<\n  React.ComponentProps<typeof DataTable<TData, TValue>>,\n  \"pagination\" | \"pageSize\" | \"maxHeight\" | \"stickyHeader\"\n>) {\n  const [search, setSearch] = React.useState(\"\");\n  const [active, setActive] = React.useState<Record<string, string>>({});\n\n  const filtered = React.useMemo(() => {\n    const entries = Object.entries(active).filter(([, v]) => v !== \"\");\n    if (entries.length === 0) return data;\n    return data.filter((row) =>\n      entries.every(([facetId, value]) => {\n        const facet = facets.find((f) => f.id === facetId);\n        return facet ? facet.getValue(row) === value : true;\n      }),\n    );\n  }, [data, active, facets]);\n\n  const hasFilters = search !== \"\" || Object.values(active).some((v) => v !== \"\");\n\n  return (\n    <div className={cn(\"flex min-w-0 flex-col gap-3\", className)}>\n      <div className=\"flex flex-wrap items-center gap-2\">\n        <div className=\"relative w-full max-w-64 min-w-40\">\n          <SearchIcon className=\"pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground\" />\n          <Input\n            value={search}\n            onChange={(e) => setSearch(e.target.value)}\n            placeholder={searchPlaceholder}\n            className=\"pl-8\"\n            aria-label=\"Search\"\n          />\n        </div>\n        {facets.map((facet) => (\n          <Select\n            key={facet.id}\n            value={active[facet.id] ?? \"\"}\n            onValueChange={(value) =>\n              setActive((prev) => ({ ...prev, [facet.id]: value }))\n            }\n          >\n            <SelectTrigger className=\"w-auto min-w-28\" aria-label={facet.label}>\n              <SelectValue placeholder={facet.label} />\n            </SelectTrigger>\n            <SelectContent>\n              {facet.options.map((opt) => (\n                <SelectItem key={opt.value} value={opt.value}>\n                  {opt.label}\n                </SelectItem>\n              ))}\n            </SelectContent>\n          </Select>\n        ))}\n        {hasFilters ? (\n          <Button\n            variant=\"ghost\"\n            size=\"sm\"\n            onClick={() => {\n              setSearch(\"\");\n              setActive({});\n            }}\n          >\n            <XIcon />\n            Clear\n          </Button>\n        ) : null}\n        {toolbarEnd ? <div className=\"ml-auto flex items-center gap-2\">{toolbarEnd}</div> : null}\n      </div>\n      <DataTable\n        columns={columns}\n        data={filtered}\n        globalFilter={search}\n        onRowClick={onRowClick}\n        loading={loading}\n        empty={empty}\n        {...tableProps}\n      />\n    </div>\n  );\n}\n\nexport { FilteredTable };\nexport type { TableFacet };\n",
+      "type": "registry:block",
+      "target": "src/components/blocks/filtered-table.tsx"
+    }
+  ]
+}

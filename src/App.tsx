@@ -23,6 +23,9 @@ import NotFound from "@/pages/NotFound";
 void Home;
 
 const Gallery = isGalleryEnabled ? lazy(() => import("@/pages/Gallery")) : null;
+const GalleryBlocks = isGalleryEnabled
+  ? lazy(() => import("@/pages/GalleryBlocks"))
+  : null;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -53,6 +56,16 @@ function App() {
                   element={
                     <Suspense fallback={null}>
                       <Gallery />
+                    </Suspense>
+                  }
+                />
+              ) : null}
+              {GalleryBlocks ? (
+                <Route
+                  path="/gallery/blocks"
+                  element={
+                    <Suspense fallback={null}>
+                      <GalleryBlocks />
                     </Suspense>
                   }
                 />

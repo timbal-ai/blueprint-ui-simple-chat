@@ -16,6 +16,18 @@
       ]
     },
     {
+      "name": "app-shell",
+      "type": "registry:block",
+      "title": "app shell",
+      "description": "Timbal blueprint block: app-shell. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/app-shell.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "avatar",
@@ -76,6 +88,18 @@
       ]
     },
     {
+      "name": "catalog",
+      "type": "registry:block",
+      "title": "catalog",
+      "description": "Timbal blueprint block: catalog. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/catalog.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "checkbox",
@@ -96,6 +120,18 @@
         {
           "path": "components/ui/data-table.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "detail-panel",
+      "type": "registry:block",
+      "title": "detail panel",
+      "description": "Timbal blueprint block: detail-panel. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/detail-panel.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -136,6 +172,30 @@
       ]
     },
     {
+      "name": "entity-form",
+      "type": "registry:block",
+      "title": "entity form",
+      "description": "Timbal blueprint block: entity-form. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/entity-form.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "filtered-table",
+      "type": "registry:block",
+      "title": "filtered table",
+      "description": "Timbal blueprint block: filtered-table. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/filtered-table.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "input",
@@ -156,6 +216,18 @@
         {
           "path": "components/ui/label.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "list-detail",
+      "type": "registry:block",
+      "title": "list detail",
+      "description": "Timbal blueprint block: list-detail. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/list-detail.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -216,6 +288,18 @@
         {
           "path": "components/ui/separator.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "settings-page",
+      "type": "registry:block",
+      "title": "settings page",
+      "description": "Timbal blueprint block: settings-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/settings-page.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -288,6 +372,18 @@
         {
           "path": "components/app/stat.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "stat-overview",
+      "type": "registry:block",
+      "title": "stat overview",
+      "description": "Timbal blueprint block: stat-overview. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/stat-overview.tsx",
+          "type": "registry:block"
         }
       ]
     },
