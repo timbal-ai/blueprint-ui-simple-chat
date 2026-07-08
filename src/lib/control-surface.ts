@@ -23,15 +23,14 @@
  */
 
 import { cn } from "@/lib/utils";
-import { TIMBAL_V2_SECONDARY_CHROME } from "@/lib/button-tokens";
 
 export type ControlSize = "sm" | "default";
 export type ControlShape = "field" | "pill";
 
 /** Height + horizontal padding per control size — shared by every control. */
 export const CONTROL_SIZE: Record<ControlSize, string> = {
-  sm: "h-8 px-2.5",
-  default: "h-9 px-3",
+  sm: "h-7 px-2.5",
+  default: "h-8 px-3",
 };
 
 const CONTROL_SHAPE: Record<ControlShape, string> = {
@@ -44,9 +43,15 @@ const CONTROL_SHAPE: Record<ControlShape, string> = {
  * No height / width / padding / radius / layout, so it composes onto an
  * `<input>`, a `<button>` trigger, or a `<label>` wrapper alike. Add size +
  * shape via `controlClass(...)`, or compose directly for bespoke layouts.
+ *
+ * Controls sit on WHITE (`bg-card`) — search bars, selects, and dropdown
+ * triggers read as crisp fields against the gray canvas, per the house
+ * reference. Never swap this to a gray/elevated surface.
  */
 export const controlSurfaceClass = cn(
-  TIMBAL_V2_SECONDARY_CHROME,
+  "border border-border bg-card shadow-xs",
+  "transition-[background-color,box-shadow,border-color] duration-200 ease-in-out",
+  "hover:border-border hover:shadow-sm",
   "text-sm text-foreground outline-none",
   "placeholder:text-muted-foreground/70",
   "focus-visible:ring-2 focus-visible:ring-foreground/10",

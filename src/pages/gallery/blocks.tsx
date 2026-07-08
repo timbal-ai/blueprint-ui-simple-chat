@@ -1,5 +1,12 @@
 import * as React from "react";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import {
+  BoxesIcon,
+  DownloadIcon,
+  MessageIcon,
+  PencilIcon,
+  PlusIcon,
+  SparkleIcon,
+} from "@/components/icons";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -15,6 +22,8 @@ import {
   FilteredTable,
 } from "@/components/blocks/filtered-table";
 import { ListDetailLayout } from "@/components/blocks/list-detail";
+import { PageHeader } from "@/components/blocks/page-header";
+import { ResourceGrid } from "@/components/blocks/resource-grid";
 import {
   DangerZone,
   SettingsRow,
@@ -105,6 +114,58 @@ export default function GalleryBlocksPage() {
       title="Blocks"
       description="Screen-level patterns from src/components/blocks — compose these before touching primitives."
     >
+      <SectionShell title="Page header (title + actions + tabs slot)">
+        <PageHeader
+          eyebrow={<span>Billing / Invoices</span>}
+          title="Invoices"
+          description="Everything you've billed, in one place."
+          actions={
+            <>
+              <Button variant="outline">
+                <DownloadIcon className="size-3.5" />
+                Export
+              </Button>
+              <Button>
+                <PlusIcon />
+                New invoice
+              </Button>
+            </>
+          }
+        />
+      </SectionShell>
+
+      <SectionShell title="Resource grid (integrations / catalog cards)">
+        <ResourceGrid
+          columns={3}
+          items={[
+            {
+              id: "assistant",
+              name: "Assistant",
+              description: "The floating AI pill — streaming chat on every screen.",
+              icon: <SparkleIcon />,
+              badge: { label: "Built-in", variant: "info" },
+              enabled: true,
+            },
+            {
+              id: "chat",
+              name: "Chat shell",
+              description: "Full-page conversation surface with attachments and artifacts.",
+              icon: <MessageIcon />,
+              badge: { label: "Connected", variant: "success" },
+              enabled: true,
+            },
+            {
+              id: "blocks",
+              name: "Block kit",
+              description: "Screen-level patterns — compose these before touching primitives.",
+              icon: <BoxesIcon />,
+              enabled: false,
+            },
+          ]}
+          onToggle={() => {}}
+        />
+      </SectionShell>
+
       <SectionShell title="Stat overview + chart card">
         <StatOverview
           stats={[
@@ -121,7 +182,8 @@ export default function GalleryBlocksPage() {
       </SectionShell>
 
       <SectionShell title="List + detail (single overlay discipline)">
-        <div className="flex h-[26rem] overflow-hidden rounded-xl border border-border bg-background">
+        {/* Tables sit directly on the surface — never inside a card. */}
+        <div className="flex h-[26rem] overflow-hidden">
           <ListDetailLayout
             detailOpen={selected != null}
             onDetailClose={() => setSelectedId(null)}

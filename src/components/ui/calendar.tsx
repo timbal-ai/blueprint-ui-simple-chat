@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import {
   DayButton,
   DayPicker,
@@ -45,9 +45,9 @@ function Calendar({
           "flex h-9 items-center justify-center",
           defaults.month_caption,
         ),
-        caption_label: cn("text-sm font-semibold", defaults.caption_label),
+        caption_label: cn("text-sm font-medium", defaults.caption_label),
         dropdowns: cn(
-          "flex h-9 items-center justify-center gap-1.5 text-sm font-semibold",
+          "flex h-9 items-center justify-center gap-1.5 text-sm font-medium",
           defaults.dropdowns,
         ),
         dropdown_root: cn(
@@ -75,7 +75,7 @@ function Calendar({
         range_middle: cn("rounded-none", defaults.range_middle),
         range_end: cn("rounded-r-md", defaults.range_end),
         today: cn(
-          "[&>button]:font-semibold [&>button:not([data-selected-single=true]):not([data-range-middle=true])]:text-primary",
+          "[&>button]:font-medium [&>button:not([data-selected-single=true]):not([data-range-middle=true])]:text-primary",
           defaults.today,
         ),
         outside: cn(

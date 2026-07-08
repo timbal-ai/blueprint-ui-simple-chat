@@ -22,7 +22,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
-} from "lucide-react";
+} from "@/components/icons";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -68,7 +68,11 @@ interface DataTableProps<TData, TValue> {
   onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   /** Global text filter value (wire to a SearchInput above the table). */
   globalFilter?: string;
-  /** Outer border + card background. Disable when the table sits inside a card. */
+  /**
+   * Outer border + card background. Default OFF — the house style renders
+   * tables directly on the content surface with no background of their own.
+   * Enable only for a standalone table on the gray canvas.
+   */
   bordered?: boolean;
   /** Noun for the pagination summary, e.g. "invoices" → "Showing 1 to 10 of 24 invoices". */
   itemsLabel?: string;
@@ -88,7 +92,7 @@ function DataTable<TData, TValue>({
   rowSelection,
   onRowSelectionChange,
   globalFilter,
-  bordered = true,
+  bordered = false,
   itemsLabel,
   className,
 }: DataTableProps<TData, TValue>) {
@@ -137,8 +141,7 @@ function DataTable<TData, TValue>({
           <TableHeader
             className={cn(
               stickyHeader &&
-                "sticky top-0 z-10 shadow-[inset_0_-1px_0_0_var(--border)]",
-              stickyHeader && (bordered ? "bg-card" : "bg-background"),
+                "sticky top-0 z-10 bg-card shadow-[inset_0_-1px_0_0_var(--border)]",
             )}
           >
             {table.getHeaderGroups().map((headerGroup) => (

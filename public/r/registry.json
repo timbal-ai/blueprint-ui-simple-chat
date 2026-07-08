@@ -64,6 +64,18 @@
       ]
     },
     {
+      "name": "assistant",
+      "type": "registry:block",
+      "title": "assistant",
+      "description": "Timbal blueprint block: assistant. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/assistant.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "avatar",
@@ -532,6 +544,18 @@
       ]
     },
     {
+      "name": "page-header",
+      "type": "registry:block",
+      "title": "page header",
+      "description": "Timbal blueprint block: page-header. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/page-header.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "pagination",
       "type": "registry:ui",
       "title": "pagination",
@@ -588,6 +612,18 @@
         {
           "path": "components/ui/resizable.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resource-grid",
+      "type": "registry:block",
+      "title": "resource grid",
+      "description": "Timbal blueprint block: resource-grid. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/resource-grid.tsx",
+          "type": "registry:block"
         }
       ]
     },

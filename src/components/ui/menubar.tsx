@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
+import { CheckIcon, ChevronRightIcon, CircleIcon } from "@/components/icons";
 
 import { overlayItemClass, overlaySurfaceClass } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";

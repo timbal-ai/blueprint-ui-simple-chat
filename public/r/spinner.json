@@ -4,14 +4,12 @@
   "type": "registry:ui",
   "title": "spinner",
   "description": "Timbal blueprint ui: spinner. Token-wired to the project design DNA.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": [],
   "registryDependencies": [],
   "files": [
     {
       "path": "components/ui/spinner.tsx",
-      "content": "import { Loader2Icon } from \"lucide-react\";\n\nimport { cn } from \"@/lib/utils\";\n\nfunction Spinner({ className, ...props }: React.ComponentProps<\"svg\">) {\n  return (\n    <Loader2Icon\n      role=\"status\"\n      aria-label=\"Loading\"\n      className={cn(\"size-4 animate-spin\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { Spinner };\n",
+      "content": "import { Loader2Icon } from \"@/components/icons\";\n\nimport { cn } from \"@/lib/utils\";\n\nfunction Spinner({ className, ...props }: React.ComponentProps<\"svg\">) {\n  return (\n    <Loader2Icon\n      role=\"status\"\n      aria-label=\"Loading\"\n      className={cn(\"size-4 animate-spin\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { Spinner };\n",
       "type": "registry:ui",
       "target": "src/components/ui/spinner.tsx"
     }

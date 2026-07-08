@@ -27,10 +27,16 @@ Three layers, all in this repo:
    - `blocks/` — **the block kit: screen-level patterns. Compose from these
      FIRST.** `catalog.ts` (`BLOCKS_CATALOG`) is the machine-readable index —
      read it before building any screen. `AppShell` (default
-     `variant="inset"` — gray canvas, white bordered content card),
-     `ListDetailLayout`, `FilteredTable` (+ `IconCell`/`AvatarChipCell`),
-     detail-panel sections, `FormSheet`/`FormField`, settings scaffolding,
-     `StatOverview`/`ChartCard`, `chart-demos` (the four Recharts recipes).
+     `variant="inset"` — gray canvas, white bordered content card, built-in
+     sidebar collapse toggle + mobile opener), `PageHeader`,
+     `ListDetailLayout`, `FilteredTable` (+ `IconCell`/`AvatarChipCell`,
+     `moreFilters` popover), detail-panel sections, `FormSheet`/`FormField`,
+     settings scaffolding, `StatOverview`/`ChartCard`, `ResourceGrid`,
+     `AssistantPill` (the floating AI pill, streaming pre-wired),
+     `chart-demos` (the four Recharts recipes).
+   - `icons.tsx` — **the house icon pack (Nucleo UI outline 18px). Import
+     every icon from `@/components/icons`, never from an icon library
+     directly.** Need a new glyph? Add one re-export line there.
    - `pages/` — full page templates. `invoices-page.tsx` is the reference
      entity-index grammar — fork it for any index screen.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
@@ -73,10 +79,18 @@ chat reference), not by reimplementing the thread.
 ## Strong defaults
 
 - **Pick the surface first.** Chat product → `TimbalChatShell` /
-  `TimbalStudioShell` in `Home.tsx`. Screens with content (data, settings,
-  admin, catalog) → `AppShell` (from `blocks/`) + `Page`/`Section` + blocks,
-  with `<AppCopilot>` in the `dock` slot when it also needs an assistant.
+  `TimbalStudioShell` (`Home.tsx`, mounted at `/chat`). Screens with content
+  (data, settings, admin, catalog) → `AppShell` (from `blocks/`) +
+  `PageHeader` + blocks, and drop `<AssistantPill />` (from
+  `blocks/assistant`) on operational screens so the AI is one tap away.
   Don't force a data app into a chat box.
+- **House visual rules** (already encoded in the components — keep them):
+  titles are never bold (`font-medium` max); search bars, selects, and
+  inputs are white (`bg-card`), never gray; tables render directly on the
+  surface (`DataTable` `bordered` stays off — never wrap a table in a
+  card); badges carry a darker outline of their own tone; sheets float
+  (inset + fully rounded); buttons are compressed (h-8) with the gradient
+  top sheen; state changes animate (tabs, overlays, page mounts).
 - **Blocks first, primitives second, raw HTML last.** Read
   `src/components/blocks/catalog.ts` and compose the screen from blocks:
   `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a

@@ -1,4 +1,4 @@
-import { InboxIcon, StarIcon } from "lucide-react";
+import { InboxIcon, StarIcon } from "@/components/icons";
 
 import {
   Accordion,

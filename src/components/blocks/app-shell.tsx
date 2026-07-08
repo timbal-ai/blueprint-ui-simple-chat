@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { LucideIcon } from "lucide-react";
+import type { IconComponent } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +42,7 @@ import { Separator } from "@/components/ui/separator";
 interface AppShellNavItem {
   id: string;
   label: string;
-  icon?: LucideIcon;
+  icon?: IconComponent;
   /** Optional count/badge rendered at the row's end. */
   badge?: React.ReactNode;
   /** Sub-items rendered as an indented tree under this row. */
@@ -86,7 +86,16 @@ function AppShell({
   return (
     <SidebarProvider className={className}>
       <Sidebar collapsible="icon" variant={variant === "inset" ? "inset" : "sidebar"}>
-        <SidebarHeader>{brand}</SidebarHeader>
+        {/* Header row: brand + always-visible collapse toggle (the reference
+            keeps the toggle at the brand row's end, not in a topbar). */}
+        <SidebarHeader>
+          <div className="flex items-center justify-between gap-2 group-data-[collapsible=icon]:justify-center">
+            <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+              {brand}
+            </div>
+            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
+          </div>
+        </SidebarHeader>
         <SidebarContent>
           {nav.map((group, gi) => (
             <SidebarGroup key={group.label ?? gi}>
@@ -145,6 +154,13 @@ function AppShell({
             <Separator orientation="vertical" className="mr-1 h-4" />
             <div className="flex min-w-0 flex-1 items-center gap-2">{topbar}</div>
           </header>
+        ) : null}
+        {!topbar ? (
+          // No topbar → the sidebar sheet still needs an opener on mobile.
+          // In-flow (not floating) so it never overlaps page titles.
+          <div className="flex h-11 shrink-0 items-center border-b border-border px-2 md:hidden">
+            <SidebarTrigger />
+          </div>
         ) : null}
         <div className={cn("relative flex min-h-0 flex-1 flex-col", dock && "pb-16")}>
           {children}

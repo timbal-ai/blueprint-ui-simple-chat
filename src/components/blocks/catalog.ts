@@ -110,6 +110,39 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/chart"],
   },
+  "page-header": {
+    importFrom: "@/components/blocks/page-header",
+    exports: ["PageHeader"],
+    purpose:
+      "Standard top-of-page band: eyebrow/breadcrumb slot, medium-weight title (titles are never bold), description, right-aligned actions, optional tabs slot flush underneath.",
+    useWhen: [
+      "The top of every screen — never hand-roll an h1 row",
+      "Pages with header actions (export, create) or section tabs",
+    ],
+    composes: [],
+  },
+  "resource-grid": {
+    importFrom: "@/components/blocks/resource-grid",
+    exports: ["ResourceGrid"],
+    purpose:
+      "Responsive card grid for integrations, templates, or catalog items: icon tile + name + description, optional status badge, and an enable Switch or custom trailing action. Cards lift on hover and are fully clickable.",
+    useWhen: [
+      "Integration/marketplace/catalog screens",
+      "Any collection of enableable resources shown as cards",
+    ],
+    composes: ["ui/badge", "ui/switch"],
+  },
+  assistant: {
+    importFrom: "@/components/blocks/assistant",
+    exports: ["AssistantPill"],
+    purpose:
+      "The Timbal floating AI pill (AppCopilot), pre-wired: portals its own draggable trigger + glass chat panel, streams via the standard VITE_TIMBAL_* runtime. Drop once per screen; pass context={...} to expose page data to agent tooling.",
+    useWhen: [
+      "Every operational screen should offer the assistant — add this by default",
+      "You need an in-page AI entry point without building chat UI",
+    ],
+    composes: ["@timbal-ai/timbal-react/app AppCopilot"],
+  },
   "invoices-page": {
     importFrom: "@/components/pages/invoices-page",
     exports: ["InvoicesPage", "StatusBadge", "DEMO_INVOICES"],

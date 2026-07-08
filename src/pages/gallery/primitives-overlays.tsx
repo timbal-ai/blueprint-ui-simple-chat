@@ -1,4 +1,4 @@
-import { CalendarIcon, SearchIcon, SettingsIcon, SmileIcon, UserIcon } from "lucide-react";
+import { CalendarIcon, SearchIcon, SettingsIcon, SmileIcon, UserIcon } from "@/components/icons";
 
 import {
   AlertDialog,

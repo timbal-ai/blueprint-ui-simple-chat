@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MinusIcon } from "lucide-react";
+import { MinusIcon } from "@/components/icons";
 import { unstable_OneTimePasswordField as OTPField } from "radix-ui";
 
 import { controlSurfaceClass } from "@/lib/control-surface";

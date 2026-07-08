@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "@/components/icons";
 
 import { controlClass } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";

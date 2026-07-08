@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon } from "@/components/icons";
 import { cva } from "class-variance-authority";
 
 import { overlaySurfaceClass } from "@/lib/control-surface";

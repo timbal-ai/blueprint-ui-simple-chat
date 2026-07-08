@@ -10,17 +10,16 @@ import {
 } from "@timbal-ai/timbal-react";
 
 import { isAuthEnabled, isGalleryEnabled } from "@/config";
-// COMPOSER: `Home` is the ready-made chat shell. The index route below renders a
-// neutral `<Placeholder />` so a fresh build doesn't mislead users with a chat
-// they didn't ask for. When you build the UI, replace `<Placeholder />` on the
-// index route with the real surface (`<Home />` for chat, or your own page) and
-// delete `Placeholder.tsx` once it's unused.
+// COMPOSER: `Home` is the ready-made chat shell (streaming, attachments,
+// artifacts — all wired). It stays mounted at /chat so the full conversation
+// surface is always reachable; the index route renders a neutral
+// `<Placeholder />` so a fresh build doesn't mislead users with a chat they
+// didn't ask for. When you build the UI, replace `<Placeholder />` on the
+// index route with the real surface (`<Home />` for chat-first apps, or your
+// own page) and delete `Placeholder.tsx` once it's unused.
 import Home from "@/pages/Home";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";
-
-// Keep `Home` imported and ready to swap in (no-op reference avoids lint until used).
-void Home;
 
 // Gallery showcase (dev/CI surface): routed pages/blocks/primitives/charts
 // inside the inset AppShell. Gated behind VITE_GALLERY.
@@ -68,6 +67,14 @@ function App() {
                 element={
                   <AuthGuard requireAuth enabled={isAuthEnabled}>
                     <Placeholder />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <AuthGuard requireAuth enabled={isAuthEnabled}>
+                    <Home />
                   </AuthGuard>
                 }
               />

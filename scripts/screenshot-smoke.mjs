@@ -84,7 +84,12 @@ async function main() {
 
       const consoleErrors = [];
       page.on("console", (msg) => {
-        if (msg.type() === "error") consoleErrors.push(msg.text());
+        if (msg.type() !== "error") return;
+        // The preview server has no Timbal backend — failed /api/* loads
+        // (workforce list for the AI pill, etc.) are expected here, not bugs.
+        const url = msg.location()?.url ?? "";
+        if (url.includes("/api/") || msg.text().includes("/api/")) return;
+        consoleErrors.push(msg.text());
       });
       page.on("pageerror", (err) => consoleErrors.push(`pageerror: ${err.message}`));
 

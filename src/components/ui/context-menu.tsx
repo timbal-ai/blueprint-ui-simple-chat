@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
+import { CheckIcon, ChevronRightIcon, CircleIcon } from "@/components/icons";
 
 import { overlayItemClass, overlaySurfaceClass } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";

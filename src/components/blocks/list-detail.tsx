@@ -1,5 +1,5 @@
 import * as React from "react";
-import { XIcon } from "lucide-react";
+import { XIcon } from "@/components/icons";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -75,7 +75,7 @@ function ListDetailLayout({
         >
           <div className="flex items-start justify-between gap-2 border-b border-border p-4">
             <div className="flex min-w-0 flex-col gap-0.5">
-              <h2 className="truncate font-semibold text-foreground">{detailTitle}</h2>
+              <h2 className="truncate font-medium text-foreground">{detailTitle}</h2>
               {detailDescription ? (
                 <p className="truncate text-sm text-muted-foreground">
                   {detailDescription}

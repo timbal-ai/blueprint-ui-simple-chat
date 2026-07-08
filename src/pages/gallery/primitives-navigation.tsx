@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon } from "@/components/icons";
 
 import {
   Breadcrumb,

@@ -16,7 +16,7 @@ const Placeholder = () => {
     <div className="flex h-screen w-full flex-col items-center justify-center gap-6 bg-background px-6 text-center">
       <TimbalMark size={72} />
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-2xl font-medium tracking-tight text-foreground">
           Your app will live here
         </h1>
         <p className="text-base text-muted-foreground">

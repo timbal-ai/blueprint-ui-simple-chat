@@ -13,9 +13,9 @@ function GalleryPage({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-auto px-6 py-6 lg:px-8">
+    <div className="flex min-h-0 flex-1 animate-in fade-in-0 slide-in-from-bottom-1 flex-col gap-6 overflow-auto px-6 py-6 duration-300 lg:px-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-2xl font-medium tracking-tight text-foreground">
           {title}
         </h1>
         {description ? (

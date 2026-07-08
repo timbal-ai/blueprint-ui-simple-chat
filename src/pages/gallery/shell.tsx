@@ -3,11 +3,13 @@ import {
   BarChart3Icon,
   BoxesIcon,
   ChevronsUpDownIcon,
+  MessageIcon,
   ReceiptIcon,
   TextCursorInputIcon,
-} from "lucide-react";
+} from "@/components/icons";
 
 import { AppShell } from "@/components/blocks/app-shell";
+import { AssistantPill } from "@/components/blocks/assistant";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 /**
@@ -19,6 +21,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const ROUTE_BY_ID: Record<string, string> = {
   invoices: "/gallery",
+  chat: "/chat",
   blocks: "/gallery/blocks",
   primitives: "/gallery/primitives/forms",
   forms: "/gallery/primitives/forms",
@@ -44,18 +47,19 @@ export default function GalleryShell() {
       variant="inset"
       brand={
         <div className="flex items-center gap-2 px-1 py-0.5">
-          <span className="flex size-6 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">
+          <span className="flex size-6 items-center justify-center rounded-md bg-primary text-xs font-medium text-primary-foreground">
             T
           </span>
-          <span className="truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
-            Timbal Kit
-          </span>
+          <span className="truncate text-sm font-medium">Timbal Kit</span>
         </div>
       }
       nav={[
         {
           label: "Pages",
-          items: [{ id: "invoices", label: "Invoices", icon: ReceiptIcon }],
+          items: [
+            { id: "invoices", label: "Invoices", icon: ReceiptIcon },
+            { id: "chat", label: "Chat shell", icon: MessageIcon },
+          ],
         },
         {
           label: "Library",
@@ -99,6 +103,9 @@ export default function GalleryShell() {
       }
     >
       <Outlet />
+      {/* The Timbal floating AI pill — streams via the same runtime env as
+          the chat shell (VITE_TIMBAL_*). */}
+      <AssistantPill />
     </AppShell>
   );
 }

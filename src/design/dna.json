@@ -14,6 +14,7 @@
   },
   "color": {
     "brand": "#18181b",
+    "neutrals": { "chroma": 0 },
     "surfaces": "panel",
     "defaultMode": "light",
     "status": "signal",
@@ -21,7 +22,8 @@
   },
   "typography": {
     "pairing": "inter",
-    "tracking": "tight"
+    "tracking": "tight",
+    "headingWeight": 500
   },
   "shape": {
     "radius": 0.625,
@@ -45,5 +47,10 @@
   "voice": {
     "case": "sentence",
     "tone": "direct, domain-specific labels"
+  },
+  "overrides": {
+    "light": {
+      "--sidebar": "color-mix(in srgb, white 96%, black)"
+    }
   }
 }

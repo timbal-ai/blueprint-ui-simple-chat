@@ -6,7 +6,7 @@ import {
   DownloadIcon,
   HashIcon,
   MoreHorizontalIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import type { RowSelectionState } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { selectionColumn, type ColumnDef } from "@/components/ui/data-table";
+import {
+  DataTableColumnHeader,
+  selectionColumn,
+  type ColumnDef,
+} from "@/components/ui/data-table";
 import {
   AvatarChipCell,
   FilteredTable,
@@ -70,41 +74,49 @@ const fmtUsd = (n: number) =>
     minimumFractionDigits: 2,
   }).format(n);
 
+/** Chronological sort for the human-readable date strings the demo uses. */
+const byParsedDate =
+  (key: "date" | "dueDate") =>
+  (a: { original: Invoice }, b: { original: Invoice }) =>
+    Date.parse(a.original[key]) - Date.parse(b.original[key]);
+
 function invoiceColumns(onAction?: (action: string, invoice: Invoice) => void): ColumnDef<Invoice>[] {
   return [
     selectionColumn<Invoice>(),
     {
       accessorKey: "id",
-      header: "Invoice",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Invoice" />,
       size: 150,
       cell: ({ row }) => <IconCell icon={HashIcon}>{row.original.id}</IconCell>,
     },
     {
       accessorKey: "date",
-      header: "Date",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
       size: 140,
+      sortingFn: byParsedDate("date"),
       cell: ({ row }) => <IconCell icon={CalendarIcon}>{row.original.date}</IconCell>,
     },
     {
       accessorKey: "customer",
-      header: "Customer",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Customer" />,
       cell: ({ row }) => <AvatarChipCell name={row.original.customer} />,
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
       size: 110,
       cell: ({ row }) => <StatusBadge status={row.original.status} />,
     },
     {
       accessorKey: "dueDate",
-      header: "Due date",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Due date" />,
       size: 140,
+      sortingFn: byParsedDate("dueDate"),
       cell: ({ row }) => <IconCell icon={CalendarIcon}>{row.original.dueDate}</IconCell>,
     },
     {
       accessorKey: "amount",
-      header: "Amount",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />,
       size: 110,
       cell: ({ row }) => (
         <span className="tabular-nums">{fmtUsd(row.original.amount)}</span>
@@ -166,8 +178,8 @@ function InvoicesPage({
   const columns = React.useMemo(() => invoiceColumns(onRowAction), [onRowAction]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto px-6 py-6 lg:px-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+    <div className="flex min-h-0 flex-1 animate-in fade-in-0 slide-in-from-bottom-1 flex-col gap-5 overflow-auto px-6 py-6 duration-300 lg:px-8">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {title}
       </h1>
       <FilteredTable
@@ -186,13 +198,33 @@ function InvoicesPage({
             ],
           },
         ]}
+        moreFilters={[
+          {
+            id: "amount",
+            label: "Amount",
+            getValue: (row) => (row.amount >= 1000 ? "high" : "low"),
+            options: [
+              { value: "low", label: "Under $1,000" },
+              { value: "high", label: "$1,000 and up" },
+            ],
+          },
+          {
+            id: "due",
+            label: "Due date",
+            getValue: (row) =>
+              Date.parse(row.dueDate) < Date.now() ? "past" : "upcoming",
+            options: [
+              { value: "past", label: "Past due" },
+              { value: "upcoming", label: "Upcoming" },
+            ],
+          },
+        ]}
         toolbarEnd={
-          <Button size="sm" className="gap-1.5" onClick={onExport}>
+          <Button className="gap-1.5" onClick={onExport}>
             <DownloadIcon className="size-3.5" />
             Export
           </Button>
         }
-        bordered={false}
         pageSize={10}
         itemsLabel={itemsLabel}
         rowSelection={rowSelection}

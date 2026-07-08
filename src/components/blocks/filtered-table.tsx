@@ -1,10 +1,22 @@
 import * as React from "react";
-import { SearchIcon, XIcon, type LucideIcon } from "lucide-react";
+import {
+  FilterIcon,
+  SearchIcon,
+  XIcon,
+  type IconComponent,
+} from "@/components/icons";
 
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable, type ColumnDef } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -35,6 +47,7 @@ function FilteredTable<TData, TValue>({
   columns,
   data,
   facets = [],
+  moreFilters = [],
   searchPlaceholder = "Search…",
   toolbarEnd,
   onRowClick,
@@ -46,6 +59,8 @@ function FilteredTable<TData, TValue>({
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   facets?: TableFacet<TData>[];
+  /** Secondary facets tucked behind the "Filters" popover (funnel button). */
+  moreFilters?: TableFacet<TData>[];
   searchPlaceholder?: string;
   /** Right side of the toolbar — primary action ("New invoice"), export, etc. */
   toolbarEnd?: React.ReactNode;
@@ -67,18 +82,26 @@ function FilteredTable<TData, TValue>({
   const [search, setSearch] = React.useState("");
   const [active, setActive] = React.useState<Record<string, string>>({});
 
+  const allFacets = React.useMemo(
+    () => [...facets, ...moreFilters],
+    [facets, moreFilters],
+  );
+
   const filtered = React.useMemo(() => {
     const entries = Object.entries(active).filter(([, v]) => v !== "");
     if (entries.length === 0) return data;
     return data.filter((row) =>
       entries.every(([facetId, value]) => {
-        const facet = facets.find((f) => f.id === facetId);
+        const facet = allFacets.find((f) => f.id === facetId);
         return facet ? facet.getValue(row) === value : true;
       }),
     );
-  }, [data, active, facets]);
+  }, [data, active, allFacets]);
 
   const hasFilters = search !== "" || Object.values(active).some((v) => v !== "");
+  const moreFiltersActive = moreFilters.filter(
+    (f) => (active[f.id] ?? "") !== "",
+  ).length;
 
   return (
     <div className={cn("flex min-w-0 flex-col gap-3", className)}>
@@ -113,6 +136,47 @@ function FilteredTable<TData, TValue>({
             </SelectContent>
           </Select>
         ))}
+        {moreFilters.length > 0 ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-1.5">
+                <FilterIcon className="size-3.5" />
+                Filters
+                {moreFiltersActive > 0 ? (
+                  <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[10px]">
+                    {moreFiltersActive}
+                  </Badge>
+                ) : null}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-64 space-y-3">
+              {moreFilters.map((facet) => (
+                <div key={facet.id} className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">
+                    {facet.label}
+                  </Label>
+                  <Select
+                    value={active[facet.id] ?? ""}
+                    onValueChange={(value) =>
+                      setActive((prev) => ({ ...prev, [facet.id]: value }))
+                    }
+                  >
+                    <SelectTrigger className="w-full" aria-label={facet.label}>
+                      <SelectValue placeholder="Any" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {facet.options.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ))}
+            </PopoverContent>
+          </Popover>
+        ) : null}
         {hasFilters ? (
           <Button
             variant="ghost"
@@ -152,7 +216,7 @@ function IconCell({
   children,
   className,
 }: {
-  icon: LucideIcon;
+  icon: IconComponent;
   children: React.ReactNode;
   className?: string;
 }) {
