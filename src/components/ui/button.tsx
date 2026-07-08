@@ -2,6 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
+import { SURFACE_SHADOW } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";
 
 /**
@@ -13,9 +14,8 @@ import { cn } from "@/lib/utils";
 const FILLED_CHROME =
   "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_30%,transparent),inset_0_10px_10px_-8px_color-mix(in_srgb,white_16%,transparent),0_1px_2px_0_color-mix(in_srgb,black_28%,transparent),0_2px_5px_-2px_color-mix(in_srgb,black_22%,transparent)]";
 
-/** Chrome for light (white) controls — hairline sheen + softer shadow. */
-const SURFACE_CHROME =
-  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_60%,transparent),0_1px_2px_0_color-mix(in_srgb,black_10%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_8%,transparent)]";
+/** White controls cast the SAME shadow as inputs — one shared source. */
+const SURFACE_CHROME = SURFACE_SHADOW;
 
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity] duration-200 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",

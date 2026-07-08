@@ -39,6 +39,15 @@ const CONTROL_SHAPE: Record<ControlShape, string> = {
 };
 
 /**
+ * THE one surface shadow — hairline top sheen + soft two-layer drop. Shared
+ * verbatim by white buttons (secondary/outline) AND every input / select /
+ * search field so controls sitting side by side cast identical shadows.
+ * Never give a control `shadow-xs`/`shadow-sm` directly; use this.
+ */
+export const SURFACE_SHADOW =
+  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_60%,transparent),0_1px_2px_0_color-mix(in_srgb,black_10%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_8%,transparent)]";
+
+/**
  * The control skin — surface, border, shadow, focus ring, disabled, transition.
  * No height / width / padding / radius / layout, so it composes onto an
  * `<input>`, a `<button>` trigger, or a `<label>` wrapper alike. Add size +
@@ -49,9 +58,10 @@ const CONTROL_SHAPE: Record<ControlShape, string> = {
  * reference. Never swap this to a gray/elevated surface.
  */
 export const controlSurfaceClass = cn(
-  "border border-border bg-card shadow-xs",
-  "transition-[background-color,box-shadow,border-color] duration-200 ease-in-out",
-  "hover:border-border hover:shadow-sm",
+  "border border-border bg-card",
+  SURFACE_SHADOW,
+  "transition-[background-color,border-color] duration-200 ease-in-out",
+  "hover:border-border",
   "text-sm text-foreground outline-none",
   "placeholder:text-muted-foreground/70",
   "focus-visible:ring-2 focus-visible:ring-foreground/10",

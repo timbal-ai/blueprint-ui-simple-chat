@@ -58,7 +58,13 @@ export { IconStarOutline18 as StarIcon } from "nucleo-ui-outline-18/components/I
 export { IconInputFieldOutline18 as TextCursorInputIcon } from "nucleo-ui-outline-18/components/IconInputFieldOutline18";
 export { IconTriangleWarningOutline18 as TriangleAlertIcon } from "nucleo-ui-outline-18/components/IconTriangleWarningOutline18";
 export { IconTextUnderlineOutline18 as UnderlineIcon } from "nucleo-ui-outline-18/components/IconTextUnderlineOutline18";
+export { IconArrowTrendUpOutline18 as TrendingUpIcon } from "nucleo-ui-outline-18/components/IconArrowTrendUpOutline18";
+export { IconArrowTrendDownOutline18 as TrendingDownIcon } from "nucleo-ui-outline-18/components/IconArrowTrendDownOutline18";
+export { IconCircleQuestionOutline18 as HelpCircleIcon } from "nucleo-ui-outline-18/components/IconCircleQuestionOutline18";
+export { IconArrowDoorOutOutline18 as LogOutIcon } from "nucleo-ui-outline-18/components/IconArrowDoorOutOutline18";
 export { IconUserOutline18 as UserIcon } from "nucleo-ui-outline-18/components/IconUserOutline18";
+export { IconUserPlusOutline18 as UserPlusIcon } from "nucleo-ui-outline-18/components/IconUserPlusOutline18";
+export { IconUserMinusOutline18 as UserMinusIcon } from "nucleo-ui-outline-18/components/IconUserMinusOutline18";
 export { IconUsersOutline18 as UsersIcon } from "nucleo-ui-outline-18/components/IconUsersOutline18";
 export { IconXmarkOutline18 as XIcon } from "nucleo-ui-outline-18/components/IconXmarkOutline18";
 

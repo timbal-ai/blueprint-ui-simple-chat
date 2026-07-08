@@ -1,8 +1,8 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { TimbalMark } from "@timbal-ai/timbal-react/studio";
 import {
   BarChart3Icon,
   BoxesIcon,
-  ChevronsUpDownIcon,
   MessageIcon,
   ReceiptIcon,
   TextCursorInputIcon,
@@ -10,7 +10,7 @@ import {
 
 import { AppShell } from "@/components/blocks/app-shell";
 import { AssistantPill } from "@/components/blocks/assistant";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { SidebarUser } from "@/components/blocks/sidebar-user";
 
 /**
  * Gallery showcase shell — dev/CI surface (VITE_GALLERY), not a product
@@ -46,11 +46,13 @@ export default function GalleryShell() {
     <AppShell
       variant="inset"
       brand={
+        // House brand row: the chrome (liquid-metal) Timbal mark + a larger,
+        // never-bold product name.
         <div className="flex items-center gap-2 px-1 py-0.5">
-          <span className="flex size-6 items-center justify-center rounded-md bg-primary text-xs font-medium text-primary-foreground">
-            T
+          <TimbalMark size={26} className="shrink-0" />
+          <span className="truncate text-base font-normal tracking-tight">
+            Timbal Kit
           </span>
-          <span className="truncate text-sm font-medium">Timbal Kit</span>
         </div>
       }
       nav={[
@@ -64,7 +66,7 @@ export default function GalleryShell() {
         {
           label: "Library",
           items: [
-            { id: "blocks", label: "Blocks", icon: BoxesIcon },
+            { id: "blocks", label: "Dashboard", icon: BoxesIcon },
             {
               id: "primitives",
               label: "Primitives",
@@ -88,18 +90,11 @@ export default function GalleryShell() {
         if (to) navigate(to);
       }}
       footer={
-        <button
-          type="button"
-          className="flex w-full items-center gap-2 rounded-lg border border-sidebar-border bg-card px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0"
-        >
-          <Avatar className="size-6">
-            <AvatarFallback className="text-[10px]">TB</AvatarFallback>
-          </Avatar>
-          <span className="min-w-0 flex-1 truncate text-sm group-data-[collapsible=icon]:hidden">
-            Blueprint
-          </span>
-          <ChevronsUpDownIcon className="size-3.5 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden" />
-        </button>
+        <SidebarUser
+          name="Sophie Bennett"
+          email="sophie@timbal.ai"
+          avatarSrc="https://github.com/shadcn.png"
+        />
       }
     >
       <Outlet />

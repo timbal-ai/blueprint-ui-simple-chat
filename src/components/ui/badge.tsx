@@ -7,9 +7,10 @@ const badgeVariants = cva(
   "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,background-color,border-color] [&>svg]:size-3 [&>svg]:pointer-events-none",
   {
     variants: {
-      // Every tonal badge carries a visible outline one shade darker than its
-      // fill (the subtle-foreground at low alpha) so chips read as crisp
-      // objects on white, per the house reference.
+      // Tonal badges are VIBRANT: text/icon take the solid status tone (not
+      // the muted subtle-foreground), the fill is that same tone at low
+      // alpha, and the outline is the tone one shade darker — chips read as
+      // saturated, crisp objects on white, per the house reference.
       variant: {
         default:
           "border-primary/40 bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
@@ -18,14 +19,12 @@ const badgeVariants = cva(
         outline:
           "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         destructive:
-          "border-destructive-subtle-foreground/30 bg-destructive-subtle text-destructive-subtle-foreground",
+          "border-destructive/40 bg-destructive/10 text-destructive",
         "destructive-solid":
           "border-destructive/50 bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90",
-        success:
-          "border-success-subtle-foreground/30 bg-success-subtle text-success-subtle-foreground",
-        warning:
-          "border-warning-subtle-foreground/30 bg-warning-subtle text-warning-subtle-foreground",
-        info: "border-info-subtle-foreground/30 bg-info-subtle text-info-subtle-foreground",
+        success: "border-success/40 bg-success/12 text-success",
+        warning: "border-warning/45 bg-warning/15 text-warning-subtle-foreground",
+        info: "border-info/40 bg-info/10 text-info",
       },
     },
     defaultVariants: {

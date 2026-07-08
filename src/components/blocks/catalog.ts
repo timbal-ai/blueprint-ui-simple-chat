@@ -70,7 +70,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/entity-form",
     exports: ["FormSheet", "FormGrid", "FormField"],
     purpose:
-      "Create/edit scaffolding: a right Sheet with scrollable body and pinned actions, single-column field grid, and label/help/error wiring per field.",
+      "Create/edit scaffolding: a floating right Sheet with scrollable body and pinned actions, single-column field grid, and label/help/error wiring per field. FormSheet takes size='sm'|'default'|'lg'|'xl'|'full' (SheetContent width presets) — bump up for dense enterprise forms.",
     useWhen: [
       "Creating or editing a record — FormSheet is the standard surface",
       "Any form: wrap every control in FormField, lay out with FormGrid",
@@ -101,14 +101,34 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "chart-demos": {
     importFrom: "@/components/blocks/chart-demos",
-    exports: ["DemoAreaChart", "DemoBarChart", "DemoLineChart", "DemoPieChart"],
+    exports: [
+      "DemoAreaChart",
+      "DemoBarChart",
+      "DemoComposedChart",
+      "DemoDonutChart",
+      "DemoLineChart",
+      "DemoPieChart",
+      "DemoRadarChart",
+      "DemoStackedBarChart",
+    ],
     purpose:
-      "The four canonical Recharts recipes (area, bar, line, pie/donut) wired to ChartContainer and DNA chart tokens — fork one and swap data/config rather than writing Recharts from scratch.",
+      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, and radar — fork one and swap data/config rather than writing Recharts from scratch.",
     useWhen: [
       "Adding any chart — copy the closest recipe, keep ChartContainer",
       "Referencing correct tooltip/legend/color wiring",
     ],
     composes: ["ui/chart"],
+  },
+  "sidebar-user": {
+    importFrom: "@/components/blocks/sidebar-user",
+    exports: ["SidebarUser"],
+    purpose:
+      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email and a proper options dropdown (profile, settings, help, sign out — or custom items). Adapts to the collapsed icon rail (avatar only, menu opens to the side) and to mobile (menu opens upward).",
+    useWhen: [
+      "Every AppShell should end with this in `footer` — never hand-roll the user row",
+      "You need account actions reachable from the sidebar in any state",
+    ],
+    composes: ["ui/avatar", "ui/dropdown-menu", "ui/sidebar"],
   },
   "page-header": {
     importFrom: "@/components/blocks/page-header",
@@ -153,6 +173,24 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "You need the canonical page grammar inside AppShell variant='inset'",
     ],
     composes: ["blocks/filtered-table", "ui/data-table", "ui/badge", "ui/dropdown-menu"],
+  },
+  "hr-dashboard-page": {
+    importFrom: "@/components/pages/hr-dashboard-page",
+    exports: ["HrDashboardPage", "DEMO_EMPLOYEES"],
+    purpose:
+      "The reference DASHBOARD template: breadcrumb eyebrow + PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Fork for any analytics or overview screen.",
+    useWhen: [
+      "Building a dashboard/overview/analytics screen — start from this file",
+      "You need the canonical stats → chart → table page rhythm",
+    ],
+    composes: [
+      "blocks/page-header",
+      "blocks/stat-overview",
+      "blocks/chart-demos",
+      "blocks/filtered-table",
+      "ui/dropdown-menu",
+      "ui/select",
+    ],
   },
 };
 

@@ -156,10 +156,11 @@ function AppShell({
           </header>
         ) : null}
         {!topbar ? (
-          // No topbar → the sidebar sheet still needs an opener on mobile.
-          // In-flow (not floating) so it never overlaps page titles.
-          <div className="flex h-11 shrink-0 items-center border-b border-border px-2 md:hidden">
+          // No topbar → mobile gets its own brand bar: the sidebar opener is
+          // RELATIVE (in flow, never floating over titles) next to the brand.
+          <div className="relative flex h-12 shrink-0 items-center gap-1 border-b border-border px-2 md:hidden">
             <SidebarTrigger />
+            <div className="flex min-w-0 flex-1 items-center">{brand}</div>
           </div>
         ) : null}
         <div className={cn("relative flex min-h-0 flex-1 flex-col", dock && "pb-16")}>

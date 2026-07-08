@@ -42,14 +42,32 @@ function SheetOverlay({
   );
 }
 
+/**
+ * Width presets for side sheets. `default` matches the classic drawer;
+ * `lg`/`xl` fit dense forms and previews; `full` is a near-fullscreen
+ * workspace (still floating and rounded).
+ */
+const SHEET_SIZE: Record<"default" | "sm" | "lg" | "xl" | "full", string> = {
+  sm: "sm:max-w-xs",
+  default: "sm:max-w-sm",
+  lg: "sm:max-w-lg",
+  xl: "sm:max-w-2xl",
+  full: "sm:max-w-none",
+};
+
 function SheetContent({
   className,
   children,
   side = "right",
+  size = "default",
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left";
+  /** Width preset for left/right sheets (ignored for top/bottom). */
+  size?: "default" | "sm" | "lg" | "xl" | "full";
 }) {
+  const width =
+    size === "full" ? "w-[calc(100%-1.5rem)]" : "w-[calc(75%-0.75rem)]";
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -60,9 +78,17 @@ function SheetContent({
         className={cn(
           "fixed z-50 flex flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=closed]:duration-200",
           side === "right" &&
-            "inset-y-3 right-3 w-[calc(75%-0.75rem)] data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right sm:max-w-sm",
+            cn(
+              "inset-y-3 right-3 data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
+              width,
+              SHEET_SIZE[size],
+            ),
           side === "left" &&
-            "inset-y-3 left-3 w-[calc(75%-0.75rem)] data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left sm:max-w-sm",
+            cn(
+              "inset-y-3 left-3 data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
+              width,
+              SHEET_SIZE[size],
+            ),
           side === "top" &&
             "inset-x-3 top-3 h-auto data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
           side === "bottom" &&

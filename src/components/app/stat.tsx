@@ -1,10 +1,14 @@
 import * as React from "react";
+import { TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 /**
- * Single KPI tile. Value stays normal weight — hierarchy comes from size and
- * spacing. Add a `delta` only when the change itself is the message.
+ * Single KPI tile — the reference grammar: muted label row (with an
+ * optional trailing action), large NOT-bold value, a vibrant delta badge
+ * beside it, and a muted caption underneath ("Compared to the previous
+ * period"). Hierarchy comes from size and tone, never weight.
  */
 function Stat({
   label,
@@ -12,42 +16,55 @@ function Stat({
   delta,
   deltaTone = "neutral",
   hint,
+  action,
   className,
   ...props
 }: React.ComponentProps<"div"> & {
   label: string;
   value: React.ReactNode;
-  /** Optional change indicator, e.g. "+8.2%". Keep it muted by default. */
+  /** Change indicator, e.g. "20%". Rendered as a tonal badge with a trend arrow. */
   delta?: string;
   deltaTone?: "positive" | "negative" | "neutral";
-  /** Secondary context under the value, e.g. "vs last month". */
+  /** Secondary context under the value, e.g. "Compared to the previous period". */
   hint?: string;
+  /** Optional trailing header action (menu dots, info tooltip). */
+  action?: React.ReactNode;
 }) {
   return (
     <div
       data-slot="stat"
       className={cn(
-        "flex flex-col gap-1 rounded-lg border border-border bg-card p-4 shadow-xs",
+        "flex flex-col gap-1.5 rounded-xl border border-border bg-card p-4 shadow-xs",
         className,
       )}
       {...props}
     >
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-normal tabular-nums text-foreground">
+      <div className="flex items-center justify-between gap-2">
+        <span className="truncate text-xs text-muted-foreground">{label}</span>
+        {action}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-2xl font-medium tracking-tight tabular-nums text-foreground">
           {value}
         </span>
         {delta ? (
-          <span
-            className={cn(
-              "text-xs tabular-nums",
-              deltaTone === "positive" && "text-success-subtle-foreground",
-              deltaTone === "negative" && "text-destructive",
-              deltaTone === "neutral" && "text-muted-foreground",
-            )}
+          <Badge
+            variant={
+              deltaTone === "positive"
+                ? "success"
+                : deltaTone === "negative"
+                  ? "destructive"
+                  : "secondary"
+            }
+            className="gap-0.5 px-1.5 text-[11px]"
           >
+            {deltaTone === "positive" ? (
+              <TrendingUpIcon />
+            ) : deltaTone === "negative" ? (
+              <TrendingDownIcon />
+            ) : null}
             {delta}
-          </span>
+          </Badge>
         ) : null}
       </div>
       {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}

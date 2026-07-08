@@ -412,6 +412,18 @@
       ]
     },
     {
+      "name": "hr-dashboard-page",
+      "type": "registry:block",
+      "title": "hr dashboard page",
+      "description": "Timbal blueprint block: hr-dashboard-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/hr-dashboard-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "input",
@@ -696,6 +708,18 @@
         {
           "path": "components/ui/sidebar.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sidebar-user",
+      "type": "registry:block",
+      "title": "sidebar user",
+      "description": "Timbal blueprint block: sidebar-user. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/sidebar-user.tsx",
+          "type": "registry:block"
         }
       ]
     },

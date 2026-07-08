@@ -18,6 +18,7 @@
     "surfaces": "panel",
     "defaultMode": "light",
     "status": "signal",
+    "selection": "#3B76FF",
     "charts": "categorical"
   },
   "typography": {

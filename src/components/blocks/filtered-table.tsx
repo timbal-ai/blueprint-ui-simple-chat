@@ -9,9 +9,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable, type ColumnDef } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import type { Row } from "@tanstack/react-table";
 
 /**
@@ -33,6 +34,10 @@ import type { Row } from "@tanstack/react-table";
  * table's global filter, and facet filtering happens here so column defs stay
  * presentation-only. Fork when you need server-side filtering — keep the
  * toolbar structure.
+ *
+ * Overlay discipline: the "Filters" popover renders checkbox option rows —
+ * NEVER nest a Select (or any second overlay) inside a popover; stacked
+ * overlays overlap and fight for focus.
  */
 
 interface TableFacet<TData> {
@@ -80,28 +85,47 @@ function FilteredTable<TData, TValue>({
   | "onRowSelectionChange"
 >) {
   const [search, setSearch] = React.useState("");
+  // Primary facets are single-value (Select); popover facets are
+  // multi-value (checkbox rows). Both filter with AND across facets.
   const [active, setActive] = React.useState<Record<string, string>>({});
-
-  const allFacets = React.useMemo(
-    () => [...facets, ...moreFilters],
-    [facets, moreFilters],
-  );
+  const [checked, setChecked] = React.useState<Record<string, string[]>>({});
 
   const filtered = React.useMemo(() => {
-    const entries = Object.entries(active).filter(([, v]) => v !== "");
-    if (entries.length === 0) return data;
-    return data.filter((row) =>
-      entries.every(([facetId, value]) => {
-        const facet = allFacets.find((f) => f.id === facetId);
-        return facet ? facet.getValue(row) === value : true;
-      }),
+    const single = Object.entries(active).filter(([, v]) => v !== "");
+    const multi = Object.entries(checked).filter(([, v]) => v.length > 0);
+    if (single.length === 0 && multi.length === 0) return data;
+    return data.filter(
+      (row) =>
+        single.every(([facetId, value]) => {
+          const facet = facets.find((f) => f.id === facetId);
+          return facet ? facet.getValue(row) === value : true;
+        }) &&
+        multi.every(([facetId, values]) => {
+          const facet = moreFilters.find((f) => f.id === facetId);
+          return facet ? values.includes(facet.getValue(row)) : true;
+        }),
     );
-  }, [data, active, allFacets]);
+  }, [data, active, checked, facets, moreFilters]);
 
-  const hasFilters = search !== "" || Object.values(active).some((v) => v !== "");
-  const moreFiltersActive = moreFilters.filter(
-    (f) => (active[f.id] ?? "") !== "",
-  ).length;
+  const hasFilters =
+    search !== "" ||
+    Object.values(active).some((v) => v !== "") ||
+    Object.values(checked).some((v) => v.length > 0);
+  const moreFiltersActive = Object.values(checked).reduce(
+    (n, values) => n + values.length,
+    0,
+  );
+
+  const toggleChecked = (facetId: string, value: string) =>
+    setChecked((prev) => {
+      const current = prev[facetId] ?? [];
+      return {
+        ...prev,
+        [facetId]: current.includes(value)
+          ? current.filter((v) => v !== value)
+          : [...current, value],
+      };
+    });
 
   return (
     <div className={cn("flex min-w-0 flex-col gap-3", className)}>
@@ -149,29 +173,34 @@ function FilteredTable<TData, TValue>({
                 ) : null}
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-64 space-y-3">
-              {moreFilters.map((facet) => (
-                <div key={facet.id} className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">
+            <PopoverContent align="start" className="w-60 p-2">
+              {/* Checkbox rows, never a nested Select — a popover must be
+                  the only overlay open. */}
+              {moreFilters.map((facet, fi) => (
+                <div key={facet.id}>
+                  {fi > 0 ? <Separator className="my-2" /> : null}
+                  <p className="px-1.5 pb-1 text-xs font-medium text-muted-foreground">
                     {facet.label}
-                  </Label>
-                  <Select
-                    value={active[facet.id] ?? ""}
-                    onValueChange={(value) =>
-                      setActive((prev) => ({ ...prev, [facet.id]: value }))
-                    }
-                  >
-                    <SelectTrigger className="w-full" aria-label={facet.label}>
-                      <SelectValue placeholder="Any" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {facet.options.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
+                  </p>
+                  <div className="flex flex-col">
+                    {facet.options.map((opt) => {
+                      const isOn = (checked[facet.id] ?? []).includes(opt.value);
+                      return (
+                        <label
+                          key={opt.value}
+                          className="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1.5 text-sm text-foreground transition-colors hover:bg-accent"
+                        >
+                          <Checkbox
+                            checked={isOn}
+                            onCheckedChange={() =>
+                              toggleChecked(facet.id, opt.value)
+                            }
+                          />
                           {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
             </PopoverContent>
@@ -184,6 +213,7 @@ function FilteredTable<TData, TValue>({
             onClick={() => {
               setSearch("");
               setActive({});
+              setChecked({});
             }}
           >
             <XIcon />
@@ -228,12 +258,17 @@ function IconCell({
   );
 }
 
+// Vibrant identity tones — saturated fill + a darker outline of the same
+// tone so chips pop like the reference avatars (not washed-out pastels).
 const CHIP_TONES = [
-  "bg-chart-1/15 text-chart-1",
-  "bg-chart-2/15 text-chart-2",
-  "bg-chart-3/15 text-chart-3",
-  "bg-chart-4/15 text-chart-4",
-  "bg-chart-5/15 text-chart-5",
+  "bg-chart-1/20 text-chart-1 ring-chart-1/30",
+  "bg-chart-2/20 text-chart-2 ring-chart-2/30",
+  "bg-chart-3/25 text-chart-3 ring-chart-3/35",
+  "bg-chart-4/20 text-chart-4 ring-chart-4/30",
+  "bg-chart-5/20 text-chart-5 ring-chart-5/30",
+  "bg-chart-6/20 text-chart-6 ring-chart-6/30",
+  "bg-chart-7/20 text-chart-7 ring-chart-7/30",
+  "bg-chart-8/20 text-chart-8 ring-chart-8/30",
 ];
 
 /** Colored initial tile + name — the reference "customer" cell. Tone is stable per name. */
@@ -255,7 +290,7 @@ function AvatarChipCell({
       <span
         aria-hidden
         className={cn(
-          "flex size-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-semibold uppercase",
+          "flex size-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-semibold uppercase ring-1 ring-inset",
           tone,
         )}
       >

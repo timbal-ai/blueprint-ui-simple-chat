@@ -90,6 +90,7 @@ function FormSheet({
   submitLabel = "Save",
   onSubmit,
   submitting = false,
+  size = "lg",
   children,
 }: {
   open: boolean;
@@ -99,11 +100,13 @@ function FormSheet({
   submitLabel?: string;
   onSubmit: () => void;
   submitting?: boolean;
+  /** Sheet width preset — bump to "xl"/"full" for dense enterprise forms. */
+  size?: React.ComponentProps<typeof SheetContent>["size"];
   children: React.ReactNode;
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full gap-0 sm:max-w-md">
+      <SheetContent side="right" size={size} className="w-full gap-0">
         <SheetHeader className="border-b border-border">
           <SheetTitle>{title}</SheetTitle>
           {description ? <SheetDescription>{description}</SheetDescription> : null}

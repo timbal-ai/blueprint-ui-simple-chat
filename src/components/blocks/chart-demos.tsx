@@ -4,11 +4,18 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  ComposedChart,
+  Label,
   Line,
   LineChart,
   Pie,
   PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  Radar,
+  RadarChart,
   XAxis,
+  YAxis,
 } from "recharts";
 
 import {
@@ -21,10 +28,12 @@ import {
 } from "@/components/ui/chart";
 
 /**
- * Chart recipes — the four canonical shadcn chart patterns wired to DNA
- * chart tokens. Fork a recipe and swap the data/config; always render charts
- * through ChartContainer (never a bare ResponsiveContainer) so colors,
- * tooltips, and sizing stay consistent.
+ * Chart recipes — the canonical Recharts patterns wired to DNA chart
+ * tokens: area, bar, line, pie/donut, composed line+bar (the dashboard
+ * reference), stacked bar, donut-with-total, and radar. Fork a recipe and
+ * swap the data/config; always render charts through ChartContainer (never
+ * a bare ResponsiveContainer) so colors, tooltips, and sizing stay
+ * consistent.
  */
 
 const monthly = [
@@ -146,4 +155,207 @@ function DemoPieChart() {
   );
 }
 
-export { DemoAreaChart, DemoBarChart, DemoLineChart, DemoPieChart };
+/* ---------------------------------------------------------------------------
+ * Composed line + bar — the dashboard-reference shape: muted volume bars
+ * under two crisp trend lines (e.g. growth vs attrition over months).
+ * ------------------------------------------------------------------------- */
+
+const workforce = [
+  { month: "Jan", growth: 2300, attrition: 1600, hires: 620 },
+  { month: "Feb", growth: 2450, attrition: 1720, hires: 540 },
+  { month: "Mar", growth: 2380, attrition: 1650, hires: 700 },
+  { month: "Apr", growth: 2500, attrition: 1580, hires: 660 },
+  { month: "May", growth: 2440, attrition: 1690, hires: 580 },
+  { month: "Jun", growth: 2560, attrition: 1470, hires: 740 },
+  { month: "Jul", growth: 2620, attrition: 1380, hires: 690 },
+  { month: "Aug", growth: 2540, attrition: 1290, hires: 720 },
+  { month: "Sep", growth: 2680, attrition: 1210, hires: 610 },
+  { month: "Oct", growth: 2610, attrition: 1150, hires: 680 },
+];
+
+const workforceConfig = {
+  growth: { label: "Growth", color: "var(--chart-1)" },
+  attrition: { label: "Attrition", color: "var(--chart-6)" },
+  hires: { label: "Hires", color: "var(--muted-foreground)" },
+} satisfies ChartConfig;
+
+function DemoComposedChart({ className }: { className?: string }) {
+  return (
+    <ChartContainer
+      config={workforceConfig}
+      className={className ?? "h-64 w-full"}
+    >
+      <ComposedChart
+        accessibilityLayer
+        data={workforce}
+        margin={{ left: 4, right: 12 }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+        <YAxis tickLine={false} axisLine={false} tickMargin={4} width={40} />
+        <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+        <Bar
+          dataKey="hires"
+          fill="var(--color-hires)"
+          fillOpacity={0.25}
+          radius={[3, 3, 0, 0]}
+          barSize={14}
+        />
+        <Line
+          dataKey="growth"
+          type="monotone"
+          stroke="var(--color-growth)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          dataKey="attrition"
+          type="monotone"
+          stroke="var(--color-attrition)"
+          strokeWidth={2}
+          dot={false}
+        />
+      </ComposedChart>
+    </ChartContainer>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+ * Stacked bar — composition over time (e.g. plan mix per quarter).
+ * ------------------------------------------------------------------------- */
+
+const planMix = [
+  { quarter: "Q1", starter: 210, growth: 140, enterprise: 60 },
+  { quarter: "Q2", starter: 230, growth: 180, enterprise: 84 },
+  { quarter: "Q3", starter: 205, growth: 220, enterprise: 110 },
+  { quarter: "Q4", starter: 190, growth: 260, enterprise: 148 },
+];
+
+const planMixConfig = {
+  starter: { label: "Starter", color: "var(--chart-2)" },
+  growth: { label: "Growth", color: "var(--chart-1)" },
+  enterprise: { label: "Enterprise", color: "var(--chart-4)" },
+} satisfies ChartConfig;
+
+function DemoStackedBarChart() {
+  return (
+    <ChartContainer config={planMixConfig} className="h-64 w-full">
+      <BarChart accessibilityLayer data={planMix}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="quarter" tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar dataKey="starter" stackId="a" fill="var(--color-starter)" radius={[0, 0, 3, 3]} />
+        <Bar dataKey="growth" stackId="a" fill="var(--color-growth)" />
+        <Bar dataKey="enterprise" stackId="a" fill="var(--color-enterprise)" radius={[3, 3, 0, 0]} />
+        <ChartLegend content={<ChartLegendContent />} />
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+ * Donut with center total — the "big number inside the ring" pattern.
+ * ------------------------------------------------------------------------- */
+
+function DemoDonutChart() {
+  const total = browsers.reduce((sum, b) => sum + b.visitors, 0);
+  return (
+    <ChartContainer config={browserConfig} className="mx-auto aspect-square h-64">
+      <PieChart>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Pie
+          data={browsers}
+          dataKey="visitors"
+          nameKey="browser"
+          innerRadius={62}
+          strokeWidth={4}
+        >
+          <Label
+            content={({ viewBox }) => {
+              if (!viewBox || !("cx" in viewBox) || !("cy" in viewBox)) {
+                return null;
+              }
+              return (
+                <text
+                  x={viewBox.cx}
+                  y={viewBox.cy}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                >
+                  <tspan
+                    x={viewBox.cx}
+                    y={viewBox.cy}
+                    className="fill-foreground text-2xl font-medium tracking-tight"
+                  >
+                    {total.toLocaleString()}
+                  </tspan>
+                  <tspan
+                    x={viewBox.cx}
+                    y={(viewBox.cy ?? 0) + 20}
+                    className="fill-muted-foreground text-xs"
+                  >
+                    Visitors
+                  </tspan>
+                </text>
+              );
+            }}
+          />
+        </Pie>
+      </PieChart>
+    </ChartContainer>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+ * Radar — multi-dimension comparison (skills, category scores).
+ * ------------------------------------------------------------------------- */
+
+const skills = [
+  { skill: "Delivery", current: 82, target: 90 },
+  { skill: "Quality", current: 74, target: 85 },
+  { skill: "Velocity", current: 68, target: 75 },
+  { skill: "Collab", current: 88, target: 90 },
+  { skill: "Docs", current: 56, target: 70 },
+  { skill: "Ownership", current: 79, target: 85 },
+];
+
+const skillsConfig = {
+  current: { label: "Current", color: "var(--chart-1)" },
+  target: { label: "Target", color: "var(--chart-3)" },
+} satisfies ChartConfig;
+
+function DemoRadarChart() {
+  return (
+    <ChartContainer config={skillsConfig} className="mx-auto aspect-square h-64">
+      <RadarChart data={skills}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <PolarGrid />
+        <PolarAngleAxis dataKey="skill" />
+        <Radar
+          dataKey="current"
+          fill="var(--color-current)"
+          fillOpacity={0.4}
+          stroke="var(--color-current)"
+        />
+        <Radar
+          dataKey="target"
+          fill="var(--color-target)"
+          fillOpacity={0.15}
+          stroke="var(--color-target)"
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+      </RadarChart>
+    </ChartContainer>
+  );
+}
+
+export {
+  DemoAreaChart,
+  DemoBarChart,
+  DemoComposedChart,
+  DemoDonutChart,
+  DemoLineChart,
+  DemoPieChart,
+  DemoRadarChart,
+  DemoStackedBarChart,
+};
