@@ -138,9 +138,11 @@ function DataTable<TData, TValue>({
         style={maxHeight ? { maxHeight } : undefined}
       >
         <Table>
-          {/* Header renders as a soft ROUNDED band (muted fill, no border
-              line) — the reference table grammar. Cells carry the fill so
-              the first/last corners round cleanly. */}
+          {/* Header renders as a soft ROUNDED band — softened muted fill
+              with a hairline border and a whisper of drop shadow (the
+              reference table grammar). Cells carry the fill/border/shadow
+              so the first/last corners round cleanly: every cell paints
+              top+bottom edges, only the end caps paint the sides. */}
           <TableHeader
             className={cn(
               "[&_tr]:border-0",
@@ -153,7 +155,7 @@ function DataTable<TData, TValue>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="bg-muted first:rounded-l-lg last:rounded-r-lg"
+                    className="border-y border-border/60 bg-muted/60 shadow-[0_1px_2px_0_color-mix(in_srgb,black_4%,transparent)] first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
                     style={{
                       width:
                         header.getSize() !== 150 ? header.getSize() : undefined,
