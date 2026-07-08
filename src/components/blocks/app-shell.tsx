@@ -21,6 +21,7 @@ import {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 
@@ -97,53 +98,7 @@ function AppShell({
           </div>
         </SidebarHeader>
         <SidebarContent>
-          {nav.map((group, gi) => (
-            <SidebarGroup key={group.label ?? gi}>
-              {group.label ? (
-                <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-              ) : null}
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {group.items.map((item) => {
-                    const childActive = item.children?.some((c) => c.id === activeId);
-                    return (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          isActive={item.id === activeId || childActive}
-                          onClick={() => onNavigate?.(item.id)}
-                          tooltip={item.label}
-                        >
-                          {item.icon ? <item.icon /> : null}
-                          <span>{item.label}</span>
-                        </SidebarMenuButton>
-                        {item.badge != null ? (
-                          <SidebarMenuBadge>
-                            <Badge variant="secondary" className="h-5 min-w-5 px-1.5">
-                              {item.badge}
-                            </Badge>
-                          </SidebarMenuBadge>
-                        ) : null}
-                        {item.children?.length ? (
-                          <SidebarMenuSub>
-                            {item.children.map((child) => (
-                              <SidebarMenuSubItem key={child.id}>
-                                <SidebarMenuSubButton
-                                  isActive={child.id === activeId}
-                                  onClick={() => onNavigate?.(child.id)}
-                                >
-                                  <span>{child.label}</span>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        ) : null}
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
+          <ShellNav nav={nav} activeId={activeId} onNavigate={onNavigate} />
         </SidebarContent>
         {footer ? <SidebarFooter>{footer}</SidebarFooter> : null}
       </Sidebar>
@@ -173,6 +128,79 @@ function AppShell({
         </div>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+/**
+ * Nav tree. Lives inside the provider so it can reach the sidebar context:
+ * on MOBILE, tapping any entry closes the drawer automatically — the user
+ * should land on the page, not on the still-open sheet.
+ */
+function ShellNav({
+  nav,
+  activeId,
+  onNavigate,
+}: {
+  nav: AppShellNavGroup[];
+  activeId?: string;
+  onNavigate?: (id: string) => void;
+}) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const navigate = (id: string) => {
+    if (isMobile) setOpenMobile(false);
+    onNavigate?.(id);
+  };
+
+  return (
+    <>
+      {nav.map((group, gi) => (
+        <SidebarGroup key={group.label ?? gi}>
+          {group.label ? (
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          ) : null}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {group.items.map((item) => {
+                const childActive = item.children?.some((c) => c.id === activeId);
+                return (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      isActive={item.id === activeId || childActive}
+                      onClick={() => navigate(item.id)}
+                      tooltip={item.label}
+                    >
+                      {item.icon ? <item.icon /> : null}
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                    {item.badge != null ? (
+                      <SidebarMenuBadge>
+                        <Badge variant="secondary" className="h-5 min-w-5 px-1.5">
+                          {item.badge}
+                        </Badge>
+                      </SidebarMenuBadge>
+                    ) : null}
+                    {item.children?.length ? (
+                      <SidebarMenuSub>
+                        {item.children.map((child) => (
+                          <SidebarMenuSubItem key={child.id}>
+                            <SidebarMenuSubButton
+                              isActive={child.id === activeId}
+                              onClick={() => navigate(child.id)}
+                            >
+                              <span>{child.label}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    ) : null}
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
+    </>
   );
 }
 

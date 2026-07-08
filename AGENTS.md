@@ -26,23 +26,30 @@ Three layers, all in this repo:
      bare `transition-*` inherits DNA motion).
    - `blocks/` — **the block kit: screen-level patterns. Compose from these
      FIRST.** `catalog.ts` (`BLOCKS_CATALOG`) is the machine-readable index —
-     read it before building any screen. `AppShell` (default
-     `variant="inset"` — gray canvas, white bordered content card, built-in
-     sidebar collapse toggle + a mobile brand bar with an in-flow opener),
-     `SidebarUser` (avatar + account dropdown for the sidebar footer),
-     `PageHeader`, `ListDetailLayout`, `FilteredTable`
-     (+ `IconCell`/`AvatarChipCell`, checkbox-facet `moreFilters` popover),
-     detail-panel sections, `FormSheet`/`FormField` (sheet `size` presets up
-     to `full`), settings scaffolding, `StatOverview`/`ChartCard`,
-     `ResourceGrid`, `AssistantPill` (the floating AI pill, streaming
-     pre-wired), `chart-demos` (eight Recharts recipes incl. composed
-     line+bar, stacked, donut-with-total, radar).
+     read it before building any screen; `blocks/index.ts` barrels the whole
+     kit (`import { AppShell, BulkActionBar } from "@/components/blocks"`).
+     `AppShell` (default `variant="inset"` — gray canvas, white bordered
+     content card, built-in sidebar collapse toggle + a mobile brand bar with
+     an in-flow opener; on mobile, tapping a nav entry auto-closes the
+     drawer), `SidebarUser` (avatar + account dropdown for the sidebar
+     footer), `PageHeader`, `ListDetailLayout`, `FilteredTable`
+     (+ `IconCell`/`AvatarChipCell`/`AvatarChip`, checkbox-facet
+     `moreFilters` popover), `BulkActionBar` (floating selection bubble —
+     pair with row selection), detail-panel sections, `FormSheet`/`FormField`
+     (sheet `size` presets up to `full`), settings scaffolding,
+     `StatOverview`/`ChartCard` (edge-less charts), `ResourceGrid`,
+     `AssistantPill` (the floating AI pill, streaming pre-wired),
+     `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
+     donut-with-total, radar — no legends, gradient fills).
    - `icons.tsx` — **the house icon pack (Nucleo UI outline 18px). Import
      every icon from `@/components/icons`, never from an icon library
      directly.** Need a new glyph? Add one re-export line there.
    - `pages/` — full page templates. `invoices-page.tsx` is the reference
      entity-index grammar; `hr-dashboard-page.tsx` is the reference
      dashboard grammar (stats → chart → table) — fork them, don't restart.
+     Both ship the full record flow: row click → a big floating detail
+     Sheet (`MemberDetailSheet` / `InvoiceDetailSheet` — identity header,
+     fields, activity, footer actions) and row selection → `BulkActionBar`.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
    - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
      `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
@@ -88,19 +95,36 @@ chat reference), not by reimplementing the thread.
   `PageHeader` + blocks, and drop `<AssistantPill />` (from
   `blocks/assistant`) on operational screens so the AI is one tap away.
   Don't force a data app into a chat box.
+- **Chat shell mount convention (hard rule).** The chat shell owns the whole
+  viewport: give it its own route and render it as that route's ONLY child.
+  NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
+  `Card`, a `Sheet`, a grid cell, or any padded/height-constrained wrapper —
+  it manages its own layout, scrolling, and composer, and does not scale
+  inside another shell. In-page AI on an app screen is `AssistantPill`,
+  never an embedded chat shell.
 - **House visual rules** (already encoded in the components — keep them):
-  titles are never bold (`font-medium` max); search bars, selects, and
-  inputs are white (`bg-card`), never gray; inputs and white buttons cast
-  the SAME shadow (`SURFACE_SHADOW` from `@/lib/control-surface` — never
-  `shadow-xs` on a control); tables render directly on the surface
-  (`DataTable` `bordered` stays off — never wrap a table in a card); badges
-  are vibrant (solid-tone text, tinted fill, darker outline of the same
-  tone); checkboxes/radios check in the DNA selection blue (`bg-selection`
-  from `dna.json` `color.selection`), with a deliberately small tick;
-  sheets float (inset + fully rounded); buttons are compressed (h-8) with
-  the gradient top sheen; state changes animate (tabs, overlays, page
-  mounts); brand rows use `TimbalMark` (chrome liquid-metal, from
-  `@timbal-ai/timbal-react/studio`) + a `text-base font-normal` name.
+  titles are never bold (`font-medium` max, tight tracking; `PageHeader`
+  owns the spacing rhythm — eyebrow, 1.6rem title, relaxed description);
+  search bars, selects, and inputs are white (`bg-card`), never gray;
+  inputs and white buttons cast the SAME shadow (`SURFACE_SHADOW` from
+  `@/lib/control-surface` — never `shadow-xs` on a control); tables render
+  directly on the surface (`DataTable` `bordered` stays off — never wrap a
+  table in a card) and the header row is a ROUNDED muted band (cells carry
+  `bg-muted`, first/last corners rounded, sort buttons hover as rounded
+  pills); toolbar filter triggers read at full label strength
+  (`text-foreground`, same as the Filters button); badges are vibrant
+  (solid-tone text, tinted fill, darker outline of the same tone; DNA
+  `color.status: "vivid"`); checkboxes/radios check in the DNA selection
+  blue (`bg-selection` from `dna.json` `color.selection`), with a
+  deliberately small tick; sheets float (inset + fully rounded, `size` up
+  to `full`); KPI tiles are the two-layer reference card (gray outer tile,
+  white inner value card with soft shadow — `app/stat`); charts are
+  edge-less, legend-free (tooltips only), gradient-filled, on the cool
+  DNA palette (`--chart-1..8`); buttons are compressed (h-8) with the
+  gradient top sheen; state changes animate (tabs, overlays, page mounts,
+  the bulk bubble); brand rows use `TimbalMark` (chrome liquid-metal, from
+  `@timbal-ai/timbal-react/studio`) + a `text-base font-medium` name that
+  matches page-title weight.
 - **Overlay discipline:** one overlay at a time — never nest a Select (or a
   second popover) inside a Popover; use checkbox rows like `FilteredTable`'s
   `moreFilters`.

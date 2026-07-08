@@ -138,10 +138,13 @@ function DataTable<TData, TValue>({
         style={maxHeight ? { maxHeight } : undefined}
       >
         <Table>
+          {/* Header renders as a soft ROUNDED band (muted fill, no border
+              line) — the reference table grammar. Cells carry the fill so
+              the first/last corners round cleanly. */}
           <TableHeader
             className={cn(
-              stickyHeader &&
-                "sticky top-0 z-10 bg-card shadow-[inset_0_-1px_0_0_var(--border)]",
+              "[&_tr]:border-0",
+              stickyHeader && "sticky top-0 z-10",
             )}
           >
             {table.getHeaderGroups().map((headerGroup) => (
@@ -150,6 +153,7 @@ function DataTable<TData, TValue>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
+                    className="bg-muted first:rounded-l-lg last:rounded-r-lg"
                     style={{
                       width:
                         header.getSize() !== 150 ? header.getSize() : undefined,
@@ -230,7 +234,8 @@ function DataTableColumnHeader<TData, TValue>({
     <Button
       variant="ghost"
       size="sm"
-      className={cn("-ml-2 h-7 gap-1 px-2 text-xs font-medium text-muted-foreground hover:text-foreground data-[sorted=true]:text-foreground", className)}
+      // Rounded hover pill inside the header band — never a square highlight.
+      className={cn("-ml-2 h-7 gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-foreground/5 hover:text-foreground data-[sorted=true]:text-foreground", className)}
       data-sorted={sorted !== false}
       onClick={() => column.toggleSorting(sorted === "asc")}
     >

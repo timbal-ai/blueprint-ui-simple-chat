@@ -64,12 +64,18 @@ function StatOverview({
   );
 }
 
-/** Bounded, titled container for a chart. Height is fixed so layouts stay stable. */
+/**
+ * Bounded, titled container for a chart. Height is fixed so layouts stay
+ * stable. Charts render EDGE-LESS by default — the plot bleeds to the
+ * card's left/right edges (recipes use zero side margins); set
+ * `bleed={false}` only when the chart needs the card's inner padding.
+ */
 function ChartCard({
   title,
   description,
   height = "16rem",
   action,
+  bleed = true,
   children,
   className,
 }: {
@@ -79,6 +85,8 @@ function ChartCard({
   height?: string;
   /** Optional header action (range select, export). */
   action?: React.ReactNode;
+  /** Plot bleeds to the card's horizontal edges. Default true. */
+  bleed?: boolean;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -89,7 +97,7 @@ function ChartCard({
         {description ? <CardDescription>{description}</CardDescription> : null}
         {action ? <CardAction>{action}</CardAction> : null}
       </CardHeader>
-      <CardContent>
+      <CardContent className={cn(bleed && "px-0")}>
         <div className="w-full min-w-0" style={{ height }}>
           {children}
         </div>

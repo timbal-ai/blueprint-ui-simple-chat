@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 /**
- * Single KPI tile — the reference grammar: muted label row (with an
- * optional trailing action), large NOT-bold value, a vibrant delta badge
- * beside it, and a muted caption underneath ("Compared to the previous
- * period"). Hierarchy comes from size and tone, never weight.
+ * Single KPI tile — the "Total Employee / New Hires" reference grammar:
+ * a soft GRAY outer tile carries the label row (+ optional action), and the
+ * value lives on an inner WHITE card that floats above it with a small
+ * shadow. Large NOT-bold value, vibrant delta badge beside it, muted
+ * caption underneath. Hierarchy comes from size and tone, never weight.
  */
 function Stat({
   label,
@@ -34,40 +35,44 @@ function Stat({
     <div
       data-slot="stat"
       className={cn(
-        "flex flex-col gap-1.5 rounded-xl border border-border bg-card p-4 shadow-xs",
+        "flex flex-col gap-2 rounded-2xl bg-muted/70 p-2",
         className,
       )}
       {...props}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="truncate text-xs text-muted-foreground">{label}</span>
+      <div className="flex items-center justify-between gap-2 px-2 pt-1">
+        <span className="truncate text-[13px] text-foreground/80">{label}</span>
         {action}
       </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-2xl font-medium tracking-tight tabular-nums text-foreground">
-          {value}
-        </span>
-        {delta ? (
-          <Badge
-            variant={
-              deltaTone === "positive"
-                ? "success"
-                : deltaTone === "negative"
-                  ? "destructive"
-                  : "secondary"
-            }
-            className="gap-0.5 px-1.5 text-[11px]"
-          >
-            {deltaTone === "positive" ? (
-              <TrendingUpIcon />
-            ) : deltaTone === "negative" ? (
-              <TrendingDownIcon />
-            ) : null}
-            {delta}
-          </Badge>
+      <div className="flex flex-1 flex-col gap-1 rounded-xl border border-border/60 bg-card p-3.5 shadow-[0_1px_2px_0_color-mix(in_srgb,black_6%,transparent),0_2px_6px_-2px_color-mix(in_srgb,black_8%,transparent)]">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[1.7rem] leading-none font-medium tracking-tight tabular-nums text-foreground">
+            {value}
+          </span>
+          {delta ? (
+            <Badge
+              variant={
+                deltaTone === "positive"
+                  ? "success"
+                  : deltaTone === "negative"
+                    ? "destructive"
+                    : "secondary"
+              }
+              className="gap-0.5 px-1.5 text-[11px]"
+            >
+              {deltaTone === "positive" ? (
+                <TrendingUpIcon />
+              ) : deltaTone === "negative" ? (
+                <TrendingDownIcon />
+              ) : null}
+              {delta}
+            </Badge>
+          ) : null}
+        </div>
+        {hint ? (
+          <span className="text-xs text-muted-foreground">{hint}</span>
         ) : null}
       </div>
-      {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
     </div>
   );
 }

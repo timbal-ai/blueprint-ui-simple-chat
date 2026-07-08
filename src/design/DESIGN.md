@@ -6,11 +6,10 @@
 
 ## Intent
 
-_One or two sentences: what this product is, who uses it, and the feeling the
-UI should carry. Rewrite when you author the real DNA._
-
-Blueprint default: neutral, calm product surface that works for chat and
-dashboards until the real domain is known.
+Enterprise-grade operations UI (dashboards, entity indexes, record detail,
+settings) plus the Timbal chat surfaces. Calm white-on-gray product feel,
+Inter tracking-tight, vibrant-but-controlled accents. The kit must scale to
+different domains and 1:1 reference matching without AI slop.
 
 ## DNA summary
 
@@ -18,10 +17,13 @@ dashboards until the real domain is known.
 |---|---|---|
 | Finish | `timbal` (canvas gradient, gradient + inset controls) | The house look — keep unless the user or a reference asks for flat |
 | Surfaces | `panel` (gray canvas, elevated cards) | Safe SaaS default |
-| Brand | `#18181b` (neutral zinc — zero chroma) | Placeholder; near-black/near-white primary until the real brand is known |
-| Typography | `inter` pairing | Neutral default |
+| Brand | `#18181b` (neutral zinc — zero chroma) | Near-black primary; color comes from status/selection/chart accents |
+| Status | `vivid` | Badges/status chips must pop (user direction: vibrant, never washed out) |
+| Selection | `#3B76FF` | House blue for checkbox/radio checked states (`--selection`) |
+| Charts | explicit cool palette (blue → violet → teal → magenta → sky → indigo → aqua → cobalt, oklch) | "Cooler" gradient-friendly series colors, distinct in both modes |
+| Typography | `inter` pairing, tracking tight, headings 500 | Titles are NEVER bold |
 | Shape | radius 0.625rem, rounded controls | Middle of the road |
-| Density | comfortable | Middle of the road |
+| Density | comfortable (tables py-2) | Reference tables are denser than stock |
 | Motion | snappy (150ms base) | Product-feel default |
 
 Change any of this in `dna.json`, then run `bun run dna:compile`.
@@ -29,31 +31,47 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 
 ## References
 
-_Record every reference used and what was borrowed from it. This is how
-consistency survives multi-session work._
-
 | Source | Ref | Borrowed |
 |---|---|---|
-| — | — | — |
+| Linear-style invoices shot | user-provided | Index page grammar: big title, search + facets toolbar, dark primary action, soft badges, numbered pagination |
+| HR Insights dashboard shot | user-provided | Dashboard rhythm (breadcrumb → title → 3-up KPI → composed chart → tracker table), two-layer KPI tiles, vibrant delta badges |
+| Rounded table header shot | user-provided | Muted rounded header band, no header border line |
+| "Total Employee / New Hires" cards | user-provided | Stat = gray outer tile + white inner value card with soft shadow |
+| Timbal platform sidebar | timbal repo | TimbalMark chrome logo + medium-weight brand title, #F5F5F5 sidebar |
 
 ## Layout decisions
 
-- Shell: _undecided — pick per domain (sidebar / topbar / minimal / split)._
-- Page width: boxed.
-- Nav model: _undecided._
+- Shell: `AppShell variant="inset"` — gray canvas, white bordered content
+  card, sidebar with collapse toggle; mobile gets an in-flow brand bar and
+  the drawer auto-closes on nav.
+- Chat: full-viewport route only (`/chat`); in-page AI is `AssistantPill`.
+- Page width: boxed; pages own their header via `PageHeader`.
 
 ## Component decisions
 
-_Deviations from the stock components live here: "buttons are pill-shaped",
-"tables are dense with zebra rows", "cards are flat with hairline borders"…
-List the file you changed and the reason._
-
-- None yet — stock blueprint components. Buttons, cards, dialogs, and the
-  sidebar inset consume the DNA **finish tokens** (`--primary-fill-*`,
-  `--elevated-*`, `--modal-*`, `--playground-*`, `shadow-control`), so
-  `"finish": "timbal"` renders the signature Timbal chrome and
-  `"finish": "flat"` renders plain flat surfaces from the same source.
+- **Controls:** inputs/selects/textareas are white (`bg-card`) and share the
+  exact `SURFACE_SHADOW` with white buttons (`@/lib/control-surface`).
+  Buttons compressed (h-8, rounded-lg) with gradient top sheen.
+- **Tables:** transparent (no card wrap), rounded muted header band (cells
+  carry `bg-muted`, first/last rounded), sort buttons hover as rounded
+  pills, toolbar facet triggers read at full `text-foreground` strength.
+- **Badges:** vivid tonal chips — solid-tone text, tinted fill (12–20%),
+  darker same-tone outline.
+- **Selection controls:** checked state is the DNA selection blue with a
+  deliberately small tick.
+- **KPI tiles (`app/stat`):** two-layer reference card — gray outer tile
+  (label + action) + white inner value card with a soft drop shadow.
+- **Charts:** no legends (tooltips only), zero side margins (edge-less
+  inside `ChartCard`), gradient fills via `<defs>`, cool DNA palette.
+- **Sheets:** float (inset, rounded-2xl), `size` presets sm→full; record
+  detail sheets follow `MemberDetailSheet` / `InvoiceDetailSheet` grammar
+  (identity header, fields, activity, footer actions).
+- **Bulk selection:** `BulkActionBar` floating bottom-center bubble — never
+  toolbar buttons.
+- **Icons:** Nucleo outline 18 via `@/components/icons` only.
 
 ## Open questions / known gaps
 
-- None.
+- The floating AssistantPill (z-71, library-owned) can overlap a sheet's
+  footer corner; it is draggable and its position persists — acceptable for
+  now, revisit if users complain.

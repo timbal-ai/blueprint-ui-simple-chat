@@ -148,7 +148,12 @@ function FilteredTable<TData, TValue>({
               setActive((prev) => ({ ...prev, [facet.id]: value }))
             }
           >
-            <SelectTrigger className="w-auto min-w-28" aria-label={facet.label}>
+            {/* Facet triggers read like buttons: full-strength label color,
+                identical to the "Filters" button beside them. */}
+            <SelectTrigger
+              className="w-auto min-w-28 text-foreground data-[placeholder]:text-foreground [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-foreground"
+              aria-label={facet.label}
+            >
               <SelectValue placeholder={facet.label} />
             </SelectTrigger>
             <SelectContent>
@@ -271,6 +276,43 @@ const CHIP_TONES = [
   "bg-chart-8/20 text-chart-8 ring-chart-8/30",
 ];
 
+/** Stable vibrant tone classes for a name — reuse anywhere identity color is needed. */
+function chipTone(name: string): string {
+  return CHIP_TONES[
+    Math.abs(
+      [...name].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) | 0, 7),
+    ) % CHIP_TONES.length
+  ];
+}
+
+/** Colored initial tile — standalone identity avatar (sheets, headers, lists). */
+function AvatarChip({
+  name,
+  size = "sm",
+  className,
+}: {
+  name: string;
+  /** sm = table cell (20px), lg = detail headers (44px). */
+  size?: "sm" | "lg";
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex shrink-0 items-center justify-center font-semibold uppercase ring-1 ring-inset",
+        size === "sm"
+          ? "size-5 rounded-[5px] text-[10px]"
+          : "size-11 rounded-xl text-base",
+        chipTone(name),
+        className,
+      )}
+    >
+      {name.charAt(0)}
+    </span>
+  );
+}
+
 /** Colored initial tile + name — the reference "customer" cell. Tone is stable per name. */
 function AvatarChipCell({
   name,
@@ -279,27 +321,13 @@ function AvatarChipCell({
   name: string;
   className?: string;
 }) {
-  const tone =
-    CHIP_TONES[
-      Math.abs(
-        [...name].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) | 0, 7),
-      ) % CHIP_TONES.length
-    ];
   return (
     <span className={cn("flex items-center gap-2", className)}>
-      <span
-        aria-hidden
-        className={cn(
-          "flex size-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-semibold uppercase ring-1 ring-inset",
-          tone,
-        )}
-      >
-        {name.charAt(0)}
-      </span>
+      <AvatarChip name={name} />
       <span className="truncate">{name}</span>
     </span>
   );
 }
 
-export { AvatarChipCell, FilteredTable, IconCell };
+export { AvatarChip, AvatarChipCell, FilteredTable, IconCell };
 export type { TableFacet };

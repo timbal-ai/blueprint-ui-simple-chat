@@ -30,19 +30,19 @@ function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col gap-3", className)}>
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
+        <div className="flex min-w-0 flex-col">
           {eyebrow ? (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <div className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
               {eyebrow}
             </div>
           ) : null}
-          <h1 className="text-2xl font-medium tracking-tight text-foreground">
+          <h1 className="text-[1.6rem] leading-tight font-medium tracking-tight text-foreground">
             {title}
           </h1>
           {description ? (
-            <p className="max-w-prose text-sm text-muted-foreground">
+            <p className="mt-1.5 max-w-prose text-sm leading-relaxed text-muted-foreground">
               {description}
             </p>
           ) : null}

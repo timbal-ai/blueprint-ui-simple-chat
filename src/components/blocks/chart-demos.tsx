@@ -20,8 +20,6 @@ import {
 
 import {
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
@@ -30,10 +28,19 @@ import {
 /**
  * Chart recipes — the canonical Recharts patterns wired to DNA chart
  * tokens: area, bar, line, pie/donut, composed line+bar (the dashboard
- * reference), stacked bar, donut-with-total, and radar. Fork a recipe and
- * swap the data/config; always render charts through ChartContainer (never
- * a bare ResponsiveContainer) so colors, tooltips, and sizing stay
- * consistent.
+ * reference), stacked bar, donut-with-total, and radar.
+ *
+ * House chart grammar:
+ * - NO legends — tooltips carry the labels. Keep series count low enough
+ *   that color alone communicates.
+ * - Edge-less plots — zero left/right margins so lines/areas bleed to the
+ *   card edges; the wrapping Card supplies the breathing room.
+ * - Gradient fills — areas and bars fade downward from the series color
+ *   (defined once in <defs> per chart, referenced by id).
+ *
+ * Fork a recipe and swap the data/config; always render charts through
+ * ChartContainer (never a bare ResponsiveContainer) so colors, tooltips,
+ * and sizing stay consistent.
  */
 
 const monthly = [
@@ -53,27 +60,36 @@ const monthlyConfig = {
 function DemoAreaChart() {
   return (
     <ChartContainer config={monthlyConfig} className="h-64 w-full">
-      <AreaChart accessibilityLayer data={monthly} margin={{ left: 12, right: 12 }}>
+      <AreaChart accessibilityLayer data={monthly} margin={{ top: 8, left: 0, right: 0 }}>
+        <defs>
+          <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.55} />
+            <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0.04} />
+          </linearGradient>
+          <linearGradient id="fillExpenses" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-expenses)" stopOpacity={0.45} />
+            <stop offset="95%" stopColor="var(--color-expenses)" stopOpacity={0.04} />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
         <Area
           dataKey="expenses"
           type="natural"
-          fill="var(--color-expenses)"
-          fillOpacity={0.25}
+          fill="url(#fillExpenses)"
           stroke="var(--color-expenses)"
+          strokeWidth={2}
           stackId="a"
         />
         <Area
           dataKey="revenue"
           type="natural"
-          fill="var(--color-revenue)"
-          fillOpacity={0.35}
+          fill="url(#fillRevenue)"
           stroke="var(--color-revenue)"
+          strokeWidth={2}
           stackId="a"
         />
-        <ChartLegend content={<ChartLegendContent />} />
       </AreaChart>
     </ChartContainer>
   );
@@ -82,13 +98,22 @@ function DemoAreaChart() {
 function DemoBarChart() {
   return (
     <ChartContainer config={monthlyConfig} className="h-64 w-full">
-      <BarChart accessibilityLayer data={monthly}>
+      <BarChart accessibilityLayer data={monthly} margin={{ top: 8, left: 0, right: 0 }}>
+        <defs>
+          <linearGradient id="barRevenue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-revenue)" stopOpacity={0.95} />
+            <stop offset="100%" stopColor="var(--color-revenue)" stopOpacity={0.55} />
+          </linearGradient>
+          <linearGradient id="barExpenses" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-expenses)" stopOpacity={0.95} />
+            <stop offset="100%" stopColor="var(--color-expenses)" stopOpacity={0.55} />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
-        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-        <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
-        <ChartLegend content={<ChartLegendContent />} />
+        <Bar dataKey="revenue" fill="url(#barRevenue)" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="expenses" fill="url(#barExpenses)" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ChartContainer>
   );
@@ -97,7 +122,7 @@ function DemoBarChart() {
 function DemoLineChart() {
   return (
     <ChartContainer config={monthlyConfig} className="h-64 w-full">
-      <LineChart accessibilityLayer data={monthly} margin={{ left: 12, right: 12 }}>
+      <LineChart accessibilityLayer data={monthly} margin={{ top: 8, left: 0, right: 0 }}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
@@ -146,10 +171,6 @@ function DemoPieChart() {
       <PieChart>
         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
         <Pie data={browsers} dataKey="visitors" nameKey="browser" innerRadius={56} />
-        <ChartLegend
-          content={<ChartLegendContent nameKey="browser" />}
-          className="flex-wrap gap-2 *:justify-center"
-        />
       </PieChart>
     </ChartContainer>
   );
@@ -175,8 +196,8 @@ const workforce = [
 
 const workforceConfig = {
   growth: { label: "Growth", color: "var(--chart-1)" },
-  attrition: { label: "Attrition", color: "var(--chart-6)" },
-  hires: { label: "Hires", color: "var(--muted-foreground)" },
+  attrition: { label: "Attrition", color: "var(--chart-4)" },
+  hires: { label: "Hires", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 function DemoComposedChart({ className }: { className?: string }) {
@@ -188,16 +209,21 @@ function DemoComposedChart({ className }: { className?: string }) {
       <ComposedChart
         accessibilityLayer
         data={workforce}
-        margin={{ left: 4, right: 12 }}
+        margin={{ top: 8, left: 0, right: 0 }}
       >
+        <defs>
+          <linearGradient id="composedHires" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-hires)" stopOpacity={0.4} />
+            <stop offset="100%" stopColor="var(--color-hires)" stopOpacity={0.08} />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-        <YAxis tickLine={false} axisLine={false} tickMargin={4} width={40} />
+        <YAxis tickLine={false} axisLine={false} tickMargin={4} width={36} />
         <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
         <Bar
           dataKey="hires"
-          fill="var(--color-hires)"
-          fillOpacity={0.25}
+          fill="url(#composedHires)"
           radius={[3, 3, 0, 0]}
           barSize={14}
         />
@@ -240,14 +266,13 @@ const planMixConfig = {
 function DemoStackedBarChart() {
   return (
     <ChartContainer config={planMixConfig} className="h-64 w-full">
-      <BarChart accessibilityLayer data={planMix}>
+      <BarChart accessibilityLayer data={planMix} margin={{ top: 8, left: 0, right: 0 }}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="quarter" tickLine={false} axisLine={false} tickMargin={8} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Bar dataKey="starter" stackId="a" fill="var(--color-starter)" radius={[0, 0, 3, 3]} />
         <Bar dataKey="growth" stackId="a" fill="var(--color-growth)" />
         <Bar dataKey="enterprise" stackId="a" fill="var(--color-enterprise)" radius={[3, 3, 0, 0]} />
-        <ChartLegend content={<ChartLegendContent />} />
       </BarChart>
     </ChartContainer>
   );
@@ -343,7 +368,6 @@ function DemoRadarChart() {
           fillOpacity={0.15}
           stroke="var(--color-target)"
         />
-        <ChartLegend content={<ChartLegendContent />} />
       </RadarChart>
     </ChartContainer>
   );

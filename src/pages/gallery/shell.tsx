@@ -50,7 +50,8 @@ export default function GalleryShell() {
         // never-bold product name.
         <div className="flex items-center gap-2 px-1 py-0.5">
           <TimbalMark size={26} className="shrink-0" />
-          <span className="truncate text-base font-normal tracking-tight">
+          {/* Same weight as page titles (medium) — never bold. */}
+          <span className="truncate text-base font-medium tracking-tight">
             Timbal Kit
           </span>
         </div>

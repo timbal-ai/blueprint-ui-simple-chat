@@ -46,14 +46,25 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "filtered-table": {
     importFrom: "@/components/blocks/filtered-table",
-    exports: ["FilteredTable", "IconCell", "AvatarChipCell"],
+    exports: ["FilteredTable", "IconCell", "AvatarChipCell", "AvatarChip"],
     purpose:
-      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value) and AvatarChipCell (colored initial tile + name).",
+      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value), AvatarChipCell (colored initial tile + name), and AvatarChip (standalone identity tile, sm/lg).",
     useWhen: [
       "Any table that needs search or filters — do not hand-roll a toolbar",
       "Entity index pages (invoices, users, orders)",
     ],
     composes: ["ui/data-table", "ui/input", "ui/select", "ui/button", "ui/checkbox"],
+  },
+  "bulk-action-bar": {
+    importFrom: "@/components/blocks/bulk-action-bar",
+    exports: ["BulkActionBar"],
+    purpose:
+      "Floating selection bubble: when table rows (or grid cards) are selected, a pill floats bottom-center with the count and the bulk actions (edit, export, remove…). Standalone — handles its own visibility (hides at count 0), positioning, and enter animation. Render as a sibling of the table.",
+    useWhen: [
+      "Any selectable table/grid — pair with rowSelection + selectionColumn",
+      "Bulk edit/export/delete affordances — never put these in the toolbar",
+    ],
+    composes: ["ui/button", "ui/separator"],
   },
   "detail-panel": {
     importFrom: "@/components/blocks/detail-panel",
@@ -92,7 +103,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/stat-overview",
     exports: ["StatOverview", "ChartCard"],
     purpose:
-      "Top-of-dashboard band: responsive KPI row plus bounded, titled chart containers with fixed heights (no layout shift).",
+      "Top-of-dashboard band: responsive KPI row (Stat tiles = gray outer tile + white inner value card with a soft shadow, per the reference) plus bounded, titled chart containers with fixed heights (no layout shift). ChartCard renders charts EDGE-LESS by default (plot bleeds to the card's sides).",
     useWhen: [
       "Dashboard headers with metrics at a glance",
       "Any chart — always render inside ChartCard, never bare",
@@ -112,10 +123,10 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "DemoStackedBarChart",
     ],
     purpose:
-      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, and radar — fork one and swap data/config rather than writing Recharts from scratch.",
+      "The canonical Recharts recipes wired to ChartContainer and DNA chart tokens: area, bar, line, pie, composed line+bar (the dashboard reference), stacked bar, donut-with-center-total, and radar — fork one and swap data/config rather than writing Recharts from scratch. House chart grammar: NO legends (tooltips only), zero side margins (edge-less inside ChartCard), gradient fills via <defs> linearGradient.",
     useWhen: [
       "Adding any chart — copy the closest recipe, keep ChartContainer",
-      "Referencing correct tooltip/legend/color wiring",
+      "Referencing correct tooltip/gradient/color wiring",
     ],
     composes: ["ui/chart"],
   },
@@ -165,20 +176,28 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "invoices-page": {
     importFrom: "@/components/pages/invoices-page",
-    exports: ["InvoicesPage", "StatusBadge", "DEMO_INVOICES"],
+    exports: ["InvoicesPage", "InvoiceDetailSheet", "StatusBadge", "DEMO_INVOICES"],
     purpose:
-      "The reference page template: a full entity-index screen (big title, search + facet toolbar with dark primary action, selectable rows with IconCell/AvatarChipCell, soft status badges, numbered pagination) built on FilteredTable. Fork for any index page.",
+      "The reference page template: a full entity-index screen (big title, search + facet toolbar with dark primary action, selectable rows with IconCell/AvatarChipCell, soft status badges, numbered pagination) built on FilteredTable — plus the full record flow: row click opens InvoiceDetailSheet (billing fields, line items, activity, footer actions) and selection surfaces a BulkActionBar. Fork for any index page.",
     useWhen: [
       "Building an entity index (invoices, orders, users) — start from this file",
       "You need the canonical page grammar inside AppShell variant='inset'",
     ],
-    composes: ["blocks/filtered-table", "ui/data-table", "ui/badge", "ui/dropdown-menu"],
+    composes: [
+      "blocks/filtered-table",
+      "blocks/bulk-action-bar",
+      "blocks/detail-panel",
+      "ui/data-table",
+      "ui/sheet",
+      "ui/badge",
+      "ui/dropdown-menu",
+    ],
   },
   "hr-dashboard-page": {
     importFrom: "@/components/pages/hr-dashboard-page",
-    exports: ["HrDashboardPage", "DEMO_EMPLOYEES"],
+    exports: ["HrDashboardPage", "MemberDetailSheet", "DEMO_EMPLOYEES"],
     purpose:
-      "The reference DASHBOARD template: breadcrumb eyebrow + PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Fork for any analytics or overview screen.",
+      "The reference DASHBOARD template: breadcrumb eyebrow + PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen.",
     useWhen: [
       "Building a dashboard/overview/analytics screen — start from this file",
       "You need the canonical stats → chart → table page rhythm",
@@ -188,9 +207,24 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "blocks/stat-overview",
       "blocks/chart-demos",
       "blocks/filtered-table",
+      "blocks/bulk-action-bar",
+      "blocks/detail-panel",
+      "ui/sheet",
+      "ui/progress",
       "ui/dropdown-menu",
       "ui/select",
     ],
+  },
+  "chat-shell": {
+    importFrom: "@timbal-ai/timbal-react",
+    exports: ["TimbalChatShell", "TimbalStudioShell"],
+    purpose:
+      "The full-page AI chat surface (see src/pages/Home.tsx for the wired example: welcome copy, attachments: true, artifact events, theme toggle). MOUNT CONVENTION: the chat shell owns the whole viewport — give it its own route and render it as the route's only child. NEVER nest it inside AppShell, a Card, a Sheet, or any padded/height-constrained wrapper; it manages its own layout, scrolling, and composer and will not scale inside another shell. For in-page AI on app screens use blocks/assistant (AssistantPill) instead.",
+    useWhen: [
+      "A dedicated /chat (or /) conversation route — full-screen chat product",
+      "NOT for embedding chat into a dashboard — use AssistantPill for that",
+    ],
+    composes: ["@timbal-ai/timbal-react TimbalChatShell"],
   },
 };
 

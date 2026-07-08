@@ -67,6 +67,12 @@ export { IconUserPlusOutline18 as UserPlusIcon } from "nucleo-ui-outline-18/comp
 export { IconUserMinusOutline18 as UserMinusIcon } from "nucleo-ui-outline-18/components/IconUserMinusOutline18";
 export { IconUsersOutline18 as UsersIcon } from "nucleo-ui-outline-18/components/IconUsersOutline18";
 export { IconXmarkOutline18 as XIcon } from "nucleo-ui-outline-18/components/IconXmarkOutline18";
+export { IconEnvelopeOutline18 as MailIcon } from "nucleo-ui-outline-18/components/IconEnvelopeOutline18";
+export { IconPhoneOutline18 as PhoneIcon } from "nucleo-ui-outline-18/components/IconPhoneOutline18";
+export { IconMapPinOutline18 as MapPinIcon } from "nucleo-ui-outline-18/components/IconMapPinOutline18";
+export { IconSuitcaseOutline18 as BriefcaseIcon } from "nucleo-ui-outline-18/components/IconSuitcaseOutline18";
+export { IconClockOutline18 as ClockIcon } from "nucleo-ui-outline-18/components/IconClockOutline18";
+export { IconTrash2Outline18 as Trash2Icon } from "nucleo-ui-outline-18/components/IconTrash2Outline18";
 
 /**
  * The shared icon component contract — what nav configs and table cells

@@ -19,12 +19,12 @@ const badgeVariants = cva(
         outline:
           "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         destructive:
-          "border-destructive/40 bg-destructive/10 text-destructive",
+          "border-destructive/45 bg-destructive/12 text-destructive",
         "destructive-solid":
           "border-destructive/50 bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90",
-        success: "border-success/40 bg-success/12 text-success",
-        warning: "border-warning/45 bg-warning/15 text-warning-subtle-foreground",
-        info: "border-info/40 bg-info/10 text-info",
+        success: "border-success/50 bg-success/15 text-success",
+        warning: "border-warning/55 bg-warning/20 text-warning-subtle-foreground",
+        info: "border-info/50 bg-info/15 text-info",
       },
     },
     defaultVariants: {

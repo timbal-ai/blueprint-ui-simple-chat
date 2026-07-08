@@ -1,14 +1,30 @@
 import * as React from "react";
 import {
+  BriefcaseIcon,
+  CalendarIcon,
+  DownloadIcon,
+  MailIcon,
+  MapPinIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  PhoneIcon,
+  Trash2Icon,
   UserIcon,
   UserMinusIcon,
   UserPlusIcon,
   UsersIcon,
 } from "@/components/icons";
 
+import { BulkActionBar } from "@/components/blocks/bulk-action-bar";
 import {
+  ActivityFeed,
+  DetailDivider,
+  DetailSection,
+  Field,
+  FieldList,
+} from "@/components/blocks/detail-panel";
+import {
+  AvatarChip,
   AvatarChipCell,
   FilteredTable,
 } from "@/components/blocks/filtered-table";
@@ -29,6 +45,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -36,6 +53,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 /**
  * HrDashboardPage — the reference DASHBOARD template: breadcrumb + header,
@@ -163,11 +188,14 @@ function employeeColumns(
               variant="ghost"
               size="icon-sm"
               aria-label={`Actions for ${row.original.name}`}
+              // Never let the row's onRowClick fire too — two overlays at
+              // once (dropdown + sheet) deadlock Radix's pointer-events lock.
+              onClick={(e) => e.stopPropagation()}
             >
               <MoreHorizontalIcon />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
             <DropdownMenuItem onSelect={() => onAction?.("view", row.original)}>
               <UserIcon />
               View profile
@@ -199,9 +227,20 @@ function HrDashboardPage({
   onEmployeeAction?: (action: string, employee: Employee) => void;
 }) {
   const [range, setRange] = React.useState("monthly");
-  const columns = React.useMemo(
-    () => employeeColumns(onEmployeeAction),
+  const [member, setMember] = React.useState<Employee | null>(null);
+  const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({});
+
+  const handleAction = React.useCallback(
+    (action: string, employee: Employee) => {
+      if (action === "view") setMember(employee);
+      onEmployeeAction?.(action, employee);
+    },
     [onEmployeeAction],
+  );
+
+  const columns = React.useMemo(
+    () => employeeColumns(handleAction),
+    [handleAction],
   );
 
   return (
@@ -315,12 +354,227 @@ function HrDashboardPage({
           pagination
           pageSize={8}
           itemsLabel="employees"
-          onRowClick={(row) => onEmployeeAction?.("view", row.original)}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
+          onRowClick={(row) => handleAction("view", row.original)}
         />
       </section>
+
+      {/* Selection surfaces the bulk bubble; row click opens the big
+          member sheet — both are standalone blocks, reusable anywhere. */}
+      <BulkActionBar
+        count={Object.keys(rowSelection).length}
+        itemsLabel="members selected"
+        onClear={() => setRowSelection({})}
+        actions={[
+          {
+            id: "edit",
+            label: "Edit",
+            icon: PencilIcon,
+            onClick: () => setRowSelection({}),
+          },
+          {
+            id: "export",
+            label: "Export",
+            icon: DownloadIcon,
+            onClick: () => setRowSelection({}),
+          },
+          {
+            id: "remove",
+            label: "Remove",
+            icon: Trash2Icon,
+            tone: "destructive",
+            onClick: () => setRowSelection({}),
+          },
+        ]}
+      />
+
+      <MemberDetailSheet
+        member={member}
+        onOpenChange={(open) => {
+          if (!open) setMember(null);
+        }}
+        onAction={onEmployeeAction}
+      />
     </div>
   );
 }
 
-export { DEMO_EMPLOYEES, HrDashboardPage };
+/* ---------------------------------------------------------------------------
+ * MemberDetailSheet — the BIG record sheet: identity header, KPI chips,
+ * workload progress, profile fields, and an activity trail, all inside a
+ * floating xl sheet. Fork for any "row → full record" surface.
+ * ------------------------------------------------------------------------- */
+
+/** Deterministic demo contact info derived from the name. */
+function demoContact(member: Employee) {
+  const slug = member.name.toLowerCase().replace(/[^a-z]+/g, ".");
+  return {
+    email: `${slug}@acme.co`,
+    phone: `+34 6${String(Math.abs([...member.id].reduce((a, c) => a * 7 + c.charCodeAt(0), 3)) % 90000000 + 10000000)}`,
+    location: ["Barcelona, ES", "Donostia, ES", "Madrid, ES", "Remote"][
+      Number(member.id) % 4
+    ],
+    manager: "Marta Vidal",
+    started: ["Mar 2021", "Jun 2022", "Jan 2023", "Sep 2024"][Number(member.id) % 4],
+  };
+}
+
+function MemberDetailSheet({
+  member,
+  onOpenChange,
+  onAction,
+}: {
+  member: Employee | null;
+  onOpenChange: (open: boolean) => void;
+  onAction?: (action: string, employee: Employee) => void;
+}) {
+  const contact = member ? demoContact(member) : null;
+  const completion = member
+    ? Math.round((member.completed / member.assigned) * 100)
+    : 0;
+  const workload = member ? WORKLOAD_BADGE[member.workload] : null;
+
+  return (
+    <Sheet open={member !== null} onOpenChange={onOpenChange}>
+      <SheetContent size="xl" className="flex flex-col gap-0">
+        {member && contact && workload ? (
+          <>
+            <SheetHeader className="gap-3 border-b border-border">
+              <div className="flex items-center gap-3">
+                <AvatarChip name={member.name} size="lg" />
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  <SheetTitle className="text-xl">{member.name}</SheetTitle>
+                  <SheetDescription>
+                    {member.department} · Employee {member.id}
+                  </SheetDescription>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <Badge variant={workload.variant}>{workload.label} workload</Badge>
+                <Badge variant="outline">{member.department}</Badge>
+                <Badge variant="secondary">Full-time</Badge>
+              </div>
+            </SheetHeader>
+
+            <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto p-4">
+              <DetailSection title="Task completion">
+                <div className="flex flex-col gap-2 rounded-xl border border-border bg-muted/40 p-3.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-2xl font-medium tracking-tight tabular-nums">
+                      {completion}%
+                    </span>
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {member.completed} of {member.assigned} tasks · {member.ongoing} ongoing
+                    </span>
+                  </div>
+                  <Progress value={completion} />
+                </div>
+              </DetailSection>
+
+              <DetailDivider />
+
+              <DetailSection
+                title="Profile"
+                action={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onAction?.("edit", member)}
+                  >
+                    <PencilIcon />
+                    Edit
+                  </Button>
+                }
+              >
+                <FieldList>
+                  <Field label="Email">
+                    <span className="flex items-center gap-1.5">
+                      <MailIcon className="size-3.5 text-muted-foreground/70" />
+                      {contact.email}
+                    </span>
+                  </Field>
+                  <Field label="Phone">
+                    <span className="flex items-center gap-1.5">
+                      <PhoneIcon className="size-3.5 text-muted-foreground/70" />
+                      {contact.phone}
+                    </span>
+                  </Field>
+                  <Field label="Location">
+                    <span className="flex items-center gap-1.5">
+                      <MapPinIcon className="size-3.5 text-muted-foreground/70" />
+                      {contact.location}
+                    </span>
+                  </Field>
+                  <Field label="Manager">{contact.manager}</Field>
+                  <Field label="Started">
+                    <span className="flex items-center gap-1.5">
+                      <CalendarIcon className="size-3.5 text-muted-foreground/70" />
+                      {contact.started}
+                    </span>
+                  </Field>
+                  <Field label="Role">
+                    <span className="flex items-center gap-1.5">
+                      <BriefcaseIcon className="size-3.5 text-muted-foreground/70" />
+                      {member.department} team
+                    </span>
+                  </Field>
+                </FieldList>
+              </DetailSection>
+
+              <DetailDivider />
+
+              <DetailSection title="Recent activity">
+                <ActivityFeed
+                  items={[
+                    {
+                      id: "1",
+                      title: (
+                        <>
+                          Completed <span className="font-medium">Q3 planning review</span>
+                        </>
+                      ),
+                      timestamp: "2 hours ago",
+                    },
+                    {
+                      id: "2",
+                      title: `Assigned ${member.ongoing} new tasks`,
+                      timestamp: "Yesterday",
+                    },
+                    {
+                      id: "3",
+                      title: "Updated availability to hybrid",
+                      timestamp: "3 days ago",
+                    },
+                  ]}
+                />
+              </DetailSection>
+            </div>
+
+            <SheetFooter className="flex-row justify-end gap-2 border-t border-border">
+              <Button
+                variant="ghost"
+                className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => onAction?.("offboard", member)}
+              >
+                <UserMinusIcon />
+                Offboard
+              </Button>
+              <Button variant="outline" onClick={() => onAction?.("export", member)}>
+                <DownloadIcon />
+                Export
+              </Button>
+              <Button onClick={() => onAction?.("edit", member)}>
+                <PencilIcon />
+                Edit assignments
+              </Button>
+            </SheetFooter>
+          </>
+        ) : null}
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+export { DEMO_EMPLOYEES, HrDashboardPage, MemberDetailSheet };
 export type { Employee };

@@ -5,7 +5,9 @@ import {
   CircleSlashIcon,
   DownloadIcon,
   HashIcon,
+  MailIcon,
   MoreHorizontalIcon,
+  Trash2Icon,
 } from "@/components/icons";
 import type { RowSelectionState } from "@tanstack/react-table";
 
@@ -24,6 +26,31 @@ import {
   type ColumnDef,
 } from "@/components/ui/data-table";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { BulkActionBar } from "@/components/blocks/bulk-action-bar";
+import {
+  ActivityFeed,
+  DetailDivider,
+  DetailSection,
+  Field,
+  FieldList,
+} from "@/components/blocks/detail-panel";
+import {
+  AvatarChip,
   AvatarChipCell,
   FilteredTable,
   IconCell,
@@ -175,7 +202,17 @@ function InvoicesPage({
   onRowAction?: (action: string, invoice: Invoice) => void;
 }) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-  const columns = React.useMemo(() => invoiceColumns(onRowAction), [onRowAction]);
+  const [detail, setDetail] = React.useState<Invoice | null>(null);
+
+  const handleAction = React.useCallback(
+    (action: string, invoice: Invoice) => {
+      if (action === "view") setDetail(invoice);
+      onRowAction?.(action, invoice);
+    },
+    [onRowAction],
+  );
+
+  const columns = React.useMemo(() => invoiceColumns(handleAction), [handleAction]);
 
   return (
     <div className="flex min-h-0 flex-1 animate-in fade-in-0 slide-in-from-bottom-1 flex-col gap-5 overflow-auto px-6 py-6 duration-300 lg:px-8">
@@ -229,8 +266,173 @@ function InvoicesPage({
         itemsLabel={itemsLabel}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
+        onRowClick={(row) => handleAction("view", row.original)}
+      />
+
+      <BulkActionBar
+        count={Object.keys(rowSelection).length}
+        itemsLabel="invoices selected"
+        onClear={() => setRowSelection({})}
+        actions={[
+          {
+            id: "download",
+            label: "Download",
+            icon: DownloadIcon,
+            onClick: () => setRowSelection({}),
+          },
+          {
+            id: "send",
+            label: "Send",
+            icon: MailIcon,
+            onClick: () => setRowSelection({}),
+          },
+          {
+            id: "void",
+            label: "Void",
+            icon: Trash2Icon,
+            tone: "destructive",
+            onClick: () => setRowSelection({}),
+          },
+        ]}
+      />
+
+      <InvoiceDetailSheet
+        invoice={detail}
+        onOpenChange={(open) => {
+          if (!open) setDetail(null);
+        }}
+        onAction={onRowAction}
       />
     </div>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+ * InvoiceDetailSheet — row click → the full record in a floating lg sheet:
+ * status header, billing fields, line items in a real Table, activity, and
+ * the primary actions in the footer.
+ * ------------------------------------------------------------------------- */
+
+/** Deterministic demo line items so every invoice sums to its amount. */
+function demoLineItems(invoice: Invoice) {
+  const first = Math.round(invoice.amount * 0.6 * 100) / 100;
+  const second = Math.round((invoice.amount - first) * 100) / 100;
+  return [
+    { id: "li-1", description: "Design services", qty: 1, amount: first },
+    { id: "li-2", description: "Implementation support", qty: 2, amount: second },
+  ];
+}
+
+function InvoiceDetailSheet({
+  invoice,
+  onOpenChange,
+  onAction,
+}: {
+  invoice: Invoice | null;
+  onOpenChange: (open: boolean) => void;
+  onAction?: (action: string, invoice: Invoice) => void;
+}) {
+  return (
+    <Sheet open={invoice !== null} onOpenChange={onOpenChange}>
+      <SheetContent size="lg" className="flex flex-col gap-0">
+        {invoice ? (
+          <>
+            <SheetHeader className="gap-3 border-b border-border">
+              <div className="flex items-center gap-3">
+                <AvatarChip name={invoice.customer} size="lg" />
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  <SheetTitle className="text-xl">{invoice.id}</SheetTitle>
+                  <SheetDescription>{invoice.customer}</SheetDescription>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <StatusBadge status={invoice.status} />
+                <Badge variant="outline">Due {invoice.dueDate}</Badge>
+              </div>
+            </SheetHeader>
+
+            <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto p-4">
+              <DetailSection title="Billing">
+                <FieldList>
+                  <Field label="Issued">{invoice.date}</Field>
+                  <Field label="Due date">{invoice.dueDate}</Field>
+                  <Field label="Customer">{invoice.customer}</Field>
+                  <Field label="Total">
+                    <span className="font-medium tabular-nums">
+                      {fmtUsd(invoice.amount)}
+                    </span>
+                  </Field>
+                </FieldList>
+              </DetailSection>
+
+              <DetailDivider />
+
+              <DetailSection title="Line items">
+                <Table>
+                  <TableHeader className="[&_tr]:border-0">
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="rounded-l-lg bg-muted">Description</TableHead>
+                      <TableHead className="bg-muted text-right">Qty</TableHead>
+                      <TableHead className="rounded-r-lg bg-muted text-right">Amount</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {demoLineItems(invoice).map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.description}</TableCell>
+                        <TableCell className="text-right tabular-nums">{item.qty}</TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {fmtUsd(item.amount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </DetailSection>
+
+              <DetailDivider />
+
+              <DetailSection title="Activity">
+                <ActivityFeed
+                  items={[
+                    { id: "1", title: "Invoice sent to customer", timestamp: invoice.date },
+                    {
+                      id: "2",
+                      title:
+                        invoice.status === "paid"
+                          ? "Payment received"
+                          : invoice.status === "overdue"
+                            ? "Payment reminder sent"
+                            : "Saved as draft",
+                      timestamp: invoice.dueDate,
+                    },
+                  ]}
+                />
+              </DetailSection>
+            </div>
+
+            <SheetFooter className="flex-row justify-end gap-2 border-t border-border">
+              <Button
+                variant="ghost"
+                className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => onAction?.("void", invoice)}
+              >
+                <CircleSlashIcon />
+                Void
+              </Button>
+              <Button variant="outline" onClick={() => onAction?.("send", invoice)}>
+                <MailIcon />
+                Send reminder
+              </Button>
+              <Button onClick={() => onAction?.("download", invoice)}>
+                <DownloadIcon />
+                Download PDF
+              </Button>
+            </SheetFooter>
+          </>
+        ) : null}
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -262,5 +464,5 @@ const DEMO_INVOICES: Invoice[] = [
   { id: "INV-2026-134", date: "Jun 1, 2026", customer: "Acme design", status: "draft", dueDate: "Jul 1, 2026", amount: 1750 },
 ];
 
-export { DEMO_INVOICES, InvoicesPage, StatusBadge };
+export { DEMO_INVOICES, InvoiceDetailSheet, InvoicesPage, StatusBadge };
 export type { Invoice };
