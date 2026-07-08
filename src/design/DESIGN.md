@@ -61,8 +61,18 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   deliberately small tick.
 - **KPI tiles (`app/stat`):** two-layer reference card — gray outer tile
   (label + action) + white inner value card with a soft drop shadow.
-- **Charts:** no legends (tooltips only), zero side margins (edge-less
-  inside `ChartCard`), gradient fills via `<defs>`, cool DNA palette.
+- **Charts:** no legends (tooltips only), NO Y-axis numbers (they collide
+  with edge-less plots — magnitudes live in the tooltip), zero side margins
+  (edge-less inside `ChartCard`), gradient fills via `<defs>`, cool DNA
+  palette.
+- **Hero metric (`blocks/hero-metric`):** one gradient banner max per
+  screen for the headline number — chart-token gradient (indigo→violet),
+  white comparison lines (solid current / dotted previous), translucent
+  footer strip with `ProportionBar` + `ProportionLegend` (Networth
+  reference).
+- **Table hovers:** row tint lives on the cells with rounded end caps
+  (`TableRow`), column-sort hovers are rounded pills — never square
+  full-bleed highlights.
 - **Sheets:** float (inset, rounded-2xl), `size` presets sm→full; record
   detail sheets follow `MemberDetailSheet` / `InvoiceDetailSheet` grammar
   (identity header, fields, activity, footer actions).
