@@ -8,9 +8,16 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
       data-slot="table-container"
       className="relative w-full overflow-x-auto"
     >
+      {/* border-separate (spacing 0): the collapsed model makes Chromium
+          skip per-cell box-shadow and border-radius, which breaks the
+          rounded/shadowed header band. Row separators therefore live on
+          the CELLS (tr borders don't paint in the separate model). */}
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn(
+          "w-full border-separate border-spacing-0 caption-bottom text-sm",
+          className,
+        )}
         {...props}
       />
     </div>
@@ -19,11 +26,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
-    <thead
-      data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
-      {...props}
-    />
+    <thead data-slot="table-header" className={className} {...props} />
   );
 }
 
@@ -31,7 +34,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
       data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0", className)}
+      className={cn("[&_tr:last-child>td]:border-0", className)}
       {...props}
     />
   );
@@ -42,7 +45,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
+        "bg-muted/50 font-medium [&_tr>td]:border-t [&_tr>td]:border-border",
         className,
       )}
       {...props}
@@ -54,10 +57,11 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
       data-slot="table-row"
-      // Hover/selection tint lives on the CELLS (a tr background cannot be
-      // rounded) with rounded end caps — the house rounded-hover grammar.
+      // Hover/selection tint AND the row separator live on the CELLS (a tr
+      // can neither round its background nor paint borders under
+      // border-separate) with rounded end caps — the house grammar.
       className={cn(
-        "border-b border-border transition-colors",
+        "transition-colors [&>td]:border-b [&>td]:border-border",
         "[&>td]:transition-colors [&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg",
         "hover:[&>td]:bg-muted/50 data-[state=selected]:[&>td]:bg-muted",
         className,
@@ -71,8 +75,11 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
       data-slot="table-head"
+      // The default header underline lives HERE (not on thead) so callers
+      // like DataTable can replace it per-cell (border-y band) and
+      // tailwind-merge resolves the conflict.
       className={cn(
-        "h-10 px-3 text-left align-middle text-[13px] font-normal whitespace-nowrap text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-10 border-b border-border px-3 text-left align-middle text-[13px] font-normal whitespace-nowrap text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
       {...props}

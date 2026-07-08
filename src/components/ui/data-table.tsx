@@ -144,10 +144,7 @@ function DataTable<TData, TValue>({
               so the first/last corners round cleanly: every cell paints
               top+bottom edges, only the end caps paint the sides. */}
           <TableHeader
-            className={cn(
-              "[&_tr]:border-0",
-              stickyHeader && "sticky top-0 z-10",
-            )}
+            className={cn(stickyHeader && "sticky top-0 z-10")}
           >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:[&>td]:bg-transparent">
@@ -155,7 +152,7 @@ function DataTable<TData, TValue>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="border-y border-border/60 bg-muted/60 shadow-[0_1px_2px_0_color-mix(in_srgb,black_4%,transparent)] first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
+                    className="border-y border-border/60 bg-muted/60 shadow-[0_1px_2px_0_color-mix(in_srgb,black_6%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_6%,transparent)] first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
                     style={{
                       width:
                         header.getSize() !== 150 ? header.getSize() : undefined,
