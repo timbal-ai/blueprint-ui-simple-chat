@@ -60,9 +60,14 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
       // Hover/selection tint AND the row separator live on the CELLS (a tr
       // can neither round its background nor paint borders under
       // border-separate) with rounded end caps — the house grammar.
+      // The radius is applied ONLY with the tint: an always-on radius makes
+      // the cell's border-b curve up at the row ends, which reads as a fake
+      // card shadow under every row.
       className={cn(
         "transition-colors [&>td]:border-b [&>td]:border-border",
-        "[&>td]:transition-colors [&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg",
+        "[&>td]:transition-colors",
+        "hover:[&>td:first-child]:rounded-l-lg hover:[&>td:last-child]:rounded-r-lg",
+        "data-[state=selected]:[&>td:first-child]:rounded-l-lg data-[state=selected]:[&>td:last-child]:rounded-r-lg",
         "hover:[&>td]:bg-muted/50 data-[state=selected]:[&>td]:bg-muted",
         className,
       )}
