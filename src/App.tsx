@@ -9,11 +9,7 @@ import {
   AuthGuard,
 } from "@timbal-ai/timbal-react";
 
-import {
-  isAppKitDemoEnabled,
-  isAuthEnabled,
-  isGalleryEnabled,
-} from "@/config";
+import { isAuthEnabled, isGalleryEnabled } from "@/config";
 // COMPOSER: `Home` is the ready-made chat shell. The index route below renders a
 // neutral `<Placeholder />` so a fresh build doesn't mislead users with a chat
 // they didn't ask for. When you build the UI, replace `<Placeholder />` on the
@@ -25,10 +21,6 @@ import NotFound from "@/pages/NotFound";
 
 // Keep `Home` imported and ready to swap in (no-op reference avoids lint until used).
 void Home;
-
-const AppKitDemo = isAppKitDemoEnabled
-  ? lazy(() => import("@/examples/app-kit-demo/AppKitDemo"))
-  : null;
 
 const Gallery = isGalleryEnabled ? lazy(() => import("@/pages/Gallery")) : null;
 
@@ -55,18 +47,6 @@ function App() {
                   </AuthGuard>
                 }
               />
-              {AppKitDemo ? (
-                <Route
-                  path="/demo/app-kit"
-                  element={
-                    <AuthGuard requireAuth enabled={isAuthEnabled}>
-                      <Suspense fallback={null}>
-                        <AppKitDemo />
-                      </Suspense>
-                    </AuthGuard>
-                  }
-                />
-              ) : null}
               {Gallery ? (
                 <Route
                   path="/gallery"

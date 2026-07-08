@@ -5,10 +5,6 @@ export const isAuthEnabled = Boolean(import.meta.env.VITE_TIMBAL_PROJECT_ID);
 export const isStudioSidebarEnabled =
   import.meta.env.VITE_STUDIO_SIDEBAR === "true";
 
-/** Registers `/demo/app-kit` (AppShell + page + floating copilot). Off by default. */
-export const isAppKitDemoEnabled =
-  import.meta.env.VITE_APP_KIT_DEMO === "true";
-
 /**
  * Registers `/gallery` — every project-owned component in its states, used by
  * the screenshot smoke check (1280 + 375 px). Dev/CI surface, off by default;

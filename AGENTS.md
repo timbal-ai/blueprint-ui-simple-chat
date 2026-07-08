@@ -104,7 +104,6 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_APP_KIT_DEMO` | mounts the legacy library-kit demo at `/demo/app-kit` |
 | `VITE_GALLERY` | mounts `/gallery` (component states, used by the screenshot smoke CI) |
 | `VITE_APP_TITLE` | document title |
 

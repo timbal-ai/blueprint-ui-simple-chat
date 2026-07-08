@@ -1,15 +1,23 @@
 # Blueprint UI
 
-Canonical React + Vite template for Timbal **chat** apps. The UI lives in [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react) (`^1.3.0`); this repo is a thin shell composers and teams clone.
+Canonical React + Vite template for Timbal apps — chat, dashboards, and
+operations UIs. **Fork-first:** this project owns its design system and its
+component source; [`@timbal-ai/timbal-react`](https://www.npmjs.com/package/@timbal-ai/timbal-react)
+(`^4.1.0`) provides only the runtime (chat streaming, artifacts, auth) and the
+`timbal-dna` / `timbal-ui-lint` CLIs.
 
-**Codegen / Composer agents:** read [`AGENTS.md`](./AGENTS.md) before overriding chat message slots.
+**Codegen / Composer agents:** read [`AGENTS.md`](./AGENTS.md) first — it is
+the protocol. `src/design/DESIGN.md` is the project's durable design record.
 
 ## Tech stack
 
-- React 19 + TypeScript
-- Vite 7
-- Tailwind CSS 4
-- `@timbal-ai/timbal-react` — chat shells, theme tokens, studio chrome, the `./app` app kit (dashboards, tables, settings, analytics), and the `./ui` primitives (`Button`, `Dialog`, `DropdownMenu`, `Popover`, `Select`, `Tooltip`, `Avatar`) — no shadcn install needed
+- React 19 + TypeScript, Vite 7, Tailwind CSS 4
+- **Project-owned design system** — `src/design/dna.json` compiled to
+  `src/design/tokens.css` by `timbal-dna` (complete light+dark token set,
+  WCAG-checked, signature Timbal finish by default)
+- **Project-owned components** — `src/components/{ui,app,chat}/`
+  (shadcn-shaped source on Radix + TanStack Table; fork freely)
+- `@timbal-ai/timbal-react` — chat runtime, shells, artifacts, auth
 - `next-themes` — light / dark via `.dark` on `<html>`
 
 ## Getting started
@@ -40,88 +48,123 @@ Copy `.env.example` to `.env`.
 | `VITE_TIMBAL_PROJECT_ID` | Enables auth (`SessionProvider`, `AuthGuard`) |
 | `VITE_WELCOME_HEADING` / `VITE_WELCOME_SUBHEADING` | Welcome screen copy |
 | `VITE_STUDIO_SIDEBAR` | `true` → floating sidebar (`TimbalStudioShell`); default is top bar only |
-| `VITE_APP_KIT_DEMO` | `true` → registers `/demo/app-kit` (dashboard + floating copilot sample) |
+| `VITE_GALLERY` | `true` → registers `/gallery` (component states; used by the screenshot smoke CI) |
 | `VITE_API_PROXY_TARGET` | Where `/api` proxies in dev (`vite.config.ts`) |
 
-## Beyond chat — dashboards, settings, analytics (app kit)
+## The design system (read before styling anything)
 
-The default route (`/`) is a full-page chat shell (`TimbalChatShell` or `TimbalStudioShell`). But this template is **not chat-only**: for any data/dashboard/settings/analytics/integrations/admin UI, build real pages with the **app kit** (`@timbal-ai/timbal-react/app`) — `AppShell`, `Page`, `Section`, `MetricRow`, `MetricChartCard`, `DataTable`, `SettingsSection`, `IntegrationCard`, `ResourceCard`, `LineAreaChart`, and a floating `AppChatPanel` copilot. These are first-class building blocks, not a demo.
+Theming has **one source of truth**: `src/design/dna.json`. It records every
+global visual decision — finish, brand, neutrals, surfaces, typography,
+radius, elevation, density, motion — and compiles deterministically:
 
-Add app-kit pages as new routes in `App.tsx` (e.g. `src/pages/Dashboard.tsx`). To study a fully wired example, set `VITE_APP_KIT_DEMO=true` and open **http://localhost:5173/demo/app-kit** ([`src/examples/app-kit-demo/`](src/examples/app-kit-demo/)). The complete component menu + props live in `APP_KIT_AGENT_INSTRUCTIONS` and the [`timbal-react` `examples/app-kit`](https://github.com/timbal-ai/timbal-react/tree/main/examples/app-kit) recipes. See [`AGENTS.md`](./AGENTS.md) for the surface-selection rule.
-
-**Every component is available from the root `@timbal-ai/timbal-react`** — chat shells, `StudioSidebar`/`ModeToggle`, and the full app kit (`AppShell`, `Page`, `DataTable`, `MetricRow`, `SettingsSection`, `IntegrationCard`, charts, …):
-
-```tsx
-import { AppShell, Page, DataTable, MetricRow, StudioSidebar, TimbalChatShell } from "@timbal-ai/timbal-react";
+```bash
+bun run dna:compile      # dna.json → src/design/tokens.css
+bun run dna:check        # fails if tokens.css was hand-edited (CI runs this)
+bun run dna:registries   # curated menus: font pairings, status sets, motion
 ```
 
-The `/chat`, `/studio`, `/app` subpaths are optional (tree-shaking clarity only) — you never need them to reach a component:
+`"finish": "timbal"` (the default) renders the signature Timbal chrome —
+canvas gradient, gradient-filled controls with an inset highlight, graded
+cards. Set `"finish": "flat"` only when matching a deliberately flat
+reference; the components read the same tokens either way.
+
+Never hand-edit `tokens.css`, never use raw palette colors
+(`bg-blue-600`, hex, oklch) in components — `timbal-ui-lint` blocks them.
+
+## Building screens — dashboards, settings, analytics
+
+Compose from the **project-owned components**, not from the npm package:
 
 ```tsx
-import { threadMessageColumnClass } from "@timbal-ai/timbal-react/chat";
-import { AppShell, Page } from "@timbal-ai/timbal-react/app";
-import { StudioSidebar } from "@timbal-ai/timbal-react/studio";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
+import { Page, Section } from "@/components/app/page";
+import { Stat, StatGrid } from "@/components/app/stat";
+import { Sidebar, SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 ```
 
-## Theming (important for generated apps)
+These files are yours: restyle by editing them (structural personality) or by
+editing `dna.json` (global look). To see every component in every state, set
+`VITE_GALLERY=true` and open **http://localhost:5173/gallery** —
+[`src/pages/Gallery.tsx`](src/pages/Gallery.tsx) doubles as the CI screenshot
+smoke surface.
 
-Do **not** duplicate color tokens in this repo. Import the library stylesheet and scan its dist:
+From `@timbal-ai/timbal-react` import only runtime concerns: chat shells
+(`TimbalChatShell`, `TimbalStudioShell`), the chat runtime, artifacts, and
+auth (`SessionProvider`, `AuthGuard`, `authFetch`).
+
+## CSS wiring (do not reorder)
 
 ```css
 /* src/index.css */
 @import "tailwindcss";
-@import "@timbal-ai/timbal-react/styles.css";
+@import "tw-animate-css";
+@import "@timbal-ai/timbal-react/styles.css";  /* library chat polish */
+@import "./design/tokens.css";                 /* DNA tokens override it */
 @source "../node_modules/@timbal-ai/timbal-react/dist";
 ```
 
-Toggle dark mode with `next-themes` (`attribute="class"`) or by toggling `.dark` on `<html>`.
+Toggle dark mode with `next-themes` (`attribute="class"`) or by toggling
+`.dark` on `<html>`.
 
 ## Custom message slots (Composer / generated apps)
 
-Overriding `components.AssistantMessage` or `components.UserMessage` removes the built-in centered column. Import layout helpers so messages line up with the composer (re-exported from `@timbal-ai/timbal-react/chat`):
+The chat welcome and user-message chrome are project-owned
+(`src/components/chat/`) and registered through the `components` slot API in
+`src/lib/studio-chat-chrome.tsx`. Overriding `components.AssistantMessage` or
+`components.UserMessage` removes the built-in centered column — import layout
+helpers so messages line up with the composer:
 
 ```tsx
 import { assistantMessageRootClass } from "@/lib/thread-message-layout";
-// or: import { assistantMessageRootClass } from "@timbal-ai/timbal-react/chat";
 ```
 
-Defaults match `Thread` (`max-w-(--thread-max-width)`, usually **44rem**). Full rules and examples: [`AGENTS.md`](./AGENTS.md).
+Defaults match `Thread` (`max-w-(--thread-max-width)`, usually **44rem**).
+Full rules and examples: [`AGENTS.md`](./AGENTS.md).
 
 ## Project structure
 
 ```
 src/
+├── design/                       # dna.json (edit) · tokens.css (generated) · DESIGN.md (update)
 ├── components/
-│   ├── studio-topbar-brand.tsx   # Blueprint-only: welcome mark + topbar “new chat”
-│   └── ui/sonner.tsx
-├── examples/
-│   └── app-kit-demo/             # Optional expansion sample (env-gated route)
+│   ├── ui/                       # project-owned primitives (button, card, data-table, sidebar, …)
+│   ├── app/                      # page scaffolds (Page/Section, Stat/StatGrid)
+│   ├── chat/                     # forkable chat chrome (welcome, user message)
+│   └── studio-topbar-brand.tsx   # Blueprint-only: welcome mark + topbar "new chat"
 ├── lib/
 │   ├── studio-chat-chrome.tsx    # Welcome + composer slots
 │   └── thread-message-layout.ts  # Column classes for custom User/Assistant messages
-├── pages/Home.tsx                # TimbalChatShell / optional TimbalStudioShell
+├── pages/
+│   ├── Home.tsx                  # TimbalChatShell / optional TimbalStudioShell
+│   └── Gallery.tsx               # every component in its states (VITE_GALLERY)
 ├── config.ts
 ├── App.tsx
 ├── main.tsx
-└── index.css                     # Tailwind + library theme (no local palette)
+└── index.css                     # Tailwind + library styles + DNA tokens
 ```
 
 ## Scripts
 
 ```bash
-bun run dev          # Development server (npm package)
-bun run dev:linked   # Dev against sibling ../timbal-react (HMR on dist/)
-bun run build        # Production build (tsc + vite)
-bun run preview      # Preview production build
-bun run lint         # ESLint
+bun run dev              # Development server (npm package)
+bun run dev:linked       # Dev against sibling ../timbal-react (HMR on dist/)
+bun run build            # Production build (tsc + vite)
+bun run preview          # Preview production build
+bun run lint             # ESLint
+bun run dna:compile      # Recompile design tokens from dna.json
+bun run dna:check        # Verify tokens.css matches dna.json
+bun run registry:build   # Build the shadcn-compatible registry (public/r/)
+bun run smoke:screenshots # Gallery screenshots at 1280/375 × light/dark
 ```
 
 ## Production checklist
 
-- [ ] `@timbal-ai/timbal-react` pinned to a published version (e.g. `^1.3.0`); use `file:../timbal-react` + `dev:linked` only for local library dev
-- [ ] `bun run build` and `bun run lint` pass
+- [ ] `@timbal-ai/timbal-react` pinned to a published version (`^4.1.0`); use `file:../timbal-react` + `dev:linked` only for local library dev
+- [ ] `bun run dna:check`, `bun run build`, and `bun run lint` pass
 - [ ] Backend serves `/api/workforce`, `/api/files/upload`, and stream routes (`timbal start`)
 - [ ] Set `VITE_TIMBAL_PROJECT_ID` when auth is required
+- [ ] `VITE_GALLERY` not enabled in production
 
 ## License
 
