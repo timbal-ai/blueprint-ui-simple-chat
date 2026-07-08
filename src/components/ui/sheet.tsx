@@ -66,8 +66,10 @@ function SheetContent({
   /** Width preset for left/right sheets (ignored for top/bottom). */
   size?: "default" | "sm" | "lg" | "xl" | "full";
 }) {
-  const width =
-    size === "full" ? "w-[calc(100%-1.5rem)]" : "w-[calc(75%-0.75rem)]";
+  // On MOBILE every side sheet fills the viewport width (minus the float
+  // insets) — a partial-width drawer with a backdrop strip is dead space.
+  // From `sm:` up the SHEET_SIZE presets cap the width.
+  const width = "w-[calc(100%-1.5rem)]";
   return (
     <SheetPortal>
       <SheetOverlay />
