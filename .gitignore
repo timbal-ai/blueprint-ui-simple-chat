@@ -32,3 +32,6 @@ dist-ssr
 # NFS orphan files (EFS-backed projects)
 .nfs*
 **/.nfs*
+
+# Local-only dev pages (mounted at /dev when present; never committed)
+src/pages/dev/

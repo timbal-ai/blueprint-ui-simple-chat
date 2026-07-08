@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ComponentType } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTitle } from "@/hooks/use-title";
 import { ThemeProvider } from "next-themes";
@@ -26,6 +26,15 @@ const Gallery = isGalleryEnabled ? lazy(() => import("@/pages/Gallery")) : null;
 const GalleryBlocks = isGalleryEnabled
   ? lazy(() => import("@/pages/GalleryBlocks"))
   : null;
+
+// Local-only dev hub: src/pages/dev/ is git-ignored, so this glob resolves to
+// nothing on fresh scaffolds/CI and the /dev route simply doesn't mount.
+const devPages = import.meta.glob("./pages/dev/DevHub.tsx") as Record<
+  string,
+  () => Promise<{ default: ComponentType }>
+>;
+const devHubLoader = devPages["./pages/dev/DevHub.tsx"];
+const DevHub = devHubLoader ? lazy(devHubLoader) : null;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -66,6 +75,16 @@ function App() {
                   element={
                     <Suspense fallback={null}>
                       <GalleryBlocks />
+                    </Suspense>
+                  }
+                />
+              ) : null}
+              {DevHub ? (
+                <Route
+                  path="/dev"
+                  element={
+                    <Suspense fallback={null}>
+                      <DevHub />
                     </Suspense>
                   }
                 />
