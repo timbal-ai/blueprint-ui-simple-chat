@@ -76,8 +76,11 @@ function ChatScreen({
   return (
     <div
       data-slot="chat-screen"
+      // bg-card, not bg-background: the house canvas is WHITE. --background
+      // is the gray desktop chrome behind floating panes — using it here is
+      // the "tinted chat surface" mistake.
       className={cn(
-        "flex flex-col bg-background",
+        "flex flex-col bg-card",
         fill ? "h-full min-h-0" : "h-dvh",
         className,
       )}

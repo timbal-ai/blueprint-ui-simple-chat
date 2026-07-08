@@ -143,6 +143,10 @@ chat reference), not by reimplementing the thread.
   - **Tinted chat composer.** The chat input and the band around it stay
     on the plain surface — never give the composer row a colored/tinted
     background. The chat shells already style the composer; don't wrap them.
+    Since timbal-react 4.2.1 the runtime composer band paints
+    `var(--thread-canvas, var(--card))` — white by default. If a chat sits
+    on a non-white canvas, set `--thread-canvas` on an ancestor instead of
+    wrapping the composer.
   - **Displaced chat composer.** The chat input must NEVER be pushed below
     the fold as the conversation grows — the page never scrolls to reach
     it. The layout is a viewport-owning flex column where the MESSAGE
@@ -151,7 +155,9 @@ chat reference), not by reimplementing the thread.
     messages + input in normal document flow. If you are hand-building a
     chat surface, use `ChatScreen` (`blocks/chat-screen`) — it encodes
     this contract (including the load-bearing `min-h-0`) and auto-follows
-    streaming output.
+    streaming output. Since timbal-react 4.2.1 the runtime thread also
+    self-caps at `max-h-dvh` as a guard rail, but that does not excuse a
+    broken host layout — mount shells per the convention above.
   - **Chart clutter.** No legends, no Y-axis numbers (they collide with
     edge-less plots), no bordered chart wrappers inside cards — tooltip
     carries the detail.
