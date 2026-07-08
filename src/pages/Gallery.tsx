@@ -1,6 +1,8 @@
 import * as React from "react";
 import { InboxIcon, PlusIcon, SearchIcon } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -118,12 +120,11 @@ const demoColumns: ColumnDef<DemoRow>[] = [
   },
 ];
 
-function Swatch({ token, label }: { token: string; label: string }) {
+function Swatch({ fill, label }: { fill: string; label: string }) {
   return (
     <div className="flex items-center gap-2">
       <span
-        className="size-8 shrink-0 rounded-md border border-border"
-        style={{ backgroundColor: `var(${token})` }}
+        className={cn("size-8 shrink-0 rounded-md border border-border", fill)}
       />
       <span className="text-xs text-muted-foreground">{label}</span>
     </div>
@@ -139,18 +140,18 @@ export default function Gallery() {
     >
       <Section title="Tokens" id="tokens">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-          <Swatch token="--background" label="background" />
-          <Swatch token="--card" label="card" />
-          <Swatch token="--primary" label="primary" />
-          <Swatch token="--muted" label="muted" />
-          <Swatch token="--accent" label="accent" />
-          <Swatch token="--border" label="border" />
-          <Swatch token="--success" label="success" />
-          <Swatch token="--warning" label="warning" />
-          <Swatch token="--destructive" label="destructive" />
-          <Swatch token="--info" label="info" />
-          <Swatch token="--chart-1" label="chart-1" />
-          <Swatch token="--chart-2" label="chart-2" />
+          <Swatch fill="bg-background" label="background" />
+          <Swatch fill="bg-card" label="card" />
+          <Swatch fill="bg-primary" label="primary" />
+          <Swatch fill="bg-muted" label="muted" />
+          <Swatch fill="bg-accent" label="accent" />
+          <Swatch fill="bg-border" label="border" />
+          <Swatch fill="bg-success" label="success" />
+          <Swatch fill="bg-warning" label="warning" />
+          <Swatch fill="bg-destructive" label="destructive" />
+          <Swatch fill="bg-info" label="info" />
+          <Swatch fill="bg-chart-1" label="chart-1" />
+          <Swatch fill="bg-chart-2" label="chart-2" />
         </div>
       </Section>
 
