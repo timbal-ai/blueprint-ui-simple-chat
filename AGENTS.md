@@ -179,6 +179,10 @@ chat reference), not by reimplementing the thread.
     variants (`success-solid`, `warning-solid`, `destructive-solid`,
     `info-solid` — fills paired with compiler contrast-gated
     foregrounds), tinted chips use `bg-<tone>/15 text-<tone>`.
+  - **Gray mobile canvas.** On mobile the content surface is plain WHITE
+    (`SidebarInset` handles it) — the gray canvas / gradient backdrop is
+    desktop-only chrome. Never give a mobile page a gray or tinted
+    background unless the user explicitly asks for one.
   - **Blue-washed surfaces.** Canvases, dropdown/menu hovers, sidebar
     active items, and mobile sheets are neutral white/gray/dark — never
     brand-tinted. The DNA compiler (v1.3.0+) enforces this: neutrals

@@ -264,11 +264,17 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        // Playground canvas gradient (DNA finish tokens) — the signature
-        // Timbal backdrop; degenerates to plain bg-background under "flat".
-        "relative flex w-full flex-1 flex-col bg-background bg-linear-to-b from-playground-from via-playground-via to-playground-to",
-        // Inset variant: sidebar-gray canvas, content floats as a flat white
-        // card (no canvas gradient) with a hairline border — the reference look.
+        // MOBILE IS WHITE. On mobile the Sidebar mounts as a Sheet, so the
+        // `peer` element carrying data-variant never exists and no
+        // peer-data-[variant=…] override can match — the surface must be
+        // white on its own (a gray/tinted mobile canvas is a named mistake).
+        // The playground gradient canvas (DNA finish tokens, the signature
+        // Timbal backdrop) is desktop-only.
+        "relative flex w-full flex-1 flex-col bg-card",
+        "md:bg-background md:bg-linear-to-b md:from-playground-from md:via-playground-via md:to-playground-to",
+        // Inset variant (desktop): sidebar-gray canvas, content floats as a
+        // flat white card (no gradient) with a hairline border — the
+        // reference look.
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         "md:peer-data-[variant=inset]:bg-card md:peer-data-[variant=inset]:bg-none md:peer-data-[variant=inset]:border md:peer-data-[variant=inset]:border-border md:peer-data-[variant=inset]:overflow-hidden",
         className,

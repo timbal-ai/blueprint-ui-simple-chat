@@ -102,6 +102,7 @@ them as hard NEVERs, each with the correction:
 | **Hand-rolled chart tooltips** (illegible colored boxes, duplicate rows) | `ChartTooltipContent` only — see `DemoScatterChart` for a custom label done right. |
 | **Tinted info/value cards** (blue-washed summary tiles) | Cards stay `bg-card` white; color lives in badges, gauges, charts — never card backgrounds. |
 | **Blue-washed surfaces** (brand-tinted canvas, dropdown hovers, mobile sheets) | Compiler-enforced since DNA v1.3.0: neutrals default to pure gray and `color.accent` never tints hover surfaces. Never re-tint via overrides; explicit `color.neutrals.chroma` is the only opt-in. |
+| **Gray mobile canvas** (canvas gradient / sidebar gray showing behind mobile pages) | Mobile content is plain white — `SidebarInset` makes the gradient and inset-card chrome desktop-only. Don't add gray/tinted page backgrounds on mobile unless the user asks. |
 | **Unreadable labels on solid status fills** (`bg-success` with default text — near-black on green) | Lint-enforced (`status-fill-foreground` in `timbal-ui-lint`). Solid chips = Badge `*-solid` variants (fill + compiler contrast-gated foreground); tinted chips = `bg-<tone>/15 text-<tone>`. |
 
 ## 5. Chat + assistant conventions
