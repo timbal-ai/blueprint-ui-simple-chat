@@ -101,7 +101,10 @@ chat reference), not by reimplementing the thread.
   `Card`, a `Sheet`, a grid cell, or any padded/height-constrained wrapper —
   it manages its own layout, scrolling, and composer, and does not scale
   inside another shell. In-page AI on an app screen is `AssistantPill`,
-  never an embedded chat shell.
+  never an embedded chat shell. If the design truly needs a bespoke chat
+  page (custom rail, split view), build it on `ChatScreen`
+  (`blocks/chat-screen`) — never hand-roll the message/composer scroll
+  layout.
 - **House visual rules** (already encoded in the components — keep them):
   titles are never bold (`font-medium` max, tight tracking; `PageHeader`
   owns the spacing rhythm — eyebrow, 1.6rem title, relaxed description);
@@ -138,6 +141,15 @@ chat reference), not by reimplementing the thread.
   - **Tinted chat composer.** The chat input and the band around it stay
     on the plain surface — never give the composer row a colored/tinted
     background. The chat shells already style the composer; don't wrap them.
+  - **Displaced chat composer.** The chat input must NEVER be pushed below
+    the fold as the conversation grows — the page never scrolls to reach
+    it. The layout is a viewport-owning flex column where the MESSAGE
+    LIST is the only scroll container (`flex-1 min-h-0 overflow-y-auto`)
+    and the composer is a pinned flex sibling below it. Never put
+    messages + input in normal document flow. If you are hand-building a
+    chat surface, use `ChatScreen` (`blocks/chat-screen`) — it encodes
+    this contract (including the load-bearing `min-h-0`) and auto-follows
+    streaming output.
   - **Chart clutter.** No legends, no Y-axis numbers (they collide with
     edge-less plots), no bordered chart wrappers inside cards — tooltip
     carries the detail.

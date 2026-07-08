@@ -239,6 +239,17 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "ui/select",
     ],
   },
+  "chat-screen": {
+    importFrom: "@/components/blocks/chat-screen",
+    exports: ["ChatScreen"],
+    purpose:
+      "The ONLY sanctioned layout for a bespoke chat surface: viewport-owning flex column (h-dvh) where the MESSAGE LIST is the one scroll container (flex-1 min-h-0 overflow-y-auto) and the composer is a pinned flex sibling below it — it can NEVER be displaced off-screen as the conversation grows. Auto-follows streaming output until the reader scrolls up. Composer band stays on the plain surface (no tint). `fill` mode for mounting inside a height-constrained pane (split view).",
+    useWhen: [
+      "A custom chat page the product surfaces don't cover (branded rail, split view) — prefer TimbalChatShell / AssistantPill first",
+      "ANY hand-built chat layout — never place messages + input in normal page flow",
+    ],
+    composes: [],
+  },
   "chat-shell": {
     importFrom: "@timbal-ai/timbal-react",
     exports: ["TimbalChatShell", "TimbalStudioShell"],

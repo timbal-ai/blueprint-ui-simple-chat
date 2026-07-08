@@ -13,6 +13,7 @@ export * from "./assistant";
 export * from "./bulk-action-bar";
 export * from "./catalog";
 export * from "./chart-demos";
+export * from "./chat-screen";
 export * from "./detail-panel";
 export * from "./entity-form";
 export * from "./filtered-table";

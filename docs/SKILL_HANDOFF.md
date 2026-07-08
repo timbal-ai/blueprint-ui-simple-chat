@@ -88,6 +88,7 @@ them as hard NEVERs, each with the correction:
 |---|---|
 | **Unnecessary topbar** (brand chip + one button in a bar) | Inset pages own their header via `PageHeader`; brand lives in the sidebar; primary action goes in `PageHeader` `actions` or the table's `toolbarEnd`. `AppShell`'s `topbar` slot is only for genuine global chrome (workspace switcher, global search). |
 | **Tinted chat composer** (colored band behind the chat input) | The composer and its surroundings stay on the plain surface. The chat shells style themselves — never wrap or re-skin them. |
+| **Displaced chat composer** (input pushed below the fold as messages grow; page scrolls to reach it) | The message list is the ONLY scroll container; the composer is a pinned flex sibling. Hand-built chat surfaces MUST use `ChatScreen` (`blocks/chat-screen`) — it encodes the `h-dvh` / `flex-1 min-h-0 overflow-y-auto` contract and auto-follows streaming. |
 | **Chat shell nested in a layout** (inside AppShell/Card/Sheet/grid cell) | `TimbalChatShell`/`TimbalStudioShell` own the whole viewport on their own route. In-page AI = `AssistantPill`. |
 | **Chart clutter** (legends, Y-axis numbers, bordered chart-in-card-in-card) | Tooltip-only, edge-less, one wrapper: `ChartCard`. |
 | **Bulk actions as toolbar buttons** | Floating `BulkActionBar`, appears on selection. |
@@ -107,6 +108,11 @@ them as hard NEVERs, each with the correction:
 - App screens → `<AssistantPill context={...} />` from
   `@/components/blocks/assistant`, docked once per screen. It streams via
   the same `VITE_TIMBAL_*` env as the shells.
+- Bespoke chat page (custom rail, branded header, split view) →
+  `ChatScreen` from `@/components/blocks/chat-screen`. It pins the
+  composer and makes the message list the only scroll container — the
+  input can never be displaced below the fold. Never hand-roll that
+  layout.
 
 ## 6. Verification loop (the skill's closing section)
 

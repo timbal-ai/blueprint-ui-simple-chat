@@ -46,6 +46,12 @@ const devPages = import.meta.glob("./pages/dev/DevHub.tsx") as Record<
 >;
 const devHubLoader = devPages["./pages/dev/DevHub.tsx"];
 const DevHub = devHubLoader ? lazy(devHubLoader) : null;
+const devProbes = import.meta.glob("./pages/dev/ChatScreenProbe.tsx") as Record<
+  string,
+  () => Promise<{ default: ComponentType }>
+>;
+const chatProbeLoader = devProbes["./pages/dev/ChatScreenProbe.tsx"];
+const ChatScreenProbe = chatProbeLoader ? lazy(chatProbeLoader) : null;
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE;
@@ -116,6 +122,16 @@ function App() {
                   element={
                     <Suspense fallback={null}>
                       <DevHub />
+                    </Suspense>
+                  }
+                />
+              ) : null}
+              {ChatScreenProbe ? (
+                <Route
+                  path="/dev/chat-screen"
+                  element={
+                    <Suspense fallback={null}>
+                      <ChatScreenProbe />
                     </Suspense>
                   }
                 />

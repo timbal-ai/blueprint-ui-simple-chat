@@ -220,6 +220,18 @@
       ]
     },
     {
+      "name": "chat-screen",
+      "type": "registry:block",
+      "title": "chat screen",
+      "description": "Timbal blueprint block: chat-screen. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/chat-screen.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "checkbox",
