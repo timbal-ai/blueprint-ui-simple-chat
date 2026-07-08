@@ -22,13 +22,24 @@ interface BlockEntry {
 }
 
 const BLOCKS_CATALOG: Record<string, BlockEntry> = {
+  "routed-app-shell": {
+    importFrom: "@/components/blocks/routed-app-shell",
+    exports: ["RoutedAppShell"],
+    purpose:
+      "THE default frame for multi-page apps: AppShell pre-wired to react-router. Nav item ids ARE route paths ('/', '/invoices', '/settings/billing'); clicking navigates, the active row derives from the URL (longest match), and pages render through the router's Outlet. Mount it once as a layout route and register one <Route> per page — every page is a ROUTE, never a useState-switched view (deep links, back/forward, and refresh must work).",
+    useWhen: [
+      "Any app with more than one page/screen — start here, not with raw AppShell",
+      "The sidebar nav should reflect and drive the URL",
+    ],
+    composes: ["blocks/app-shell", "react-router-dom"],
+  },
   "app-shell": {
     importFrom: "@/components/blocks/app-shell",
     exports: ["AppShell"],
     purpose:
-      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Also has an optional sticky topbar and a dock slot for floating chrome.",
+      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Also has an optional sticky topbar and a dock slot for floating chrome. For multi-page apps prefer RoutedAppShell (blocks/routed-app-shell), which wires this to the router.",
     useWhen: [
-      "Any multi-page app screen — this is the outermost layout",
+      "A single-screen embed or a shell you wire to navigation yourself — multi-page apps use RoutedAppShell",
       "You need a sidebar, nested nav tree, topbar, or a docked AI pill",
     ],
     composes: ["ui/sidebar", "ui/separator", "ui/badge"],
@@ -158,7 +169,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/sidebar-user",
     exports: ["SidebarUser"],
     purpose:
-      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email and a proper options dropdown (profile, settings, help, sign out — or custom items). Adapts to the collapsed icon rail (avatar only, menu opens to the side) and to mobile (menu opens upward).",
+      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email. Pass `menu` for account actions (profile, settings, sign out); without it you get a static identity row. Adapts to the collapsed icon rail and to mobile (menu opens upward).",
     useWhen: [
       "Every AppShell should end with this in `footer` — never hand-roll the user row",
       "You need account actions reachable from the sidebar in any state",

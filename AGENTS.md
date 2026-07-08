@@ -91,10 +91,17 @@ chat reference), not by reimplementing the thread.
 
 - **Pick the surface first.** Chat product → `TimbalChatShell` /
   `TimbalStudioShell` (`Home.tsx`, mounted at `/chat`). Screens with content
-  (data, settings, admin, catalog) → `AppShell` (from `blocks/`) +
+  (data, settings, admin, catalog) → `RoutedAppShell` (from `blocks/`) +
   `PageHeader` + blocks, and drop `<AssistantPill />` (from
   `blocks/assistant`) on operational screens so the AI is one tap away.
   Don't force a data app into a chat box.
+- **Pages are ROUTES (hard rule).** Every page/screen gets its own
+  react-router route — never a `useState`-switched view inside one giant
+  component (deep links, back/forward, and refresh must work). Mount
+  `RoutedAppShell` (`blocks/routed-app-shell`) once as a layout route: nav
+  item ids ARE route paths, the active row derives from the URL, and pages
+  render through the router's `<Outlet />`. Register one `<Route>` per page
+  in `App.tsx` (the `/gallery` tree is the living reference).
 - **Chat shell mount convention (hard rule).** The chat shell owns the whole
   viewport: give it its own route and render it as that route's ONLY child.
   NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
@@ -140,6 +147,18 @@ chat reference), not by reimplementing the thread.
     `actions` (or the table's `toolbarEnd`). Use `AppShell`'s `topbar` slot
     only when the product genuinely needs persistent global chrome
     (workspace switcher, global search).
+  - **Single-route apps.** All "pages" crammed into one component behind a
+    `useState` switcher. Every page is a route (see "Pages are ROUTES"
+    above) — use `RoutedAppShell` as the layout route and one `<Route>` per
+    page. State-switched views break deep links, back/forward, and refresh.
+  - **Custom-painted buttons.** Never put a `bg-*` fill on a `Button`
+    (`bg-success`, `bg-primary`, gradients, arbitrary values) — the label
+    color is no longer contrast-gated and you get the classic unreadable
+    green button. Buttons come from the variant system ONLY: `default`
+    (dark), `secondary` (white), `outline`, `ghost`, `destructive`, `link`.
+    Status color belongs in a Badge or icon, not the button fill.
+    (Lint-enforced: `button-custom-fill` in `timbal-ui-lint` ≥ 4.2.1;
+    state-scoped tints like `hover:bg-destructive/10` stay allowed.)
   - **Tinted chat composer.** The chat input and the band around it stay
     on the plain surface — never give the composer row a colored/tinted
     background. The chat shells already style the composer; don't wrap them.

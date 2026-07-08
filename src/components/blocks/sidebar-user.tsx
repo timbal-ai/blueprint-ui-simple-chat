@@ -28,11 +28,11 @@ import {
 /**
  * SidebarUser — the account row that lives in `AppShell`'s `footer` slot.
  *
- * Real avatar + name/email with a proper options dropdown (profile,
- * settings, help, sign out — or your own items). Works in every sidebar
- * state: expanded shows the full row, collapsed (icon rail) shows just the
- * avatar, and the menu opens to the side so it never clips. On mobile the
- * menu opens upward inside the sheet.
+ * Real avatar + name/email. Pass `menu` when the app has account actions;
+ * without it you get a static identity row (no dropdown). When a menu is
+ * provided, it works in every sidebar state: expanded shows the full row,
+ * collapsed (icon rail) shows just the avatar, and the menu opens to the
+ * side so it never clips. On mobile the menu opens upward inside the sheet.
  */
 
 interface SidebarUserMenuItem {
@@ -43,7 +43,8 @@ interface SidebarUserMenuItem {
   destructive?: boolean;
 }
 
-const DEFAULT_MENU: SidebarUserMenuItem[] = [
+/** Optional preset — opt in via `menu={SIDEBAR_USER_MENU_PRESET}` when needed. */
+const SIDEBAR_USER_MENU_PRESET: SidebarUserMenuItem[] = [
   { id: "profile", label: "Profile", icon: UserIcon },
   { id: "settings", label: "Settings", icon: SettingsIcon },
   { id: "help", label: "Help center", icon: HelpCircleIcon },
@@ -54,7 +55,7 @@ function SidebarUser({
   name,
   email,
   avatarSrc,
-  menu = DEFAULT_MENU,
+  menu = [],
   onSelect,
 }: {
   name: string;
@@ -74,6 +75,7 @@ function SidebarUser({
     .join("")
     .toUpperCase();
 
+  const hasMenu = menu.length > 0;
   const regular = menu.filter((item) => !item.destructive);
   const destructive = menu.filter((item) => item.destructive);
 
@@ -86,6 +88,30 @@ function SidebarUser({
     </Avatar>
   );
 
+  const identity = (
+    <>
+      {avatar}
+      <div className="grid min-w-0 flex-1 text-left leading-tight">
+        <span className="truncate text-sm text-foreground">{name}</span>
+        {email ? (
+          <span className="truncate text-xs text-muted-foreground">{email}</span>
+        ) : null}
+      </div>
+    </>
+  );
+
+  if (!hasMenu) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="cursor-default hover:bg-transparent">
+            {identity}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -95,15 +121,7 @@ function SidebarUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {avatar}
-              <div className="grid min-w-0 flex-1 text-left leading-tight">
-                <span className="truncate text-sm text-foreground">{name}</span>
-                {email ? (
-                  <span className="truncate text-xs text-muted-foreground">
-                    {email}
-                  </span>
-                ) : null}
-              </div>
+              {identity}
               <ChevronsUpDownIcon className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -114,15 +132,7 @@ function SidebarUser({
             sideOffset={6}
           >
             <DropdownMenuLabel className="flex items-center gap-2 font-normal">
-              {avatar}
-              <div className="grid min-w-0 flex-1 leading-tight">
-                <span className="truncate text-sm text-foreground">{name}</span>
-                {email ? (
-                  <span className="truncate text-xs text-muted-foreground">
-                    {email}
-                  </span>
-                ) : null}
-              </div>
+              {identity}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -158,5 +168,5 @@ function SidebarUser({
   );
 }
 
-export { SidebarUser };
+export { SidebarUser, SIDEBAR_USER_MENU_PRESET };
 export type { SidebarUserMenuItem };

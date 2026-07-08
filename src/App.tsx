@@ -17,6 +17,19 @@ import { isAuthEnabled, isGalleryEnabled } from "@/config";
 // didn't ask for. When you build the UI, replace `<Placeholder />` on the
 // index route with the real surface (`<Home />` for chat-first apps, or your
 // own page) and delete `Placeholder.tsx` once it's unused.
+//
+// COMPOSER — multi-page apps (hard rule): every page is a ROUTE, never a
+// useState-switched view inside one component (deep links, back/forward and
+// refresh must work). Mount `RoutedAppShell` (blocks/routed-app-shell) once
+// as a layout route — nav ids ARE route paths — and register one <Route> per
+// page under it:
+//
+//   <Route element={<RoutedAppShell brand={…} nav={NAV} dock={<AssistantPill />} />}>
+//     <Route index element={<DashboardPage />} />
+//     <Route path="/invoices" element={<InvoicesPage />} />
+//   </Route>
+//
+// The /gallery tree below is the living reference for this exact pattern.
 import Home from "@/pages/Home";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";

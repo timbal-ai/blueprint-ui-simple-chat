@@ -30,7 +30,7 @@ mostly needs to point at files, not restate them.
 
 | Piece | Required | Why |
 |---|---|---|
-| `@timbal-ai/timbal-react` | **≥ 4.2.0** | DNA compiler v1.3.0: `color.selection` field (checkbox/radio house blue) + pure-neutral defaults (no brand-tinted hovers/canvases). Older CLIs false-flag v1.3.0 tokens as drift. |
+| `@timbal-ai/timbal-react` | **≥ 4.2.1** | DNA compiler v1.3.0: `color.selection` field (checkbox/radio house blue) + pure-neutral defaults (no brand-tinted hovers/canvases); 4.2.1 adds the chat composer runtime guarantees (`--thread-canvas` band, `max-h-dvh` guard) and the `button-custom-fill` lint rule. Older CLIs false-flag v1.3.0 tokens as drift. |
 | Blueprint tarball | repack from `blueprint-ui-simple-chat` `main` (this commit) | Ships the block kit, catalog, registry, Nucleo icons, HR dashboard + invoices templates. |
 | Screenshot tool | `browser_screenshot` available to the agent | The verify loop is visual; without it taste regresses. |
 
@@ -55,6 +55,12 @@ skill's job is to stop the agent from overriding it. Paste-ready:
 - Compose from `@/components/blocks` first (read `BLOCKS_CATALOG`), then
   `@/components/ui` primitives, raw HTML last. Fork a block file when it's
   80% right; never rebuild the pattern from scratch.
+- Every page is a ROUTE: mount `RoutedAppShell` once as a layout route
+  (nav ids are route paths, pages render through the router's Outlet) and
+  register one `<Route>` per page. Never switch "pages" with `useState`.
+- Buttons come from the variant system only (default/secondary/outline/
+  ghost/destructive/link) — never paint `bg-*` on a Button (lint blocks
+  it). Status color goes in a Badge or icon, not the button fill.
 - Global restyling goes through `src/design/dna.json` → `bun run
   dna:compile`. Never hand-edit `tokens.css`; never use raw hex/oklch or
   palette classes (`bg-blue-600`) in components.
@@ -90,6 +96,8 @@ them as hard NEVERs, each with the correction:
 | Mistake | Correction |
 |---|---|
 | **Unnecessary topbar** (brand chip + one button in a bar) | Inset pages own their header via `PageHeader`; brand lives in the sidebar; primary action goes in `PageHeader` `actions` or the table's `toolbarEnd`. `AppShell`'s `topbar` slot is only for genuine global chrome (workspace switcher, global search). |
+| **Single-route app** (all "pages" behind a `useState` switcher in one component) | Every page is a react-router ROUTE. Mount `RoutedAppShell` (`blocks/routed-app-shell`) once as a layout route — nav ids ARE route paths, active state derives from the URL, pages render through `<Outlet />` — and register one `<Route>` per page. Deep links, back/forward, refresh must work. |
+| **Custom-painted buttons** (`bg-success`/`bg-primary`/gradient on a `Button` — unreadable label) | Lint-enforced (`button-custom-fill` in `timbal-ui-lint` ≥ 4.2.1). Buttons use the variant system only: default (dark), secondary (white), outline, ghost, destructive, link — label colors are contrast-gated. Status color goes in a Badge or icon, never the button fill. State-scoped tints (`hover:bg-destructive/10`) stay allowed. |
 | **Tinted chat composer** (colored band behind the chat input) | The composer and its surroundings stay on the plain surface. The chat shells style themselves — never wrap or re-skin them. Runtime-enforced since timbal-react 4.2.1: the sticky composer band paints `var(--thread-canvas, var(--card))` (white by default; studio shells opt into their gradient canvas). Non-white canvas? Set `--thread-canvas` on an ancestor — never wrap the composer. |
 | **Displaced chat composer** (input pushed below the fold as messages grow; page scrolls to reach it) | The message list is the ONLY scroll container; the composer is a pinned flex sibling. Hand-built chat surfaces MUST use `ChatScreen` (`blocks/chat-screen`) — it encodes the `h-dvh` / `flex-1 min-h-0 overflow-y-auto` contract and auto-follows streaming. Runtime guard rail since timbal-react 4.2.1: the thread self-caps at `max-h-dvh` and the shells clamp to bounded panes (`max-h-full`), so even a broken host layout can no longer push the composer down during streaming. |
 | **Chat shell nested in a layout** (inside AppShell/Card/Sheet/grid cell) | `TimbalChatShell`/`TimbalStudioShell` own the whole viewport on their own route. In-page AI = `AssistantPill`. |

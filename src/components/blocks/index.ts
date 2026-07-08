@@ -21,6 +21,7 @@ export * from "./hero-metric";
 export * from "./list-detail";
 export * from "./page-header";
 export * from "./resource-grid";
+export * from "./routed-app-shell";
 export * from "./settings-page";
 export * from "./sidebar-user";
 export * from "./stat-overview";
