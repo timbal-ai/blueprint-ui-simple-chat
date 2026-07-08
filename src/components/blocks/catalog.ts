@@ -59,9 +59,9 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/hero-metric",
     exports: ["HeroMetricCard", "ProportionBar", "ProportionLegend"],
     purpose:
-      "Gradient banner card for THE headline metric (the 'Networth 2025 vs 2026' reference): title + muted context, big value + caption, an edge-to-edge chart slot (pair with DemoComparisonChart — solid vs dotted white lines), and a translucent footer strip. ProportionBar/ProportionLegend render a segmented distribution (rounded pills sized by share, DNA chart tones) — usable standalone on white cards too.",
+      "Gradient banner card for THE headline metric (the 'Networth 2025 vs 2026' reference): title + muted context, big value + caption, an edge-to-edge chart slot (pair with DemoComparisonChart — solid vs dotted white lines), and a translucent footer strip. ProportionBar/ProportionLegend render a segmented distribution (rounded pills sized by share, DNA chart tones) — usable standalone on white cards too. OPT-IN resource: not part of the default dashboard grammar — add only when the design/reference calls for a dominant hero number, max one per screen.",
     useWhen: [
-      "The top of a dashboard needs one dominant number with trend context",
+      "The reference shows one dominant headline number with trend context",
       "Showing a distribution/breakdown as a segmented bar instead of a pie",
     ],
     composes: ["blocks/chart-demos DemoComparisonChart", "ui/chart"],

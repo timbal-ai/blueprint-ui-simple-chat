@@ -66,7 +66,10 @@ function HeroMetricCard({
       </div>
       {chart ? <div className="mt-4 w-full">{chart}</div> : null}
       {footer ? (
-        <div className="mt-2 bg-white/15 px-5 py-4 backdrop-blur-sm">
+        // No backdrop-blur here: backdrop-filter escapes the parent's
+        // overflow-hidden rounding and renders square bottom corners.
+        // rounded-b-[inherit] keeps the strip clipped to the card radius.
+        <div className="mt-2 rounded-b-[inherit] bg-white/15 px-5 py-4">
           {footer}
         </div>
       ) : null}

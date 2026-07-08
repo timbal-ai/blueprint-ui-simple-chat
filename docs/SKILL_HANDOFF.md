@@ -40,7 +40,7 @@ mostly needs to point at files, not restate them.
 |---|---|---|
 | **Block catalog** | `src/components/blocks/catalog.ts` (`BLOCKS_CATALOG`) | Machine-readable index: every block's import path, exports, purpose, use-when, composition. **The skill must instruct: read this FIRST.** |
 | Barrel | `src/components/blocks/index.ts` | One-line imports: `import { AppShell, FilteredTable, BulkActionBar } from "@/components/blocks"`. |
-| Page templates | `src/components/pages/` (`hr-dashboard-page.tsx`, `invoices-page.tsx`) | Full forkable screens: dashboard grammar (hero → stats → chart → table → detail sheet → bulk bar) and entity-index grammar. |
+| Page templates | `src/components/pages/` (`hr-dashboard-page.tsx`, `invoices-page.tsx`) | Full forkable screens: dashboard grammar (stats → chart → table → detail sheet → bulk bar) and entity-index grammar. `HeroMetricCard` is an opt-in resource (see charts gallery), not part of the default dashboard. |
 | shadcn registry | `public/r/registry.json` + `public/r/<name>.json` (rebuild: `bun run registry:build`) | Standard `shadcn add <url>` items for pulling any vetted component into other projects. |
 | Project rules | `AGENTS.md` (repo root) | House rules + the mistakes list, kept in-repo so it survives scaffolding. |
 | Design record | `src/design/DESIGN.md` | Session-durable design decisions; agent updates it after design changes. |

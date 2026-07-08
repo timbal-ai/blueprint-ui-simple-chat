@@ -28,17 +28,9 @@ import {
   AvatarChipCell,
   FilteredTable,
 } from "@/components/blocks/filtered-table";
-import {
-  HeroMetricCard,
-  ProportionBar,
-  ProportionLegend,
-} from "@/components/blocks/hero-metric";
 import { PageHeader } from "@/components/blocks/page-header";
 import { ChartCard, StatOverview } from "@/components/blocks/stat-overview";
-import {
-  DemoComparisonChart,
-  DemoComposedChart,
-} from "@/components/blocks/chart-demos";
+import { DemoComposedChart } from "@/components/blocks/chart-demos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -105,13 +97,6 @@ const DEMO_EMPLOYEES: Employee[] = [
   { id: "001245", name: "Hugo Lasa", department: "Design", assigned: 59, completed: 55, ongoing: 4, workload: "light" },
   { id: "001246", name: "Laia Bosch", department: "People", assigned: 102, completed: 74, ongoing: 28, workload: "heavy" },
 ];
-
-/** Budget distribution for the hero footer (values in $k). */
-const BUDGET_SEGMENTS = [
-  { id: "salaries", label: "Salaries", value: 6200, tone: 5 },
-  { id: "benefits", label: "Benefits", value: 1400, tone: 7 },
-  { id: "contractors", label: "Contractors", value: 820, tone: 4 },
-] satisfies React.ComponentProps<typeof ProportionBar>["segments"];
 
 const WORKLOAD_BADGE: Record<
   Employee["workload"],
@@ -269,26 +254,6 @@ function HrDashboardPage({
         }
         title="HR Insights Dashboard"
         description="Actionable HR data for better decision-making"
-      />
-
-      {/* Hero metric — the one number that matters most, as a gradient
-          banner (see blocks/hero-metric). One per screen, always on top. */}
-      <HeroMetricCard
-        title="Headcount cost"
-        context="2025 vs 2026"
-        value="$8.42M"
-        valueCaption="Annualized"
-        chart={<DemoComparisonChart />}
-        footer={
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <span className="text-sm font-medium">Budget position</span>
-            <ProportionLegend
-              formatValue={(v) => `$${v.toLocaleString()}k`}
-              segments={BUDGET_SEGMENTS}
-            />
-            <ProportionBar className="basis-full" segments={BUDGET_SEGMENTS} />
-          </div>
-        }
       />
 
       <StatOverview
