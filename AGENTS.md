@@ -170,6 +170,13 @@ chat reference), not by reimplementing the thread.
   - **Tinted info cards.** Summary/value cards inside sheets and pages
     stay `bg-card` (white) — never wash them with a blue/colored tint.
     Color belongs to badges, gauges, and charts, not card backgrounds.
+  - **Unreadable labels on solid fills.** A solid status fill without its
+    foreground pair (`bg-success` with default text) renders near-black
+    text on saturated green — invisible. Lint-enforced
+    (`status-fill-foreground`): solid chips use the Badge `*-solid`
+    variants (`success-solid`, `warning-solid`, `destructive-solid`,
+    `info-solid` — fills paired with compiler contrast-gated
+    foregrounds), tinted chips use `bg-<tone>/15 text-<tone>`.
   - **Blue-washed surfaces.** Canvases, dropdown/menu hovers, sidebar
     active items, and mobile sheets are neutral white/gray/dark — never
     brand-tinted. The DNA compiler (v1.3.0+) enforces this: neutrals

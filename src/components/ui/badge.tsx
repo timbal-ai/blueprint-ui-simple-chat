@@ -20,11 +20,20 @@ const badgeVariants = cva(
           "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         destructive:
           "border-destructive/45 bg-destructive/12 text-destructive",
-        "destructive-solid":
-          "border-destructive/50 bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90",
         success: "border-success/50 bg-success/15 text-success",
         warning: "border-warning/55 bg-warning/20 text-warning-subtle-foreground",
         info: "border-info/50 bg-info/15 text-info",
+        // Solid chips: the fill's *-foreground pair is contrast-gated by
+        // the DNA compiler, so the label is ALWAYS readable. Never compose
+        // a solid status fill by hand — use these.
+        "destructive-solid":
+          "border-destructive/50 bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90",
+        "success-solid":
+          "border-success/50 bg-success text-success-foreground [a&]:hover:bg-success/90",
+        "warning-solid":
+          "border-warning/55 bg-warning text-warning-foreground [a&]:hover:bg-warning/90",
+        "info-solid":
+          "border-info/50 bg-info text-info-foreground [a&]:hover:bg-info/90",
       },
     },
     defaultVariants: {

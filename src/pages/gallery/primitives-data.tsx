@@ -82,7 +82,10 @@ export default function GalleryData() {
           <Badge variant="warning">Pending</Badge>
           <Badge variant="destructive">Overdue</Badge>
           <Badge variant="info">Synced</Badge>
+          <Badge variant="success-solid">Closed Won</Badge>
+          <Badge variant="warning-solid">On hold</Badge>
           <Badge variant="destructive-solid">Failed</Badge>
+          <Badge variant="info-solid">Negotiation</Badge>
         </DemoCard>
 
         <DemoCard title="Table" contentClassName="items-stretch">

@@ -66,7 +66,10 @@ skill's job is to stop the agent from overriding it. Paste-ready:
   selection actions via the floating `BulkActionBar`; row click opens a
   floating detail `Sheet` (see `MemberDetailSheet`/`InvoiceDetailSheet`).
 - Badges are vibrant tonal chips (solid-tone text, tinted fill, darker
-  same-tone outline). Checkboxes/radios check in the DNA selection blue.
+  same-tone outline); when a chip must be SOLID, use the Badge `*-solid`
+  variants — never compose `bg-<tone>` by hand (the label goes
+  unreadable; lint blocks it). Checkboxes/radios check in the DNA
+  selection blue.
 - Charts: through `ChartContainer` only, DNA `--chart-*` tokens, NO
   legends, NO Y-axis numbers, edge-less plots, gradient fills, tooltips
   ALWAYS via `ChartTooltipContent`. Fork a `chart-demos` recipe. Score
@@ -99,6 +102,7 @@ them as hard NEVERs, each with the correction:
 | **Hand-rolled chart tooltips** (illegible colored boxes, duplicate rows) | `ChartTooltipContent` only — see `DemoScatterChart` for a custom label done right. |
 | **Tinted info/value cards** (blue-washed summary tiles) | Cards stay `bg-card` white; color lives in badges, gauges, charts — never card backgrounds. |
 | **Blue-washed surfaces** (brand-tinted canvas, dropdown hovers, mobile sheets) | Compiler-enforced since DNA v1.3.0: neutrals default to pure gray and `color.accent` never tints hover surfaces. Never re-tint via overrides; explicit `color.neutrals.chroma` is the only opt-in. |
+| **Unreadable labels on solid status fills** (`bg-success` with default text — near-black on green) | Lint-enforced (`status-fill-foreground` in `timbal-ui-lint`). Solid chips = Badge `*-solid` variants (fill + compiler contrast-gated foreground); tinted chips = `bg-<tone>/15 text-<tone>`. |
 
 ## 5. Chat + assistant conventions
 
