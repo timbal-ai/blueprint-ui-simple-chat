@@ -113,8 +113,10 @@ chat reference), not by reimplementing the thread.
   `@/lib/control-surface` — never `shadow-xs` on a control); tables render
   directly on the surface (`DataTable` `bordered` stays off — never wrap a
   table in a card) and the header row is a ROUNDED muted band (cells carry
-  `bg-muted`, first/last corners rounded, sort buttons hover as rounded
-  pills); toolbar filter triggers read at full label strength
+  `bg-muted`, first/last corners rounded, NO vertical dividers between
+  header cells, sort buttons hover as rounded pills; `DataTable` columns
+  are drag-to-reorder and edge-resizable by default — don't rebuild
+  either); toolbar filter triggers read at full label strength
   (`text-foreground`, same as the Filters button); badges are vibrant
   (solid-tone text, tinted fill, darker outline of the same tone; DNA
   `color.status: "vivid"`); checkboxes/radios check in the DNA selection

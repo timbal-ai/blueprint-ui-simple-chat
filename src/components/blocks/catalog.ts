@@ -48,7 +48,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/filtered-table",
     exports: ["FilteredTable", "IconCell", "AvatarChipCell", "AvatarChip"],
     purpose:
-      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value), AvatarChipCell (colored initial tile + name), and AvatarChip (standalone identity tile, sm/lg).",
+      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Columns are drag-to-reorder and edge-resizable by default (built into DataTable — never rebuild). Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value), AvatarChipCell (colored initial tile + name), and AvatarChip (standalone identity tile, sm/lg).",
     useWhen: [
       "Any table that needs search or filters — do not hand-roll a toolbar",
       "Entity index pages (invoices, users, orders)",

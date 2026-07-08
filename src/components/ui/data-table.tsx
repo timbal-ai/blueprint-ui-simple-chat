@@ -1,6 +1,7 @@
 "use no memo";
 
 import * as React from "react";
+import { flushSync } from "react-dom";
 import {
   flexRender,
   getCoreRowModel,
@@ -10,6 +11,9 @@ import {
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
+  type ColumnOrderState,
+  type ColumnSizingState,
+  type Header,
   type Row,
   type RowSelectionState,
   type SortingState,
@@ -43,6 +47,10 @@ import {
  * sticky headers, and overflow are handled by the table engine + a bounded
  * scroll container, never by hand-tuned widths.
  *
+ * Columns are draggable (drag a header cell to reorder) and resizable
+ * (grab the handle at a header cell's right edge; double-click resets)
+ * out of the box — the selection column is pinned and fixed-width.
+ *
  * This is a starting composition, not a monolith: fork it per screen when a
  * table needs server-side data, virtualization, row expansion, etc. Column
  * defs stay in the page that owns the data.
@@ -63,6 +71,10 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   /** Row click handler — also adds hover/cursor affordances. */
   onRowClick?: (row: Row<TData>) => void;
+  /** Drag header cells to reorder columns. Default true. */
+  reorderable?: boolean;
+  /** Resize handle on each header cell's right edge (double-click resets). Default true. */
+  resizable?: boolean;
   /** Controlled row selection (enables the selection column pattern). */
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
@@ -89,6 +101,8 @@ function DataTable<TData, TValue>({
   pagination = true,
   pageSize = 20,
   onRowClick,
+  reorderable = true,
+  resizable = true,
   rowSelection,
   onRowSelectionChange,
   globalFilter,
@@ -99,6 +113,13 @@ function DataTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
+  const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>({});
+  // The ref is the source of truth for the move (state is only visual
+  // feedback — it may not have committed yet when drop fires).
+  const dragColumnRef = React.useRef<string | null>(null);
+  const [dragColumnId, setDragColumnId] = React.useState<string | null>(null);
+  const [dropColumnId, setDropColumnId] = React.useState<string | null>(null);
 
   const table = useReactTable({
     data,
@@ -107,12 +128,18 @@ function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
+      columnOrder,
+      columnSizing,
       ...(rowSelection !== undefined ? { rowSelection } : {}),
       ...(globalFilter !== undefined ? { globalFilter } : {}),
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    onColumnSizingChange: setColumnSizing,
+    enableColumnResizing: resizable,
+    columnResizeMode: "onChange",
     ...(onRowSelectionChange ? { onRowSelectionChange, enableRowSelection: true } : {}),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -124,6 +151,44 @@ function DataTable<TData, TValue>({
         }
       : {}),
   });
+
+  // Columns keep browser auto-layout until the FIRST resize. At that moment
+  // every current width is measured and seeded into columnSizing (inside
+  // flushSync so the resize handler reads the seeded size, not the 150px
+  // TanStack default — otherwise the column snaps on grab), and the table
+  // switches to fixed layout. Double-click a handle to return to auto.
+  const sized = Object.keys(columnSizing).length > 0;
+
+  const startResize = (
+    e: React.MouseEvent | React.TouchEvent,
+    header: Header<TData, unknown>,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!sized) {
+      const ths = Array.from(
+        (e.currentTarget as HTMLElement).closest("tr")?.querySelectorAll("th") ?? [],
+      );
+      const seeded: ColumnSizingState = {};
+      header.headerGroup.headers.forEach((h, i) => {
+        const width = ths[i]?.getBoundingClientRect().width;
+        if (width) seeded[h.column.id] = Math.round(width);
+      });
+      flushSync(() => setColumnSizing(seeded));
+    }
+    header.getResizeHandler()(e);
+  };
+
+  const moveColumn = (targetId: string) => {
+    const sourceId = dragColumnRef.current;
+    if (!sourceId || sourceId === targetId) return;
+    const order = table.getAllLeafColumns().map((c) => c.id);
+    const from = order.indexOf(sourceId);
+    const to = order.indexOf(targetId);
+    if (from === -1 || to === -1) return;
+    order.splice(to, 0, ...order.splice(from, 1));
+    setColumnOrder(order);
+  };
 
   const rows = table.getRowModel().rows;
   const columnCount = table.getVisibleLeafColumns().length || columns.length;
@@ -137,32 +202,114 @@ function DataTable<TData, TValue>({
         )}
         style={maxHeight ? { maxHeight } : undefined}
       >
-        <Table>
+        <Table
+          style={
+            sized
+              ? {
+                  tableLayout: "fixed",
+                  width: `max(${table.getCenterTotalSize()}px, 100%)`,
+                }
+              : undefined
+          }
+        >
           {/* Header renders as a soft ROUNDED band — softened muted fill
               with a hairline border and a whisper of drop shadow (the
               reference table grammar). Cells carry the fill/border/shadow
               so the first/last corners round cleanly: every cell paints
-              top+bottom edges, only the end caps paint the sides. */}
+              top+bottom edges, only the end caps paint the sides. Each
+              cell's shadow is CLIPPED to its own horizontal bounds —
+              without the clip the sideways blur paints over the neighbor
+              cell and reads as a vertical column divider. */}
           <TableHeader
             className={cn(stickyHeader && "sticky top-0 z-10")}
           >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:[&>td]:bg-transparent">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className="border-y border-border/60 bg-muted/60 shadow-[0_1px_2px_0_color-mix(in_srgb,black_6%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_6%,transparent)] first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
-                    style={{
-                      width:
-                        header.getSize() !== 150 ? header.getSize() : undefined,
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const draggable =
+                    reorderable && !header.isPlaceholder && header.column.id !== "select";
+                  const isDropTarget =
+                    dropColumnId === header.column.id &&
+                    dragColumnId !== header.column.id;
+                  return (
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      draggable={draggable}
+                      onDragStart={
+                        draggable
+                          ? (e) => {
+                              e.dataTransfer.effectAllowed = "move";
+                              dragColumnRef.current = header.column.id;
+                              setDragColumnId(header.column.id);
+                            }
+                          : undefined
+                      }
+                      onDragOver={(e) => {
+                        if (!dragColumnRef.current || header.column.id === "select")
+                          return;
+                        e.preventDefault();
+                        setDropColumnId(header.column.id);
+                      }}
+                      onDragLeave={() =>
+                        setDropColumnId((id) =>
+                          id === header.column.id ? null : id,
+                        )
+                      }
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        moveColumn(header.column.id);
+                        dragColumnRef.current = null;
+                        setDragColumnId(null);
+                        setDropColumnId(null);
+                      }}
+                      onDragEnd={() => {
+                        dragColumnRef.current = null;
+                        setDragColumnId(null);
+                        setDropColumnId(null);
+                      }}
+                      className={cn(
+                        "group relative border-y border-border/60 bg-muted/60 shadow-[0_1px_2px_0_color-mix(in_srgb,black_6%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_6%,transparent)] first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r",
+                        "[clip-path:inset(0_0_-8px_0)] first:[clip-path:inset(0_0_-8px_-8px)] last:[clip-path:inset(0_-8px_-8px_0)]",
+                        draggable && "cursor-grab select-none active:cursor-grabbing",
+                        dragColumnId === header.column.id && "opacity-50",
+                        isDropTarget && "bg-muted",
+                      )}
+                      style={{
+                        width: sized
+                          ? header.getSize()
+                          : header.getSize() !== 150
+                            ? header.getSize()
+                            : undefined,
+                      }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {resizable && header.column.getCanResize() ? (
+                        <div
+                          aria-hidden
+                          draggable={false}
+                          onDragStart={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onMouseDown={(e) => startResize(e, header)}
+                          onTouchStart={(e) => startResize(e, header)}
+                          onDoubleClick={() => setColumnSizing({})}
+                          className="absolute inset-y-0 right-0 z-10 flex w-2.5 cursor-col-resize touch-none items-center justify-center opacity-0 group-hover:opacity-100"
+                        >
+                          <div
+                            className={cn(
+                              "h-4 w-0.5 rounded-full bg-border",
+                              header.column.getIsResizing() && "h-full bg-ring",
+                            )}
+                          />
+                        </div>
+                      ) : null}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -186,7 +333,10 @@ function DataTable<TData, TValue>({
                   className={cn(onRowClick && "cursor-pointer")}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn(sized && "overflow-hidden text-ellipsis")}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -335,6 +485,7 @@ function selectionColumn<TData>(): ColumnDef<TData> {
     size: 36,
     enableSorting: false,
     enableHiding: false,
+    enableResizing: false,
     header: ({ table }) => (
       <Checkbox
         checked={
