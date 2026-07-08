@@ -55,7 +55,9 @@ function ChartContainer({
         data-slot="chart"
         data-chart={chartId}
         className={cn(
-          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+          // Recharts paints its internals with hardcoded defaults; these
+          // selectors re-skin every grid line / cursor / sector with tokens.
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_line]:stroke-border [&_.recharts-polar-grid_path]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_line]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className,
         )}
         {...props}
@@ -112,11 +114,14 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
  * padding and an 11px base type scale.
  */
 const CHART_TOOLTIP_SURFACE =
-  "rounded-xl border px-5 py-4 text-left text-[11px] leading-snug shadow-[0_12px_40px_-10px_rgba(0,0,0,0.55)] border-white/10 bg-gradient-to-b from-neutral-800 to-neutral-950 text-white dark:border-black/10 dark:from-white dark:to-neutral-100 dark:text-neutral-900";
-/** Primary text / values (white on dark, near-black on light). */
-const CHART_TOOLTIP_TEXT = "text-white dark:text-neutral-900";
+  // `primary` is the inverted surface by construction (near-black on light,
+  // near-white on dark), so the tooltip stays contrary-to-theme through any
+  // rebrand without hardcoded palette stops.
+  "rounded-xl border border-primary/20 px-5 py-4 text-left text-[11px] leading-snug shadow-[0_12px_40px_-10px_color-mix(in_srgb,black_55%,transparent)] bg-linear-to-b from-primary-fill-from to-primary-fill-to text-primary-foreground";
+/** Primary text / values (inverted foreground). */
+const CHART_TOOLTIP_TEXT = "text-primary-foreground";
 /** Row names / labels. */
-const CHART_TOOLTIP_MUTED = "text-neutral-300 dark:text-neutral-600";
+const CHART_TOOLTIP_MUTED = "text-primary-foreground/65";
 
 /**
  * A value usable as a CSS color for a legend/tooltip swatch. Recharts often
@@ -299,7 +304,7 @@ function ChartTooltipContent({
               <div
                 key={`${item.dataKey ?? index}`}
                 className={cn(
-                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-neutral-500 dark:[&>svg]:text-neutral-400",
+                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-primary-foreground/60",
                   indicator === "dot" && "items-center",
                 )}
               >
@@ -311,19 +316,22 @@ function ChartTooltipContent({
                       <itemConfig.icon />
                     ) : (
                       !hideIndicator && (
+                        // Series color flows through a local CSS variable so
+                        // the inline style never carries a color property.
                         <div
-                          className={cn("shrink-0 rounded-[2px]", {
-                            "h-2.5 w-2.5": indicator === "dot",
-                            "w-1": indicator === "line",
-                            "w-0 border-[1.5px] border-dashed bg-transparent":
-                              indicator === "dashed",
-                            "my-0.5": nestLabel && indicator === "dashed",
-                          })}
-                          style={{
-                            backgroundColor:
-                              indicator === "dashed" ? undefined : indicatorColor,
-                            borderColor: indicatorColor,
-                          }}
+                          className={cn(
+                            "shrink-0 rounded-[2px] border-[var(--swatch)]",
+                            {
+                              "h-2.5 w-2.5 bg-[var(--swatch)]": indicator === "dot",
+                              "w-1 bg-[var(--swatch)]": indicator === "line",
+                              "w-0 border-[1.5px] border-dashed bg-transparent":
+                                indicator === "dashed",
+                              "my-0.5": nestLabel && indicator === "dashed",
+                            },
+                          )}
+                          style={
+                            { "--swatch": indicatorColor } as React.CSSProperties
+                          }
                         />
                       )
                     )}
@@ -412,8 +420,8 @@ function ChartLegendContent({
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{ backgroundColor: swatchColor }}
+                  className="h-2 w-2 shrink-0 rounded-[2px] bg-[var(--swatch)]"
+                  style={{ "--swatch": swatchColor } as React.CSSProperties}
                 />
               )}
               <span className="min-w-0 truncate">
