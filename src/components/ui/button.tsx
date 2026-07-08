@@ -8,17 +8,21 @@ const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-control text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
+      // Fills and shadows come from the DNA finish tokens: under
+      // finish "timbal" they render the signature gradient + inset-highlight
+      // chrome; under finish "flat" the stops are degenerate (from == to)
+      // and this same source renders plain flat controls.
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 active:bg-primary/95",
+          "bg-linear-to-b from-primary-fill-from to-primary-fill-to text-primary-foreground shadow-control hover:from-primary-fill-hover-from hover:to-primary-fill-hover-to active:from-primary-fill-active-from active:to-primary-fill-active-to",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 active:bg-secondary/70",
+          "bg-secondary text-secondary-foreground shadow-control-bordered hover:bg-linear-to-b hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
         outline:
-          "border border-border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
+          "border border-border bg-background shadow-control-bordered hover:bg-ghost-fill-hover hover:text-accent-foreground active:bg-ghost-fill-active",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
+          "hover:bg-ghost-fill-hover hover:text-accent-foreground active:bg-ghost-fill-active",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 active:bg-destructive/95 focus-visible:ring-destructive/20",
+          "bg-destructive text-destructive-foreground shadow-control hover:bg-destructive/90 active:bg-destructive/95 focus-visible:ring-destructive/20",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -7,8 +7,11 @@ This repo is the **canonical scaffold** for Timbal app UIs. **The `timbal-ui` sk
 Three layers, all in this repo:
 
 1. **`src/design/dna.json`** — the design DNA: every global visual decision
-   (brand, neutrals, surface strategy, type pairing + scale, radius, elevation,
-   density, motion) as one validated file. Compile it with `bun run dna:compile`
+   (finish, brand, neutrals, surface strategy, type pairing + scale, radius,
+   elevation, density, motion) as one validated file. `"finish": "timbal"`
+   (the default) compiles the signature Timbal chrome — soft canvas gradient,
+   gradient-filled controls with an inset highlight; set `"finish": "flat"`
+   only when the user or a visual reference calls for flat surfaces. Compile it with `bun run dna:compile`
    → regenerates `src/design/tokens.css` (complete light+dark token set,
    WCAG-checked). **Never hand-edit `tokens.css`** — `bun run dna:check` fails
    the gate on drift. List curated menus with `bun run dna:registries`.

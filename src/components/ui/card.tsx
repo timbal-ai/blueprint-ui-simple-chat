@@ -7,7 +7,9 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-6 rounded-xl border border-border bg-card py-6 text-card-foreground shadow-sm",
+        // Elevated gradient from the DNA finish tokens — a soft top-lit grade
+        // under finish "timbal", identical stops (plain bg-card) under "flat".
+        "flex flex-col gap-6 rounded-xl border border-border bg-card bg-linear-to-b from-elevated-from to-elevated-to py-6 text-card-foreground shadow-sm",
         className,
       )}
       {...props}

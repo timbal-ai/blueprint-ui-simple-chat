@@ -16,6 +16,7 @@ dashboards until the real domain is known.
 
 | Axis | Value | Why |
 |---|---|---|
+| Finish | `timbal` (canvas gradient, gradient + inset controls) | The house look — keep unless the user or a reference asks for flat |
 | Surfaces | `panel` (gray canvas, elevated cards) | Safe SaaS default |
 | Brand | `#18181b` (neutral zinc — zero chroma) | Placeholder; near-black/near-white primary until the real brand is known |
 | Typography | `inter` pairing | Neutral default |
@@ -47,7 +48,11 @@ _Deviations from the stock components live here: "buttons are pill-shaped",
 "tables are dense with zebra rows", "cards are flat with hairline borders"…
 List the file you changed and the reason._
 
-- None yet — stock blueprint components.
+- None yet — stock blueprint components. Buttons, cards, dialogs, and the
+  sidebar inset consume the DNA **finish tokens** (`--primary-fill-*`,
+  `--elevated-*`, `--modal-*`, `--playground-*`, `shadow-control`), so
+  `"finish": "timbal"` renders the signature Timbal chrome and
+  `"finish": "flat"` renders plain flat surfaces from the same source.
 
 ## Open questions / known gaps
 

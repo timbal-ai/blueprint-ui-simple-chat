@@ -2,8 +2,9 @@
   "version": 1,
   "meta": {
     "name": "Blueprint default",
-    "summary": "Neutral product default — calm, readable, works for chat and dashboards."
+    "summary": "Neutral product default — calm, readable, works for chat and dashboards. Ships the signature Timbal finish."
   },
+  "finish": "timbal",
   "personality": {
     "minimal_expressive": 0.35,
     "flat_dimensional": 0.45,
