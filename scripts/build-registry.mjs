@@ -22,6 +22,7 @@ const SOURCES = [
   { dir: "src/components/ui", type: "registry:ui", targetDir: "components/ui" },
   { dir: "src/components/app", type: "registry:component", targetDir: "components/app" },
   { dir: "src/components/blocks", type: "registry:block", targetDir: "components/blocks" },
+  { dir: "src/components/pages", type: "registry:block", targetDir: "components/pages" },
   { dir: "src/components/chat", type: "registry:component", targetDir: "components/chat" },
   { dir: "src/hooks", type: "registry:hook", targetDir: "hooks", only: ["use-mobile.ts"] },
 ];
@@ -43,7 +44,7 @@ function npmDepsOf(source) {
 /** `@/components/ui/foo` and `@/hooks/use-bar` imports → registry item names. */
 function registryDepsOf(source, selfName) {
   const deps = new Set();
-  for (const m of source.matchAll(/from\s+["']@\/(?:components\/(?:ui|app|blocks|chat)|hooks)\/([a-z0-9-]+)["']/g)) {
+  for (const m of source.matchAll(/from\s+["']@\/(?:components\/(?:ui|app|blocks|chat|pages)|hooks)\/([a-z0-9-]+)["']/g)) {
     if (m[1] !== selfName) deps.add(m[1]);
   }
   return [...deps].sort();

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form",
+  "type": "registry:ui",
+  "title": "form",
+  "description": "Timbal blueprint ui: form. Token-wired to the project design DNA.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "components/ui/form.tsx",
+      "content": "import * as React from \"react\";\nimport { Form as FormPrimitive } from \"radix-ui\";\n\nimport { cn } from \"@/lib/utils\";\nimport { Label } from \"@/components/ui/label\";\n\nfunction Form({ ...props }: React.ComponentProps<typeof FormPrimitive.Root>) {\n  return <FormPrimitive.Root data-slot=\"form\" {...props} />;\n}\n\nfunction FormField({\n  ...props\n}: React.ComponentProps<typeof FormPrimitive.Field>) {\n  return <FormPrimitive.Field data-slot=\"form-field\" {...props} />;\n}\n\nfunction FormItem({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"form-item\"\n      className={cn(\"grid gap-1.5\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction FormLabel({\n  className,\n  ...props\n}: React.ComponentProps<typeof FormPrimitive.Label>) {\n  return (\n    <FormPrimitive.Label asChild>\n      <Label data-slot=\"form-label\" className={className} {...props} />\n    </FormPrimitive.Label>\n  );\n}\n\nfunction FormControl({\n  ...props\n}: React.ComponentProps<typeof FormPrimitive.Control>) {\n  return <FormPrimitive.Control data-slot=\"form-control\" {...props} />;\n}\n\nfunction FormMessage({\n  className,\n  ...props\n}: React.ComponentProps<typeof FormPrimitive.Message>) {\n  return (\n    <FormPrimitive.Message\n      data-slot=\"form-message\"\n      className={cn(\"text-xs text-destructive\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction FormSubmit({\n  className,\n  ...props\n}: React.ComponentProps<typeof FormPrimitive.Submit>) {\n  return (\n    <FormPrimitive.Submit\n      data-slot=\"form-submit\"\n      className={className}\n      {...props}\n    />\n  );\n}\n\nexport {\n  Form,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormControl,\n  FormMessage,\n  FormSubmit,\n};\n",
+      "type": "registry:ui",
+      "target": "src/components/ui/form.tsx"
+    }
+  ]
+}

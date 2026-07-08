@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SearchIcon, XIcon } from "lucide-react";
+import { SearchIcon, XIcon, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,14 @@ function FilteredTable<TData, TValue>({
   className?: string;
 } & Pick<
   React.ComponentProps<typeof DataTable<TData, TValue>>,
-  "pagination" | "pageSize" | "maxHeight" | "stickyHeader"
+  | "pagination"
+  | "pageSize"
+  | "maxHeight"
+  | "stickyHeader"
+  | "bordered"
+  | "itemsLabel"
+  | "rowSelection"
+  | "onRowSelectionChange"
 >) {
   const [search, setSearch] = React.useState("");
   const [active, setActive] = React.useState<Record<string, string>>({});
@@ -134,5 +141,66 @@ function FilteredTable<TData, TValue>({
   );
 }
 
-export { FilteredTable };
+/* ---------------------------------------------------------------------------
+ * Cell helpers — the reference table grammar. Use these in column defs so
+ * every table gets the same visual language for ids, dates, and people.
+ * ------------------------------------------------------------------------- */
+
+/** Muted leading icon + value, e.g. `#` + invoice id, calendar + date. */
+function IconCell({
+  icon: Icon,
+  children,
+  className,
+}: {
+  icon: LucideIcon;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={cn("flex items-center gap-1.5 text-foreground", className)}>
+      <Icon className="size-3.5 shrink-0 text-muted-foreground/70" />
+      {children}
+    </span>
+  );
+}
+
+const CHIP_TONES = [
+  "bg-chart-1/15 text-chart-1",
+  "bg-chart-2/15 text-chart-2",
+  "bg-chart-3/15 text-chart-3",
+  "bg-chart-4/15 text-chart-4",
+  "bg-chart-5/15 text-chart-5",
+];
+
+/** Colored initial tile + name — the reference "customer" cell. Tone is stable per name. */
+function AvatarChipCell({
+  name,
+  className,
+}: {
+  name: string;
+  className?: string;
+}) {
+  const tone =
+    CHIP_TONES[
+      Math.abs(
+        [...name].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) | 0, 7),
+      ) % CHIP_TONES.length
+    ];
+  return (
+    <span className={cn("flex items-center gap-2", className)}>
+      <span
+        aria-hidden
+        className={cn(
+          "flex size-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-semibold uppercase",
+          tone,
+        )}
+      >
+        {name.charAt(0)}
+      </span>
+      <span className="truncate">{name}</span>
+    </span>
+  );
+}
+
+export { AvatarChipCell, FilteredTable, IconCell };
 export type { TableFacet };

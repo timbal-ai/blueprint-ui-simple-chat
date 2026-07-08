@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group",
+  "type": "registry:ui",
+  "title": "toggle group",
+  "description": "Timbal blueprint ui: toggle-group. Token-wired to the project design DNA.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "toggle"
+  ],
+  "files": [
+    {
+      "path": "components/ui/toggle-group.tsx",
+      "content": "import * as React from \"react\";\nimport { ToggleGroup as ToggleGroupPrimitive } from \"radix-ui\";\n\nimport { cn } from \"@/lib/utils\";\nimport { toggleVariants } from \"@/components/ui/toggle\";\n\nfunction ToggleGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof ToggleGroupPrimitive.Root>) {\n  return (\n    <ToggleGroupPrimitive.Root\n      data-slot=\"toggle-group\"\n      className={cn(\"flex items-center gap-1\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction ToggleGroupItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof ToggleGroupPrimitive.Item>) {\n  return (\n    <ToggleGroupPrimitive.Item\n      data-slot=\"toggle-group-item\"\n      className={cn(toggleVariants({ variant: \"default\", size: \"default\" }), className)}\n      {...props}\n    />\n  );\n}\n\nexport { ToggleGroup, ToggleGroupItem };\n",
+      "type": "registry:ui",
+      "target": "src/components/ui/toggle-group.tsx"
+    }
+  ]
+}

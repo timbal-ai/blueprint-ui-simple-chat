@@ -26,9 +26,13 @@ Three layers, all in this repo:
      bare `transition-*` inherits DNA motion).
    - `blocks/` — **the block kit: screen-level patterns. Compose from these
      FIRST.** `catalog.ts` (`BLOCKS_CATALOG`) is the machine-readable index —
-     read it before building any screen. `AppShell`, `ListDetailLayout`,
-     `FilteredTable`, detail-panel sections, `FormSheet`/`FormField`,
-     settings scaffolding, `StatOverview`/`ChartCard`.
+     read it before building any screen. `AppShell` (default
+     `variant="inset"` — gray canvas, white bordered content card),
+     `ListDetailLayout`, `FilteredTable` (+ `IconCell`/`AvatarChipCell`),
+     detail-panel sections, `FormSheet`/`FormField`, settings scaffolding,
+     `StatOverview`/`ChartCard`, `chart-demos` (the four Recharts recipes).
+   - `pages/` — full page templates. `invoices-page.tsx` is the reference
+     entity-index grammar — fork it for any index screen.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
    - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
      `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
@@ -80,8 +84,9 @@ chat reference), not by reimplementing the thread.
   `FormSheet`/`FormField` over bare forms, `SettingsSection`/`SettingsRow`
   over toggle lists, `StatOverview`/`ChartCard` over KPI div grids. Drop to
   `src/components/ui` primitives for the gaps between blocks; hand-roll only
-  when neither fits, in the same style. `/gallery/blocks` (VITE_GALLERY)
-  shows the intended composition.
+  when neither fits, in the same style. The `/gallery` showcase
+  (VITE_GALLERY) shows the intended composition — `/gallery` itself renders
+  the forkable `invoices-page` template inside the inset `AppShell`.
 - **Fork, don't fight.** If a block is 80% right, fork the file and adjust —
   don't rebuild the pattern from primitives.
 - **Empty/loading/error states are part of every screen** — `EmptyState`,
@@ -97,9 +102,10 @@ src/
 ├── components/
 │   ├── ui/            # project-owned primitives (fork freely)
 │   ├── blocks/        # block kit + catalog.ts — compose screens from these first
+│   ├── pages/         # page templates (invoices-page — fork for index screens)
 │   ├── app/           # page scaffold, sections, stats
 │   └── chat/          # chat chrome slots (welcome, user bubble)
-├── pages/             # Home (chat shell) · Placeholder (replace!) · Gallery + GalleryBlocks (dev/CI) · NotFound
+├── pages/             # Home (chat shell) · Placeholder (replace!) · gallery/ showcase (dev/CI) · NotFound
 ├── lib/               # cn(), studio-chat-chrome (chat slot registration), thread layout classes
 ├── hooks/             # use-mobile, use-title
 ├── App.tsx            # providers + router
@@ -116,7 +122,7 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts `/gallery` (primitive states) + `/gallery/blocks` (block kit composed as a screen); both are shot by the screenshot smoke CI |
+| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts`; key routes are shot by the screenshot smoke CI |
 | `VITE_APP_TITLE` | document title |
 
 There is **no theme preset flag** — theming has exactly one source of truth:

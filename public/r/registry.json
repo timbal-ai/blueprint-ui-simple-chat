@@ -4,6 +4,18 @@
   "homepage": "https://timbal.ai",
   "items": [
     {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "accordion",
+      "description": "Timbal blueprint ui: accordion. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "alert",
       "type": "registry:ui",
       "title": "alert",
@@ -11,6 +23,18 @@
       "files": [
         {
           "path": "components/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "alert dialog",
+      "description": "Timbal blueprint ui: alert-dialog. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/alert-dialog.tsx",
           "type": "registry:ui"
         }
       ]
@@ -24,6 +48,18 @@
         {
           "path": "components/blocks/app-shell.tsx",
           "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "aspect ratio",
+      "description": "Timbal blueprint ui: aspect-ratio. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/aspect-ratio.tsx",
+          "type": "registry:ui"
         }
       ]
     },
@@ -76,6 +112,30 @@
       ]
     },
     {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "button group",
+      "description": "Timbal blueprint ui: button-group. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "calendar",
+      "description": "Timbal blueprint ui: calendar. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "card",
       "type": "registry:ui",
       "title": "card",
@@ -83,6 +143,18 @@
       "files": [
         {
           "path": "components/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "carousel",
+      "description": "Timbal blueprint ui: carousel. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/carousel.tsx",
           "type": "registry:ui"
         }
       ]
@@ -100,6 +172,30 @@
       ]
     },
     {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "chart",
+      "description": "Timbal blueprint ui: chart. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/chart.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chart-demos",
+      "type": "registry:block",
+      "title": "chart demos",
+      "description": "Timbal blueprint block: chart-demos. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/chart-demos.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "checkbox",
@@ -112,6 +208,54 @@
       ]
     },
     {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "collapsible",
+      "description": "Timbal blueprint ui: collapsible. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "combobox",
+      "description": "Timbal blueprint ui: combobox. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "command",
+      "description": "Timbal blueprint ui: command. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "context menu",
+      "description": "Timbal blueprint ui: context-menu. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "data-table",
       "type": "registry:ui",
       "title": "data table",
@@ -119,6 +263,18 @@
       "files": [
         {
           "path": "components/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "date picker",
+      "description": "Timbal blueprint ui: date-picker. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/date-picker.tsx",
           "type": "registry:ui"
         }
       ]
@@ -143,6 +299,18 @@
       "files": [
         {
           "path": "components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "drawer",
+      "description": "Timbal blueprint ui: drawer. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/drawer.tsx",
           "type": "registry:ui"
         }
       ]
@@ -184,6 +352,18 @@
       ]
     },
     {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "field",
+      "description": "Timbal blueprint ui: field. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "filtered-table",
       "type": "registry:block",
       "title": "filtered table",
@@ -196,6 +376,30 @@
       ]
     },
     {
+      "name": "form",
+      "type": "registry:ui",
+      "title": "form",
+      "description": "Timbal blueprint ui: form. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/form.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "hover card",
+      "description": "Timbal blueprint ui: hover-card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "input",
@@ -203,6 +407,66 @@
       "files": [
         {
           "path": "components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "input group",
+      "description": "Timbal blueprint ui: input-group. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/input-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "input otp",
+      "description": "Timbal blueprint ui: input-otp. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "invoices-page",
+      "type": "registry:block",
+      "title": "invoices page",
+      "description": "Timbal blueprint block: invoices-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/invoices-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "item",
+      "description": "Timbal blueprint ui: item. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/item.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "kbd",
+      "description": "Timbal blueprint ui: kbd. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/kbd.tsx",
           "type": "registry:ui"
         }
       ]
@@ -232,6 +496,30 @@
       ]
     },
     {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "menubar",
+      "description": "Timbal blueprint ui: menubar. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/menubar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "navigation menu",
+      "description": "Timbal blueprint ui: navigation-menu. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/navigation-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "page",
       "type": "registry:component",
       "title": "page",
@@ -244,6 +532,18 @@
       ]
     },
     {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "pagination",
+      "description": "Timbal blueprint ui: pagination. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/pagination.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "popover",
@@ -251,6 +551,42 @@
       "files": [
         {
           "path": "components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "progress",
+      "description": "Timbal blueprint ui: progress. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "radio group",
+      "description": "Timbal blueprint ui: radio-group. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "resizable",
+      "description": "Timbal blueprint ui: resizable. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/resizable.tsx",
           "type": "registry:ui"
         }
       ]
@@ -335,6 +671,18 @@
       "files": [
         {
           "path": "components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "slider",
+      "description": "Timbal blueprint ui: slider. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/slider.tsx",
           "type": "registry:ui"
         }
       ]
@@ -431,6 +779,30 @@
       "files": [
         {
           "path": "components/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "toggle",
+      "description": "Timbal blueprint ui: toggle. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "toggle group",
+      "description": "Timbal blueprint ui: toggle-group. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/ui/toggle-group.tsx",
           "type": "registry:ui"
         }
       ]

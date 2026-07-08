@@ -22,10 +22,22 @@ import NotFound from "@/pages/NotFound";
 // Keep `Home` imported and ready to swap in (no-op reference avoids lint until used).
 void Home;
 
-const Gallery = isGalleryEnabled ? lazy(() => import("@/pages/Gallery")) : null;
-const GalleryBlocks = isGalleryEnabled
-  ? lazy(() => import("@/pages/GalleryBlocks"))
+// Gallery showcase (dev/CI surface): routed pages/blocks/primitives/charts
+// inside the inset AppShell. Gated behind VITE_GALLERY.
+const GalleryShell = isGalleryEnabled
+  ? lazy(() => import("@/pages/gallery/shell"))
   : null;
+const GalleryInvoices = lazy(() => import("@/pages/gallery/invoices"));
+const GalleryBlocks = lazy(() => import("@/pages/gallery/blocks"));
+const GalleryForms = lazy(() => import("@/pages/gallery/primitives-forms"));
+const GalleryOverlays = lazy(() => import("@/pages/gallery/primitives-overlays"));
+const GalleryData = lazy(() => import("@/pages/gallery/primitives-data"));
+const GalleryFeedback = lazy(() => import("@/pages/gallery/primitives-feedback"));
+const GalleryNavigation = lazy(
+  () => import("@/pages/gallery/primitives-navigation"),
+);
+const GalleryPickers = lazy(() => import("@/pages/gallery/primitives-pickers"));
+const GalleryCharts = lazy(() => import("@/pages/gallery/charts"));
 
 // Local-only dev hub: src/pages/dev/ is git-ignored, so this glob resolves to
 // nothing on fresh scaffolds/CI and the /dev route simply doesn't mount.
@@ -59,25 +71,37 @@ function App() {
                   </AuthGuard>
                 }
               />
-              {Gallery ? (
+              {GalleryShell ? (
                 <Route
                   path="/gallery"
                   element={
                     <Suspense fallback={null}>
-                      <Gallery />
+                      <GalleryShell />
                     </Suspense>
                   }
-                />
-              ) : null}
-              {GalleryBlocks ? (
-                <Route
-                  path="/gallery/blocks"
-                  element={
-                    <Suspense fallback={null}>
-                      <GalleryBlocks />
-                    </Suspense>
-                  }
-                />
+                >
+                  <Route index element={<GalleryInvoices />} />
+                  <Route path="blocks" element={<GalleryBlocks />} />
+                  <Route path="primitives/forms" element={<GalleryForms />} />
+                  <Route
+                    path="primitives/overlays"
+                    element={<GalleryOverlays />}
+                  />
+                  <Route path="primitives/data" element={<GalleryData />} />
+                  <Route
+                    path="primitives/feedback"
+                    element={<GalleryFeedback />}
+                  />
+                  <Route
+                    path="primitives/navigation"
+                    element={<GalleryNavigation />}
+                  />
+                  <Route
+                    path="primitives/pickers"
+                    element={<GalleryPickers />}
+                  />
+                  <Route path="charts" element={<GalleryCharts />} />
+                </Route>
               ) : null}
               {DevHub ? (
                 <Route

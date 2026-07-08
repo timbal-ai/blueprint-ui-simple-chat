@@ -26,6 +26,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -67,6 +68,10 @@ interface DataTableProps<TData, TValue> {
   onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   /** Global text filter value (wire to a SearchInput above the table). */
   globalFilter?: string;
+  /** Outer border + card background. Disable when the table sits inside a card. */
+  bordered?: boolean;
+  /** Noun for the pagination summary, e.g. "invoices" → "Showing 1 to 10 of 24 invoices". */
+  itemsLabel?: string;
   className?: string;
 }
 
@@ -83,6 +88,8 @@ function DataTable<TData, TValue>({
   rowSelection,
   onRowSelectionChange,
   globalFilter,
+  bordered = true,
+  itemsLabel,
   className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -120,13 +127,18 @@ function DataTable<TData, TValue>({
   return (
     <div data-slot="data-table" className={cn("flex w-full flex-col gap-3", className)}>
       <div
-        className="w-full overflow-auto rounded-lg border border-border bg-card"
+        className={cn(
+          "w-full overflow-auto",
+          bordered && "rounded-lg border border-border bg-card",
+        )}
         style={maxHeight ? { maxHeight } : undefined}
       >
         <Table>
           <TableHeader
             className={cn(
-              stickyHeader && "sticky top-0 z-10 bg-card shadow-[inset_0_-1px_0_0_var(--border)]",
+              stickyHeader &&
+                "sticky top-0 z-10 shadow-[inset_0_-1px_0_0_var(--border)]",
+              stickyHeader && (bordered ? "bg-card" : "bg-background"),
             )}
           >
             {table.getHeaderGroups().map((headerGroup) => (
@@ -191,7 +203,7 @@ function DataTable<TData, TValue>({
         </Table>
       </div>
       {pagination && !loading && table.getPageCount() > 1 ? (
-        <DataTablePagination table={table} />
+        <DataTablePagination table={table} itemsLabel={itemsLabel} />
       ) : null}
     </div>
   );
@@ -231,40 +243,114 @@ function DataTableColumnHeader<TData, TValue>({
   );
 }
 
-function DataTablePagination<TData>({ table }: { table: TanstackTable<TData> }) {
-  const { pageIndex } = table.getState().pagination;
+/** Windowed page-number list: always first/last, ellipsis for gaps. */
+function pageWindow(current: number, count: number): (number | "…")[] {
+  if (count <= 7) return Array.from({ length: count }, (_, i) => i);
+  const pages = new Set<number>([0, count - 1, current - 1, current, current + 1]);
+  const sorted = [...pages].filter((p) => p >= 0 && p < count).sort((a, b) => a - b);
+  const out: (number | "…")[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) out.push("…");
+    out.push(sorted[i]);
+  }
+  return out;
+}
+
+function DataTablePagination<TData>({
+  table,
+  itemsLabel = "results",
+}: {
+  table: TanstackTable<TData>;
+  itemsLabel?: string;
+}) {
+  const { pageIndex, pageSize } = table.getState().pagination;
   const pageCount = table.getPageCount();
-  const selected = table.getSelectedRowModel().rows.length;
+  const total = table.getFilteredRowModel().rows.length;
+  const from = total === 0 ? 0 : pageIndex * pageSize + 1;
+  const to = Math.min((pageIndex + 1) * pageSize, total);
+
   return (
-    <div className="flex items-center justify-between gap-4 px-1">
-      <p className="text-xs text-muted-foreground">
-        {selected > 0
-          ? `${selected} of ${table.getFilteredRowModel().rows.length} selected`
-          : `Page ${pageIndex + 1} of ${pageCount}`}
+    <div className="flex flex-wrap items-center justify-between gap-3 px-1">
+      <p className="text-[13px] text-muted-foreground">
+        Showing {from} to {to} of {total} {itemsLabel}
       </p>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <Button
           variant="outline"
-          size="icon-sm"
+          size="sm"
+          className="h-8 gap-1 px-2.5"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          aria-label="Previous page"
         >
-          <ChevronLeftIcon />
+          <ChevronLeftIcon className="size-3.5" />
+          Prev
         </Button>
+        {pageWindow(pageIndex, pageCount).map((p, i) =>
+          p === "…" ? (
+            <span key={`gap-${i}`} className="px-1 text-sm text-muted-foreground">
+              …
+            </span>
+          ) : (
+            <Button
+              key={p}
+              variant={p === pageIndex ? "default" : "ghost"}
+              size="icon-sm"
+              className="h-8 w-8 text-[13px]"
+              onClick={() => table.setPageIndex(p)}
+              aria-current={p === pageIndex ? "page" : undefined}
+            >
+              {p + 1}
+            </Button>
+          ),
+        )}
         <Button
           variant="outline"
-          size="icon-sm"
+          size="sm"
+          className="h-8 gap-1 px-2.5"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          aria-label="Next page"
         >
-          <ChevronRightIcon />
+          Next
+          <ChevronRightIcon className="size-3.5" />
         </Button>
       </div>
     </div>
   );
 }
 
-export { DataTable, DataTableColumnHeader, DataTablePagination };
+/**
+ * Ready-made leading checkbox column — pair with `rowSelection` +
+ * `onRowSelectionChange` on `DataTable`.
+ */
+function selectionColumn<TData>(): ColumnDef<TData> {
+  return {
+    id: "select",
+    size: 36,
+    enableSorting: false,
+    enableHiding: false,
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : false
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onClick={(e) => e.stopPropagation()}
+        aria-label="Select row"
+      />
+    ),
+  };
+}
+
+export { DataTable, DataTableColumnHeader, DataTablePagination, selectionColumn };
 export type { ColumnDef };

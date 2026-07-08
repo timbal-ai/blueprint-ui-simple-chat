@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-group",
+  "type": "registry:ui",
+  "title": "input group",
+  "description": "Timbal blueprint ui: input-group. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/input-group.tsx",
+      "content": "import * as React from \"react\";\n\nimport { controlClass } from \"@/lib/control-surface\";\nimport { cn } from \"@/lib/utils\";\n\nfunction InputGroup({\n  className,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"input-group\"\n      className={cn(\n        controlClass(),\n        \"flex w-full items-stretch overflow-hidden p-0\",\n        \"has-[[data-slot=input-group-control]:disabled]:opacity-50\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction InputGroupAddon({\n  className,\n  align = \"inline-start\",\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  align?: \"inline-start\" | \"inline-end\";\n}) {\n  return (\n    <div\n      data-slot=\"input-group-addon\"\n      data-align={align}\n      className={cn(\n        \"flex shrink-0 items-center bg-transparent px-3 text-sm text-muted-foreground\",\n        align === \"inline-start\" && \"border-r border-border\",\n        align === \"inline-end\" && \"border-l border-border\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction InputGroupInput({\n  className,\n  ...props\n}: React.ComponentProps<\"input\">) {\n  return (\n    <input\n      data-slot=\"input-group-control\"\n      className={cn(\n        \"min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm text-foreground shadow-none outline-none\",\n        \"placeholder:text-muted-foreground/70 focus-visible:ring-0\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction InputGroupText({\n  className,\n  ...props\n}: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"input-group-text\"\n      className={cn(\"text-sm text-muted-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText };\n",
+      "type": "registry:ui",
+      "target": "src/components/ui/input-group.tsx"
+    }
+  ]
+}

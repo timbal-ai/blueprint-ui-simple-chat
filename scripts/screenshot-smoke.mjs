@@ -28,8 +28,12 @@ const VIEWPORTS = [
 ];
 const MODES = ["light", "dark"];
 const ROUTES = [
-  { path: "/gallery", name: "gallery" },
+  { path: "/gallery", name: "invoices" },
   { path: "/gallery/blocks", name: "blocks" },
+  { path: "/gallery/primitives/forms", name: "forms" },
+  { path: "/gallery/primitives/overlays", name: "overlays" },
+  { path: "/gallery/primitives/data", name: "data" },
+  { path: "/gallery/charts", name: "charts" },
 ];
 
 async function waitForServer(url, timeoutMs = 30_000) {
@@ -88,7 +92,7 @@ async function main() {
         const label = `${route.name}/${vp.name}/${mode}`;
         await page.goto(`${base}${route.path}`, { waitUntil: "networkidle" });
         const mounted = await page
-          .waitForSelector("[data-slot=page]", { timeout: 10_000 })
+          .waitForSelector("[data-slot=sidebar-wrapper]", { timeout: 10_000 })
           .then(() => true)
           .catch(() => false);
         // Let fonts + entrance transitions settle before the shot.

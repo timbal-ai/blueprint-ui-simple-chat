@@ -20,7 +20,8 @@
     "charts": "categorical"
   },
   "typography": {
-    "pairing": "inter"
+    "pairing": "inter",
+    "tracking": "tight"
   },
   "shape": {
     "radius": 0.625,

@@ -26,10 +26,10 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/app-shell",
     exports: ["AppShell"],
     purpose:
-      "Canonical application frame: sidebar nav (groups, icons, badges, footer) + inset content with sticky topbar and a dock slot for floating chrome.",
+      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Also has an optional sticky topbar and a dock slot for floating chrome.",
     useWhen: [
       "Any multi-page app screen — this is the outermost layout",
-      "You need a sidebar, topbar, or a docked AI pill",
+      "You need a sidebar, nested nav tree, topbar, or a docked AI pill",
     ],
     composes: ["ui/sidebar", "ui/separator", "ui/badge"],
   },
@@ -46,14 +46,14 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "filtered-table": {
     importFrom: "@/components/blocks/filtered-table",
-    exports: ["FilteredTable"],
+    exports: ["FilteredTable", "IconCell", "AvatarChipCell"],
     purpose:
-      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action.",
+      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value) and AvatarChipCell (colored initial tile + name).",
     useWhen: [
       "Any table that needs search or filters — do not hand-roll a toolbar",
       "Entity index pages (invoices, users, orders)",
     ],
-    composes: ["ui/data-table", "ui/input", "ui/select", "ui/button"],
+    composes: ["ui/data-table", "ui/input", "ui/select", "ui/button", "ui/checkbox"],
   },
   "detail-panel": {
     importFrom: "@/components/blocks/detail-panel",
@@ -98,6 +98,28 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "Any chart — always render inside ChartCard, never bare",
     ],
     composes: ["app/stat", "ui/card"],
+  },
+  "chart-demos": {
+    importFrom: "@/components/blocks/chart-demos",
+    exports: ["DemoAreaChart", "DemoBarChart", "DemoLineChart", "DemoPieChart"],
+    purpose:
+      "The four canonical Recharts recipes (area, bar, line, pie/donut) wired to ChartContainer and DNA chart tokens — fork one and swap data/config rather than writing Recharts from scratch.",
+    useWhen: [
+      "Adding any chart — copy the closest recipe, keep ChartContainer",
+      "Referencing correct tooltip/legend/color wiring",
+    ],
+    composes: ["ui/chart"],
+  },
+  "invoices-page": {
+    importFrom: "@/components/pages/invoices-page",
+    exports: ["InvoicesPage", "StatusBadge", "DEMO_INVOICES"],
+    purpose:
+      "The reference page template: a full entity-index screen (big title, search + facet toolbar with dark primary action, selectable rows with IconCell/AvatarChipCell, soft status badges, numbered pagination) built on FilteredTable. Fork for any index page.",
+    useWhen: [
+      "Building an entity index (invoices, orders, users) — start from this file",
+      "You need the canonical page grammar inside AppShell variant='inset'",
+    ],
+    composes: ["blocks/filtered-table", "ui/data-table", "ui/badge", "ui/dropdown-menu"],
   },
 };
 
