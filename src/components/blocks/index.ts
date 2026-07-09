@@ -20,6 +20,7 @@ export * from "./filtered-table";
 export * from "./hero-metric";
 export * from "./list-detail";
 export * from "./page-header";
+export * from "./page-body";
 export * from "./resource-grid";
 export * from "./routed-app-shell";
 export * from "./settings-page";

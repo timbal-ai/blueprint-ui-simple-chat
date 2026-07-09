@@ -22,11 +22,22 @@ interface BlockEntry {
 }
 
 const BLOCKS_CATALOG: Record<string, BlockEntry> = {
+  "page-body": {
+    importFrom: "@/components/blocks/page-body",
+    exports: ["PageBody"],
+    purpose:
+      "Vertical rhythm wrapper for a routed page column (gap-5 + mount fade). Inside AppShell/RoutedAppShell the shell already owns lateral/top/bottom inset — use PageBody with default inset=false. Standalone pages (no shell — centered forms, auth) MUST pass inset so content never runs flush to the edge.",
+    useWhen: [
+      "Every page template's root wrapper — PageBody → PageHeader → sections",
+      "Standalone pages outside AppShell — PageBody inset",
+    ],
+    composes: ["lib/page-inset"],
+  },
   "routed-app-shell": {
     importFrom: "@/components/blocks/routed-app-shell",
     exports: ["RoutedAppShell"],
     purpose:
-      "THE default frame for multi-page apps: AppShell pre-wired to react-router. Nav item ids ARE route paths ('/', '/invoices', '/settings/billing'); clicking navigates, the active row derives from the URL (longest match), and pages render through the router's Outlet. Mount it once as a layout route and register one <Route> per page — every page is a ROUTE, never a useState-switched view (deep links, back/forward, and refresh must work).",
+      "THE default frame for multi-page apps: AppShell pre-wired to react-router. Nav item ids ARE route paths ('/', '/invoices', '/settings/billing'); clicking navigates, the active row derives from the URL (longest match), and pages render through the router's Outlet. Applies canonical page inset (lateral + top/bottom breathing room) automatically — pages must NOT re-add px-/py- on their root. Mount it once as a layout route and register one <Route> per page — every page is a ROUTE, never a useState-switched view (deep links, back/forward, and refresh must work).",
     useWhen: [
       "Any app with more than one page/screen — start here, not with raw AppShell",
       "The sidebar nav should reflect and drive the URL",
@@ -37,7 +48,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/app-shell",
     exports: ["AppShell"],
     purpose:
-      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Also has an optional sticky topbar and a dock slot for floating chrome. For multi-page apps prefer RoutedAppShell (blocks/routed-app-shell), which wires this to the router.",
+      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Applies PAGE_INSET (px-4 sm:px-6 lg:px-8 + top/bottom breathing room) on the content region by default — pages inside must NOT duplicate px-/py- on their root (use PageBody for gap only). Also has an optional sticky topbar and a dock slot for floating chrome. For multi-page apps prefer RoutedAppShell (blocks/routed-app-shell), which wires this to the router.",
     useWhen: [
       "A single-screen embed or a shell you wire to navigation yourself — multi-page apps use RoutedAppShell",
       "You need a sidebar, nested nav tree, topbar, or a docked AI pill",

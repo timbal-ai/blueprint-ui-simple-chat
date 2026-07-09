@@ -29,6 +29,7 @@ import {
   FilteredTable,
 } from "@/components/blocks/filtered-table";
 import { PageHeader } from "@/components/blocks/page-header";
+import { PageBody } from "@/components/blocks/page-body";
 import { ChartCard, StatOverview } from "@/components/blocks/stat-overview";
 import { DemoComposedChart } from "@/components/blocks/chart-demos";
 import { Badge } from "@/components/ui/badge";
@@ -244,7 +245,7 @@ function HrDashboardPage({
   );
 
   return (
-    <div className="flex min-h-0 flex-1 animate-in fade-in-0 slide-in-from-bottom-1 flex-col gap-5 overflow-auto px-6 py-6 duration-300 lg:px-8">
+    <PageBody>
       <PageHeader
         eyebrow={
           <span>
@@ -396,7 +397,7 @@ function HrDashboardPage({
         }}
         onAction={onEmployeeAction}
       />
-    </div>
+    </PageBody>
   );
 }
 

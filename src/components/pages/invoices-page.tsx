@@ -42,6 +42,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { BulkActionBar } from "@/components/blocks/bulk-action-bar";
+import { PageBody } from "@/components/blocks/page-body";
 import {
   ActivityFeed,
   DetailDivider,
@@ -215,7 +216,7 @@ function InvoicesPage({
   const columns = React.useMemo(() => invoiceColumns(handleAction), [handleAction]);
 
   return (
-    <div className="flex min-h-0 flex-1 animate-in fade-in-0 slide-in-from-bottom-1 flex-col gap-5 overflow-auto px-6 py-6 duration-300 lg:px-8">
+    <PageBody>
       <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {title}
       </h1>
@@ -303,7 +304,7 @@ function InvoicesPage({
         }}
         onAction={onRowAction}
       />
-    </div>
+    </PageBody>
   );
 }
 

@@ -24,6 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { PAGE_INSET_CLASS } from "@/lib/page-inset";
 
 /**
  * AppShell — the canonical application frame: sidebar navigation + content.
@@ -64,6 +65,7 @@ function AppShell({
   footer,
   topbar,
   dock,
+  flush = false,
   variant = "inset",
   className,
   children,
@@ -79,6 +81,12 @@ function AppShell({
   topbar?: React.ReactNode;
   /** Floating chrome docked bottom-right (AI pill). Reserved, never overlapping. */
   dock?: React.ReactNode;
+  /**
+   * Skip the shell's default page inset (lateral + top/bottom breathing room).
+   * Rare — only for pages that genuinely own edge-to-edge layout (canvas,
+   * embedded chat with its own padding). Normal data pages must stay flush=false.
+   */
+  flush?: boolean;
   variant?: "default" | "inset";
   /** Forwarded to SidebarProvider — bound the shell's height for embeds/demos. */
   className?: string;
@@ -118,7 +126,13 @@ function AppShell({
             <div className="flex min-w-0 flex-1 items-center">{brand}</div>
           </div>
         ) : null}
-        <div className={cn("relative flex min-h-0 flex-1 flex-col", dock && "pb-16")}>
+        <div
+          className={cn(
+            "relative flex min-h-0 flex-1 flex-col overflow-auto",
+            !flush && PAGE_INSET_CLASS,
+            dock && "pb-16",
+          )}
+        >
           {children}
           {dock ? (
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-end p-4">

@@ -102,6 +102,12 @@ chat reference), not by reimplementing the thread.
   item ids ARE route paths, the active row derives from the URL, and pages
   render through the router's `<Outlet />`. Register one `<Route>` per page
   in `App.tsx` (the `/gallery` tree is the living reference).
+- **Page inset (hard rule).** AppShell/RoutedAppShell apply lateral +
+  top/bottom breathing room automatically — page templates use `PageBody`
+  (gap/scroll only, no extra px-/py- on the root). Standalone pages outside
+  a shell use `PageBody inset`. Never run `PageHeader`, stats, or tables flush
+  to the card/viewport edge; never put `p-0` on a `Card` that holds forms
+  or headings. (Lint-enforced: `page-missing-inset`, `card-flush-content`.)
 - **Chat shell mount convention (hard rule).** The chat shell owns the whole
   viewport: give it its own route and render it as that route's ONLY child.
   NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
@@ -151,6 +157,11 @@ chat reference), not by reimplementing the thread.
     `useState` switcher. Every page is a route (see "Pages are ROUTES"
     above) — use `RoutedAppShell` as the layout route and one `<Route>` per
     page. State-switched views break deep links, back/forward, and refresh.
+  - **Flush page content** (titles/tables/forms hugging the shell or card
+    edge — no lateral/top/bottom breathing room). AppShell applies inset;
+    page templates wrap in `PageBody` (no duplicate px-/py- on the root).
+    Standalone pages use `PageBody inset`. Never `Card className="p-0"` for
+    forms/headings — use CardHeader/CardContent.
   - **Custom-painted buttons.** Never put a `bg-*` fill on a `Button`
     (`bg-success`, `bg-primary`, gradients, arbitrary values) — the label
     color is no longer contrast-gated and you get the classic unreadable

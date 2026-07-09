@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils";
  * Page scaffold — owns the content column, header row, and vertical rhythm.
  * Fork freely: width, padding, and header layout are deliberate per-app
  * decisions, not fixed chrome.
+ *
+ * Use on standalone routes only. Inside AppShell/RoutedAppShell the shell
+ * already applies page inset — compose PageBody + PageHeader instead so
+ * padding is not doubled.
  */
 function Page({
   title,
