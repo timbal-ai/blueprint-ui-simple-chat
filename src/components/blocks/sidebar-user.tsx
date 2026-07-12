@@ -1,20 +1,14 @@
 import * as React from "react";
-import {
-  ChevronsUpDownIcon,
-  HelpCircleIcon,
-  LogOutIcon,
-  SettingsIcon,
-  UserIcon,
-  type IconComponent,
-} from "@/components/icons";
+import { ChevronsUpDownIcon, type IconComponent } from "@/components/icons";
 
+import { SURFACE_SHADOW } from "@/lib/control-surface";
+import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -28,11 +22,15 @@ import {
 /**
  * SidebarUser — the account row that lives in `AppShell`'s `footer` slot.
  *
- * Real avatar + name/email. Pass `menu` when the app has account actions;
- * without it you get a static identity row (no dropdown). When a menu is
- * provided, it works in every sidebar state: expanded shows the full row,
- * collapsed (icon rail) shows just the avatar, and the menu opens to the
- * side so it never clips. On mobile the menu opens upward inside the sheet.
+ * Real avatar + name/email. The dropdown opens with the identity card as a
+ * BUTTON at the top (selects `"account"`), followed by whatever `menu`
+ * entries the app defines. There is deliberately NO default menu — account
+ * actions are app-specific, so define them per app when building (profile,
+ * billing, sign out, …) instead of shipping placeholder options.
+ *
+ * Works in every sidebar state: expanded shows the full row, collapsed
+ * (icon rail) shows just the avatar, and the menu opens to the side so it
+ * never clips. On mobile the menu opens upward inside the sheet.
  */
 
 interface SidebarUserMenuItem {
@@ -42,14 +40,6 @@ interface SidebarUserMenuItem {
   /** Render tinted red and separated — sign out, delete account. */
   destructive?: boolean;
 }
-
-/** Optional preset — opt in via `menu={SIDEBAR_USER_MENU_PRESET}` when needed. */
-const SIDEBAR_USER_MENU_PRESET: SidebarUserMenuItem[] = [
-  { id: "profile", label: "Profile", icon: UserIcon },
-  { id: "settings", label: "Settings", icon: SettingsIcon },
-  { id: "help", label: "Help center", icon: HelpCircleIcon },
-  { id: "sign-out", label: "Sign out", icon: LogOutIcon, destructive: true },
-];
 
 function SidebarUser({
   name,
@@ -63,8 +53,12 @@ function SidebarUser({
   email?: string;
   /** Avatar image URL — initials fall back automatically. */
   avatarSrc?: string;
-  /** Menu entries; `destructive` items are separated + tinted. */
+  /**
+   * App-specific menu entries — empty by default (define per app);
+   * `destructive` items are separated + tinted.
+   */
   menu?: SidebarUserMenuItem[];
+  /** Fires with the item id — the identity card at the top fires "account". */
   onSelect?: (id: string) => void;
 }) {
   const { isMobile } = useSidebar();
@@ -75,7 +69,6 @@ function SidebarUser({
     .join("")
     .toUpperCase();
 
-  const hasMenu = menu.length > 0;
   const regular = menu.filter((item) => !item.destructive);
   const destructive = menu.filter((item) => item.destructive);
 
@@ -100,18 +93,6 @@ function SidebarUser({
     </>
   );
 
-  if (!hasMenu) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton size="lg" className="cursor-default hover:bg-transparent">
-            {identity}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
-  }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -119,7 +100,14 @@ function SidebarUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={cn(
+                // Reads as a white BUTTON on the gray sidebar — same border +
+                // surface shadow as every white control (house contract).
+                "rounded-lg border border-border bg-card",
+                SURFACE_SHADOW,
+                "hover:bg-ghost-fill-hover active:bg-ghost-fill-active",
+                "data-[state=open]:bg-ghost-fill-hover",
+              )}
             >
               {identity}
               <ChevronsUpDownIcon className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
@@ -131,21 +119,29 @@ function SidebarUser({
             align="end"
             sideOffset={6}
           >
-            <DropdownMenuLabel className="flex items-center gap-2 font-normal">
+            {/* Identity card as a BUTTON — the account entry point. */}
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onSelect={() => onSelect?.("account")}
+            >
               {identity}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {regular.map((item) => (
-                <DropdownMenuItem
-                  key={item.id}
-                  onSelect={() => onSelect?.(item.id)}
-                >
-                  {item.icon ? <item.icon /> : null}
-                  {item.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
+            </DropdownMenuItem>
+            {regular.length > 0 ? (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  {regular.map((item) => (
+                    <DropdownMenuItem
+                      key={item.id}
+                      onSelect={() => onSelect?.(item.id)}
+                    >
+                      {item.icon ? <item.icon /> : null}
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </>
+            ) : null}
             {destructive.length > 0 ? (
               <>
                 <DropdownMenuSeparator />
@@ -168,5 +164,5 @@ function SidebarUser({
   );
 }
 
-export { SidebarUser, SIDEBAR_USER_MENU_PRESET };
+export { SidebarUser };
 export type { SidebarUserMenuItem };

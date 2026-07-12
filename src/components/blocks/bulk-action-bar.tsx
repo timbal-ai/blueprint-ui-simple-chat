@@ -66,7 +66,7 @@ function BulkActionBar({
       <div
         role="toolbar"
         aria-label="Bulk actions"
-        className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-card py-1.5 pr-1.5 pl-4 shadow-[0_4px_12px_-2px_color-mix(in_srgb,black_16%,transparent),0_12px_32px_-8px_color-mix(in_srgb,black_20%,transparent)] duration-200 animate-in fade-in-0 slide-in-from-bottom-3"
+        className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-card py-1.5 pr-1.5 pl-4 shadow-[0_4px_12px_-2px_color-mix(in_srgb,black_16%,transparent),0_12px_32px_-8px_color-mix(in_srgb,black_20%,transparent)] duration-200 ease-out-strong animate-in fade-in-0 slide-in-from-bottom-3"
       >
         <span className="text-sm whitespace-nowrap text-foreground tabular-nums">
           {count} {itemsLabel}

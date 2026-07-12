@@ -14,6 +14,11 @@ export default function GalleryBlocks() {
       onEmployeeAction={(action, employee) =>
         toast(`${action}: ${employee.name}`)
       }
+      onRecommendationAction={(action, rec) =>
+        action === "approve"
+          ? toast.success(`Approved: ${rec.title}`)
+          : toast(`${action}: ${rec.title}`)
+      }
     />
   );
 }

@@ -21,7 +21,12 @@ function PageHeader({
 }: {
   title: React.ReactNode;
   description?: React.ReactNode;
-  /** Small slot above the title — breadcrumbs, a back link, a badge. */
+  /**
+   * Slot above the title — breadcrumbs, a back link, a badge. Breadcrumb
+   * rules: never start with the app/product name, and only render a trail
+   * for nested paths (more than 2 levels) — at 1–2 levels the title alone
+   * carries the location.
+   */
   eyebrow?: React.ReactNode;
   /** Right-aligned cluster — primary action last. */
   actions?: React.ReactNode;
@@ -34,13 +39,16 @@ function PageHeader({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 flex-col">
           {eyebrow ? (
-            <div className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+            // Same text style as the description below the title.
+            <div className="mb-2 flex items-center gap-1.5 text-sm text-muted-foreground">
               {eyebrow}
             </div>
           ) : null}
-          <h1 className="text-[1.6rem] leading-tight font-medium tracking-tight text-foreground">
-            {title}
-          </h1>
+          {title ? (
+            <h1 className="text-[1.6rem] leading-tight font-medium tracking-tight text-foreground">
+              {title}
+            </h1>
+          ) : null}
           {description ? (
             <p className="mt-1.5 max-w-prose text-sm leading-relaxed text-muted-foreground">
               {description}

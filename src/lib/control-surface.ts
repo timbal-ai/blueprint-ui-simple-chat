@@ -99,9 +99,14 @@ export function controlClass(
 /**
  * Shared entrance / exit animation for floating panels (popover, menu,
  * listbox). Identical across all overlays so they open the same way.
+ *
+ * Motion craft: strong ease-out (weak built-ins read sluggish), asymmetric
+ * timing — enter 150ms, exit snaps in 100ms. Consumers keep the trigger-
+ * anchored `origin-(--radix-*-transform-origin)` so panels scale from the
+ * trigger, never from center.
  */
 export const overlayAnimationClass =
-  "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2";
+  "ease-out-strong data-[state=open]:animate-in data-[state=open]:duration-150 data-[state=closed]:animate-out data-[state=closed]:duration-100 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-97 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2";
 
 /**
  * Shared floating-panel surface — popover, dropdown menu, select listbox,

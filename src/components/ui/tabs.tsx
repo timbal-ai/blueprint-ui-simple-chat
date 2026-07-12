@@ -57,7 +57,9 @@ function TabsContent({
       data-slot="tabs-content"
       className={cn(
         // Panels ease in on every tab switch — part of the house motion rules.
-        "flex-1 outline-none data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-1 data-[state=active]:duration-200",
+        // Tabs switch tens of times a day — a quick fade only (no movement)
+        // keeps the switch feeling instant.
+        "flex-1 outline-none ease-out-strong data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:duration-150",
         className,
       )}
       {...props}

@@ -39,17 +39,21 @@ Three layers, all in this repo:
      (sheet `size` presets up to `full`), settings scaffolding,
      `StatOverview`/`ChartCard` (edge-less charts), `ResourceGrid`,
      `AssistantPill` (the floating AI pill, streaming pre-wired),
+     `EmbeddedChat` (the chat PAGE for apps in RoutedAppShell — full-bleed
+     on the content card, no title, streaming pre-wired),
      `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
      donut-with-total, radar — no legends, gradient fills).
    - `icons.tsx` — **the house icon pack (Nucleo UI outline 18px). Import
      every icon from `@/components/icons`, never from an icon library
      directly.** Need a new glyph? Add one re-export line there.
-   - `pages/` — full page templates. `invoices-page.tsx` is the reference
-     entity-index grammar; `hr-dashboard-page.tsx` is the reference
-     dashboard grammar (stats → chart → table) — fork them, don't restart.
-     Both ship the full record flow: row click → a big floating detail
-     Sheet (`MemberDetailSheet` / `InvoiceDetailSheet` — identity header,
-     fields, activity, footer actions) and row selection → `BulkActionBar`.
+   - `pages/` — full page templates. `catalog.ts` (`PAGES_CATALOG`) indexes
+     every forkable page; `invoices-page.tsx` is the reference entity-index
+     grammar; `hr-dashboard-page.tsx` is the reference dashboard grammar
+     (stats → cards → chart → table); `customer-detail-page.tsx` and
+     `workspace-detail-page.tsx` are condensed full-page record details
+     (Stripe / Cloudflare grammar). Fork them, don't restart. Index pages
+     ship row click → detail Sheet; detail pages are their own routes with
+     breadcrumb eyebrow + MetadataGrid + tabs.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
    - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
      `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
@@ -90,11 +94,13 @@ chat reference), not by reimplementing the thread.
 ## Strong defaults
 
 - **Pick the surface first.** Chat product → `TimbalChatShell` /
-  `TimbalStudioShell` (`Home.tsx`, mounted at `/chat`). Screens with content
-  (data, settings, admin, catalog) → `RoutedAppShell` (from `blocks/`) +
-  `PageHeader` + blocks, and drop `<AssistantPill />` (from
-  `blocks/assistant`) on operational screens so the AI is one tap away.
-  Don't force a data app into a chat box.
+ `TimbalStudioShell` (`Home.tsx`, mounted at `/chat`). Screens with content
+ (data, settings, admin, catalog) → `RoutedAppShell` (from `blocks/`) +
+ `PageHeader` + blocks, and drop `<AssistantPill />` (from
+ `blocks/assistant`) on operational screens so the AI is one tap away.
+ App with a chat/copilot entry in the sidebar nav → `EmbeddedChat`
+ (`blocks/embedded-chat`) as that route. Don't force a data app into a
+ chat box.
 - **Pages are ROUTES (hard rule).** Every page/screen gets its own
   react-router route — never a `useState`-switched view inside one giant
   component (deep links, back/forward, and refresh must work). Mount
@@ -109,15 +115,20 @@ chat reference), not by reimplementing the thread.
   to the card/viewport edge; never put `p-0` on a `Card` that holds forms
   or headings. (Lint-enforced: `page-missing-inset`, `card-flush-content`.)
 - **Chat shell mount convention (hard rule).** The chat shell owns the whole
-  viewport: give it its own route and render it as that route's ONLY child.
-  NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
-  `Card`, a `Sheet`, a grid cell, or any padded/height-constrained wrapper —
-  it manages its own layout, scrolling, and composer, and does not scale
-  inside another shell. In-page AI on an app screen is `AssistantPill`,
-  never an embedded chat shell. If the design truly needs a bespoke chat
-  page (custom rail, split view), build it on `ChatScreen`
-  (`blocks/chat-screen`) — never hand-roll the message/composer scroll
-  layout.
+ viewport: give it its own route and render it as that route's ONLY child.
+ NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
+ `Card`, a `Sheet`, a grid cell, or any padded/height-constrained wrapper —
+ it manages its own layout, scrolling, and composer, and does not scale
+ inside another shell. A chat/copilot/assistant PAGE inside an app's
+ sidebar nav is `EmbeddedChat` (`blocks/embedded-chat`) mounted as its own
+ route with nothing else on the page: it renders the streaming thread
+ native to the shell's white content card — full-bleed, NO `PageHeader`,
+ NO title/subtitle above it, NO card or border around the thread (a chat
+ framed like a widget inside the page is the named mistake). In-page AI on
+ an app screen is `AssistantPill`, never an embedded chat shell. If the
+ design truly needs a bespoke chat layout beyond that (custom rail, split
+ view), build it on `ChatScreen` (`blocks/chat-screen`) — never hand-roll
+ the message/composer scroll layout.
 - **House visual rules** (already encoded in the components — keep them):
   titles are never bold (`font-medium` max, tight tracking; `PageHeader`
   owns the spacing rhythm — eyebrow, 1.6rem title, relaxed description);
@@ -170,7 +181,13 @@ chat reference), not by reimplementing the thread.
     Status color belongs in a Badge or icon, not the button fill.
     (Lint-enforced: `button-custom-fill` in `timbal-ui-lint` ≥ 4.2.1;
     state-scoped tints like `hover:bg-destructive/10` stay allowed.)
-  - **Tinted chat composer.** The chat input and the band around it stay
+  - **Chat page framed as a widget.** A chat route inside an app shell
+ rendered as `PageHeader` (title + subtitle) + a bordered/rounded card
+ with the thread inside — it reads as an embedded third-party system,
+ not a native page. The chat page is `EmbeddedChat` and nothing else:
+ the conversation IS the page, full-bleed on the content card. The
+ sidebar nav entry already names the page; no in-page title needed.
+ - **Tinted chat composer.** The chat input and the band around it stay
     on the plain surface — never give the composer row a colored/tinted
     background. The chat shells already style the composer; don't wrap them.
     Since timbal-react 4.2.1 the runtime composer band paints
@@ -271,7 +288,7 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts`; key routes are shot by the screenshot smoke CI |
+| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/customer`, `/gallery/pages/workspace`, `/gallery/chat` (EmbeddedChat), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts`; see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
 | `VITE_APP_TITLE` | document title |
 
 There is **no theme preset flag** — theming has exactly one source of truth:

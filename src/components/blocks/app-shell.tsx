@@ -52,8 +52,8 @@ interface AppShellNavItem {
 }
 
 interface AppShellNavGroup {
-  /** Group heading, e.g. "General". Omit for an unlabeled group. */
-  label?: string;
+  /** Group heading, e.g. "General" (or a node — label + chevron). Omit for an unlabeled group. */
+  label?: React.ReactNode;
   items: AppShellNavItem[];
 }
 
@@ -168,7 +168,7 @@ function ShellNav({
   return (
     <>
       {nav.map((group, gi) => (
-        <SidebarGroup key={group.label ?? gi}>
+        <SidebarGroup key={gi}>
           {group.label ? (
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
           ) : null}

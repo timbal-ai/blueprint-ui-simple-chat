@@ -196,6 +196,18 @@
       ]
     },
     {
+      "name": "catalog",
+      "type": "registry:block",
+      "title": "catalog",
+      "description": "Timbal blueprint block: catalog. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/catalog.ts",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "chart",
@@ -292,6 +304,18 @@
       ]
     },
     {
+      "name": "customer-detail-page",
+      "type": "registry:block",
+      "title": "customer detail page",
+      "description": "Timbal blueprint block: customer-detail-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/customer-detail-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "data-table",
       "type": "registry:ui",
       "title": "data table",
@@ -360,6 +384,18 @@
         {
           "path": "components/ui/dropdown-menu.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "embedded-chat",
+      "type": "registry:block",
+      "title": "embedded chat",
+      "description": "Timbal blueprint block: embedded-chat. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/embedded-chat.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -604,6 +640,18 @@
       ]
     },
     {
+      "name": "page-body",
+      "type": "registry:block",
+      "title": "page body",
+      "description": "Timbal blueprint block: page-body. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/page-body.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "page-header",
       "type": "registry:block",
       "title": "page header",
@@ -664,6 +712,18 @@
       ]
     },
     {
+      "name": "recommendation-card",
+      "type": "registry:block",
+      "title": "recommendation card",
+      "description": "Timbal blueprint block: recommendation-card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/recommendation-card.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "resizable",
       "type": "registry:ui",
       "title": "resizable",
@@ -683,6 +743,18 @@
       "files": [
         {
           "path": "components/blocks/resource-grid.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "routed-app-shell",
+      "type": "registry:block",
+      "title": "routed app shell",
+      "description": "Timbal blueprint block: routed-app-shell. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/routed-app-shell.tsx",
           "type": "registry:block"
         }
       ]
@@ -972,6 +1044,18 @@
         {
           "path": "components/chat/welcome.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "workspace-detail-page",
+      "type": "registry:block",
+      "title": "workspace detail page",
+      "description": "Timbal blueprint block: workspace-detail-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/workspace-detail-page.tsx",
+          "type": "registry:block"
         }
       ]
     }

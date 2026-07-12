@@ -104,5 +104,76 @@ function DetailDivider({ className }: { className?: string }) {
   return <Separator className={cn("my-1", className)} />;
 }
 
-export { ActivityFeed, DetailDivider, DetailSection, Field, FieldList };
+/**
+ * Compact record header for full-page detail routes (Stripe/Cloudflare
+ * grammar): leading avatar/icon tile + title/subtitle + optional badge
+ * cluster + right-aligned actions. Pair with MetadataGrid and Tabs.
+ */
+function RecordDetailHeader({
+  leading,
+  title,
+  subtitle,
+  badges,
+  actions,
+  className,
+}: {
+  leading?: React.ReactNode;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  badges?: React.ReactNode;
+  actions?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex flex-wrap items-start justify-between gap-3", className)}>
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        {leading}
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <h1 className="truncate text-lg font-medium tracking-tight text-foreground">
+              {title}
+            </h1>
+            {badges}
+          </div>
+          {subtitle ? (
+            <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
+          ) : null}
+        </div>
+      </div>
+      {actions ? (
+        <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Dense label/value grid for record metadata (3-up on lg, 2-up on sm). */
+function MetadataGrid({
+  items,
+  className,
+}: {
+  items: { label: string; value: React.ReactNode }[];
+  className?: string;
+}) {
+  return (
+    <dl className={cn("grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3", className)}>
+      {items.map((item) => (
+        <div key={item.label} className="flex min-w-0 flex-col gap-0.5">
+          <dt className="text-xs text-muted-foreground">{item.label}</dt>
+          <dd className="truncate text-sm font-medium text-foreground">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+export {
+  ActivityFeed,
+  DetailDivider,
+  DetailSection,
+  Field,
+  FieldList,
+  MetadataGrid,
+  RecordDetailHeader,
+};
 export type { ActivityItem };

@@ -18,10 +18,18 @@ export { IconArrowLeftOutline18 as ArrowLeftIcon } from "nucleo-ui-outline-18/co
 export { IconArrowRightOutline18 as ArrowRightIcon } from "nucleo-ui-outline-18/components/IconArrowRightOutline18";
 export { IconArrowUpOutline18 as ArrowUpIcon } from "nucleo-ui-outline-18/components/IconArrowUpOutline18";
 export { IconArrowUpRightOutline18 as ArrowUpRightIcon } from "nucleo-ui-outline-18/components/IconArrowUpRightOutline18";
+export { IconAntennaOutline18 as AntennaIcon } from "nucleo-ui-outline-18/components/IconAntennaOutline18";
 export { IconChartBarOutline18 as BarChart3Icon } from "nucleo-ui-outline-18/components/IconChartBarOutline18";
+export { IconDatabaseOutline18 as DatabaseIcon } from "nucleo-ui-outline-18/components/IconDatabaseOutline18";
+export { IconFileContentOutline18 as FileTextIcon } from "nucleo-ui-outline-18/components/IconFileContentOutline18";
+export { IconMegaphoneOutline18 as MegaphoneIcon } from "nucleo-ui-outline-18/components/IconMegaphoneOutline18";
+export { IconScanOutline18 as ScanIcon } from "nucleo-ui-outline-18/components/IconScanOutline18";
+export { IconSparkle3Outline18 as SparklesIcon } from "nucleo-ui-outline-18/components/IconSparkle3Outline18";
+export { IconSphereOutline18 as SphereIcon } from "nucleo-ui-outline-18/components/IconSphereOutline18";
 export { IconTextBoldOutline18 as BoldIcon } from "nucleo-ui-outline-18/components/IconTextBoldOutline18";
 export { IconBox2Outline18 as BoxesIcon } from "nucleo-ui-outline-18/components/IconBox2Outline18";
 export { IconCalendarOutline18 as CalendarIcon } from "nucleo-ui-outline-18/components/IconCalendarOutline18";
+export { IconChatBotOutline18 as ChatBotIcon } from "nucleo-ui-outline-18/components/IconChatBotOutline18";
 export { IconCheckOutline18 as CheckIcon } from "nucleo-ui-outline-18/components/IconCheckOutline18";
 export { IconChevronDownOutline18 as ChevronDownIcon } from "nucleo-ui-outline-18/components/IconChevronDownOutline18";
 export { IconChevronLeftOutline18 as ChevronLeftIcon } from "nucleo-ui-outline-18/components/IconChevronLeftOutline18";
@@ -73,6 +81,23 @@ export { IconMapPinOutline18 as MapPinIcon } from "nucleo-ui-outline-18/componen
 export { IconSuitcaseOutline18 as BriefcaseIcon } from "nucleo-ui-outline-18/components/IconSuitcaseOutline18";
 export { IconClockOutline18 as ClockIcon } from "nucleo-ui-outline-18/components/IconClockOutline18";
 export { IconTrash2Outline18 as Trash2Icon } from "nucleo-ui-outline-18/components/IconTrash2Outline18";
+export { IconBoltOutline18 as BoltIcon } from "nucleo-ui-outline-18/components/IconBoltOutline18";
+export { IconBellOutline18 as BellIcon } from "nucleo-ui-outline-18/components/IconBellOutline18";
+export { IconCloudOutline18 as CloudIcon } from "nucleo-ui-outline-18/components/IconCloudOutline18";
+export { IconCopyOutline18 as CopyIcon } from "nucleo-ui-outline-18/components/IconCopyOutline18";
+export { IconEye2Outline18 as EyeIcon } from "nucleo-ui-outline-18/components/IconEye2Outline18";
+export { IconGlobeOutline18 as GlobeIcon } from "nucleo-ui-outline-18/components/IconGlobeOutline18";
+export { IconKeyOutline18 as KeyIcon } from "nucleo-ui-outline-18/components/IconKeyOutline18";
+export { IconLinkOutline18 as LinkIcon } from "nucleo-ui-outline-18/components/IconLinkOutline18";
+export { IconLockOutline18 as LockIcon } from "nucleo-ui-outline-18/components/IconLockOutline18";
+export { IconRefreshOutline18 as RefreshIcon } from "nucleo-ui-outline-18/components/IconRefreshOutline18";
+export { IconServerOutline18 as ServerIcon } from "nucleo-ui-outline-18/components/IconServerOutline18";
+export { IconShieldOutline18 as ShieldIcon } from "nucleo-ui-outline-18/components/IconShieldOutline18";
+export { IconTagOutline18 as TagIcon } from "nucleo-ui-outline-18/components/IconTagOutline18";
+export { IconWalletOutline18 as WalletIcon } from "nucleo-ui-outline-18/components/IconWalletOutline18";
+export { IconWebhookOutline18 as WebhookIcon } from "nucleo-ui-outline-18/components/IconWebhookOutline18";
+export { IconChartActivityOutline18 as ActivityIcon } from "nucleo-ui-outline-18/components/IconChartActivityOutline18";
+export { IconOfficeOutline18 as BuildingIcon } from "nucleo-ui-outline-18/components/IconOfficeOutline18";
 
 /**
  * The shared icon component contract — what nav configs and table cells

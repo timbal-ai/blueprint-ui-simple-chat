@@ -41,7 +41,10 @@ function TooltipContent({
         sideOffset={sideOffset}
         className={cn(
           "z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background",
-          "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          // 125ms scale-from-0.97 entrance, faster exit; once one tooltip is
+          // open, adjacent ones open with NO animation (Radix "instant-open")
+          // so sweeping across a toolbar feels immediate.
+          "ease-out-strong animate-in duration-[125ms] fade-in-0 zoom-in-97 data-[state=closed]:animate-out data-[state=closed]:duration-100 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-97 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1 data-[state=instant-open]:duration-0",
           className,
         )}
         {...props}

@@ -48,7 +48,13 @@ function CommandDialog({
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <DialogContent
-        className={cn("overflow-hidden p-0", className)}
+        // Keyboard-initiated (⌘K) and opened dozens of times a day — the
+        // panel appears instantly; animating it would make every invocation
+        // feel slower. The overlay still fades for comprehension.
+        className={cn(
+          "overflow-hidden p-0 data-[state=closed]:animate-none data-[state=open]:animate-none",
+          className,
+        )}
         showCloseButton={showCloseButton}
       >
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-4 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-1.5 [&_[cmdk-item]_svg]:size-4">

@@ -112,9 +112,17 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "detail-panel": {
     importFrom: "@/components/blocks/detail-panel",
-    exports: ["DetailSection", "FieldList", "Field", "ActivityFeed", "DetailDivider"],
+    exports: [
+      "DetailSection",
+      "FieldList",
+      "Field",
+      "ActivityFeed",
+      "DetailDivider",
+      "RecordDetailHeader",
+      "MetadataGrid",
+    ],
     purpose:
-      "Structured record-detail content: aligned label/value description lists, sectioned headings with inline actions, and a compact activity timeline.",
+      "Structured record-detail content: aligned label/value description lists, sectioned headings with inline actions, compact activity timeline, plus RecordDetailHeader (condensed identity row for full-page detail routes) and MetadataGrid (dense 2–3-up label/value pairs — Stripe/Cloudflare grammar).",
     useWhen: [
       "Filling the detail side of ListDetailLayout or a record page",
       "Showing metadata fields or an event history",
@@ -180,7 +188,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/sidebar-user",
     exports: ["SidebarUser"],
     purpose:
-      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email. Pass `menu` for account actions (profile, settings, sign out); without it you get a static identity row. Adapts to the collapsed icon rail and to mobile (menu opens upward).",
+      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email. The dropdown opens with the identity card as a button (fires onSelect('account')); `menu` is EMPTY by default — account actions are app-specific, define them per app when building. Adapts to the collapsed icon rail and to mobile (menu opens upward).",
     useWhen: [
       "Every AppShell should end with this in `footer` — never hand-roll the user row",
       "You need account actions reachable from the sidebar in any state",
@@ -241,9 +249,9 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "hr-dashboard-page": {
     importFrom: "@/components/pages/hr-dashboard-page",
-    exports: ["HrDashboardPage", "MemberDetailSheet", "DEMO_EMPLOYEES"],
+    exports: ["HrDashboardPage", "MemberDetailSheet", "DEMO_EMPLOYEES", "DEMO_RECOMMENDATIONS"],
     purpose:
-      "The reference DASHBOARD template: breadcrumb eyebrow + PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen.",
+      "The reference DASHBOARD template: PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), an approve/dismiss recommendations band (RecommendationCard grid), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen.",
     useWhen: [
       "Building a dashboard/overview/analytics screen — start from this file",
       "You need the canonical stats → chart → table page rhythm",
@@ -261,6 +269,33 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "ui/select",
     ],
   },
+  "recommendation-card": {
+    importFrom: "@/components/blocks/recommendation-card",
+    exports: ["RecommendationCard"],
+    purpose:
+      "One approve/dismiss AI-suggestion card (the Command Center reference grammar): 17px medium title + rounded priority chip, muted summary, hairline-separated label/value detail rows (Projected impact, Related), and a pinned action row (outline edit icon, outline Dismiss, dark Approve). Lay several out in a `grid gap-4 md:grid-cols-2 2xl:grid-cols-3 items-stretch`; see the recommendations band in pages/hr-dashboard-page for the wired example.",
+    useWhen: [
+      "A triage feed of AI suggestions/alerts the user approves or dismisses",
+      "Any card needing the title/summary/details/actions grammar",
+    ],
+    composes: ["ui/card", "ui/badge", "ui/button"],
+  },
+  "embedded-chat": {
+    importFrom: "@/components/blocks/embedded-chat",
+    exports: ["EmbeddedChat"],
+    purpose:
+      "The chat PAGE for apps living in RoutedAppShell: the full streaming runtime (TimbalChat) rendered natively on the shell's white content card — full-bleed, edge to edge, NO PageHeader, NO title/subtitle, NO card/border around the thread. Mount it as a route (nothing else on the page); it negates the shell's page inset, keeps the message list as the only scroller with the composer pinned, and paints --thread-canvas: var(--card) so the composer band never seams against the surface. Auto-resolves the workforce like AssistantPill; welcome copy/suggestions/components pass straight through to the thread.",
+    useWhen: [
+      "The sidebar nav has a chat/copilot/assistant entry — this IS that route",
+      "Chat must feel native inside an app shell — NEVER TimbalChatShell nested in AppShell, NEVER a chat-in-a-card with a title above it",
+    ],
+    composes: [
+      "@timbal-ai/timbal-react TimbalChat",
+      "@timbal-ai/timbal-react useWorkforces",
+      "lib/studio-chat-chrome",
+      "lib/page-inset",
+    ],
+  },
   "chat-screen": {
     importFrom: "@/components/blocks/chat-screen",
     exports: ["ChatScreen"],
@@ -276,10 +311,10 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@timbal-ai/timbal-react",
     exports: ["TimbalChatShell", "TimbalStudioShell"],
     purpose:
-      "The full-page AI chat surface (see src/pages/Home.tsx for the wired example: welcome copy, attachments: true, artifact events, theme toggle). MOUNT CONVENTION: the chat shell owns the whole viewport — give it its own route and render it as the route's only child. NEVER nest it inside AppShell, a Card, a Sheet, or any padded/height-constrained wrapper; it manages its own layout, scrolling, and composer and will not scale inside another shell. For in-page AI on app screens use blocks/assistant (AssistantPill) instead.",
+      "The full-page AI chat surface (see src/pages/Home.tsx for the wired example: welcome copy, attachments: true, artifact events, theme toggle). MOUNT CONVENTION: the chat shell owns the whole viewport — give it its own route and render it as the route's only child. NEVER nest it inside AppShell, a Card, a Sheet, or any padded/height-constrained wrapper; it manages its own layout, scrolling, and composer and will not scale inside another shell. For a chat page in an app's sidebar nav use blocks/embedded-chat (EmbeddedChat); for in-page AI on app screens use blocks/assistant (AssistantPill).",
     useWhen: [
       "A dedicated /chat (or /) conversation route — full-screen chat product",
-      "NOT for embedding chat into a dashboard — use AssistantPill for that",
+      "NOT inside AppShell — a chat nav entry is EmbeddedChat; in-page AI is AssistantPill",
     ],
     composes: ["@timbal-ai/timbal-react TimbalChatShell"],
   },

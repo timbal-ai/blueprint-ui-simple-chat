@@ -1,15 +1,18 @@
+import { useLocation } from "react-router-dom";
 import { TimbalMark } from "@timbal-ai/timbal-react/studio";
 import {
   BarChart3Icon,
   BoxesIcon,
-  MessageIcon,
+  ChatBotIcon,
+  CreditCardIcon,
+  GlobeIcon,
   ReceiptIcon,
   TextCursorInputIcon,
 } from "@/components/icons";
 
 import { RoutedAppShell } from "@/components/blocks/routed-app-shell";
 import { AssistantPill } from "@/components/blocks/assistant";
-import { SidebarUser, SIDEBAR_USER_MENU_PRESET } from "@/components/blocks/sidebar-user";
+import { SidebarUser } from "@/components/blocks/sidebar-user";
 
 /**
  * Gallery showcase shell — dev/CI surface (VITE_GALLERY), not a product
@@ -19,6 +22,9 @@ import { SidebarUser, SIDEBAR_USER_MENU_PRESET } from "@/components/blocks/sideb
  * render through the router's Outlet) + blocks.
  */
 export default function GalleryShell() {
+  // The assistant pill is redundant (and overlaps the composer) on the
+  // chat page — the whole page already IS the assistant.
+  const isChatRoute = useLocation().pathname === "/gallery/chat";
   return (
     <RoutedAppShell
       variant="inset"
@@ -38,13 +44,16 @@ export default function GalleryShell() {
           label: "Pages",
           items: [
             { id: "/gallery", label: "Invoices", icon: ReceiptIcon },
-            { id: "/chat", label: "Chat shell", icon: MessageIcon },
+            { id: "/gallery/blocks", label: "Dashboard", icon: BoxesIcon },
+            { id: "/gallery/pages/customer", label: "Customer", icon: CreditCardIcon },
+            { id: "/gallery/pages/workspace", label: "Workspace", icon: GlobeIcon },
+            // EmbeddedChat reference — full-bleed on the content card, no title.
+            { id: "/gallery/chat", label: "Assistant", icon: ChatBotIcon },
           ],
         },
         {
           label: "Library",
           items: [
-            { id: "/gallery/blocks", label: "Dashboard", icon: BoxesIcon },
             {
               id: "/gallery/primitives/forms",
               label: "Primitives",
@@ -63,17 +72,18 @@ export default function GalleryShell() {
         },
       ]}
       footer={
+        // No `menu` here on purpose — account actions are app-specific;
+        // define them when building a real app.
         <SidebarUser
           name="Sophie Bennett"
           email="sophie@timbal.ai"
           avatarSrc="https://github.com/shadcn.png"
-          menu={SIDEBAR_USER_MENU_PRESET}
         />
       }
     >
       {/* The Timbal floating AI pill — streams via the same runtime env as
           the chat shell (VITE_TIMBAL_*). */}
-      <AssistantPill />
+      {!isChatRoute ? <AssistantPill /> : null}
     </RoutedAppShell>
   );
 }

@@ -30,6 +30,10 @@ import {
 } from "@/components/blocks/filtered-table";
 import { PageHeader } from "@/components/blocks/page-header";
 import { PageBody } from "@/components/blocks/page-body";
+import {
+  RecommendationCard,
+  type Recommendation,
+} from "@/components/blocks/recommendation-card";
 import { ChartCard, StatOverview } from "@/components/blocks/stat-overview";
 import { DemoComposedChart } from "@/components/blocks/chart-demos";
 import { Badge } from "@/components/ui/badge";
@@ -64,14 +68,15 @@ import {
 } from "@/components/ui/sheet";
 
 /**
- * HrDashboardPage — the reference DASHBOARD template: breadcrumb + header,
- * a 3-up KPI band with vibrant delta badges, a composed line+bar chart in a
- * titled card with a range select, and a performance tracker table with
- * search, facets, sorting, selection, and row actions.
+ * HrDashboardPage — the reference DASHBOARD template: header, a 3-up KPI
+ * band with vibrant delta badges, an approve/dismiss recommendations band,
+ * a composed line+bar chart in a titled card with a range select, and a
+ * performance tracker table with search, facets, sorting, selection, and
+ * row actions.
  *
- * Fork this file for any analytics/overview screen: swap the stats, chart
- * data, and columns — keep the structure (PageHeader → StatOverview →
- * ChartCard → FilteredTable) and the spacing rhythm.
+ * Fork this file for any analytics/overview screen: swap the stats, cards,
+ * chart data, and columns — keep the structure (PageHeader → StatOverview →
+ * RecommendationCards → ChartCard → FilteredTable) and the spacing rhythm.
  */
 
 interface Employee {
@@ -97,6 +102,42 @@ const DEMO_EMPLOYEES: Employee[] = [
   { id: "001244", name: "Aina Ferrer", department: "Engineering", assigned: 117, completed: 108, ongoing: 9, workload: "balanced" },
   { id: "001245", name: "Hugo Lasa", department: "Design", assigned: 59, completed: 55, ongoing: 4, workload: "light" },
   { id: "001246", name: "Laia Bosch", department: "People", assigned: 102, completed: 74, ongoing: 28, workload: "heavy" },
+];
+
+const DEMO_RECOMMENDATIONS: Recommendation[] = [
+  {
+    id: "rec-eng-workload",
+    title: "Engineering workload heavy, rebalance 113 ongoing tasks",
+    summary:
+      "Two engineers carry 46% of open tasks while four teammates run light.",
+    priority: "high",
+    details: [
+      { label: "Projected impact", value: "-30% overdue tasks next sprint" },
+      { label: "Related", value: "Engineering" },
+    ],
+  },
+  {
+    id: "rec-sales-attrition",
+    title: "Departures up 12%, schedule stay interviews in Sales",
+    summary:
+      "Attrition is concentrated in Sales; 3 reps flagged heavy workload for 6+ weeks.",
+    priority: "high",
+    details: [
+      { label: "Projected impact", value: "Retain ~3 at-risk employees" },
+      { label: "Related", value: "Sales" },
+    ],
+  },
+  {
+    id: "rec-onboarding-buddies",
+    title: "320 new hires this month, assign onboarding buddies",
+    summary:
+      "Buddy coverage sits at 61% for this cohort; unassigned hires ramp twice as slowly.",
+    priority: "medium",
+    details: [
+      { label: "Projected impact", value: "Full ramp ~3 weeks sooner" },
+      { label: "Related", value: "People" },
+    ],
+  },
 ];
 
 const WORKLOAD_BADGE: Record<
@@ -222,10 +263,14 @@ function employeeColumns(
 
 function HrDashboardPage({
   employees = DEMO_EMPLOYEES,
+  recommendations = DEMO_RECOMMENDATIONS,
   onEmployeeAction,
+  onRecommendationAction,
 }: {
   employees?: Employee[];
+  recommendations?: Recommendation[];
   onEmployeeAction?: (action: string, employee: Employee) => void;
+  onRecommendationAction?: (action: string, rec: Recommendation) => void;
 }) {
   const [range, setRange] = React.useState("monthly");
   const [member, setMember] = React.useState<Employee | null>(null);
@@ -246,13 +291,9 @@ function HrDashboardPage({
 
   return (
     <PageBody>
+      {/* No breadcrumb: this page is 1 level deep — eyebrow trails are only
+          for nested paths (>2 levels) and never start with the app name. */}
       <PageHeader
-        eyebrow={
-          <span>
-            Dashboard <span className="text-muted-foreground/50">/</span>{" "}
-            <span className="text-foreground">Overview</span>
-          </span>
-        }
         title="HR Insights Dashboard"
         description="Actionable HR data for better decision-making"
       />
@@ -293,6 +334,28 @@ function HrDashboardPage({
           },
         ]}
       />
+
+      <section className="flex min-w-0 flex-col gap-3">
+        <div className="flex flex-col gap-0.5">
+          <h2 className="text-lg font-medium tracking-tight text-foreground">
+            Recommended actions
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            What's winning, what you're missing, what's next.
+          </p>
+        </div>
+        <div className="grid items-stretch gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          {recommendations.map((rec) => (
+            <RecommendationCard
+              key={rec.id}
+              recommendation={rec}
+              onApprove={(r) => onRecommendationAction?.("approve", r)}
+              onDismiss={(r) => onRecommendationAction?.("dismiss", r)}
+              onEdit={(r) => onRecommendationAction?.("edit", r)}
+            />
+          ))}
+        </div>
+      </section>
 
       <ChartCard
         title="Workforce Overview"
@@ -577,5 +640,5 @@ function MemberDetailSheet({
   );
 }
 
-export { DEMO_EMPLOYEES, HrDashboardPage, MemberDetailSheet };
+export { DEMO_EMPLOYEES, DEMO_RECOMMENDATIONS, HrDashboardPage, MemberDetailSheet };
 export type { Employee };

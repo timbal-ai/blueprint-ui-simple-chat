@@ -30,6 +30,9 @@ const MODES = ["light", "dark"];
 const ROUTES = [
   { path: "/gallery", name: "invoices" },
   { path: "/gallery/blocks", name: "blocks" },
+  { path: "/gallery/pages/customer", name: "customer-detail" },
+  { path: "/gallery/pages/workspace", name: "workspace-detail" },
+  { path: "/gallery/chat", name: "embedded-chat" },
   { path: "/gallery/primitives/forms", name: "forms" },
   { path: "/gallery/primitives/overlays", name: "overlays" },
   { path: "/gallery/primitives/data", name: "data" },

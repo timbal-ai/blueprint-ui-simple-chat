@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "routed-app-shell",
+  "type": "registry:block",
+  "title": "routed app shell",
+  "description": "Timbal blueprint block: routed-app-shell. Token-wired to the project design DNA.",
+  "dependencies": [
+    "react-router-dom"
+  ],
+  "registryDependencies": [
+    "app-shell"
+  ],
+  "files": [
+    {
+      "path": "components/blocks/routed-app-shell.tsx",
+      "content": "import * as React from \"react\";\nimport { Outlet, useLocation, useNavigate } from \"react-router-dom\";\n\nimport {\n  AppShell,\n  type AppShellNavGroup,\n} from \"@/components/blocks/app-shell\";\n\n/**\n * RoutedAppShell — AppShell pre-wired to react-router. **The default frame\n * for every multi-page app.**\n *\n * The convention it enforces: **every page is a ROUTE, never a state-switched\n * view.** Nav item `id`s ARE route paths (`\"/\"`, `\"/invoices\"`,\n * `\"/settings/billing\"`); clicking navigates, the active row derives from the\n * URL (longest matching path wins, so `/settings/billing` lights up both the\n * parent and the child), and pages render through the router's `<Outlet />`.\n * Deep links, back/forward, and refresh all work for free — a `useState`\n * page-switcher gives you none of that and is a named mistake.\n *\n * Mount it once as a LAYOUT route and register one `<Route>` per page:\n *\n * ```tsx\n * <Route element={<RoutedAppShell brand={…} nav={NAV} footer={…} dock={<AssistantPill />} />}>\n *   <Route index element={<DashboardPage />} />\n *   <Route path=\"/invoices\" element={<InvoicesPage />} />\n *   <Route path=\"/settings\" element={<SettingsPage />} />\n * </Route>\n * ```\n *\n * All other AppShell props (brand, footer, topbar, dock, variant) pass\n * through unchanged. `children` (rarely needed) render after the `<Outlet />`\n * — e.g. shell-level chrome that isn't a page.\n */\nfunction RoutedAppShell({\n  nav,\n  resolveActiveId,\n  children,\n  ...appShellProps\n}: Omit<\n  React.ComponentProps<typeof AppShell>,\n  \"activeId\" | \"onNavigate\" | \"children\"\n> & {\n  /** Nav groups whose item `id`s are route paths (e.g. \"/invoices\"). */\n  nav: AppShellNavGroup[];\n  /** Override URL → active nav id (default: longest matching nav path). */\n  resolveActiveId?: (pathname: string) => string | undefined;\n  /** Optional extra shell-level chrome rendered after the routed page. */\n  children?: React.ReactNode;\n}) {\n  const navigate = useNavigate();\n  const { pathname } = useLocation();\n\n  const activeId = React.useMemo(() => {\n    if (resolveActiveId) return resolveActiveId(pathname);\n    const ids = nav.flatMap((group) =>\n      group.items.flatMap((item) => [\n        item.id,\n        ...(item.children?.map((child) => child.id) ?? []),\n      ]),\n    );\n    // Longest path that matches exactly or as a segment prefix, so\n    // \"/invoices/42\" still lights up \"/invoices\" while \"/\" only matches home.\n    return ids\n      .filter(\n        (id) =>\n          pathname === id ||\n          (id !== \"/\" && pathname.startsWith(id + \"/\")),\n      )\n      .sort((a, b) => b.length - a.length)[0];\n  }, [nav, pathname, resolveActiveId]);\n\n  return (\n    <AppShell\n      nav={nav}\n      activeId={activeId}\n      onNavigate={(id) => navigate(id)}\n      {...appShellProps}\n    >\n      <Outlet />\n      {children}\n    </AppShell>\n  );\n}\n\nexport { RoutedAppShell };\n",
+      "type": "registry:block",
+      "target": "src/components/blocks/routed-app-shell.tsx"
+    }
+  ]
+}

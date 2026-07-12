@@ -280,7 +280,9 @@ function ChartTooltipContent({
       className={cn(
         "grid min-w-[8rem] items-start gap-1.5",
         CHART_TOOLTIP_SURFACE,
-        "animate-in fade-in-0 zoom-in-95 duration-150",
+        // Chart tooltips re-open constantly while the cursor sweeps the plot —
+        // a bare 100ms fade; any movement/scale here reads as lag.
+        "animate-in fade-in-0 duration-100 ease-out-strong",
         className,
       )}
     >
