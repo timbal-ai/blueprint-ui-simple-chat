@@ -44,6 +44,9 @@ const GalleryChat = lazy(() => import("@/pages/gallery/chat"));
 const GalleryBlocks = lazy(() => import("@/pages/gallery/blocks"));
 const GalleryCustomerDetail = lazy(() => import("@/pages/gallery/customer-detail"));
 const GalleryWorkspaceDetail = lazy(() => import("@/pages/gallery/workspace-detail"));
+const GalleryHealth = lazy(() => import("@/pages/gallery/health"));
+const GalleryEarnings = lazy(() => import("@/pages/gallery/earnings"));
+const GalleryMedia = lazy(() => import("@/pages/gallery/media"));
 const GalleryForms = lazy(() => import("@/pages/gallery/primitives-forms"));
 const GalleryOverlays = lazy(() => import("@/pages/gallery/primitives-overlays"));
 const GalleryData = lazy(() => import("@/pages/gallery/primitives-data"));
@@ -114,6 +117,9 @@ function App() {
                   <Route path="blocks" element={<GalleryBlocks />} />
                   <Route path="pages/customer" element={<GalleryCustomerDetail />} />
                   <Route path="pages/workspace" element={<GalleryWorkspaceDetail />} />
+                  <Route path="pages/health" element={<GalleryHealth />} />
+                  <Route path="pages/earnings" element={<GalleryEarnings />} />
+                  <Route path="pages/media" element={<GalleryMedia />} />
                   <Route path="primitives/forms" element={<GalleryForms />} />
                   <Route
                     path="primitives/overlays"

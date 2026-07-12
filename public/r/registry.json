@@ -388,6 +388,18 @@
       ]
     },
     {
+      "name": "earnings-page",
+      "type": "registry:block",
+      "title": "earnings page",
+      "description": "Timbal blueprint block: earnings-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/earnings-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "embedded-chat",
       "type": "registry:block",
       "title": "embedded chat",
@@ -456,6 +468,18 @@
         {
           "path": "components/ui/form.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "health-dashboard-page",
+      "type": "registry:block",
+      "title": "health dashboard page",
+      "description": "Timbal blueprint block: health-dashboard-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/health-dashboard-page.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -544,6 +568,18 @@
       ]
     },
     {
+      "name": "interactive-charts",
+      "type": "registry:block",
+      "title": "interactive charts",
+      "description": "Timbal blueprint block: interactive-charts. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/interactive-charts.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "invoices-page",
       "type": "registry:block",
       "title": "invoices page",
@@ -604,6 +640,30 @@
       ]
     },
     {
+      "name": "media-card",
+      "type": "registry:block",
+      "title": "media card",
+      "description": "Timbal blueprint block: media-card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/media-card.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "media-library-page",
+      "type": "registry:block",
+      "title": "media library page",
+      "description": "Timbal blueprint block: media-library-page. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/pages/media-library-page.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "menubar",
       "type": "registry:ui",
       "title": "menubar",
@@ -612,6 +672,18 @@
         {
           "path": "components/ui/menubar.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "metric-trend-card",
+      "type": "registry:block",
+      "title": "metric trend card",
+      "description": "Timbal blueprint block: metric-trend-card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/metric-trend-card.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -672,6 +744,18 @@
         {
           "path": "components/ui/pagination.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pdf-viewer",
+      "type": "registry:block",
+      "title": "pdf viewer",
+      "description": "Timbal blueprint block: pdf-viewer. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/pdf-viewer.tsx",
+          "type": "registry:block"
         }
       ]
     },
@@ -743,6 +827,18 @@
       "files": [
         {
           "path": "components/blocks/resource-grid.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "roster-card",
+      "type": "registry:block",
+      "title": "roster card",
+      "description": "Timbal blueprint block: roster-card. Token-wired to the project design DNA.",
+      "files": [
+        {
+          "path": "components/blocks/roster-card.tsx",
           "type": "registry:block"
         }
       ]

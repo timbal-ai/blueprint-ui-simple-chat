@@ -1,5 +1,9 @@
 import * as React from "react";
-import { ChevronsUpDownIcon, type IconComponent } from "@/components/icons";
+import {
+  ChevronsUpDownIcon,
+  LogOutIcon,
+  type IconComponent,
+} from "@/components/icons";
 
 import { SURFACE_SHADOW } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";
@@ -24,9 +28,12 @@ import {
  *
  * Real avatar + name/email. The dropdown opens with the identity card as a
  * BUTTON at the top (selects `"account"`), followed by whatever `menu`
- * entries the app defines. There is deliberately NO default menu — account
- * actions are app-specific, so define them per app when building (profile,
- * billing, sign out, …) instead of shipping placeholder options.
+ * entries the app defines, and always ends with a destructive "Sign out"
+ * entry (fires `onSignOut`, falling back to `onSelect("sign-out")`) —
+ * wire it to the real session teardown when building. Beyond that there
+ * is deliberately NO default menu — account actions are app-specific, so
+ * define them per app (profile, billing, …) instead of shipping
+ * placeholder options.
  *
  * Works in every sidebar state: expanded shows the full row, collapsed
  * (icon rail) shows just the avatar, and the menu opens to the side so it
@@ -47,6 +54,7 @@ function SidebarUser({
   avatarSrc,
   menu = [],
   onSelect,
+  onSignOut,
 }: {
   name: string;
   /** Secondary line under the name (email, role, plan). */
@@ -60,6 +68,11 @@ function SidebarUser({
   menu?: SidebarUserMenuItem[];
   /** Fires with the item id — the identity card at the top fires "account". */
   onSelect?: (id: string) => void;
+  /**
+   * Sign-out handler — wire this to the real session teardown.
+   * Falls back to `onSelect("sign-out")` when omitted.
+   */
+  onSignOut?: () => void;
 }) {
   const { isMobile } = useSidebar();
   const initials = name
@@ -142,21 +155,25 @@ function SidebarUser({
                 </DropdownMenuGroup>
               </>
             ) : null}
-            {destructive.length > 0 ? (
-              <>
-                <DropdownMenuSeparator />
-                {destructive.map((item) => (
-                  <DropdownMenuItem
-                    key={item.id}
-                    variant="destructive"
-                    onSelect={() => onSelect?.(item.id)}
-                  >
-                    {item.icon ? <item.icon /> : null}
-                    {item.label}
-                  </DropdownMenuItem>
-                ))}
-              </>
-            ) : null}
+            <DropdownMenuSeparator />
+            {destructive.map((item) => (
+              <DropdownMenuItem
+                key={item.id}
+                variant="destructive"
+                onSelect={() => onSelect?.(item.id)}
+              >
+                {item.icon ? <item.icon /> : null}
+                {item.label}
+              </DropdownMenuItem>
+            ))}
+            {/* Always present — agents wire onSignOut to the real teardown. */}
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => (onSignOut ? onSignOut() : onSelect?.("sign-out"))}
+            >
+              <LogOutIcon />
+              Sign out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

@@ -41,6 +41,9 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 | Cyrel recommendation cards | user-provided | Now on dashboard; approve/dismiss card grammar |
 | Stripe customer detail (Refero) | refero.design | Condensed record detail: eyebrow, MetadataGrid, tabbed payments |
 | Cloudflare zone detail (Refero) | refero.design | Condensed infra detail: DNS table, security rows, analytics stats |
+| Apple-Health-style metric cards | user-provided (2026-07-12) | Interactive chart kit: tracked capped bars with selection, segmented sleep-score ring + breakdown rows, activity rings, ring calendar, period pager pill |
+| Creator earnings dashboard shots | user-provided (2026-07-12) | Earnings grammar: headline + vivid delta badge, Weekly/Monthly/Yearly range tabs, stat chips, contribution heatmap |
+| "Recent hires / Revenue" cards shot | user-provided (2026-07-12) | RosterCard (gray tile, white person tiles, role chips, Previous/Next) + MetricTrendCard (headline + delta + range tabs over a gradient area line) |
 
 ## Layout decisions
 
@@ -104,6 +107,51 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   action row: outline edit icon button + flex-1 outline Dismiss + flex-1
   dark Approve. Wired example: the "Recommended actions" band on
   `pages/hr-dashboard-page` (gallery Dashboard).
+- **Interactive charts (`blocks/interactive-charts`):** the consumer-metrics
+  kit — NOT Recharts. `TrackedBarChart` = rounded-full bars inside
+  full-height gray tracks; selection outlines the track (ring-offset) and
+  deepens the fill, and should drive a headline readout ("Friday — 7,100
+  steps"). Rings (`ActivityRings`, `SegmentedScoreRing`) use rounded caps
+  over `--muted` tracks; `ContributionHeatmap` mixes the tone into
+  `--muted` for intensity (works in dark mode). All colors via the
+  `ChartTone` scale (`--chart-1..8` + status tones) — never hex. Chrome:
+  `ChartPeriodPager` (white pill, SURFACE_SHADOW) and `ChartRangeTabs`
+  (active option floats on a white pill). House chart bans still apply:
+  no legends, no Y-axis numbers — tooltips carry magnitudes.
+  **Animation is built in (2026-07):** bars sweep up on mount with a 45ms
+  per-bar cascade (capped 350ms) and the same delay ripples range-swap
+  data changes; rings/segments draw in clockwise (staggered 100–120ms);
+  hover lifts the bar track 1.04 with a faint ring + deepens the fill via
+  a `bg-foreground/10` overlay; heatmap cells pop (scale-125 + ring,
+  `hover:z-10`); ring clusters scale 1.05. All transition-based
+  (`ease-out-strong`), GPU-only transforms, no JS animation loops.
+- **Metric trend card (`blocks/metric-trend-card`):** the "Revenue
+  $18,240 +9.4%" grammar — muted title, big tabular number + vivid delta
+  Badge, `ChartRangeTabs` right, gradient-filled monotone area below
+  (Recharts). Range switch swaps the dataset so the line MORPHS (Recharts
+  animation) while headline + delta update. No Y axis, tooltip-only.
+- **Roster card (`blocks/roster-card`):** the "Recent hires" grammar — a
+  Stat-style gray outer tile (`bg-muted/70 rounded-2xl p-2`) with muted
+  label + big count and an `action` slot; white person tiles (avatar 10,
+  name medium, muted meta, full-width `bg-muted` role chip) in a 2-up
+  grid; Previous/Next as paired secondary buttons. Page turns re-mount
+  the grid with `stagger-children`.
+- **Sign out (SidebarUser):** the account dropdown always ends with a
+  destructive Sign out item (LogOutIcon). Apps wire `onSignOut` (falls
+  back to `onSelect("sign-out")`) — the entry ships by default so the
+  affordance is never forgotten.
+- **PDF viewing (`blocks/pdf-viewer`):** always `PdfViewer` — toolbar
+  (title, zoom presets, open, download) over the native browser embed in a
+  bordered muted well; no pdf.js. Click-to-preview flows mount it in a wide
+  right `DrawerContent size="xl"` (see `pages/media-library-page`) or a
+  `Sheet size="xl"|"full"`. No src → EmptyState, never a blank well.
+- **Image cards (`blocks/media-card`):** galleries/asset pickers use
+  `ImageCard` in a `MediaGrid` — caption below the image by default,
+  `overlay` gradient caption for photo-first walls; broken images degrade
+  to a muted placeholder tile. Captions stay on `bg-card` (never tinted).
+- **Drawer sizes (`ui/drawer`):** `DrawerContent size` presets sm→full —
+  width for left/right drawers (mirrors Sheet's scale), height for
+  top/bottom. Wide (`xl`) side drawers are the home for previews.
 - **Breadcrumbs (PageHeader `eyebrow`):** same text style as the description
   (`text-sm text-muted-foreground`). NEVER include the app/product name as
   the first crumb, and only use a breadcrumb trail for nested paths — more

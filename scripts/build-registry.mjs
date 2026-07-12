@@ -50,6 +50,33 @@ function registryDepsOf(source, selfName) {
   return [...deps].sort();
 }
 
+/**
+ * `@/lib/*` helper imports (chart-tone, control-surface, page-inset, …)
+ * are project files with no registry item of their own — bundle them INTO
+ * the item so `shadcn add` produces working code. `utils` (cn) is skipped:
+ * every shadcn project already ships it. Follows one level of lib→lib
+ * imports transitively.
+ */
+function libFilesOf(source) {
+  const found = new Map();
+  const visit = (src) => {
+    for (const m of src.matchAll(/from\s+["']@\/lib\/([a-z0-9-]+)["']/g)) {
+      const name = m[1];
+      if (name === "utils" || found.has(name)) continue;
+      let libSource;
+      try {
+        libSource = readFileSync(join(ROOT, "src", "lib", `${name}.ts`), "utf8");
+      } catch {
+        continue;
+      }
+      found.set(name, libSource);
+      visit(libSource);
+    }
+  };
+  visit(source);
+  return [...found.entries()].sort(([a], [b]) => a.localeCompare(b));
+}
+
 mkdirSync(OUT, { recursive: true });
 
 const items = [];
@@ -81,6 +108,12 @@ for (const { dir, type, targetDir, only } of SOURCES) {
           type,
           target: `src/${targetDir}/${file}`,
         },
+        ...libFilesOf(source).map(([libName, libSource]) => ({
+          path: `lib/${libName}.ts`,
+          content: libSource,
+          type: "registry:lib",
+          target: `src/lib/${libName}.ts`,
+        })),
       ],
     };
     writeFileSync(join(OUT, `${name}.json`), JSON.stringify(item, null, 2) + "\n");

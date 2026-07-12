@@ -165,6 +165,25 @@ export default function GalleryOverlays() {
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
+          <Drawer direction="right">
+            <DrawerTrigger asChild>
+              <Button variant="outline">Wide drawer (xl)</Button>
+            </DrawerTrigger>
+            {/* size presets: sm | default | lg | xl | full — width for side
+                drawers, height for top/bottom. Wide sizes fit previews
+                (e.g. blocks/pdf-viewer) next to a table. */}
+            <DrawerContent size="xl">
+              <DrawerHeader>
+                <DrawerTitle>Document preview</DrawerTitle>
+                <DrawerDescription>
+                  A side drawer sized for content — pair with PdfViewer or a form.
+                </DrawerDescription>
+              </DrawerHeader>
+              <DrawerFooter>
+                <Button>Done</Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
         </DemoCard>
 
         <DemoCard title="Popover · Hover card · Tooltip">

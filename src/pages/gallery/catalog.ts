@@ -46,6 +46,30 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     importFrom: "@/components/pages/workspace-detail-page",
   },
   {
+    path: "/gallery/pages/health",
+    label: "Health",
+    kind: "page",
+    purpose:
+      "Consumer-metrics dashboard (HealthDashboardPage) — interactive tracked bars, score ring, activity rings, ring calendar, alerts feed.",
+    importFrom: "@/components/pages/health-dashboard-page",
+  },
+  {
+    path: "/gallery/pages/earnings",
+    label: "Earnings",
+    kind: "page",
+    purpose:
+      "Earnings analytics (EarningsPage) — range-toggled tracked bars, stat chips, contribution heatmap.",
+    importFrom: "@/components/pages/earnings-page",
+  },
+  {
+    path: "/gallery/pages/media",
+    label: "Media",
+    kind: "page",
+    purpose:
+      "Asset library (MediaLibraryPage) — ImageCard grid, document list, photo Sheet preview, PdfViewer in a wide right Drawer.",
+    importFrom: "@/components/pages/media-library-page",
+  },
+  {
     path: "/gallery/chat",
     label: "Assistant",
     kind: "chat",
@@ -93,7 +117,8 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     path: "/gallery/charts",
     label: "Charts",
     kind: "charts",
-    purpose: "Eight Recharts recipes wired to ChartCard.",
+    purpose:
+      "Recharts recipes (blocks/chart-demos) plus the interactive kit (blocks/interactive-charts): tracked bars, rings, score ring, heatmap, ring calendar.",
     importFrom: "@/components/blocks/chart-demos",
   },
 ];

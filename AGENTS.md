@@ -32,7 +32,9 @@ Three layers, all in this repo:
      content card, built-in sidebar collapse toggle + a mobile brand bar with
      an in-flow opener; on mobile, tapping a nav entry auto-closes the
      drawer), `SidebarUser` (avatar + account dropdown for the sidebar
-     footer), `PageHeader`, `ListDetailLayout`, `FilteredTable`
+     footer — always ends with a destructive Sign out entry; wire
+     `onSignOut` to the real teardown), `PageHeader`, `ListDetailLayout`,
+     `FilteredTable`
      (+ `IconCell`/`AvatarChipCell`/`AvatarChip`, checkbox-facet
      `moreFilters` popover), `BulkActionBar` (floating selection bubble —
      pair with row selection), detail-panel sections, `FormSheet`/`FormField`
@@ -42,7 +44,19 @@ Three layers, all in this repo:
      `EmbeddedChat` (the chat PAGE for apps in RoutedAppShell — full-bleed
      on the content card, no title, streaming pre-wired),
      `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
-     donut-with-total, radar — no legends, gradient fills).
+     donut-with-total, radar — no legends, gradient fills),
+     `interactive-charts` (the consumer-metrics kit — `TrackedBarChart`
+     selectable capped bars, `ActivityRings`, `SegmentedScoreRing` +
+     `ScoreBreakdownList`, `ContributionHeatmap`, `RingCalendar`, plus
+     `ChartPeriodPager`/`ChartRangeTabs` chrome; tones via `--chart-1..8`;
+     everything animates by default — mount sweeps, hover lifts/pops),
+     `MetricTrendCard` (headline number + delta badge + range tabs over a
+     morphing gradient area chart), `RosterCard` (gray people tile —
+     count headline, paginated 2-up person grid with role chips),
+     `PdfViewer` (toolbar + native PDF embed, zero deps — mount in a page
+     section or a wide Sheet/Drawer), `ImageCard`/`MediaGrid` (image-first
+     cards for galleries and asset libraries, overlay or below-image
+     captions).
    - `icons.tsx` — **the house icon pack (Nucleo UI outline 18px). Import
      every icon from `@/components/icons`, never from an icon library
      directly.** Need a new glyph? Add one re-export line there.
@@ -51,9 +65,17 @@ Three layers, all in this repo:
      grammar; `hr-dashboard-page.tsx` is the reference dashboard grammar
      (stats → cards → chart → table); `customer-detail-page.tsx` and
      `workspace-detail-page.tsx` are condensed full-page record details
-     (Stripe / Cloudflare grammar). Fork them, don't restart. Index pages
-     ship row click → detail Sheet; detail pages are their own routes with
-     breadcrumb eyebrow + MetadataGrid + tabs.
+     (Stripe / Cloudflare grammar); `health-dashboard-page.tsx` is the
+     consumer-metrics grammar (interactive tracked bars driving a headline,
+     score ring, activity rings, ring calendar, alerts feed);
+     `earnings-page.tsx` is the earnings/usage-analytics grammar (range
+     tabs swap the dataset, MetricTrendCard + RosterCard band, stat
+     chips, contribution heatmap);
+     `media-library-page.tsx` is the asset-library grammar (ImageCard grid
+     + document list → photo Sheet preview / PdfViewer in a wide right
+     Drawer). Fork them, don't restart. Index pages ship row click →
+     detail Sheet; detail pages are their own routes with breadcrumb
+     eyebrow + MetadataGrid + tabs.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
    - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
      `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
@@ -288,7 +310,7 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/customer`, `/gallery/pages/workspace`, `/gallery/chat` (EmbeddedChat), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts`; see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
+| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/{customer,workspace,health,earnings,media}`, `/gallery/chat` (EmbeddedChat), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts` (Recharts recipes + the interactive kit); see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
 | `VITE_APP_TITLE` | document title |
 
 There is **no theme preset flag** — theming has exactly one source of truth:

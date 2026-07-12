@@ -184,11 +184,76 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/chart"],
   },
+  "interactive-charts": {
+    importFrom: "@/components/blocks/interactive-charts",
+    exports: [
+      "TrackedBarChart",
+      "ActivityRings",
+      "SegmentedScoreRing",
+      "ScoreBreakdownList",
+      "ContributionHeatmap",
+      "RingCalendar",
+      "ChartPeriodPager",
+      "ChartRangeTabs",
+    ],
+    purpose:
+      "The consumer-grade interactive chart kit (Apple-Health / fitness grammar) — NOT Recharts: TrackedBarChart (rounded bars in full-height gray tracks, click-to-select drives a headline readout), ActivityRings (concentric progress rings), SegmentedScoreRing + ScoreBreakdownList (score ring with airy colored segments + labeled rows), ContributionHeatmap (GitHub-style intensity grid with per-cell tooltips), RingCalendar (month grid of mini rings), plus the chrome: ChartPeriodPager (‹ 29 Jun – 5 Jul ›) and ChartRangeTabs (Weekly/Monthly/Yearly). Everything animates by default: bars cascade up on mount and ripple when a range swap changes the data, rings/segments draw in clockwise (staggered), bars lift + deepen and heatmap cells pop on hover — no extra props needed. All colors flow through the ChartTone scale from lib/chart-tone (`chartToneVar` — --chart-1..8 + status tones).",
+    useWhen: [
+      "Personal-metrics / wellbeing / usage dashboards where the plot IS the product",
+      "Selectable bar charts that drive a big-number headline; rings, score breakdowns, heatmaps",
+      "NOT for classic analytics plots — those stay on blocks/chart-demos (Recharts)",
+    ],
+    composes: ["ui/tooltip", "lib/control-surface", "lib/chart-tone"],
+  },
+  "pdf-viewer": {
+    importFrom: "@/components/blocks/pdf-viewer",
+    exports: ["PdfViewer"],
+    purpose:
+      "Inline document viewer: toolbar (file title, zoom presets, open-in-tab, download) over the browser's native PDF renderer in a bordered muted well — zero dependencies. No src renders an EmptyState. height='100%' fills a constrained pane.",
+    useWhen: [
+      "Document-centric screens (contracts, reports, invoices as files)",
+      "Click-to-preview flows — mount inside Sheet size='xl'|'full' or a side DrawerContent size='xl'",
+    ],
+    composes: ["ui/button", "ui/empty-state", "ui/separator"],
+  },
+  "metric-trend-card": {
+    importFrom: "@/components/blocks/metric-trend-card",
+    exports: ["MetricTrendCard"],
+    purpose:
+      "The 'Revenue $18,240 +9.4%' reference card: muted title over a big money number with a vivid delta badge, ChartRangeTabs on the right, and a smooth gradient-filled area chart underneath (Recharts, house grammar — no legend, no Y-axis numbers, ChartTooltipContent). Switching the range swaps the dataset and the line MORPHS to the new shape; headline + delta update with it. Tone flows through lib/chart-tone.",
+    useWhen: [
+      "One headline metric with a trend line and Weekly/Monthly/Yearly toggles",
+      "Revenue/usage/growth cards on dashboards — self-contained, just pass ranges",
+    ],
+    composes: ["blocks/interactive-charts ChartRangeTabs", "ui/chart", "ui/badge", "ui/card", "lib/chart-tone"],
+  },
+  "roster-card": {
+    importFrom: "@/components/blocks/roster-card",
+    exports: ["RosterCard"],
+    purpose:
+      "The 'Recent hires' reference card: soft gray tile with a muted label + big count headline and an `action` slot (team selector dropdown), a 2-up grid of white person tiles (avatar, name, muted meta, full-width role chip), and built-in Previous/Next pagination — page turns cascade the tiles in. `onSelectPerson` makes tiles clickable (hover lift). Generic beyond hires: on-call rotations, top contributors, assignees.",
+    useWhen: [
+      "A dashboard band showing people a few at a time (hires, on-call, attendees)",
+      "Any paged card of identity tiles — never hand-roll the avatar grid",
+    ],
+    composes: ["ui/avatar", "ui/button"],
+  },
+  "media-card": {
+    importFrom: "@/components/blocks/media-card",
+    exports: ["ImageCard", "MediaGrid"],
+    purpose:
+      "Image-first cards for galleries, template pickers, and asset libraries: ImageCard (image + title/subtitle caption below, or `overlay` caption over a bottom gradient; badge slot, meta footer, hover lift + subtle image zoom, broken images degrade to a muted placeholder) and MediaGrid (responsive 2–4 column wrapper).",
+    useWhen: [
+      "Photo/asset galleries, template or theme pickers, content catalogs with cover art",
+      "Any card whose primary content is an image — never hand-roll <img> in a Card",
+    ],
+    composes: ["ui/badge"],
+  },
   "sidebar-user": {
     importFrom: "@/components/blocks/sidebar-user",
     exports: ["SidebarUser"],
     purpose:
-      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email. The dropdown opens with the identity card as a button (fires onSelect('account')); `menu` is EMPTY by default — account actions are app-specific, define them per app when building. Adapts to the collapsed icon rail and to mobile (menu opens upward).",
+      "The account row for AppShell's footer slot: real avatar (with initials fallback) + name/email. The dropdown opens with the identity card as a button (fires onSelect('account')) and ALWAYS ends with a destructive 'Sign out' entry — wire `onSignOut` (falls back to onSelect('sign-out')) to the real session teardown. Other `menu` entries are EMPTY by default — account actions are app-specific, define them per app when building. Adapts to the collapsed icon rail and to mobile (menu opens upward).",
     useWhen: [
       "Every AppShell should end with this in `footer` — never hand-roll the user row",
       "You need account actions reachable from the sidebar in any state",

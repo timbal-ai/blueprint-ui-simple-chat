@@ -43,11 +43,42 @@ function DrawerOverlay({
   );
 }
 
+/**
+ * Size presets. For left/right drawers `size` caps the WIDTH (mirrors
+ * SheetContent's scale — `xl`/`full` fit previews and workspaces). For
+ * top/bottom drawers it caps the HEIGHT (`full` is a near-fullscreen
+ * bottom sheet). Mobile always fills the viewport width on side drawers.
+ */
+type DrawerSize = "default" | "sm" | "lg" | "xl" | "full";
+
+// Full literal class strings — Tailwind's scanner can't see composed names.
+const DRAWER_WIDTH: Record<DrawerSize, string> = {
+  sm: "data-[vaul-drawer-direction=left]:sm:max-w-xs data-[vaul-drawer-direction=right]:sm:max-w-xs",
+  default:
+    "data-[vaul-drawer-direction=left]:sm:max-w-sm data-[vaul-drawer-direction=right]:sm:max-w-sm",
+  lg: "data-[vaul-drawer-direction=left]:sm:max-w-lg data-[vaul-drawer-direction=right]:sm:max-w-lg",
+  xl: "data-[vaul-drawer-direction=left]:sm:max-w-2xl data-[vaul-drawer-direction=right]:sm:max-w-2xl",
+  full: "data-[vaul-drawer-direction=left]:sm:max-w-none data-[vaul-drawer-direction=right]:sm:max-w-none",
+};
+
+const DRAWER_HEIGHT: Record<DrawerSize, string> = {
+  sm: "data-[vaul-drawer-direction=top]:max-h-[45vh] data-[vaul-drawer-direction=bottom]:max-h-[45vh]",
+  default:
+    "data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:max-h-[80vh]",
+  lg: "data-[vaul-drawer-direction=top]:max-h-[90vh] data-[vaul-drawer-direction=bottom]:max-h-[90vh]",
+  xl: "data-[vaul-drawer-direction=top]:max-h-[94vh] data-[vaul-drawer-direction=bottom]:max-h-[94vh]",
+  full: "data-[vaul-drawer-direction=top]:max-h-[97vh] data-[vaul-drawer-direction=bottom]:max-h-[97vh]",
+};
+
 function DrawerContent({
   className,
   children,
+  size = "default",
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & {
+  /** Width preset for left/right drawers, height preset for top/bottom. */
+  size?: DrawerSize;
+}) {
   return (
     <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay />
@@ -55,13 +86,15 @@ function DrawerContent({
         data-slot="drawer-content"
         className={cn(
           "group/drawer-content fixed z-50 flex h-auto flex-col bg-popover text-popover-foreground",
-          "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b data-[vaul-drawer-direction=top]:border-border",
-          "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=bottom]:border-border",
+          "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b data-[vaul-drawer-direction=top]:border-border",
+          "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-6 data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=bottom]:border-border",
+          DRAWER_HEIGHT[size],
           // Side drawers fill the viewport width on mobile (a partial-width
           // drawer leaves a dead backdrop strip); sm:max-w-* caps them on
           // larger screens.
-          "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:border-border data-[vaul-drawer-direction=right]:sm:max-w-sm",
-          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-full data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:border-border data-[vaul-drawer-direction=left]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:border-border",
+          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-full data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:border-border",
+          DRAWER_WIDTH[size],
           className,
         )}
         {...props}
@@ -134,3 +167,4 @@ export {
   DrawerTitle,
   DrawerDescription,
 };
+export type { DrawerSize };

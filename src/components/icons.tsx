@@ -98,6 +98,19 @@ export { IconWalletOutline18 as WalletIcon } from "nucleo-ui-outline-18/componen
 export { IconWebhookOutline18 as WebhookIcon } from "nucleo-ui-outline-18/components/IconWebhookOutline18";
 export { IconChartActivityOutline18 as ActivityIcon } from "nucleo-ui-outline-18/components/IconChartActivityOutline18";
 export { IconOfficeOutline18 as BuildingIcon } from "nucleo-ui-outline-18/components/IconOfficeOutline18";
+export { IconImageOutline18 as ImageIcon } from "nucleo-ui-outline-18/components/IconImageOutline18";
+export { IconImagesOutline18 as ImagesIcon } from "nucleo-ui-outline-18/components/IconImagesOutline18";
+export { IconFolderOutline18 as FolderIcon } from "nucleo-ui-outline-18/components/IconFolderOutline18";
+export { IconUploadOutline18 as UploadIcon } from "nucleo-ui-outline-18/components/IconUploadOutline18";
+export { IconPaperclipOutline18 as PaperclipIcon } from "nucleo-ui-outline-18/components/IconPaperclipOutline18";
+export { IconPrintOutline18 as PrinterIcon } from "nucleo-ui-outline-18/components/IconPrintOutline18";
+export { IconMagnifierPlusOutline18 as ZoomInIcon } from "nucleo-ui-outline-18/components/IconMagnifierPlusOutline18";
+export { IconMagnifierMinusOutline18 as ZoomOutIcon } from "nucleo-ui-outline-18/components/IconMagnifierMinusOutline18";
+export { IconHeartPulseOutline18 as HeartPulseIcon } from "nucleo-ui-outline-18/components/IconHeartPulseOutline18";
+export { IconMoonOutline18 as MoonIcon } from "nucleo-ui-outline-18/components/IconMoonOutline18";
+export { IconFlameOutline18 as FlameIcon } from "nucleo-ui-outline-18/components/IconFlameOutline18";
+export { IconDropletOutline18 as DropletIcon } from "nucleo-ui-outline-18/components/IconDropletOutline18";
+export { IconPersonWalkingOutline18 as FootprintsIcon } from "nucleo-ui-outline-18/components/IconPersonWalkingOutline18";
 
 /**
  * The shared icon component contract — what nav configs and table cells

@@ -6,8 +6,11 @@ import {
   ChatBotIcon,
   CreditCardIcon,
   GlobeIcon,
+  HeartPulseIcon,
+  ImagesIcon,
   ReceiptIcon,
   TextCursorInputIcon,
+  WalletIcon,
 } from "@/components/icons";
 
 import { RoutedAppShell } from "@/components/blocks/routed-app-shell";
@@ -47,6 +50,9 @@ export default function GalleryShell() {
             { id: "/gallery/blocks", label: "Dashboard", icon: BoxesIcon },
             { id: "/gallery/pages/customer", label: "Customer", icon: CreditCardIcon },
             { id: "/gallery/pages/workspace", label: "Workspace", icon: GlobeIcon },
+            { id: "/gallery/pages/health", label: "Health", icon: HeartPulseIcon },
+            { id: "/gallery/pages/earnings", label: "Earnings", icon: WalletIcon },
+            { id: "/gallery/pages/media", label: "Media", icon: ImagesIcon },
             // EmbeddedChat reference — full-bleed on the content card, no title.
             { id: "/gallery/chat", label: "Assistant", icon: ChatBotIcon },
           ],
