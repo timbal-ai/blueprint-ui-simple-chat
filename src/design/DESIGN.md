@@ -200,6 +200,26 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   than 2 levels deep. At 1–2 levels the page title alone carries the
   location (no eyebrow).
 
+## Dashboard grammar (2026-07-13)
+
+`pages/hr-dashboard-page` is the full block-kit reference — enriched because
+forked dashboards kept coming out plain (header + bare stat cards and nothing
+else). The canonical rhythm is now: PageHeader **with actions** (outline
+Export + dark primary that opens a create FormSheet) → StatOverview →
+MetricTrendCard + RosterCard band → RecommendationCard band → charts band
+(composed ChartCard + donut ChartCard, `lg:grid-cols-[3fr_2fr]`) → engagement
+band (SegmentedScoreRing + ScoreBreakdownList / ContributionHeatmap,
+`lg:grid-cols-2`) → FilteredTable + BulkActionBar + detail Sheet. When
+forking, CUT bands that don't apply — never flatten a kept band into
+hand-rolled divs, and never ship a dashboard that is only stats + table.
+
+Same pass applied to the other templates (2026-07-13):
+`pages/health-dashboard-page` adds a resting-heart-rate MetricTrendCard and
+a recovery card (house ScoreGauge over a MetricLegendList of vitals) — the
+wired reference for both blocks. `pages/earnings-page` ends in a
+payout-history FilteredTable (search, status facet, selection →
+BulkActionBar) so analytics pages show the table grammar too.
+
 ## Motion standards (Emil Kowalski / animations.dev craft bar)
 
 Adopted 2026-07 from emilkowalski/skills (`emil-design-eng`, `apple-design`,

@@ -12,11 +12,14 @@ import { PageHeader } from "@/components/blocks/page-header";
 import {
   ActivityRings,
   ChartPeriodPager,
+  MetricLegendList,
   RingCalendar,
   ScoreBreakdownList,
   SegmentedScoreRing,
   TrackedBarChart,
 } from "@/components/blocks/interactive-charts";
+import { MetricTrendCard } from "@/components/blocks/metric-trend-card";
+import { ScoreGauge } from "@/components/app/score-gauge";
 import { chartToneVar, type ChartTone } from "@/lib/chart-tone";
 import { AvatarChip } from "@/components/blocks/filtered-table";
 import { Badge } from "@/components/ui/badge";
@@ -27,8 +30,10 @@ import { Card, CardContent } from "@/components/ui/card";
  * HealthDashboardPage — the reference CONSUMER-METRICS template (the
  * Apple-Health / fitness grammar): big-number metric cards driven by an
  * interactive tracked-bar chart, a segmented score ring with breakdown
- * rows, a ring calendar of daily activity, today's activity rings with
- * legend chips, plus a profile card and an alerts feed.
+ * rows, a heart-rate MetricTrendCard, a recovery card (the house
+ * ScoreGauge + a MetricLegendList of vitals), a ring calendar of daily
+ * activity, today's activity rings with legend chips, plus a profile card
+ * and an alerts feed.
  *
  * Fork this file for any personal-metrics or wellbeing surface (health,
  * habits, usage, energy) — keep the two-column card rhythm and drive the
@@ -66,6 +71,56 @@ const DEMO_SLEEP = {
     { id: "duration", label: "Duration: 7h 50m", value: "49/50", tone: 2 as ChartTone },
     { id: "bedtime", label: "Bedtime: 20m earlier", value: "29/30", tone: 4 as ChartTone },
     { id: "interruptions", label: "Interruptions: 5m wake up", value: "20/20", tone: 5 as ChartTone },
+  ],
+};
+
+/** Resting heart rate per range — the MetricTrendCard morphs between these. */
+const DEMO_HEART_RATE = {
+  Weekly: {
+    value: "58 bpm",
+    delta: "-2 bpm",
+    deltaTone: "positive" as const,
+    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label, i) => ({
+      label,
+      value: [61, 60, 62, 59, 58, 57, 58][i],
+    })),
+  },
+  Monthly: {
+    value: "60 bpm",
+    delta: "-1 bpm",
+    deltaTone: "positive" as const,
+    data: ["W1", "W2", "W3", "W4"].map((label, i) => ({
+      label,
+      value: [62, 61, 59, 58][i],
+    })),
+  },
+};
+
+/** Recovery card: gauge score + the vitals legend under it. */
+const DEMO_RECOVERY = {
+  score: 86,
+  vitals: [
+    {
+      id: "hrv",
+      tone: 3 as ChartTone,
+      label: "HRV",
+      value: "64 ms",
+      caption: "7-day average",
+    },
+    {
+      id: "resting-hr",
+      tone: 5 as ChartTone,
+      label: "Resting HR",
+      value: "58 bpm",
+      caption: "Down 2 bpm this week",
+    },
+    {
+      id: "respiratory",
+      tone: 7 as ChartTone,
+      label: "Respiratory rate",
+      value: "14.2 /min",
+      caption: "Within normal range",
+    },
   ],
 };
 
@@ -262,6 +317,54 @@ function HealthDashboardPage({
               </SegmentedScoreRing>
             </div>
             <ScoreBreakdownList items={DEMO_SLEEP.breakdown} />
+          </CardContent>
+        </Card>
+
+        {/* Resting heart rate — a MetricTrendCard: the line morphs when the
+            range tab changes, headline + delta update with it. */}
+        <MetricTrendCard
+          title="Resting heart rate"
+          ranges={DEMO_HEART_RATE}
+          defaultRange="Weekly"
+          tone={4}
+          seriesLabel="Resting HR"
+          height="11rem"
+        />
+
+        {/* Recovery — the house ScoreGauge headline over a MetricLegendList
+            of vitals (gradient tone pills, big numbers, View actions). */}
+        <Card className="gap-5">
+          <CardContent className="flex flex-1 flex-col gap-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <MetricHeadline context="Recovery" value="Ready to train" />
+              <ChartPeriodPager
+                label="This morning"
+                onPrev={() => onAction?.("recovery-prev")}
+                onNext={() => onAction?.("recovery-next")}
+              />
+            </div>
+            <div className="flex justify-center">
+              <ScoreGauge
+                value={DEMO_RECOVERY.score}
+                label="Recovery score"
+                className="w-44"
+              />
+            </div>
+            <MetricLegendList
+              columns={["Vitals", "Today"]}
+              items={DEMO_RECOVERY.vitals.map((vital) => ({
+                ...vital,
+                action: (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onAction?.(`vital:${vital.id}`)}
+                  >
+                    View
+                  </Button>
+                ),
+              }))}
+            />
           </CardContent>
         </Card>
 

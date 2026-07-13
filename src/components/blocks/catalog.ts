@@ -315,17 +315,29 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "hr-dashboard-page": {
     importFrom: "@/components/pages/hr-dashboard-page",
-    exports: ["HrDashboardPage", "MemberDetailSheet", "DEMO_EMPLOYEES", "DEMO_RECOMMENDATIONS"],
+    exports: [
+      "HrDashboardPage",
+      "MemberDetailSheet",
+      "AddEmployeeSheet",
+      "DEMO_EMPLOYEES",
+      "DEMO_RECOMMENDATIONS",
+    ],
     purpose:
-      "The reference DASHBOARD template: PageHeader, a 3-up KPI band (vibrant delta badges, captions, header actions), an approve/dismiss recommendations band (RecommendationCard grid), a composed line+bar ChartCard with a range select, and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen.",
+      "The reference DASHBOARD template — the full block-kit composition to fork: PageHeader with actions (outline Export + dark 'Add employee' that opens AddEmployeeSheet, a FormSheet with Input/Select/DatePicker FormFields), a 3-up KPI band (vibrant delta badges, captions, header actions), a MetricTrendCard + RosterCard band (morphing payroll trend, paged recent hires), an approve/dismiss recommendations band (RecommendationCard grid), a charts band (composed line+bar ChartCard with a range select + donut-breakdown ChartCard), an engagement band (SegmentedScoreRing + ScoreBreakdownList, ContributionHeatmap), and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen — cut the bands you don't need rather than flattening them into plain divs.",
     useWhen: [
       "Building a dashboard/overview/analytics screen — start from this file",
-      "You need the canonical stats → chart → table page rhythm",
+      "You need the canonical stats → trend/roster → charts → table page rhythm",
+      "You need a wired example of ANY dashboard block (trend card, roster, score ring, heatmap, create FormSheet)",
     ],
     composes: [
       "blocks/page-header",
       "blocks/stat-overview",
+      "blocks/metric-trend-card",
+      "blocks/roster-card",
       "blocks/chart-demos",
+      "blocks/interactive-charts",
+      "blocks/recommendation-card",
+      "blocks/entity-form",
       "blocks/filtered-table",
       "blocks/bulk-action-bar",
       "blocks/detail-panel",
@@ -333,6 +345,8 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "ui/progress",
       "ui/dropdown-menu",
       "ui/select",
+      "ui/date-picker",
+      "ui/input",
     ],
   },
   "recommendation-card": {

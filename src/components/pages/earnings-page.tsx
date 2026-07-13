@@ -1,9 +1,11 @@
 import * as React from "react";
 
-import { ChevronDownIcon, DownloadIcon } from "@/components/icons";
+import { ChevronDownIcon, DownloadIcon, Trash2Icon } from "@/components/icons";
 
+import { BulkActionBar } from "@/components/blocks/bulk-action-bar";
 import { PageBody } from "@/components/blocks/page-body";
 import { PageHeader } from "@/components/blocks/page-header";
+import { FilteredTable } from "@/components/blocks/filtered-table";
 import {
   ChartRangeTabs,
   ContributionHeatmap,
@@ -17,6 +19,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  DataTableColumnHeader,
+  selectionColumn,
+  type ColumnDef,
+} from "@/components/ui/data-table";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -27,8 +34,9 @@ import {
  * EarningsPage — the reference EARNINGS/USAGE-ANALYTICS template (the
  * creator-dashboard grammar): a headline money number with a vivid delta
  * badge, a Weekly/Monthly/Yearly range toggle that swaps the dataset of a
- * tracked-bar chart, a stat-chip band, and a contributions heatmap with
- * sparse month labels.
+ * tracked-bar chart, a stat-chip band, a contributions heatmap with
+ * sparse month labels, and a payouts FilteredTable (search, status facet,
+ * selection surfacing a BulkActionBar).
  *
  * Fork this file for revenue, usage, or contribution analytics — keep the
  * headline → range tabs → chart rhythm and swap the datasets.
@@ -125,6 +133,84 @@ const MONTH_COLUMNS = Object.fromEntries(
   MONTHS.map((m, i) => [Math.round((i * 52) / 12), m]),
 );
 
+interface Payout {
+  id: string;
+  date: string;
+  source: string;
+  method: string;
+  amount: number;
+  status: "paid" | "pending" | "failed";
+}
+
+const DEMO_PAYOUTS: Payout[] = [
+  { id: "PO-1041", date: "Jul 10, 2026", source: "Marketplace sales", method: "Bank transfer", amount: 4820, status: "paid" },
+  { id: "PO-1040", date: "Jul 3, 2026", source: "Subscriptions", method: "Bank transfer", amount: 3110, status: "paid" },
+  { id: "PO-1039", date: "Jun 26, 2026", source: "Marketplace sales", method: "PayPal", amount: 5245, status: "paid" },
+  { id: "PO-1038", date: "Jun 19, 2026", source: "Sponsorships", method: "Bank transfer", amount: 7600, status: "pending" },
+  { id: "PO-1037", date: "Jun 12, 2026", source: "Subscriptions", method: "PayPal", amount: 2980, status: "paid" },
+  { id: "PO-1036", date: "Jun 5, 2026", source: "Marketplace sales", method: "Bank transfer", amount: 4415, status: "failed" },
+  { id: "PO-1035", date: "May 29, 2026", source: "Sponsorships", method: "Bank transfer", amount: 6820, status: "paid" },
+  { id: "PO-1034", date: "May 22, 2026", source: "Subscriptions", method: "PayPal", amount: 3050, status: "paid" },
+];
+
+const PAYOUT_STATUS: Record<
+  Payout["status"],
+  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+> = {
+  paid: { label: "Paid", variant: "success" },
+  pending: { label: "Pending", variant: "warning" },
+  failed: { label: "Failed", variant: "destructive" },
+};
+
+const PAYOUT_COLUMNS: ColumnDef<Payout>[] = [
+  selectionColumn<Payout>(),
+  {
+    accessorKey: "id",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Payout" />,
+    size: 110,
+    cell: ({ row }) => (
+      <span className="text-muted-foreground tabular-nums">{row.original.id}</span>
+    ),
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+    size: 130,
+  },
+  {
+    accessorKey: "source",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Source" />,
+    size: 180,
+  },
+  {
+    accessorKey: "method",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Method" />,
+    size: 140,
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">{row.original.method}</span>
+    ),
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />,
+    size: 110,
+    cell: ({ row }) => (
+      <span className="font-medium tabular-nums">
+        ${row.original.amount.toLocaleString()}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    size: 100,
+    cell: ({ row }) => {
+      const s = PAYOUT_STATUS[row.original.status];
+      return <Badge variant={s.variant}>{s.label}</Badge>;
+    },
+  },
+];
+
 function EarningsPage({
   onAction,
 }: {
@@ -132,6 +218,7 @@ function EarningsPage({
 }) {
   const [range, setRange] = React.useState<Range>("Monthly");
   const [activityRange, setActivityRange] = React.useState<Range>("Weekly");
+  const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({});
   const earnings = DEMO_EARNINGS[range];
 
   return (
@@ -251,6 +338,63 @@ function EarningsPage({
           />
         </CardContent>
       </Card>
+
+      {/* Payout history — the entity-index grammar inside the analytics
+          page: search + status facet + selectable rows + bulk actions. */}
+      <section className="flex min-w-0 flex-col gap-3">
+        <div className="flex flex-col gap-0.5">
+          <h2 className="text-lg font-medium tracking-tight text-foreground">
+            Payout history
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Every transfer to your account, most recent first.
+          </p>
+        </div>
+        <FilteredTable
+          columns={PAYOUT_COLUMNS}
+          data={DEMO_PAYOUTS}
+          searchPlaceholder="Search payouts…"
+          facets={[
+            {
+              id: "status",
+              label: "All statuses",
+              getValue: (row) => row.status,
+              options: [
+                { value: "paid", label: "Paid" },
+                { value: "pending", label: "Pending" },
+                { value: "failed", label: "Failed" },
+              ],
+            },
+          ]}
+          pagination
+          pageSize={6}
+          itemsLabel="payouts"
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
+          onRowClick={(row) => onAction?.(`payout:${row.original.id}`)}
+        />
+      </section>
+
+      <BulkActionBar
+        count={Object.keys(rowSelection).length}
+        itemsLabel="payouts selected"
+        onClear={() => setRowSelection({})}
+        actions={[
+          {
+            id: "export",
+            label: "Export",
+            icon: DownloadIcon,
+            onClick: () => setRowSelection({}),
+          },
+          {
+            id: "remove",
+            label: "Remove",
+            icon: Trash2Icon,
+            tone: "destructive",
+            onClick: () => setRowSelection({}),
+          },
+        ]}
+      />
     </PageBody>
   );
 }
