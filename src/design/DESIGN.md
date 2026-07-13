@@ -21,7 +21,7 @@ different domains and 1:1 reference matching without AI slop.
 | Status | `vivid` | Badges/status chips must pop (user direction: vibrant, never washed out) |
 | Selection | `#3B76FF` | House blue for checkbox/radio checked states (`--selection`) |
 | Charts | explicit cool palette (blue → violet → teal → magenta → sky → indigo → aqua → cobalt, oklch) | "Cooler" gradient-friendly series colors, distinct in both modes |
-| Typography | `geist` pairing, tracking tight, headings 500 | User direction (2026-07-10); titles are NEVER bold |
+| Typography | `geist` pairing, tracking tight, headings 500, `baseSize: 16` / `scale: 1.15` | User direction (2026-07-10); titles are NEVER bold. Sizes bumped 2026-07-13 (user: body/labels read minuscule) — base 15→16px, sm 12.5→13.9px, xs 11→12.1px; scale narrowed 1.2→1.15 so headings don't blow up with the bigger base |
 | Shape | radius 0.625rem, rounded controls | Middle of the road |
 | Density | comfortable (tables py-2) | Reference tables are denser than stock |
 | Motion | snappy (150ms base) | Product-feel default |
@@ -60,6 +60,11 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   surface + its composer band always share the card white
   (`--thread-canvas: var(--card)` — EmbeddedChat sets it).
 - Page width: boxed; pages own their header via `PageHeader`.
+- Chat readability (2026-07-13): the composer textarea and welcome
+  subtitle/suggestions render at `--text-base` (16px) — the library
+  hardcodes `text-sm` on them, overridden in `index.css` (`.aui-composer-input`
+  etc.). 16px on the input also prevents iOS Safari focus zoom. The user
+  bubble (`chat/user-message`) is `text-base` too.
 
 ## Component decisions
 

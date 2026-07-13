@@ -41,7 +41,7 @@ function Stat({
       {...props}
     >
       <div className="flex items-center justify-between gap-2 px-2 pt-1">
-        <span className="truncate text-[13px] text-foreground/80">{label}</span>
+        <span className="truncate text-sm text-foreground/80">{label}</span>
         {action}
       </div>
       <div className="flex flex-1 flex-col gap-1 rounded-xl border border-border/60 bg-card p-3.5 shadow-[0_1px_2px_0_color-mix(in_srgb,black_6%,transparent),0_2px_6px_-2px_color-mix(in_srgb,black_8%,transparent)]">

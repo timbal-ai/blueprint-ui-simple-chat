@@ -19,7 +19,7 @@ export function ChatUserMessage() {
   return (
     <MessagePrimitive.Root className={cn(userMessageRootClass)}>
       <UserMessageAttachments />
-      <div className="max-w-[75%] break-words rounded-2xl rounded-br-md bg-bubble-user px-4 py-2.5 text-[15px] text-bubble-user-foreground">
+      <div className="max-w-[75%] break-words rounded-2xl rounded-br-md bg-bubble-user px-4 py-2.5 text-base text-bubble-user-foreground">
         <MessagePrimitive.Parts />
       </div>
     </MessagePrimitive.Root>

@@ -39,7 +39,7 @@ export function ChatWelcome({
         {config?.heading ?? "How can I help?"}
       </h1>
       {config?.subheading ? (
-        <p className="max-w-md text-sm text-muted-foreground">
+        <p className="max-w-md text-base text-muted-foreground">
           {config.subheading}
         </p>
       ) : null}

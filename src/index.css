@@ -120,3 +120,18 @@
 button {
   cursor: pointer;
 }
+
+/* Chat readability overrides — the library hardcodes `text-sm` on the
+   composer textarea and welcome subtitle, which reads tiny. The composer is
+   the primary input of a chat product: hold it at the base size (16px also
+   stops iOS Safari from zooming the page on focus). */
+.aui-composer-input,
+.aui-edit-composer-input {
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+}
+
+.aui-thread-welcome-message-inner,
+.aui-thread-suggestion-text-1 {
+  font-size: var(--text-base);
+}

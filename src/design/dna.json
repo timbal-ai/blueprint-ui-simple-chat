@@ -33,7 +33,9 @@
   "typography": {
     "pairing": "geist",
     "tracking": "tight",
-    "headingWeight": 500
+    "headingWeight": 500,
+    "baseSize": 16,
+    "scale": 1.15
   },
   "shape": {
     "radius": 0.75,
