@@ -188,6 +188,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/interactive-charts",
     exports: [
       "TrackedBarChart",
+      "MetricLegendList",
       "ActivityRings",
       "SegmentedScoreRing",
       "ScoreBreakdownList",
@@ -197,7 +198,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "ChartRangeTabs",
     ],
     purpose:
-      "The consumer-grade interactive chart kit (Apple-Health / fitness grammar) — NOT Recharts: TrackedBarChart (rounded bars in full-height gray tracks, click-to-select drives a headline readout), ActivityRings (concentric progress rings), SegmentedScoreRing + ScoreBreakdownList (score ring with airy colored segments + labeled rows), ContributionHeatmap (GitHub-style intensity grid with per-cell tooltips), RingCalendar (month grid of mini rings), plus the chrome: ChartPeriodPager (‹ 29 Jun – 5 Jul ›) and ChartRangeTabs (Weekly/Monthly/Yearly). Everything animates by default: bars cascade up on mount and ripple when a range swap changes the data, rings/segments draw in clockwise (staggered), bars lift + deepen and heatmap cells pop on hover — no extra props needed. All colors flow through the ChartTone scale from lib/chart-tone (`chartToneVar` — --chart-1..8 + status tones).",
+      "The consumer-grade interactive chart kit (Beacon / Apple-Health grammar) — NOT Recharts: TrackedBarChart (gradient capped bars with an inset top sheen rising in tone-tinted ghost tracks; per-datum `track` renders value-vs-total headroom; click-to-select drives a headline readout), MetricLegendList (the legend under a chart: gradient tone pill + label + count, BIG number with muted caption, trailing View action, two muted column headers), ActivityRings (concentric progress rings), SegmentedScoreRing + ScoreBreakdownList (score ring with airy colored segments + labeled rows), ContributionHeatmap (GitHub-style intensity grid with per-cell tooltips), RingCalendar (month grid of mini rings), plus the chrome: ChartPeriodPager (‹ 29 Jun – 5 Jul ›) and ChartRangeTabs (Weekly/Monthly/Yearly). Everything animates by default: bars cascade up on mount and ripple when a range swap changes the data, rings/segments draw in clockwise (staggered), bars lift + deepen and heatmap cells pop on hover — no extra props needed. All colors flow through the ChartTone scale from lib/chart-tone (`chartToneVar` — --chart-1..8 + status tones).",
     useWhen: [
       "Personal-metrics / wellbeing / usage dashboards where the plot IS the product",
       "Selectable bar charts that drive a big-number headline; rings, score breakdowns, heatmaps",

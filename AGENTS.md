@@ -46,10 +46,13 @@ Three layers, all in this repo:
      `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
      donut-with-total, radar — no legends, gradient fills),
      `interactive-charts` (the consumer-metrics kit — `TrackedBarChart`
-     selectable capped bars, `ActivityRings`, `SegmentedScoreRing` +
-     `ScoreBreakdownList`, `ContributionHeatmap`, `RingCalendar`, plus
-     `ChartPeriodPager`/`ChartRangeTabs` chrome; tones via `--chart-1..8`;
-     everything animates by default — mount sweeps, hover lifts/pops),
+     gradient capped bars in tone-tinted ghost tracks, per-datum `track`
+     for value-vs-total, `MetricLegendList` (chart legend rows: gradient
+     tone pill, big number + caption, View action), `ActivityRings`,
+     `SegmentedScoreRing` + `ScoreBreakdownList`, `ContributionHeatmap`,
+     `RingCalendar`, plus `ChartPeriodPager`/`ChartRangeTabs` chrome;
+     tones via `--chart-1..8`; everything animates by default — mount
+     sweeps, hover lifts/pops),
      `MetricTrendCard` (headline number + delta badge + range tabs over a
      morphing gradient area chart), `RosterCard` (gray people tile —
      count headline, paginated 2-up person grid with role chips),

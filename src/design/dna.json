@@ -36,7 +36,7 @@
     "headingWeight": 500
   },
   "shape": {
-    "radius": 0.625,
+    "radius": 0.75,
     "controls": "rounded"
   },
   "elevation": {
@@ -60,7 +60,11 @@
   },
   "overrides": {
     "light": {
-      "--sidebar": "color-mix(in srgb, white 96%, black)"
+      "--sidebar": "color-mix(in srgb, white 96%, black)",
+      "--icon-muted": "color-mix(in srgb, white 72.9%, black)"
+    },
+    "dark": {
+      "--icon-muted": "color-mix(in srgb, white 45%, black)"
     }
   }
 }

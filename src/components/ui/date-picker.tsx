@@ -76,7 +76,7 @@ function DatePickerButton({
       className={cn(
         controlClass(),
         "flex w-full items-center justify-start gap-2 text-left font-normal",
-        !date && "text-muted-foreground",
+        !date && "text-icon-muted",
         className,
       )}
       {...props}

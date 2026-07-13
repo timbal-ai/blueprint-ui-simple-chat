@@ -18,9 +18,10 @@ import {
  *
  * These are NOT Recharts recipes (see blocks/chart-demos for those): they
  * are hand-tuned SVG/flex visuals for the cases where the plot IS the
- * product — rounded-full bars on gray tracks, rings with rounded caps,
- * intensity grids. All colors flow through DNA tokens via the shared
- * `ChartTone` scale (`--chart-1..8` + status tones) — never pass raw hex.
+ * product — gradient capped bars on tone-tinted ghost tracks, rings with
+ * rounded caps, intensity grids, chart legends with big numbers. All
+ * colors flow through DNA tokens via the shared `ChartTone` scale
+ * (`--chart-1..8` + status tones) — never pass raw hex.
  *
  * Compose them inside ChartCard or a plain Card; pair with
  * `ChartPeriodPager` (‹ 29 Jun – 5 Jul ›) and `ChartRangeTabs`
@@ -145,9 +146,12 @@ function ChartRangeTabs({
 }
 
 /* ---------------------------------------------------------------------------
- * TrackedBarChart — rounded-full bars rising inside full-height gray
- * tracks. Click a bar to select it (outlined + deepened fill) and drive a
- * header readout ("Friday — 7,100 steps"). No Y-axis numbers ever — the
+ * TrackedBarChart — the Beacon-style capped bars: gradient-filled rounded
+ * bars (lighter at the top, with an inset top sheen) rising inside
+ * tone-tinted ghost tracks. Each datum may carry a `track` value (total /
+ * target) so the pale track shows the headroom above the fill; without it
+ * the track runs full height. Click a bar to select it (outlined +
+ * deepened fill) and drive a header readout. No Y-axis numbers ever — the
  * tooltip carries the magnitude, per the house chart grammar.
  * ------------------------------------------------------------------------- */
 
@@ -155,6 +159,13 @@ interface TrackedBarDatum {
   /** X-axis label under the bar (Mon, Jan…). */
   label: string;
   value: number;
+  /**
+   * Optional second value (total / target / capacity) — the pale ghost
+   * track renders to THIS height, showing value-vs-total per bar (the
+   * "people with objectives out of everyone" grammar). Omit for a
+   * full-height track.
+   */
+  track?: number;
 }
 
 function TrackedBarChart({
@@ -162,6 +173,7 @@ function TrackedBarChart({
   max,
   tone = 7,
   height = "13rem",
+  trackTint = "tone",
   selectable = true,
   selectedIndex,
   defaultSelectedIndex,
@@ -170,10 +182,17 @@ function TrackedBarChart({
   className,
 }: {
   data: TrackedBarDatum[];
-  /** Track ceiling. Defaults to the max value (that bar fills its track). */
+  /** Ceiling. Defaults to the max value/track (that bar fills the plot). */
   max?: number;
   tone?: ChartTone;
+  /**
+   * MINIMUM plot height. The chart also fills its parent (`h-full`), so
+   * inside a stretched card (equal-height grid row) the bars grow with the
+   * card instead of leaving dead space below.
+   */
   height?: string;
+  /** Ghost-track color: tone-tinted (the reference) or neutral gray. */
+  trackTint?: "tone" | "muted";
   /** When false, bars are static (tooltip only, no selection). */
   selectable?: boolean;
   /** Controlled selection — pair with onSelect. */
@@ -185,18 +204,34 @@ function TrackedBarChart({
 }) {
   const [internal, setInternal] = React.useState(defaultSelectedIndex ?? -1);
   const selected = selectedIndex ?? internal;
-  const ceiling = max ?? Math.max(...data.map((d) => d.value), 1);
+  const ceiling =
+    max ?? Math.max(...data.map((d) => Math.max(d.value, d.track ?? 0)), 1);
   const color = chartToneVar(tone);
+  const trackColor =
+    trackTint === "muted"
+      ? "var(--muted)"
+      : `color-mix(in oklab, ${color} 13%, var(--card))`;
   const mounted = useSweepIn();
 
   return (
     <div
-      className={cn("flex w-full items-stretch justify-between gap-2", className)}
-      style={{ height }}
+      className={cn(
+        // h-full fills block parents (ChartCard plot area); flex-1 grows in
+        // flex-column card bodies — minHeight below is the floor either way.
+        "flex h-full w-full flex-1 items-stretch justify-between gap-2",
+        className,
+      )}
+      style={{ minHeight: height }}
     >
       {data.map((d, i) => {
         const ratio = Math.min(Math.max(d.value / ceiling, 0), 1);
+        const trackRatio =
+          d.track != null ? Math.min(Math.max(d.track / ceiling, 0), 1) : 1;
         const isSelected = selectable && selected === i;
+        const base = isSelected
+          ? `color-mix(in oklab, ${color} 82%, black)`
+          : color;
+        const delay = `${Math.min(i * 45, 350)}ms`;
         const Bar = (
           <button
             type="button"
@@ -215,34 +250,45 @@ function TrackedBarChart({
               !selectable && "cursor-default",
             )}
           >
-            <span
-              className={cn(
-                // Hover: the whole track lifts slightly from its base and
-                // gains a faint outline — same shape the selection uses.
-                "relative w-full max-w-10 flex-1 origin-bottom overflow-hidden rounded-full bg-muted",
-                "transition-[box-shadow,transform] duration-200 ease-out group-hover:scale-[1.04]",
-                "group-hover:ring-1 group-hover:ring-foreground/15 group-hover:ring-offset-2 group-hover:ring-offset-card",
-                isSelected && "ring-1 ring-foreground/25 ring-offset-2 ring-offset-card",
-                "group-focus-visible:ring-2 group-focus-visible:ring-ring/50 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-card",
-              )}
-            >
-              {/* Height-only transition + per-bar delay: bars cascade in on
-                  mount and ripple when a range toggle swaps the dataset. */}
+            {/* Plot column — hover lifts the whole bar from its base. */}
+            <span className="relative w-full max-w-10 flex-1 origin-bottom transition-transform duration-200 ease-out group-hover:scale-[1.03]">
+              {/* Ghost track — pale tone tint sized to the `track` value.
+                  Carries the selection / hover / focus outline so the ring
+                  always hugs the visible shape. */}
               <span
                 aria-hidden
-                className="absolute inset-x-0 bottom-0 rounded-full transition-[height] duration-700 ease-out-strong"
+                className={cn(
+                  "absolute inset-x-0 bottom-0 rounded-xl transition-[height,box-shadow] duration-700 ease-out-strong",
+                  "group-hover:ring-1 group-hover:ring-foreground/15 group-hover:ring-offset-2 group-hover:ring-offset-card",
+                  isSelected && "ring-1 ring-foreground/25 ring-offset-2 ring-offset-card",
+                  "group-focus-visible:ring-2 group-focus-visible:ring-ring/50 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-card",
+                )}
+                style={{
+                  height: `${(mounted ? trackRatio : 0) * 100}%`,
+                  transitionDelay: delay,
+                  backgroundColor: trackColor,
+                }}
+              />
+              {/* Gradient fill: lighter tone at the top → full tone, plus an
+                  inset top sheen (the "textured" cap). Height-only
+                  transition + per-bar delay: bars cascade in on mount and
+                  ripple when a range toggle swaps the dataset. */}
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute inset-x-0 bottom-0 overflow-hidden rounded-xl transition-[height] duration-700 ease-out-strong",
+                  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_45%,transparent),inset_0_8px_12px_-6px_color-mix(in_srgb,white_35%,transparent)]",
+                )}
                 style={{
                   height: `${(mounted ? ratio : 0) * 100}%`,
-                  transitionDelay: `${Math.min(i * 45, 350)}ms`,
-                  backgroundColor: isSelected
-                    ? `color-mix(in oklab, ${color} 85%, black)`
-                    : color,
+                  transitionDelay: delay,
+                  backgroundImage: `linear-gradient(to bottom, color-mix(in oklab, ${base} 62%, white), ${base} 72%)`,
                 }}
               >
                 {/* Hover deepen — instant, independent of the height delay. */}
                 <span
                   aria-hidden
-                  className="absolute inset-0 rounded-full bg-foreground/0 transition-colors duration-200 group-hover:bg-foreground/10"
+                  className="absolute inset-0 rounded-xl bg-foreground/0 transition-colors duration-200 group-hover:bg-foreground/8"
                 />
               </span>
             </span>
@@ -256,6 +302,7 @@ function TrackedBarChart({
             <TooltipTrigger asChild>{Bar}</TooltipTrigger>
             <TooltipContent>
               {d.label}: {formatValue(d.value)}
+              {d.track != null ? ` of ${formatValue(d.track)}` : null}
             </TooltipContent>
           </Tooltip>
         );
@@ -473,6 +520,90 @@ function ScoreBreakdownList({
 }
 
 /* ---------------------------------------------------------------------------
+ * MetricLegendList — the Beacon-style legend under a chart: hairline-
+ * separated rows where each status carries a gradient tone pill (same
+ * gradient as the bars), the label + count, a BIG number with a muted
+ * caption, and an optional trailing action (View). Two muted column
+ * headers ("Status" / "Metrics as of today") sit above.
+ * ------------------------------------------------------------------------- */
+
+interface MetricLegendItem {
+  id: string;
+  tone: ChartTone;
+  /** Status name — "On track". */
+  label: React.ReactNode;
+  /** Muted count in parens after the label — "(2)". */
+  count?: React.ReactNode;
+  /** The big number — "50%". */
+  value: React.ReactNode;
+  /** Muted caption under the value — "On track", "Since Sep 23". */
+  caption?: React.ReactNode;
+  /** Trailing slot — a `View` Button, a menu… */
+  action?: React.ReactNode;
+}
+
+function MetricLegendList({
+  items,
+  columns = ["Status", "Metrics as of today"],
+  className,
+}: {
+  items: MetricLegendItem[];
+  /** The two muted column headers. Pass null to hide the header row. */
+  columns?: [React.ReactNode, React.ReactNode] | null;
+  className?: string;
+}) {
+  const grid = "grid grid-cols-[minmax(0,1fr)_minmax(7rem,auto)_auto] items-center gap-x-4";
+  return (
+    <div className={cn("flex flex-col", className)}>
+      {columns ? (
+        <div className={cn(grid, "border-b border-border pb-2.5")}>
+          <span className="text-sm text-muted-foreground">{columns[0]}</span>
+          <span className="text-sm text-muted-foreground">{columns[1]}</span>
+          <span />
+        </div>
+      ) : null}
+      <div className="flex flex-col divide-y divide-border">
+        {items.map((item) => {
+          const color = chartToneVar(item.tone);
+          return (
+            <div key={item.id} className={cn(grid, "py-3")}>
+              <span className="flex min-w-0 items-center gap-2.5">
+                {/* Same gradient + top sheen as the bars — legend and plot
+                    visibly share one paint. */}
+                <span
+                  aria-hidden
+                  className="h-6 w-2 shrink-0 rounded-full shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_45%,transparent)]"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, color-mix(in oklab, ${color} 62%, white), ${color} 72%)`,
+                  }}
+                />
+                <span className="truncate text-sm text-foreground">{item.label}</span>
+                {item.count != null ? (
+                  <span className="shrink-0 text-sm text-muted-foreground">
+                    ({item.count})
+                  </span>
+                ) : null}
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-[1.45rem] leading-tight font-medium tracking-tight tabular-nums text-foreground">
+                  {item.value}
+                </span>
+                {item.caption ? (
+                  <span className="truncate text-xs text-muted-foreground">
+                    {item.caption}
+                  </span>
+                ) : null}
+              </span>
+              <span className="justify-self-end">{item.action}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------------------
  * ContributionHeatmap — the GitHub-style intensity grid (activity per day,
  * grid-flow-col, 7 rows). Intensity mixes the tone into the muted track so
  * both light and dark mode stay legible.
@@ -619,6 +750,7 @@ export {
   ChartPeriodPager,
   ChartRangeTabs,
   ContributionHeatmap,
+  MetricLegendList,
   RingCalendar,
   ScoreBreakdownList,
   SegmentedScoreRing,
@@ -628,6 +760,7 @@ export type {
   ActivityRing,
   ChartTone,
   HeatmapDatum,
+  MetricLegendItem,
   RingCalendarDay,
   ScoreBreakdownItem,
   ScoreSegment,

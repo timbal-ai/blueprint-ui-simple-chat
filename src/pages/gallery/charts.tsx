@@ -5,11 +5,13 @@ import {
   ChartPeriodPager,
   ChartRangeTabs,
   ContributionHeatmap,
+  MetricLegendList,
   RingCalendar,
   ScoreBreakdownList,
   SegmentedScoreRing,
   TrackedBarChart,
 } from "@/components/blocks/interactive-charts";
+import { Button } from "@/components/ui/button";
 import {
   DemoAreaChart,
   DemoBarChart,
@@ -82,6 +84,21 @@ const TREND_RANGES = {
     })),
   },
 };
+
+/** Objective health per week — `track` = total objectives, value = healthy. */
+const OBJECTIVE_WEEKS = [
+  { label: "25 Sep", value: 78, track: 88 },
+  { label: "23 Oct", value: 74, track: 82 },
+  { label: "20 Nov", value: 88, track: 100 },
+  { label: "25 Dec", value: 80, track: 90 },
+];
+
+const OWNERSHIP_WEEKS = [
+  { label: "25 Sep", value: 52, track: 88 },
+  { label: "23 Oct", value: 68, track: 78 },
+  { label: "20 Nov", value: 80, track: 100 },
+  { label: "25 Dec", value: 38, track: 82 },
+];
 
 const RING_DAYS = Array.from({ length: 14 }, (_, i) => ({
   day: i + 1,
@@ -161,6 +178,93 @@ export default function GalleryCharts() {
             <ScoreGauge value={65} label="Health score" />
             <ScoreGauge value={30} label="Coverage" />
             <ScoreGauge value={82} tone="selection" label="Completion" />
+          </div>
+        </ChartCard>
+
+        {/* Capped bars + metric legend — the Beacon reference grammar. */}
+        <ChartCard
+          title="Objective status"
+          description="Weekly breakdown of objective health"
+          height="auto"
+          bleed={false}
+        >
+          <div className="flex flex-col gap-5">
+            <TrackedBarChart
+              data={OBJECTIVE_WEEKS}
+              tone={2}
+              height="12rem"
+              selectable={false}
+              formatValue={(v) => `${v}%`}
+            />
+            <MetricLegendList
+              items={[
+                {
+                  id: "on-track",
+                  tone: 2,
+                  label: "On track",
+                  count: 2,
+                  value: "50%",
+                  caption: "On track",
+                  action: <Button variant="outline" size="sm">View</Button>,
+                },
+                {
+                  id: "behind",
+                  tone: 6,
+                  label: "Behind",
+                  count: 1,
+                  value: "25%",
+                  caption: "Behind",
+                  action: <Button variant="outline" size="sm">View</Button>,
+                },
+                {
+                  id: "at-risk",
+                  tone: 4,
+                  label: "At risk",
+                  count: 1,
+                  value: "25%",
+                  caption: "At risk",
+                  action: <Button variant="outline" size="sm">View</Button>,
+                },
+              ]}
+            />
+          </div>
+        </ChartCard>
+        <ChartCard
+          title="Objectives & key results"
+          description="Who owns objectives across your teams — value vs total per bar"
+          height="auto"
+          bleed={false}
+        >
+          <div className="flex flex-col gap-5">
+            <TrackedBarChart
+              data={OWNERSHIP_WEEKS}
+              tone={5}
+              height="12rem"
+              selectable={false}
+              formatValue={(v) => `${v} people`}
+            />
+            <MetricLegendList
+              items={[
+                {
+                  id: "with",
+                  tone: 5,
+                  label: "People with objectives",
+                  count: 2,
+                  value: "33%",
+                  caption: "Since Sep 23",
+                  action: <Button variant="outline" size="sm">View</Button>,
+                },
+                {
+                  id: "without",
+                  tone: 8,
+                  label: "People without objectives",
+                  count: 1,
+                  value: "67%",
+                  caption: "Since Sep 23",
+                  action: <Button variant="outline" size="sm">View</Button>,
+                },
+              ]}
+            />
           </div>
         </ChartCard>
 

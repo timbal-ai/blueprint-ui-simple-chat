@@ -44,6 +44,7 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 | Apple-Health-style metric cards | user-provided (2026-07-12) | Interactive chart kit: tracked capped bars with selection, segmented sleep-score ring + breakdown rows, activity rings, ring calendar, period pager pill |
 | Creator earnings dashboard shots | user-provided (2026-07-12) | Earnings grammar: headline + vivid delta badge, Weekly/Monthly/Yearly range tabs, stat chips, contribution heatmap |
 | "Recent hires / Revenue" cards shot | user-provided (2026-07-12) | RosterCard (gray tile, white person tiles, role chips, Previous/Next) + MetricTrendCard (headline + delta + range tabs over a gradient area line) |
+| Beacon "Reporting: Objectives" shot | user-provided (2026-07-13) | Textured control surfaces (buttons/inputs/selects), plain rounded-2xl cards with soft shadow, tactile switch, gradient capped bars in tone-tinted ghost tracks, MetricLegendList (big numbers + View under the chart) |
 
 ## Layout decisions
 
@@ -62,9 +63,26 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 
 ## Component decisions
 
-- **Controls:** inputs/selects/textareas are white (`bg-card`) and share the
-  exact `SURFACE_SHADOW` with white buttons (`@/lib/control-surface`).
-  Buttons compressed (h-8, rounded-lg) with gradient top sheen.
+- **Controls (reference button recipe, 2026-07-13):** the white control
+  surface follows the 4-step recipe exactly, token-mapped:
+  30px control height (`h-7.5` buttons), 10px corners (`rounded-md` =
+  --radius − 2px), text 14/medium, vertical grade white → #F7F7F7
+  (`SURFACE_GRADE`: card → 3%-black mix), NO stroke — instead
+  `SURFACE_BORDER` (border mixed 60% toward card ≈ #ECECEC hairline) +
+  `SURFACE_SHADOW`, a single soft drop (X:0 Y:1 blur 2, 8% black). All in
+  `@/lib/control-surface`; inputs/selects/textareas share the same three
+  primitives so fields and white buttons match side by side. Primary/
+  destructive keep the DNA gradient fill + top sheen (`FILLED_CHROME`)
+  with the same single-drop discipline (18% black). Outline/secondary
+  hover moves the gradient STOPS (`hover:from-secondary-fill-hover-*`),
+  never a flat bg swap.
+- **Cards (Beacon reference 2026-07-13):** plain neutral `bg-card` fill —
+  NO gradient — `rounded-2xl` (global radius bumped 0.625 → 0.75rem via
+  dna.json) with a quiet two-layer shadow. Texture lives on controls;
+  cards stay calm slabs.
+- **Switch (Beacon reference 2026-07-13):** recessed track (inset shadow,
+  h-5 w-9) with a top-lit primary grade when checked; raised white domed
+  thumb with its own soft drop.
 - **Tables:** transparent (no card wrap), rounded muted header band (cells
   carry `bg-muted`, first/last rounded), sort buttons hover as rounded
   pills, toolbar facet triggers read at full `text-foreground` strength.
@@ -91,7 +109,14 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   (identity header, fields, activity, footer actions).
 - **Bulk selection:** `BulkActionBar` floating bottom-center bubble — never
   toolbar buttons.
-- **Icons:** Nucleo outline 18 via `@/components/icons` only.
+- **Icons:** Nucleo outline 18 via `@/components/icons` only (a fill-pack
+  experiment was reverted 2026-07-13 — keep outline). Chrome icons — inside
+  inputs, white buttons (secondary/outline/ghost), selects, and the sidebar
+  nav — plus placeholder text render in the DNA `--icon-muted` role
+  (#BABABA-equivalent light gray; darker counterpart in dark mode). The
+  role lives in `dna.json` `overrides` and maps to the `text-icon-muted`
+  utility via `index.css`. Icons with an explicit `text-*` class and dark
+  primary/destructive button icons are unaffected.
 - **Sidebar user menu (`blocks/sidebar-user`):** the dropdown's identity
   card is a BUTTON (fires `onSelect("account")`); there is NO default menu —
   account actions are app-specific, define `menu` per app when building.
@@ -108,16 +133,28 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   dark Approve. Wired example: the "Recommended actions" band on
   `pages/hr-dashboard-page` (gallery Dashboard).
 - **Interactive charts (`blocks/interactive-charts`):** the consumer-metrics
-  kit — NOT Recharts. `TrackedBarChart` = rounded-full bars inside
-  full-height gray tracks; selection outlines the track (ring-offset) and
-  deepens the fill, and should drive a headline readout ("Friday — 7,100
-  steps"). Rings (`ActivityRings`, `SegmentedScoreRing`) use rounded caps
-  over `--muted` tracks; `ContributionHeatmap` mixes the tone into
-  `--muted` for intensity (works in dark mode). All colors via the
-  `ChartTone` scale (`--chart-1..8` + status tones) — never hex. Chrome:
-  `ChartPeriodPager` (white pill, SURFACE_SHADOW) and `ChartRangeTabs`
-  (active option floats on a white pill). House chart bans still apply:
-  no legends, no Y-axis numbers — tooltips carry magnitudes.
+  kit — NOT Recharts. `TrackedBarChart` (restyled 2026-07-13 to the Beacon
+  reference) = rounded-xl bars filled with a vertical tone gradient
+  (62%-white top → tone) plus an inset white top sheen, rising inside
+  tone-tinted ghost tracks (`tone` mixed 13% into `--card`; set
+  `trackTint="muted"` for gray). Per-datum `track` sizes the ghost to a
+  second value (total/target) — the value-vs-total grammar. Selection
+  outlines the track (ring-offset) and deepens the fill, and should drive
+  a headline readout. The `height` prop is a MINIMUM: the chart fills its
+  parent (h-full + flex-1), so in an equal-height grid row give the card's
+  content column `flex-1` (or use `ChartCard`) and the bars stretch with
+  the card — never a dead band under the plot. `MetricLegendList` is the companion legend below
+  the plot: gradient tone pill (same paint as the bars), label + muted
+  count, a BIG number (1.45rem medium, tabular) with muted caption, and
+  a trailing outline View button; muted "Status / Metrics as of today"
+  column headers above. Rings (`ActivityRings`, `SegmentedScoreRing`)
+  use rounded caps over `--muted` tracks; `ContributionHeatmap` mixes
+  the tone into `--muted` for intensity (works in dark mode). All colors
+  via the `ChartTone` scale (`--chart-1..8` + status tones) — never hex.
+  Chrome: `ChartPeriodPager` (white pill, SURFACE_SHADOW) and
+  `ChartRangeTabs` (active option floats on a white pill). House chart
+  bans still apply: no legends-with-swatches-only, no Y-axis numbers —
+  tooltips carry magnitudes, MetricLegendList carries the breakdown.
   **Animation is built in (2026-07):** bars sweep up on mount with a 45ms
   per-bar cascade (capped 350ms) and the same delay ripples range-swap
   data changes; rings/segments draw in clockwise (staggered 100–120ms);

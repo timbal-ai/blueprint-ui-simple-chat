@@ -7,9 +7,11 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        // Elevated gradient from the DNA finish tokens — a soft top-lit grade
-        // under finish "timbal", identical stops (plain bg-card) under "flat".
-        "flex flex-col gap-6 rounded-xl border border-border bg-card bg-linear-to-b from-elevated-from to-elevated-to py-6 text-card-foreground shadow-sm",
+        // Beacon reference (2026-07): plain neutral fill (NO gradient), big
+        // soft corners, and a quiet two-layer shadow — the card reads as a
+        // calm rounded slab, texture lives on the controls instead.
+        "flex flex-col gap-6 rounded-2xl border border-border bg-card py-6 text-card-foreground",
+        "shadow-[0_1px_2px_0_color-mix(in_srgb,black_3%,transparent),0_3px_8px_-4px_color-mix(in_srgb,black_4%,transparent)]",
         className,
       )}
       {...props}

@@ -2,25 +2,30 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { SURFACE_SHADOW } from "@/lib/control-surface";
+import { SURFACE_BORDER, SURFACE_GRADE, SURFACE_SHADOW } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";
 
 /**
  * Skeuomorphic chrome for filled controls: a bright top sheen that fades a
- * third of the way down + a soft two-layer drop shadow. All stops are
- * keyword/`color-mix` based (never raw literals) so the token system stays
- * the single color source.
+ * third of the way down + the reference recipe's single soft drop (X:0 Y:1
+ * blur 2). All stops are keyword/`color-mix` based (never raw literals) so
+ * the token system stays the single color source.
  */
 const FILLED_CHROME =
-  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_30%,transparent),inset_0_10px_10px_-8px_color-mix(in_srgb,white_16%,transparent),0_1px_2px_0_color-mix(in_srgb,black_28%,transparent),0_2px_5px_-2px_color-mix(in_srgb,black_22%,transparent)]";
+  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_30%,transparent),inset_0_10px_10px_-8px_color-mix(in_srgb,white_16%,transparent),0_1px_2px_0_color-mix(in_srgb,black_18%,transparent)]";
 
-/** White controls cast the SAME shadow as inputs — one shared source. */
-const SURFACE_CHROME = SURFACE_SHADOW;
+/**
+ * White controls: SAME shadow as inputs (one shared source) + the shared
+ * at-rest surface grade — the tactile "textured" white button.
+ */
+const SURFACE_CHROME = cn(SURFACE_GRADE, SURFACE_SHADOW);
 
 const buttonVariants = cva(
   // Press feedback: scale(0.97) on :active with a strong ease-out — instant
   // confirmation the press registered (see DESIGN.md § Motion).
-  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-out-strong active:scale-[0.97] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // Geometry per the reference recipe: 30px control, 10px corners
+  // (`rounded-md` = --radius − 2px = 10px at the current DNA radius).
+  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-out-strong active:scale-[0.97] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       // Fills come from the DNA finish tokens: under finish "timbal" they
@@ -32,15 +37,23 @@ const buttonVariants = cva(
           FILLED_CHROME,
         ),
         secondary: cn(
-          "border border-border bg-card text-secondary-foreground hover:bg-linear-to-b hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
+          "bg-card text-secondary-foreground hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
+          "[&_svg:not([class*='text-'])]:text-icon-muted",
+          SURFACE_BORDER,
           SURFACE_CHROME,
         ),
         outline: cn(
-          "border border-border bg-card hover:bg-ghost-fill-hover hover:text-accent-foreground active:bg-ghost-fill-active",
+          // Hover must move the gradient STOPS (a plain bg-color change would
+          // hide under the at-rest surface grade).
+          "bg-card text-foreground hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to hover:text-accent-foreground active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
+          "[&_svg:not([class*='text-'])]:text-icon-muted",
+          SURFACE_BORDER,
           SURFACE_CHROME,
         ),
-        ghost:
+        ghost: cn(
           "hover:bg-ghost-fill-hover hover:text-accent-foreground active:bg-ghost-fill-active",
+          "[&_svg:not([class*='text-'])]:text-icon-muted",
+        ),
         destructive: cn(
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95 focus-visible:ring-destructive/20",
           FILLED_CHROME,
@@ -50,10 +63,10 @@ const buttonVariants = cva(
       // Compressed: fixed heights with minimal vertical padding — the label
       // sits tight inside the pill like the dashboard reference.
       size: {
-        default: "h-8 px-3.5 py-0 has-[>svg]:px-3",
+        default: "h-7.5 px-3.5 py-0 has-[>svg]:px-3",
         sm: "h-7 rounded-md px-3 py-0 text-xs has-[>svg]:px-2.5",
         lg: "h-9 px-5 py-0 has-[>svg]:px-4",
-        icon: "size-8",
+        icon: "size-7.5",
         "icon-sm": "size-7 rounded-md",
       },
     },

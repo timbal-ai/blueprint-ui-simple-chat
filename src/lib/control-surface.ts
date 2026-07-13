@@ -39,13 +39,33 @@ const CONTROL_SHAPE: Record<ControlShape, string> = {
 };
 
 /**
- * THE one surface shadow — hairline top sheen + soft two-layer drop. Shared
- * verbatim by white buttons (secondary/outline) AND every input / select /
- * search field so controls sitting side by side cast identical shadows.
- * Never give a control `shadow-xs`/`shadow-sm` directly; use this.
+ * THE one surface shadow — the reference button recipe (2026-07-13):
+ * a single soft drop, X:0 Y:1 blur 2 at 8% black. No inset sheen — the
+ * texture comes from `SURFACE_GRADE`. Shared verbatim by white buttons
+ * (secondary/outline) AND every input / select / search field so controls
+ * sitting side by side cast identical shadows. Never give a control
+ * `shadow-xs`/`shadow-sm` directly; use this.
  */
 export const SURFACE_SHADOW =
-  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_60%,transparent),0_1px_2px_0_color-mix(in_srgb,black_10%,transparent),0_2px_4px_-2px_color-mix(in_srgb,black_8%,transparent)]";
+  "shadow-[0_1px_2px_0_color-mix(in_srgb,black_8%,transparent)]";
+
+/**
+ * The control hairline — the recipe's "remove the stroke, add a 1px #ECECEC
+ * ring" step, expressed as a real border painted lighter than `--border`
+ * (border mixed 60% toward card ≈ #ECECEC in light; stays subtle in dark).
+ * Pair with SURFACE_SHADOW everywhere a control needs an edge.
+ */
+export const SURFACE_BORDER =
+  "border border-[color-mix(in_srgb,var(--border)_60%,var(--card))]";
+
+/**
+ * The at-rest surface grade for white controls — an almost-imperceptible
+ * top-lit vertical gradient (card → card mixed 3% toward black) that makes
+ * buttons and fields read as physical, not flat. Token-referential only;
+ * still reads WHITE (never swap controls to gray).
+ */
+export const SURFACE_GRADE =
+  "bg-linear-to-b from-card to-[color-mix(in_srgb,var(--card)_97%,black)]";
 
 /**
  * The control skin — surface, border, shadow, focus ring, disabled, transition.
@@ -58,16 +78,21 @@ export const SURFACE_SHADOW =
  * reference. Never swap this to a gray/elevated surface.
  */
 export const controlSurfaceClass = cn(
-  "border border-border bg-card",
+  "bg-card",
+  SURFACE_BORDER,
+  SURFACE_GRADE,
   SURFACE_SHADOW,
   "transition-[background-color,border-color] duration-200 ease-in-out",
   "hover:border-border",
   "text-sm text-foreground outline-none",
-  "placeholder:text-muted-foreground/70",
+  // Chrome grays (Beacon reference): placeholder text + non-colored icons
+  // inside a control read in the DNA --icon-muted role (#BABABA in light).
+  "placeholder:text-icon-muted",
   "focus-visible:ring-2 focus-visible:ring-foreground/10",
   "focus-within:ring-2 focus-within:ring-foreground/10",
   "disabled:cursor-not-allowed disabled:opacity-50",
-  "data-[placeholder]:text-muted-foreground",
+  "data-[placeholder]:text-icon-muted",
+  "[&_svg:not([class*='text-'])]:text-icon-muted",
 );
 
 export interface ControlClassOptions {

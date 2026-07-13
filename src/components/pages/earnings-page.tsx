@@ -149,7 +149,7 @@ function EarningsPage({
 
       {/* Earned so far — range tabs swap the dataset. */}
       <Card className="gap-5">
-        <CardContent className="flex flex-col gap-6">
+        <CardContent className="flex flex-1 flex-col gap-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex min-w-0 flex-col gap-1">
               <span className="text-sm text-muted-foreground">Earned so far</span>

@@ -217,7 +217,9 @@ function HealthDashboardPage({
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         {/* Steps — the chart drives the headline. */}
         <Card className="gap-5">
-          <CardContent className="flex flex-col gap-5">
+          {/* flex-1 so the bar chart absorbs extra height when the row's
+              neighbor card is taller (equal-height grid). */}
+          <CardContent className="flex flex-1 flex-col gap-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <MetricHeadline
                 context={day.name}

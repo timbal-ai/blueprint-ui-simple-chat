@@ -107,7 +107,7 @@ function MediaLibraryPage({
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative w-full max-w-64 min-w-40">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-icon-muted" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}

@@ -81,7 +81,12 @@ function ChartCard({
 }: {
   title: string;
   description?: string;
-  /** Chart area height — fixed so async data can't cause layout shift. */
+  /**
+   * Chart area MINIMUM height — reserved up front so async data can't cause
+   * layout shift. When the card is stretched taller (equal-height grid
+   * rows), the plot area grows to fill the extra space instead of leaving
+   * a dead band below the chart. Pass "auto" to shrink-wrap.
+   */
   height?: string;
   /** Optional header action (range select, export). */
   action?: React.ReactNode;
@@ -97,8 +102,11 @@ function ChartCard({
         {description ? <CardDescription>{description}</CardDescription> : null}
         {action ? <CardAction>{action}</CardAction> : null}
       </CardHeader>
-      <CardContent className={cn(bleed && "px-0")}>
-        <div className="w-full min-w-0" style={{ height }}>
+      <CardContent className={cn("flex min-h-0 flex-1 flex-col", bleed && "px-0")}>
+        <div
+          className="w-full min-w-0 flex-1"
+          style={{ minHeight: height === "auto" ? undefined : height }}
+        >
           {children}
         </div>
       </CardContent>

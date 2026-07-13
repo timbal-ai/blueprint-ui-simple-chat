@@ -38,6 +38,14 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Utility mapping for the DNA `--icon-muted` role (dna.json overrides —
+   the #BABABA-equivalent chrome gray for icons + placeholder text inside
+   controls and the sidebar). The VALUE lives in tokens.css; this only
+   registers `text-icon-muted` etc. */
+@theme inline {
+  --color-icon-muted: var(--icon-muted);
+}
+
 /* Cascading group entrance: direct children rise in one after another
    (40ms steps, capped at 200ms so long lists never feel slow). Decorative —
    never blocks interaction. Apply to PageBody, card grids, stat rows. */
