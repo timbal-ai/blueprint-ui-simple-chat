@@ -12,6 +12,21 @@ npm publish, tarball repack, screenshot loop). This doc covers only the
 
 ---
 
+## What's new in this drop (2026-07-14) — action items for the skill
+
+1. **New discovery layer.** `src/components/discovery.ts` ships `INTENT_INDEX`
+   (user intent → page/block, with the `insteadOf` anti-pattern each mapping
+   replaces) and `DO_NOT_BUILD` (hard bans). CLI: `bun run kit:discover -- "feature"`.
+   **Update the skill/prompt: discovery.ts is the FIRST read, before the catalogs.**
+   Motivation: agents kept rebuilding FilteredTable/AppShell/FormSheet from primitives.
+2. **`HrDashboardPage` → `InsightsDashboardPage`** (`insights-dashboard-page`).
+   Same template, domain-agnostic name — the HR name made agents skip it for
+   non-HR dashboards. Old import still works via a deprecated re-export; stop
+   referencing "HR dashboard" in prompts.
+3. **New page template:** `invoice-review-page` (document review split:
+   PdfViewer left, extraction workflow right, mobile bottom-drawer). Blocks:
+   `document-review-layout`, `review-extraction`.
+
 ## 0. TL;DR
 
 The blueprint now ships a **pre-styled, catalog-indexed block kit** on top
@@ -33,7 +48,7 @@ mostly needs to point at files, not restate them.
 | Piece | Required | Why |
 |---|---|---|
 | `@timbal-ai/timbal-react` | **≥ 4.2.1** | DNA compiler v1.3.0: `color.selection` field (checkbox/radio house blue) + pure-neutral defaults (no brand-tinted hovers/canvases); 4.2.1 adds the chat composer runtime guarantees (`--thread-canvas` band, `max-h-dvh` guard) and the `button-custom-fill` lint rule. Older CLIs false-flag v1.3.0 tokens as drift. |
-| Blueprint tarball | repack from `blueprint-ui-simple-chat` `main` (this commit) | Ships the block kit, catalog, registry, Nucleo icons, HR dashboard + invoices templates. |
+| Blueprint tarball | repack from `blueprint-ui-simple-chat` `main` (this commit) | Ships the block kit, discovery index, catalogs, registry, Nucleo icons, insights dashboard + invoices + invoice-review templates. |
 | Screenshot tool | `browser_screenshot` available to the agent | The verify loop is visual; without it taste regresses. |
 
 ## 2. Discovery surfaces (what the agent reads, in order)
@@ -55,9 +70,10 @@ skill's job is to stop the agent from overriding it. Paste-ready:
 
 ```md
 ### House rules (enforced — do not override)
-- Compose from `@/components/blocks` first (read `BLOCKS_CATALOG`), then
-  `@/components/ui` primitives, raw HTML last. Fork a block file when it's
-  80% right; never rebuild the pattern from scratch.
+- Read `src/components/discovery.ts` FIRST (`INTENT_INDEX`, `DO_NOT_BUILD`)
+  and match the request to a page template or block. Compose from
+  `@/components/blocks`, then `@/components/ui` primitives, raw HTML last.
+  Fork a block file when it's 80% right; never rebuild the pattern from scratch.
 - Every page is a ROUTE: mount `RoutedAppShell` once as a layout route
   (nav ids are route paths, pages render through the router's Outlet) and
   register one `<Route>` per page. Never switch "pages" with `useState`.
