@@ -34,7 +34,7 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 | Source | Ref | Borrowed |
 |---|---|---|
 | Linear-style invoices shot | user-provided | Index page grammar: big title, search + facets toolbar, dark primary action, soft badges, numbered pagination |
-| HR Insights dashboard shot | user-provided | Dashboard rhythm (breadcrumb → title → 3-up KPI → composed chart → tracker table), two-layer KPI tiles, vibrant delta badges |
+| Insights dashboard shot (HR demo data) | user-provided | Dashboard rhythm (breadcrumb → title → 3-up KPI → composed chart → tracker table), two-layer KPI tiles, vibrant delta badges |
 | Rounded table header shot | user-provided | Muted rounded header band, no header border line |
 | "Total Employee / New Hires" cards | user-provided | Stat = gray outer tile + white inner value card with soft shadow |
 | Timbal platform sidebar | timbal repo | TimbalMark chrome logo + medium-weight brand title, #F5F5F5 sidebar |
@@ -146,7 +146,7 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   ("Projected impact", "Related" — value `font-medium`), and a border-t
   action row: outline edit icon button + flex-1 outline Dismiss + flex-1
   dark Approve. Wired example: the "Recommended actions" band on
-  `pages/hr-dashboard-page` (gallery Dashboard).
+  `pages/insights-dashboard-page` (gallery Dashboard).
 - **Interactive charts (`blocks/interactive-charts`):** the consumer-metrics
   kit — NOT Recharts. `TrackedBarChart` (restyled 2026-07-13 to the Beacon
   reference) = rounded-xl bars filled with a vertical tone gradient
@@ -212,9 +212,9 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 
 ## Dashboard grammar (2026-07-13)
 
-`pages/hr-dashboard-page` is the full block-kit reference — enriched because
+`pages/insights-dashboard-page` is the full block-kit reference — enriched because
 forked dashboards kept coming out plain (header + bare stat cards and nothing
-else). The canonical rhythm is now: PageHeader **with actions** (outline
+else). Domain-agnostic: demo copy uses HR sample data; fork for any vertical. The canonical rhythm is now: PageHeader **with actions** (outline
 Export + dark primary that opens a create FormSheet) → StatOverview →
 MetricTrendCard + RosterCard band → RecommendationCard band → charts band
 (composed ChartCard + donut ChartCard, `lg:grid-cols-[3fr_2fr]`) → engagement

@@ -1,7 +1,8 @@
 /**
  * BLOCKS_CATALOG — machine-readable index of the block kit.
  *
- * Agents: read this file FIRST when building a screen. Every entry is
+ * Agents: read `src/components/discovery.ts` FIRST (intent → block/page map).
+ * Then this file for full detail on every block. Every entry is project-owned
  * project-owned source under `src/components/blocks/` — import it, pass
  * props, and only fork the file when a requirement genuinely doesn't fit.
  * Compose screens from blocks; drop to `src/components/ui/*` primitives only
@@ -348,21 +349,21 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "ui/dropdown-menu",
     ],
   },
-  "hr-dashboard-page": {
-    importFrom: "@/components/pages/hr-dashboard-page",
+  "insights-dashboard-page": {
+    importFrom: "@/components/pages/insights-dashboard-page",
     exports: [
-      "HrDashboardPage",
+      "InsightsDashboardPage",
       "MemberDetailSheet",
       "AddEmployeeSheet",
       "DEMO_EMPLOYEES",
       "DEMO_RECOMMENDATIONS",
     ],
     purpose:
-      "The reference DASHBOARD template — the full block-kit composition to fork: PageHeader with actions (outline Export + dark 'Add employee' that opens AddEmployeeSheet, a FormSheet with Input/Select/DatePicker FormFields), a 3-up KPI band (vibrant delta badges, captions, header actions), a MetricTrendCard + RosterCard band (morphing payroll trend, paged recent hires), an approve/dismiss recommendations band (RecommendationCard grid), a charts band (composed line+bar ChartCard with a range select + donut-breakdown ChartCard), an engagement band (SegmentedScoreRing + ScoreBreakdownList, ContributionHeatmap), and a sortable/filterable team table with row actions. Row click opens MemberDetailSheet (xl sheet: identity header, completion progress, profile fields, activity) and selection surfaces a BulkActionBar. Fork for any analytics or overview screen — cut the bands you don't need rather than flattening them into plain divs.",
+      "THE reference DASHBOARD template — domain-agnostic; fork for sales, ops, finance, product, support, inventory, or any command-center screen (demo data is HR-flavored only to exercise people blocks). Full composition: PageHeader with actions (outline Export + dark primary → create FormSheet), 3-up KPI band, MetricTrendCard + RosterCard band, RecommendationCard triage grid, charts band (composed ChartCard + donut), engagement band (SegmentedScoreRing + ContributionHeatmap), FilteredTable + detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
     useWhen: [
-      "Building a dashboard/overview/analytics screen — start from this file",
-      "You need the canonical stats → trend/roster → charts → table page rhythm",
-      "You need a wired example of ANY dashboard block (trend card, roster, score ring, heatmap, create FormSheet)",
+      "Building ANY dashboard/overview/analytics screen — start from this file (NOT HR-only)",
+      "You need the canonical stats → trend/roster → recommendations → charts → table rhythm",
+      "A wired example of ANY dashboard block (trend card, roster, score ring, heatmap, RecommendationCard, FormSheet)",
     ],
     composes: [
       "blocks/page-header",
@@ -388,7 +389,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/recommendation-card",
     exports: ["RecommendationCard"],
     purpose:
-      "One approve/dismiss AI-suggestion card (the Command Center reference grammar): 17px medium title + rounded priority chip, muted summary, hairline-separated label/value detail rows (Projected impact, Related), and a pinned action row (outline edit icon, outline Dismiss, dark Approve). Lay several out in a `grid gap-4 md:grid-cols-2 2xl:grid-cols-3 items-stretch`; see the recommendations band in pages/hr-dashboard-page for the wired example.",
+      "One approve/dismiss AI-suggestion card (the Command Center reference grammar): 17px medium title + rounded priority chip, muted summary, hairline-separated label/value detail rows (Projected impact, Related), and a pinned action row (outline edit icon, outline Dismiss, dark Approve). Lay several out in a `grid gap-4 md:grid-cols-2 2xl:grid-cols-3 items-stretch`; see the recommendations band in pages/insights-dashboard-page for the wired example.",
     useWhen: [
       "A triage feed of AI suggestions/alerts the user approves or dismisses",
       "Any card needing the title/summary/details/actions grammar",

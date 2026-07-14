@@ -2,6 +2,18 @@
 
 This repo is the **canonical scaffold** for Timbal app UIs. **The `timbal-ui` skill is the authoritative guide for HOW to design and build here — load it first.** This file carries only project facts the skill can't know. Where they overlap, the skill wins.
 
+## Discovery workflow (MANDATORY before any UI code)
+
+Agents rebuild from primitives when they skip discovery. **Read in this order:**
+
+1. **`src/components/discovery.ts`** — intent index (`INTENT_INDEX`, `DO_NOT_BUILD`). Match the user's request to a page template or block. Run `bun run kit:discover -- "feature description"` to search.
+2. **`PAGES_CATALOG`** (`src/components/pages/catalog.ts`) — **fork** the closest full-page template. Never compose a whole screen from `ui/*` primitives.
+3. **`BLOCKS_CATALOG`** (`src/components/blocks/catalog.ts`) — import blocks for anything the forked page doesn't already cover.
+4. **`src/components/ui/*`** — primitives for gaps between blocks only.
+5. **Fork** a block file when it is ~80% right. **Never** rebuild FilteredTable, AppShell, FormSheet, chart recipes, or review layouts from scratch.
+
+Quick search: `bun run kit:discover` lists the kit; `bun run kit:discover -- "invoice table"` matches intents.
+
 ## The design system is project-owned. You are expected to edit it.
 
 Three layers, all in this repo:
@@ -25,9 +37,9 @@ Three layers, all in this repo:
      DNA tokens (`bg-primary`, `h-control`, `rounded-control`, `shadow-xs`,
      bare `transition-*` inherits DNA motion).
    - `blocks/` — **the block kit: screen-level patterns. Compose from these
-     FIRST.** `catalog.ts` (`BLOCKS_CATALOG`) is the machine-readable index —
-     read it before building any screen; `blocks/index.ts` barrels the whole
-     kit (`import { AppShell, BulkActionBar } from "@/components/blocks"`).
+     FIRST.** Read `src/components/discovery.ts` before any screen — it maps
+     user intents to pages/blocks. Then `catalog.ts` (`BLOCKS_CATALOG`) for
+     the full index; `blocks/index.ts` barrels the whole kit (`import { AppShell, BulkActionBar } from "@/components/blocks"`).
      `AppShell` (default `variant="inset"` — gray canvas, white bordered
      content card, built-in sidebar collapse toggle + a mobile brand bar with
      an in-flow opener; on mobile, tapping a nav entry auto-closes the
@@ -65,7 +77,7 @@ Three layers, all in this repo:
      directly.** Need a new glyph? Add one re-export line there.
    - `pages/` — full page templates. `catalog.ts` (`PAGES_CATALOG`) indexes
      every forkable page; `invoices-page.tsx` is the reference entity-index
-     grammar; `hr-dashboard-page.tsx` is the reference dashboard grammar
+     grammar; `insights-dashboard-page.tsx` is the reference dashboard grammar
      (stats → cards → chart → table); `customer-detail-page.tsx` and
      `workspace-detail-page.tsx` are condensed full-page record details
      (Stripe / Cloudflare grammar); `health-dashboard-page.tsx` is the
@@ -291,6 +303,7 @@ chat reference), not by reimplementing the thread.
 src/
 ├── design/            # dna.json (edit) · tokens.css (generated) · DESIGN.md (update)
 ├── components/
+│   ├── discovery.ts   # intent index — agents read FIRST (INTENT_INDEX, DO_NOT_BUILD)
 │   ├── ui/            # project-owned primitives (fork freely)
 │   ├── blocks/        # block kit + catalog.ts — compose screens from these first
 │   ├── pages/         # page templates (invoices-page — fork for index screens)

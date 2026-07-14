@@ -3,8 +3,8 @@
  *
  *   import { AppShell, FilteredTable, BulkActionBar } from "@/components/blocks";
  *
- * Agents: pair this with BLOCKS_CATALOG (also exported here) to discover
- * what exists before building anything by hand. Page templates live in
+ * Agents: read `src/components/discovery.ts` FIRST. Pair with BLOCKS_CATALOG
+ * (also exported here) to discover what exists before building by hand.
  * `@/components/pages/*` and are imported by path.
  */
 

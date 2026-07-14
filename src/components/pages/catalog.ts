@@ -1,9 +1,11 @@
 /**
  * PAGES_CATALOG — machine-readable index of full page templates.
  *
- * Agents: read this AFTER blocks/catalog.ts when building a screen.
- * Every entry is project-owned source under `src/components/pages/` —
- * fork the closest template rather than composing from scratch.
+ * Agents: read `src/components/discovery.ts` FIRST, then this file. Fork the
+ * closest template rather than composing from scratch.
+ *
+ * Dashboard grammar lives in `insights-dashboard-page` (NOT HR-specific —
+ * demo data is HR-flavored; fork for sales, ops, finance, product, support…).
  *
  * Gallery routes (when VITE_GALLERY=true) are listed in
  * `src/pages/gallery/catalog.ts`.
@@ -41,10 +43,10 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
     ],
     galleryRoute: "/gallery",
   },
-  "hr-dashboard-page": {
-    importFrom: "@/components/pages/hr-dashboard-page",
+  "insights-dashboard-page": {
+    importFrom: "@/components/pages/insights-dashboard-page",
     exports: [
-      "HrDashboardPage",
+      "InsightsDashboardPage",
       "MemberDetailSheet",
       "AddEmployeeSheet",
       "DEMO_EMPLOYEES",
@@ -52,11 +54,12 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
     ],
     grammar: "dashboard",
     purpose:
-      "Dashboard — the full block-kit composition: PageHeader with actions (Export + 'Add employee' opening AddEmployeeSheet, a FormSheet with Input/Select/DatePicker), StatOverview KPI band, MetricTrendCard + RosterCard band, RecommendationCard grid, composed ChartCard + donut ChartCard, SegmentedScoreRing + ContributionHeatmap band, FilteredTable with row click → MemberDetailSheet and selection → BulkActionBar. Cut bands you don't need when forking — never flatten one into plain divs.",
+      "THE reference dashboard template — domain-agnostic block-kit composition to fork for any analytics/overview/command-center screen (sales, ops, finance, product, support, inventory…). Demo copy uses HR sample data only to exercise people-centric blocks. Full rhythm: PageHeader with actions (Export + create FormSheet), StatOverview KPI band, MetricTrendCard + RosterCard band, RecommendationCard triage grid, composed + donut ChartCards, SegmentedScoreRing + ContributionHeatmap band, FilteredTable with row detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
     useWhen: [
-      "Analytics/overview screens — stats → trend/roster → charts → table rhythm",
-      "AI recommendation triage band above charts",
-      "A wired example of any dashboard block (trend card, roster, score ring, heatmap, create FormSheet)",
+      "ANY dashboard, overview, analytics, or command-center screen — start here, not from scratch",
+      "You need stats → trend/roster → AI recommendations → charts → tracked table rhythm",
+      "A wired example of dashboard blocks (MetricTrendCard, RosterCard, score ring, heatmap, RecommendationCard, FormSheet create)",
+      "NOT only for HR — the filename used to say hr-dashboard; ignore the demo employee data",
     ],
     composes: [
       "blocks/page-header",

@@ -22,6 +22,7 @@
     "dna:check": "timbal-dna check",
     "dna:registries": "timbal-dna registries",
     "registry:build": "node scripts/build-registry.mjs",
+    "kit:discover": "bun scripts/kit-discover.mjs",
     "smoke:screenshots": "node scripts/screenshot-smoke.mjs"
   },
   "dependencies": {

@@ -28,8 +28,9 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     path: "/gallery/blocks",
     label: "Dashboard",
     kind: "page",
-    purpose: "Reference dashboard (HrDashboardPage) with KPIs, recommendation cards, chart, table.",
-    importFrom: "@/components/pages/hr-dashboard-page",
+    purpose:
+      "Reference insights dashboard (InsightsDashboardPage) — the domain-agnostic dashboard grammar with KPIs, AI recommendation cards, charts, and table. Demo data is HR-flavored; fork for any vertical.",
+    importFrom: "@/components/pages/insights-dashboard-page",
   },
   {
     path: "/gallery/pages/customer",

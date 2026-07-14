@@ -17,7 +17,9 @@ npm publish, tarball repack, screenshot loop). This doc covers only the
 The blueprint now ships a **pre-styled, catalog-indexed block kit** on top
 of the DNA system. The skill's job changes from "design carefully" to:
 
-1. **Discover** — read `BLOCKS_CATALOG` before building anything.
+1. **Discover** — read `src/components/discovery.ts` first (`INTENT_INDEX`,
+   `DO_NOT_BUILD`); then `BLOCKS_CATALOG` / `PAGES_CATALOG`. Run
+   `bun run kit:discover -- "feature"` to search intents.
 2. **Compose** — page templates → blocks → primitives → raw HTML, in that
    order. Forking a block file is normal; rebuilding a pattern is not.
 3. **Obey the taste rules** (§3) and **never commit the named mistakes** (§4).
@@ -38,9 +40,10 @@ mostly needs to point at files, not restate them.
 
 | Surface | Path (inside the scaffolded `ui/`) | What it is |
 |---|---|---|
-| **Block catalog** | `src/components/blocks/catalog.ts` (`BLOCKS_CATALOG`) | Machine-readable index: every block's import path, exports, purpose, use-when, composition. **The skill must instruct: read this FIRST.** |
+| **Discovery index** | `src/components/discovery.ts` (`INTENT_INDEX`, `DO_NOT_BUILD`, `matchIntents`) | **Read this FIRST.** Maps user intents → page template or block. Stops agents rebuilding patterns from scratch. CLI: `bun run kit:discover`. |
+| **Block catalog** | `src/components/blocks/catalog.ts` (`BLOCKS_CATALOG`) | Full index: every block's import path, exports, purpose, use-when, composition. Read after discovery.ts. |
 | Barrel | `src/components/blocks/index.ts` | One-line imports: `import { AppShell, FilteredTable, BulkActionBar } from "@/components/blocks"`. |
-| Page templates | `src/components/pages/` (`hr-dashboard-page.tsx`, `invoices-page.tsx`) | Full forkable screens: dashboard grammar (stats → chart → table → detail sheet → bulk bar) and entity-index grammar. `HeroMetricCard` is an opt-in resource (see charts gallery), not part of the default dashboard. |
+| Page templates | `src/components/pages/` (`insights-dashboard-page.tsx`, `invoices-page.tsx`, …) | Full forkable screens. Dashboard grammar is `insights-dashboard-page` (domain-agnostic; demo data is HR-flavored). |
 | shadcn registry | `public/r/registry.json` + `public/r/<name>.json` (rebuild: `bun run registry:build`) | Standard `shadcn add <url>` items for pulling any vetted component into other projects. |
 | Project rules | `AGENTS.md` (repo root) | House rules + the mistakes list, kept in-repo so it survives scaffolding. |
 | Design record | `src/design/DESIGN.md` | Session-durable design decisions; agent updates it after design changes. |

@@ -1,16 +1,16 @@
 import { toast } from "sonner";
 
-import { HrDashboardPage } from "@/components/pages/hr-dashboard-page";
+import { InsightsDashboardPage } from "@/components/pages/insights-dashboard-page";
 
 /**
- * Gallery route: the reference dashboard — a REAL screen composed from
- * blocks (PageHeader → StatOverview → ChartCard → FilteredTable), not a
- * component zoo. This is the composition to copy for analytics/overview
- * pages; the primitive families have their own gallery sections.
+ * Gallery route: the reference insights dashboard — a REAL screen composed
+ * from blocks (PageHeader → StatOverview → ChartCard → FilteredTable), not a
+ * component zoo. Domain-agnostic grammar; demo data is HR-flavored. Fork for
+ * sales, ops, finance, product, support — copy this composition.
  */
 export default function GalleryBlocks() {
   return (
-    <HrDashboardPage
+    <InsightsDashboardPage
       onEmployeeAction={(action, employee) =>
         toast(`${action}: ${employee.name}`)
       }
