@@ -66,6 +66,41 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/sheet", "ui/scroll-area", "hooks/use-mobile"],
   },
+  "document-review-layout": {
+    importFrom: "@/components/blocks/document-review-layout",
+    exports: ["DocumentReviewLayout", "ReviewActionBar"],
+    purpose:
+      "The canonical 50/50 document review split: source file (PdfViewer) left, review card right. CLEAN grammar — both panes are floating cards; the review pane has NO rule lines (header/body/footer separate through whitespace; the pinned footer gets a soft scroll fade, not a border). Resizable on desktop. Mobile: NEVER a squeezed split — review card owns the page, the document opens from a file-row trigger into a full-height bottom Drawer, and the footer actions pin in a fixed bottom bar.",
+    useWhen: [
+      "Invoice/receipt/contract review — human validates OCR against the original",
+      "Any screen where the document is half the canvas and entries + actions are the other half",
+    ],
+    composes: [
+      "ui/resizable",
+      "ui/drawer",
+      "blocks/pdf-viewer",
+      "hooks/use-mobile",
+    ],
+  },
+  "review-extraction": {
+    importFrom: "@/components/blocks/review-extraction",
+    exports: [
+      "ExtractedFieldRow",
+      "ReviewLineItemEditor",
+      "ExtractionSummaryBand",
+      "VendorMatchCard",
+      "ReviewQueueHeader",
+      "ReviewTotalsStrip",
+      "ConfidenceChip",
+    ],
+    purpose:
+      "Extraction-review kit for document-review panes, divider-free by design: hover field rows with quiet dot confidence chips (never loud per-row badges), editable line items on soft muted tiles with GL Select, an inline 3-stat summary band, a tinted vendor-match row, a queue progress header (position, prev/next, arrow-key hints), and a borderless totals block.",
+    useWhen: [
+      "AP automation / OCR validation flows paired with DocumentReviewLayout",
+      "Any review pane that needs field-level confidence + editable entries",
+    ],
+    composes: ["ui/input", "ui/select", "ui/progress", "ui/button"],
+  },
   "filtered-table": {
     importFrom: "@/components/blocks/filtered-table",
     exports: ["FilteredTable", "IconCell", "AvatarChipCell", "AvatarChip"],

@@ -172,69 +172,72 @@ function WorkspaceDetailPage({
   const status = STATUS_BADGE[workspace.status];
 
   return (
-    <PageBody className="gap-4">
-      <PageHeader
-        eyebrow={
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 hover:text-foreground"
-            onClick={onBack}
-          >
-            <ArrowLeftIcon className="size-3.5" />
-            <span>
-              {parentLabel}
-              <span className="text-muted-foreground/50"> / </span>
-              <span className="text-foreground">{workspace.name}</span>
-            </span>
-          </button>
-        }
-        title=""
-        description=""
-        className="gap-2"
-      />
+    <PageBody className="mx-auto w-full max-w-3xl gap-10">
+      <div className="flex flex-col gap-5">
+        <PageHeader
+          eyebrow={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 hover:text-foreground"
+              onClick={onBack}
+            >
+              <ArrowLeftIcon className="size-3.5" />
+              <span>
+                {parentLabel}
+                <span className="text-muted-foreground/50"> / </span>
+                <span className="text-foreground">{workspace.name}</span>
+              </span>
+            </button>
+          }
+          title=""
+          description=""
+          className="gap-2"
+        />
 
-      <RecordDetailHeader
-        leading={
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40">
-            <GlobeIcon className="size-5 text-muted-foreground" />
-          </div>
-        }
-        title={workspace.name}
-        subtitle={`Zone ID ${workspace.id}`}
-        badges={
-          <>
-            <Badge variant={status.variant}>{status.label}</Badge>
-            <Badge variant="secondary">{workspace.plan}</Badge>
-          </>
-        }
-        actions={
-          <>
-            <Button variant="outline" size="sm" onClick={() => onAction?.("purge")}>
-              <RefreshIcon />
-              Purge cache
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon-sm" aria-label="More actions">
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => onAction?.("edit")}>
-                  <PencilIcon />
-                  Edit zone
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
-                  <CopyIcon />
-                  Copy zone ID
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        }
-      />
+        <RecordDetailHeader
+          leading={
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40">
+              <GlobeIcon className="size-5 text-muted-foreground" />
+            </div>
+          }
+          title={workspace.name}
+          subtitle={`Zone ID ${workspace.id}`}
+          badges={
+            <>
+              <Badge variant={status.variant}>{status.label}</Badge>
+              <Badge variant="secondary">{workspace.plan}</Badge>
+            </>
+          }
+          actions={
+            <>
+              <Button variant="outline" size="sm" onClick={() => onAction?.("purge")}>
+                <RefreshIcon />
+                Purge cache
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon-sm" aria-label="More actions">
+                    <MoreHorizontalIcon />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => onAction?.("edit")}>
+                    <PencilIcon />
+                    Edit zone
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
+                    <CopyIcon />
+                    Copy zone ID
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          }
+        />
+      </div>
 
       <MetadataGrid
+        className="gap-y-4 lg:grid-cols-2"
         items={[
           { label: "Zone ID", value: workspace.id },
           { label: "Created", value: workspace.created },
@@ -245,7 +248,7 @@ function WorkspaceDetailPage({
         ]}
       />
 
-      <Tabs defaultValue="dns" className="gap-4">
+      <Tabs defaultValue="dns" className="gap-6">
         <TabsList>
           <TabsTrigger value="dns">DNS</TabsTrigger>
           <TabsTrigger value="ssl">SSL</TabsTrigger>

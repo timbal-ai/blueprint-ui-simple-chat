@@ -157,6 +157,30 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
     ],
     galleryRoute: "/gallery/pages/earnings",
   },
+  "invoice-review-page": {
+    importFrom: "@/components/pages/invoice-review-page",
+    exports: [
+      "InvoiceReviewPage",
+      "DEMO_REVIEW_INVOICES",
+      "buildReviewRecords",
+    ],
+    grammar: "detail",
+    purpose:
+      "Document review split (Mercury grammar, divider-free): ReviewQueueHeader with progress + arrow-key nav, DocumentReviewLayout with PdfViewer left (50%), review card right — tabbed Fields / Line items / Activity, hover field rows with dot confidence chips, editable GL-coded line items, vendor match row, ReviewActionBar footer.",
+    useWhen: [
+      "Invoice/receipt/contract review where a human validates OCR against the source file",
+      "Any 50/50 document + entries + actions screen — fork and swap the review body",
+    ],
+    composes: [
+      "blocks/document-review-layout",
+      "blocks/review-extraction",
+      "blocks/pdf-viewer",
+      "blocks/page-body",
+      "ui/tabs",
+      "ui/badge",
+    ],
+    galleryRoute: "/gallery/pages/invoice-review",
+  },
   "media-library-page": {
     importFrom: "@/components/pages/media-library-page",
     exports: ["MediaLibraryPage", "DEMO_ASSETS"],

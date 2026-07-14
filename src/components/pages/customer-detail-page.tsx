@@ -151,64 +151,67 @@ function CustomerDetailPage({
   const status = STATUS_BADGE[customer.status];
 
   return (
-    <PageBody className="gap-4">
-      <PageHeader
-        eyebrow={
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 hover:text-foreground"
-            onClick={onBack}
-          >
-            <ArrowLeftIcon className="size-3.5" />
-            <span>
-              {parentLabel}
-              <span className="text-muted-foreground/50"> / </span>
-              <span className="text-foreground">{customer.name}</span>
-            </span>
-          </button>
-        }
-        title=""
-        description=""
-        className="gap-2"
-      />
+    <PageBody className="mx-auto w-full max-w-3xl gap-10">
+      <div className="flex flex-col gap-5">
+        <PageHeader
+          eyebrow={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 hover:text-foreground"
+              onClick={onBack}
+            >
+              <ArrowLeftIcon className="size-3.5" />
+              <span>
+                {parentLabel}
+                <span className="text-muted-foreground/50"> / </span>
+                <span className="text-foreground">{customer.name}</span>
+              </span>
+            </button>
+          }
+          title=""
+          description=""
+          className="gap-2"
+        />
 
-      <RecordDetailHeader
-        leading={<AvatarChip name={customer.name} size="lg" />}
-        title={customer.name}
-        subtitle={customer.email}
-        badges={<Badge variant={status.variant}>{status.label}</Badge>}
-        actions={
-          <>
-            <Button variant="outline" size="sm" onClick={() => onAction?.("edit")}>
-              <PencilIcon />
-              Edit
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => onAction?.("invoice")}>
-              <MailIcon />
-              Send invoice
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon-sm" aria-label="More actions">
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => onAction?.("export")}>
-                  <DownloadIcon />
-                  Export
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
-                  <CopyIcon />
-                  Copy customer ID
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        }
-      />
+        <RecordDetailHeader
+          leading={<AvatarChip name={customer.name} size="lg" />}
+          title={customer.name}
+          subtitle={customer.email}
+          badges={<Badge variant={status.variant}>{status.label}</Badge>}
+          actions={
+            <>
+              <Button variant="outline" size="sm" onClick={() => onAction?.("edit")}>
+                <PencilIcon />
+                Edit
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onAction?.("invoice")}>
+                <MailIcon />
+                Send invoice
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon-sm" aria-label="More actions">
+                    <MoreHorizontalIcon />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => onAction?.("export")}>
+                    <DownloadIcon />
+                    Export
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
+                    <CopyIcon />
+                    Copy customer ID
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          }
+        />
+      </div>
 
       <MetadataGrid
+        className="gap-y-4 lg:grid-cols-2"
         items={[
           { label: "Customer ID", value: customer.id },
           { label: "Created", value: customer.created },
@@ -219,14 +222,14 @@ function CustomerDetailPage({
         ]}
       />
 
-      <Tabs defaultValue="overview" className="gap-4">
+      <Tabs defaultValue="overview" className="gap-6">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
         </TabsList>
-        <TabsContent value="overview" className="flex flex-col gap-4">
+        <TabsContent value="overview" className="flex flex-col gap-5">
           <DetailSection
             title="Recent payments"
             action={

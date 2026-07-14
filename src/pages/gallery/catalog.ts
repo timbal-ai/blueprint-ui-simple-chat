@@ -70,6 +70,14 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     importFrom: "@/components/pages/media-library-page",
   },
   {
+    path: "/gallery/pages/invoice-review",
+    label: "Invoice review",
+    kind: "page",
+    purpose:
+      "Document review split (InvoiceReviewPage) — 50/50 PdfViewer + extracted entries, confidence badges, approve/reject actions.",
+    importFrom: "@/components/pages/invoice-review-page",
+  },
+  {
     path: "/gallery/chat",
     label: "Assistant",
     kind: "chat",

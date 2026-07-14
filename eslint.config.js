@@ -39,8 +39,9 @@ export default tseslint.config([
     },
   },
   // shadcn/ui re-exports CVA configs and helpers alongside components; fast-refresh warns on that pattern.
+  // Page templates also export demo data + helpers alongside the page component.
   {
-    files: ['src/components/ui/**/*.{ts,tsx}'],
+    files: ['src/components/ui/**/*.{ts,tsx}', 'src/components/pages/**/*.{ts,tsx}'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },

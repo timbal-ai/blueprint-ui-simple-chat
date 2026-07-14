@@ -45,6 +45,7 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
 | Creator earnings dashboard shots | user-provided (2026-07-12) | Earnings grammar: headline + vivid delta badge, Weekly/Monthly/Yearly range tabs, stat chips, contribution heatmap |
 | "Recent hires / Revenue" cards shot | user-provided (2026-07-12) | RosterCard (gray tile, white person tiles, role chips, Previous/Next) + MetricTrendCard (headline + delta + range tabs over a gradient area line) |
 | Beacon "Reporting: Objectives" shot | user-provided (2026-07-13) | Textured control surfaces (buttons/inputs/selects), plain rounded-2xl cards with soft shadow, tactile switch, gradient capped bars in tone-tinted ghost tracks, MetricLegendList (big numbers + View under the chart) |
+| AP invoice review split | user-provided (2026-07-14) | 50/50 document + entries grammar: PdfViewer left, metadata grid + confidence-badged line items + approve/reject footer right, queue prev/next header |
 
 ## Layout decisions
 
@@ -60,6 +61,15 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   surface + its composer band always share the card white
   (`--thread-canvas: var(--card)` — EmbeddedChat sets it).
 - Page width: boxed; pages own their header via `PageHeader`.
+- Document review (2026-07-14): `DocumentReviewLayout` — 50/50 resizable
+  split with PdfViewer left, extracted entries + `ReviewActionBar` right.
+  Dedicated route (`/invoices/:id/review`), not a sheet over the index.
+  Mobile (same day, after a stacked-split attempt read as a mess): the
+  review card owns the page in natural flow; the source document opens
+  from a file-row trigger into a full-height bottom Drawer, and the
+  totals + approve/reject actions pin in a FIXED bottom bar (primary
+  full-width on top, thumb-first) — never a squeezed 42dvh document
+  above a squeezed review pane.
 - Chat readability (2026-07-13): the composer textarea and welcome
   subtitle/suggestions render at `--text-base` (16px) — the library
   hardcodes `text-sm` on them, overridden in `index.css` (`.aui-composer-input`

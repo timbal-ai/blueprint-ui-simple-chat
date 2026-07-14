@@ -35,6 +35,7 @@ const ROUTES = [
   { path: "/gallery/pages/health", name: "health-dashboard" },
   { path: "/gallery/pages/earnings", name: "earnings" },
   { path: "/gallery/pages/media", name: "media-library" },
+  { path: "/gallery/pages/invoice-review", name: "invoice-review" },
   { path: "/gallery/chat", name: "embedded-chat" },
   { path: "/gallery/primitives/forms", name: "forms" },
   { path: "/gallery/primitives/overlays", name: "overlays" },

@@ -15,6 +15,8 @@ export * from "./catalog";
 export * from "./chart-demos";
 export * from "./chat-screen";
 export * from "./detail-panel";
+export * from "./document-review-layout";
+export * from "./review-extraction";
 export * from "./embedded-chat";
 export * from "./entity-form";
 export * from "./filtered-table";

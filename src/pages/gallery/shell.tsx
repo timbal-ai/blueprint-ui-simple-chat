@@ -8,6 +8,7 @@ import {
   GlobeIcon,
   HeartPulseIcon,
   ImagesIcon,
+  FileTextIcon,
   ReceiptIcon,
   TextCursorInputIcon,
   WalletIcon,
@@ -26,8 +27,12 @@ import { SidebarUser } from "@/components/blocks/sidebar-user";
  */
 export default function GalleryShell() {
   // The assistant pill is redundant (and overlaps the composer) on the
-  // chat page — the whole page already IS the assistant.
-  const isChatRoute = useLocation().pathname === "/gallery/chat";
+  // chat page — the whole page already IS the assistant. On the invoice
+  // review route it floats exactly over the pinned Approve action, so it
+  // is hidden there too (focused decision screens keep the CTA clear).
+  const { pathname } = useLocation();
+  const hidePill =
+    pathname === "/gallery/chat" || pathname === "/gallery/pages/invoice-review";
   return (
     <RoutedAppShell
       variant="inset"
@@ -47,6 +52,11 @@ export default function GalleryShell() {
           label: "Pages",
           items: [
             { id: "/gallery", label: "Invoices", icon: ReceiptIcon },
+            {
+              id: "/gallery/pages/invoice-review",
+              label: "Invoice review",
+              icon: FileTextIcon,
+            },
             { id: "/gallery/blocks", label: "Dashboard", icon: BoxesIcon },
             { id: "/gallery/pages/customer", label: "Customer", icon: CreditCardIcon },
             { id: "/gallery/pages/workspace", label: "Workspace", icon: GlobeIcon },
@@ -89,7 +99,7 @@ export default function GalleryShell() {
     >
       {/* The Timbal floating AI pill — streams via the same runtime env as
           the chat shell (VITE_TIMBAL_*). */}
-      {!isChatRoute ? <AssistantPill /> : null}
+      {!hidePill ? <AssistantPill /> : null}
     </RoutedAppShell>
   );
 }
