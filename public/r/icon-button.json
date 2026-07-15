@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-button",
+  "type": "registry:ui",
+  "title": "icon button",
+  "description": "Timbal blueprint ui: icon-button. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cx",
+    "secondary-chrome"
+  ],
+  "files": [
+    {
+      "path": "components/base/buttons/icon-button.tsx",
+      "content": "import type { ButtonHTMLAttributes, ComponentType, Ref } from \"react\";\nimport { cx, sortCx } from \"@/utils/cx\";\nimport {\n  SECONDARY_CHROME,\n  SECONDARY_DISABLED,\n} from \"@/components/base/buttons/secondary-chrome\";\n\n/**\n * Figma source: Board UI → dashboard 1 icon-only buttons (notification button\n * node 3731:3035, table row actions nodes 3731:3284/3287/3290).\n *\n * Square icon-only button. Unlike `Button` (whose small size is radius/lg with\n * an 18px icon), the icon button keeps radius/2lg (10px) at both sizes:\n *\n *            container   padding   icon\n *   medium   36×36       8         20×20\n *   small    32×32       8         16×16\n *\n * One variant in the designs: secondary (white fill, border/button/default,\n * shadow/xs). Hover/active/disabled states reuse the secondary Button tokens.\n */\n\ntype IconButtonSize = \"medium\" | \"small\";\n\ntype IconComponent = ComponentType<{\n  className?: string;\n  \"aria-hidden\"?: boolean | \"true\" | \"false\";\n}>;\n\nexport interface IconButtonProps\n  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"children\"> {\n  icon: IconComponent;\n  size?: IconButtonSize;\n  /** Accessible name — required since there is no visible label. */\n  \"aria-label\": string;\n  ref?: Ref<HTMLButtonElement>;\n}\n\nconst styles = sortCx({\n  base: cx(\n    \"relative inline-flex shrink-0 items-center justify-center overflow-visible rounded-2lg\",\n    // House finish (2026-07-14): the shared secondary chrome (top-lit\n    // gradient + inset highlight + soft drop) from `secondary-chrome.ts`.\n    \"text-foreground-icon-primary\",\n    SECONDARY_CHROME,\n    SECONDARY_DISABLED,\n    \"select-none cursor-pointer\",\n    \"transition-[background-color,border-color,box-shadow,color] duration-150 ease\",\n    \"outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring\",\n    \"disabled:cursor-not-allowed disabled:text-foreground-icon-disabled\",\n  ),\n  size: {\n    medium: \"size-9\",\n    small: \"size-8\",\n  },\n  icon: {\n    medium: \"size-5 shrink-0\",\n    small: \"size-4 shrink-0\",\n  },\n});\n\nexport function IconButton({\n  icon: Icon,\n  size = \"medium\",\n  className,\n  type = \"button\",\n  ref,\n  ...props\n}: IconButtonProps) {\n  return (\n    <button\n      ref={ref}\n      type={type}\n      className={cx(styles.base, styles.size[size], className)}\n      {...props}\n    >\n      <Icon className={styles.icon[size]} aria-hidden />\n    </button>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/buttons/icon-button.tsx"
+    }
+  ]
+}

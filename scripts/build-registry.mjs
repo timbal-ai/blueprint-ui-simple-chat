@@ -8,12 +8,16 @@
  *
  *   npx shadcn@latest add https://<host>/r/data-table.json
  *
- * npm dependencies are inferred from imports; `@/components/ui/*` imports
- * become registryDependencies so `shadcn add` resolves the graph.
+ * Covers the whole project-owned tree: shadcn-shaped `ui/*`, the block kit,
+ * page templates, the BoardUI `base/*` primitives and `application/*` Pro
+ * cards (scanned recursively), foundations, hooks, and utils. npm
+ * dependencies are inferred from imports; `@/components/**` + `@/hooks/*` +
+ * `@/utils/*` imports become registryDependencies so `shadcn add` resolves
+ * the graph; `@/lib/*` helpers are bundled into each item.
  */
 
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, relative, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const OUT = join(ROOT, "public", "r");
@@ -24,8 +28,36 @@ const SOURCES = [
   { dir: "src/components/blocks", type: "registry:block", targetDir: "components/blocks" },
   { dir: "src/components/pages", type: "registry:block", targetDir: "components/pages" },
   { dir: "src/components/chat", type: "registry:component", targetDir: "components/chat" },
-  { dir: "src/hooks", type: "registry:hook", targetDir: "hooks", only: ["use-mobile.ts"] },
+  // BoardUI kit — nested one-folder-per-component trees, scanned recursively.
+  { dir: "src/components/base", type: "registry:ui", targetDir: "components/base", recursive: true },
+  { dir: "src/components/application", type: "registry:block", targetDir: "components/application", recursive: true },
+  { dir: "src/components/foundations", type: "registry:component", targetDir: "components/foundations", recursive: true },
+  { dir: "src/hooks", type: "registry:hook", targetDir: "hooks" },
+  { dir: "src/utils", type: "registry:lib", targetDir: "utils" },
 ];
+
+/** All .ts/.tsx files under `abs` (optionally recursive), as relative paths. */
+function listFiles(abs, recursive) {
+  const out = [];
+  const walk = (dir) => {
+    let entries;
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const full = join(dir, entry);
+      if (statSync(full).isDirectory()) {
+        if (recursive) walk(full);
+      } else if (/\.(tsx?|ts)$/.test(entry)) {
+        out.push(relative(abs, full));
+      }
+    }
+  };
+  walk(abs);
+  return out.sort();
+}
 
 /** Import specifiers that map to npm dependencies (bare package roots). */
 function npmDepsOf(source) {
@@ -41,13 +73,17 @@ function npmDepsOf(source) {
   return [...deps].sort();
 }
 
-/** `@/components/ui/foo` and `@/hooks/use-bar` imports → registry item names. */
-function registryDepsOf(source, selfName) {
+/**
+ * Internal `@/…` component/hook/util imports → the LAST path segment, which
+ * is how registry item names are derived below. Resolved to final item names
+ * (collision-suffixed) after all items are collected.
+ */
+function internalDepsOf(source) {
   const deps = new Set();
-  for (const m of source.matchAll(/from\s+["']@\/(?:components\/(?:ui|app|blocks|chat|pages)|hooks)\/([a-z0-9-]+)["']/g)) {
-    if (m[1] !== selfName) deps.add(m[1]);
-  }
-  return [...deps].sort();
+  const re =
+    /from\s+["']@\/(?:components\/(?:ui|app|blocks|chat|pages|base|application|foundations)(?:\/[a-z0-9-]+)*|hooks|utils)\/([a-z0-9-]+)["']/g;
+  for (const m of source.matchAll(re)) deps.add(m[1]);
+  return deps;
 }
 
 /**
@@ -77,54 +113,75 @@ function libFilesOf(source) {
   return [...found.entries()].sort(([a], [b]) => a.localeCompare(b));
 }
 
-mkdirSync(OUT, { recursive: true });
-
-const items = [];
-for (const { dir, type, targetDir, only } of SOURCES) {
+/* Pass 1 — collect every file so names can be deduped deterministically
+   (e.g. blocks/catalog vs pages/catalog, ui/button vs base/buttons/button). */
+const candidates = [];
+for (const { dir, type, targetDir, recursive } of SOURCES) {
   const abs = join(ROOT, dir);
-  let files;
-  try {
-    files = readdirSync(abs).filter((f) => /\.(tsx?|ts)$/.test(f));
-  } catch {
-    continue;
+  for (const rel of listFiles(abs, recursive)) {
+    const base = basename(rel).replace(/\.tsx?$/, "");
+    if (base === "index") continue; // barrels are not standalone items
+    candidates.push({ abs: join(abs, rel), rel, base, type, targetDir });
   }
-  if (only) files = files.filter((f) => only.includes(f));
+}
 
-  for (const file of files) {
-    const name = basename(file).replace(/\.tsx?$/, "");
-    const source = readFileSync(join(abs, file), "utf8");
-    const item = {
-      $schema: "https://ui.shadcn.com/schema/registry-item.json",
-      name,
-      type,
-      title: name.replace(/-/g, " "),
-      description: `Timbal blueprint ${type.replace("registry:", "")}: ${name}. Token-wired to the project design DNA.`,
-      dependencies: npmDepsOf(source),
-      registryDependencies: registryDepsOf(source, name),
-      files: [
-        {
-          path: `${targetDir}/${file}`,
-          content: source,
-          type,
-          target: `src/${targetDir}/${file}`,
-        },
-        ...libFilesOf(source).map(([libName, libSource]) => ({
-          path: `lib/${libName}.ts`,
-          content: libSource,
-          type: "registry:lib",
-          target: `src/lib/${libName}.ts`,
-        })),
-      ],
-    };
-    writeFileSync(join(OUT, `${name}.json`), JSON.stringify(item, null, 2) + "\n");
-    items.push({
-      name,
-      type,
-      title: item.title,
-      description: item.description,
-      files: [{ path: `${targetDir}/${file}`, type }],
-    });
-  }
+const baseCounts = new Map();
+for (const c of candidates) baseCounts.set(c.base, (baseCounts.get(c.base) ?? 0) + 1);
+
+/** Unique item name: plain basename, or `<parent-segment>-<basename>` on collision. */
+function itemNameFor(c) {
+  if (baseCounts.get(c.base) === 1) return c.base;
+  const parent = basename(dirname(join(c.targetDir, c.rel)));
+  const prefixed = `${parent}-${c.base}`;
+  return prefixed === c.base ? c.base : prefixed;
+}
+
+const nameByBase = new Map(); // basename → item name(s), for dep resolution
+for (const c of candidates) {
+  c.name = itemNameFor(c);
+  if (!nameByBase.has(c.base)) nameByBase.set(c.base, c.name);
+}
+
+/* Pass 2 — emit items. */
+mkdirSync(OUT, { recursive: true });
+const items = [];
+for (const c of candidates) {
+  const source = readFileSync(c.abs, "utf8");
+  const registryDependencies = [...internalDepsOf(source)]
+    .filter((dep) => dep !== c.base && nameByBase.has(dep))
+    .map((dep) => nameByBase.get(dep))
+    .sort();
+  const item = {
+    $schema: "https://ui.shadcn.com/schema/registry-item.json",
+    name: c.name,
+    type: c.type,
+    title: c.name.replace(/-/g, " "),
+    description: `Timbal blueprint ${c.type.replace("registry:", "")}: ${c.name}. Token-wired to the project design DNA.`,
+    dependencies: npmDepsOf(source),
+    registryDependencies,
+    files: [
+      {
+        path: `${c.targetDir}/${c.rel}`,
+        content: source,
+        type: c.type,
+        target: `src/${c.targetDir}/${c.rel}`,
+      },
+      ...libFilesOf(source).map(([libName, libSource]) => ({
+        path: `lib/${libName}.ts`,
+        content: libSource,
+        type: "registry:lib",
+        target: `src/lib/${libName}.ts`,
+      })),
+    ],
+  };
+  writeFileSync(join(OUT, `${c.name}.json`), JSON.stringify(item, null, 2) + "\n");
+  items.push({
+    name: c.name,
+    type: c.type,
+    title: item.title,
+    description: item.description,
+    files: [{ path: `${c.targetDir}/${c.rel}`, type: c.type }],
+  });
 }
 
 const index = {

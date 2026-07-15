@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "secondary-chrome",
+  "type": "registry:ui",
+  "title": "secondary chrome",
+  "description": "Timbal blueprint ui: secondary-chrome. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/buttons/secondary-chrome.ts",
+      "content": "import { cx } from \"@/utils/cx\";\n\n/**\n * THE secondary control chrome — the house finish applied to BoardUI's\n * secondary Button (subtle top-lit white gradient + inset highlight + soft\n * drop over the neutral-200 hairline; user direction 2026-07-14: \"a bit of\n * bg shadow and a bit of gradient on the buttons\").\n *\n * Every button-LIKE control shares this skin so a Select trigger, a\n * date-picker trigger, a Filters button, and a pager pill sitting in the\n * same toolbar are visually identical. Hover/active move the gradient\n * STOPS (a plain background-color would hide under the gradient image).\n *\n * Text inputs / search fields stay FLAT (`bg-background-primary-default` +\n * `shadow-xs`) — the gradient is a button affordance, not a field one.\n */\n\n/** At-rest gradient fill — white fading to a 3% darker stop. */\nexport const SECONDARY_GRADIENT =\n  \"bg-linear-to-b from-background-primary-default to-[color-mix(in_srgb,var(--color-background-primary-default)_97%,black)]\";\n\n/** Neutral hairline. */\nexport const SECONDARY_BORDER = \"border border-border-button-default\";\n\n/** Inset top highlight + single soft drop. */\nexport const SECONDARY_SHADOW =\n  \"shadow-[inset_0_1px_0_0_rgb(255_255_255/0.65),0_1px_2px_0_rgb(0_0_0/0.07)]\";\n\n/** Hover moves the gradient stops one grade down + darkens the hairline. */\nexport const SECONDARY_HOVER =\n  \"hover:from-background-primary-hover hover:to-[color-mix(in_srgb,var(--color-background-primary-hover)_97%,black)] hover:border-border-button-hover\";\n\n/** Active flattens to the pressed tone. */\nexport const SECONDARY_ACTIVE =\n  \"active:from-background-primary-active active:to-background-primary-active active:border-border-button-active\";\n\n/** Static surface — non-interactive containers (pills, active pagination cell). */\nexport const SECONDARY_SURFACE = cx(\n  SECONDARY_GRADIENT,\n  SECONDARY_BORDER,\n  SECONDARY_SHADOW,\n);\n\n/** Full interactive chrome — triggers and buttons. Add your own disabled styles. */\nexport const SECONDARY_CHROME = cx(\n  SECONDARY_SURFACE,\n  SECONDARY_HOVER,\n  SECONDARY_ACTIVE,\n);\n\n/** Disabled reset shared by the secondary tiers — flat, quiet, no shadow. */\nexport const SECONDARY_DISABLED = [\n  \"disabled:bg-none disabled:bg-background-primary-disabled disabled:border-border-button-default disabled:shadow-none\",\n  \"aria-disabled:bg-none aria-disabled:bg-background-primary-disabled aria-disabled:border-border-button-default aria-disabled:shadow-none\",\n].join(\" \");\n",
+      "type": "registry:ui",
+      "target": "src/components/base/buttons/secondary-chrome.ts"
+    }
+  ]
+}

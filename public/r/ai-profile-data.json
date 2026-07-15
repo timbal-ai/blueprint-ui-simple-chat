@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-profile-data",
+  "type": "registry:block",
+  "title": "ai profile data",
+  "description": "Timbal blueprint block: ai-profile-data. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/application/ai-profile/ai-profile-data.ts",
+      "content": "/**\n * Mock data for the AI contributions profile template (Figma node 4063:5675).\n *\n * Everything is deterministic (no Math.random/Date.now) so the server and\n * client render identically.\n */\n\nexport const MONTH_NAMES = [\n  \"January\", \"February\", \"March\", \"April\", \"May\", \"June\",\n  \"July\", \"August\", \"September\", \"October\", \"November\", \"December\",\n];\n\n/** Bars track is 206px tall; the tallest design bar is 158px. */\nexport const AGENTS_TRACK_HEIGHT = 206;\nexport const AGENTS_MAX_BAR = 158;\n/** Days with zero agents render a 4px grey stub (Figma node 4065:8629). */\nexport const AGENTS_ZERO_BAR = 4;\n\n/**\n * December bar heights straight from Figma (nodes 4065:8622…8682), trimmed\n * to 30 bars — one per day. 0 = no agents that day.\n */\nconst DECEMBER_BARS = [\n  73, 141, 118, 0, 118, 18, 0, 0, 0, 95,\n  0, 158, 78, 45, 0, 45, 135, 88, 0, 0,\n  107, 21, 45, 105, 87, 66, 19, 128, 98, 34,\n];\n\n/** Small bit-mixing hash — same recipe as the contributions heatmap. */\nfunction hash(a: number, b: number) {\n  let h = a * 374761393 + b * 668265263;\n  h = Math.imul(h ^ (h >>> 13), 1274126177);\n  return (h ^ (h >>> 16)) >>> 0;\n}\n\n/** 30 daily bar heights (px) for a month; December is the Figma original. */\nexport function agentBarsFor(month: number): number[] {\n  if (month === 11) return DECEMBER_BARS;\n  return Array.from({ length: 30 }, (_, day) => {\n    const seed = hash(month + 1, day + 7);\n    // ~1 in 4 days idle, mirroring the December distribution.\n    if (seed % 4 === 0) return 0;\n    return 18 + (seed % (AGENTS_MAX_BAR - 18));\n  });\n}\n\n/** Headline agent count per month — December matches the design's \"32 agents\". */\nexport function agentCountFor(month: number): number {\n  if (month === 11) return 32;\n  return 22 + (hash(month + 3, 17) % 27);\n}\n\n/**\n * Tokens line — 30 daily values (millions) from Jun 14 to today. Realistic\n * bursty usage: an early session that tails off into a long idle stretch\n * (days 3–11), one isolated spike, a quiet patch with small bumps, then the\n * month's big multi-day push, a cooldown, and a second medium run that eases\n * off at the end.\n */\nexport const TOKENS_SERIES = [\n  34.2, 28.6, 6.1, 0, 0, 0, 0, 0, 0, 0,\n  0, 0, 31.4, 4.8, 2.2, 1.1, 5.6, 1.4, 0.8, 42.1,\n  51.8, 48.3, 33.6, 9.2, 3.4, 18.7, 25.3, 37.9, 30.2, 24.6,\n].map((value, i) => ({ day: i, value }));\n",
+      "type": "registry:block",
+      "target": "src/components/application/ai-profile/ai-profile-data.ts"
+    }
+  ]
+}

@@ -31,9 +31,11 @@ import {
   StatusBadge,
   type Invoice,
 } from "@/components/pages/invoices-page";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Chip } from "@/components/base/badges/chip";
+import {
+  SegmentedControl,
+  SegmentedControlItem,
+} from "@/components/base/segmented-control/segmented-control";
 import { cn } from "@/lib/utils";
 
 /**
@@ -80,11 +82,11 @@ const fmtUsd = (n: number) =>
 
 const REVIEW_STATUS_BADGE: Record<
   ReviewStatus,
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  pending: { label: "Pending review", variant: "warning" },
-  approved: { label: "Approved", variant: "success" },
-  rejected: { label: "Rejected", variant: "destructive" },
+  pending: { label: "Pending review", color: "yellow" },
+  approved: { label: "Approved", color: "lime" },
+  rejected: { label: "Rejected", color: "rose" },
 };
 
 /** Build review-ready demo records from the shared invoice index dataset. */
@@ -252,18 +254,21 @@ function InvoiceReviewPage({
   const reviewBadge = REVIEW_STATUS_BADGE[invoice.reviewStatus];
 
   return (
-    <PageBody className="min-h-0 flex-1 gap-4">
+    // `flex-1 shrink` re-enables viewport capping — this page inner-scrolls.
+    <PageBody className="min-h-0 flex-1 shrink gap-4">
       <ReviewQueueHeader
         position={index}
         total={queue.length}
         backLink={
-          <Button variant="ghost" size="sm" className="-ml-2 gap-1.5" asChild>
-            <Link to={backHref} aria-label={`Back to ${backLabel}`}>
-              <ArrowLeftIcon className="size-3.5" />
-              {/* Icon-only on phones — the label costs the row its single line. */}
-              <span className="hidden sm:inline">{backLabel}</span>
-            </Link>
-          </Button>
+          <Link
+            to={backHref}
+            aria-label={`Back to ${backLabel}`}
+            className="-ml-2 inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-body-medium text-text-secondary transition-colors outline-none hover:bg-background-primary-hover hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+          >
+            <ArrowLeftIcon className="size-3.5" />
+            {/* Icon-only on phones — the label costs the row its single line. */}
+            <span className="hidden sm:inline">{backLabel}</span>
+          </Link>
         }
         onPrevious={() => setIndex((i) => Math.max(i - 1, 0))}
         onNext={() => setIndex((i) => Math.min(i + 1, queue.length - 1))}
@@ -304,32 +309,38 @@ function InvoiceReviewPage({
                 <span className="truncate text-sm text-muted-foreground">
                   {invoice.id} · Due {invoice.dueDate}
                 </span>
-                <Badge variant={reviewBadge.variant} className="rounded-md px-1.5">
+                <Chip variant="caption" color={reviewBadge.color}>
                   {reviewBadge.label}
-                </Badge>
+                </Chip>
                 <StatusBadge status={invoice.status} />
               </div>
             </div>
 
-            <Tabs value={tab} onValueChange={setTab}>
-              <TabsList className="w-full">
-                <TabsTrigger value="fields" className="flex-1 gap-1.5">
-                  Fields
-                  {flaggedFields > 0 ? (
-                    <span className="text-xs text-warning">{flaggedFields}</span>
-                  ) : null}
-                </TabsTrigger>
-                <TabsTrigger value="lines" className="flex-1 gap-1.5">
-                  Line items
-                  {flaggedLines > 0 ? (
-                    <span className="text-xs text-warning">{flaggedLines}</span>
-                  ) : null}
-                </TabsTrigger>
-                <TabsTrigger value="activity" className="flex-1">
-                  Activity
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <SegmentedControl
+              aria-label="Review sections"
+              selectedKeys={[tab]}
+              onSelectionChange={(keys) => {
+                const next = [...keys][0];
+                if (next) setTab(String(next));
+              }}
+              className="flex w-full"
+            >
+              <SegmentedControlItem id="fields" className="flex-1 gap-1.5">
+                Fields
+                {flaggedFields > 0 ? (
+                  <span className="text-xs text-warning">{flaggedFields}</span>
+                ) : null}
+              </SegmentedControlItem>
+              <SegmentedControlItem id="lines" className="flex-1 gap-1.5">
+                Line items
+                {flaggedLines > 0 ? (
+                  <span className="text-xs text-warning">{flaggedLines}</span>
+                ) : null}
+              </SegmentedControlItem>
+              <SegmentedControlItem id="activity" className="flex-1">
+                Activity
+              </SegmentedControlItem>
+            </SegmentedControl>
           </div>
         }
         reviewFooter={

@@ -1,15 +1,14 @@
 import * as React from "react";
-import { ChevronsUpDownIcon } from "@/components/icons";
+import { ChevronsUpDownIcon, HomeIcon } from "@/components/icons";
 
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
+} from "@/components/base/breadcrumb/breadcrumb";
+import { Button } from "@/components/base/buttons/button";
+import { Pagination } from "@/components/base/pagination/pagination";
+import { Tab, TabList, TabPanel, Tabs } from "@/components/base/tabs/tabs";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,94 +23,56 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { DemoCard, DemoGrid, GalleryPage } from "./section";
 
 export default function GalleryNavigation() {
   const [open, setOpen] = React.useState(true);
+  const [page, setPage] = React.useState(2);
 
   return (
     <GalleryPage
       title="Navigation"
-      description="Wayfinding — breadcrumbs, tabs, pagination, menus, and panels."
+      description="Wayfinding — BoardUI breadcrumbs, tabs, and pagination, plus retained menus and panels."
     >
       <DemoGrid>
         <DemoCard title="Breadcrumb" contentClassName="items-start">
           <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="#">Workspace</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="#">Billing</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Invoices</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
+            <BreadcrumbItem icon={HomeIcon} href="/gallery">
+              Workspace
+            </BreadcrumbItem>
+            <BreadcrumbItem href="/gallery">Billing</BreadcrumbItem>
+            <BreadcrumbItem current>Invoices</BreadcrumbItem>
           </Breadcrumb>
         </DemoCard>
 
         <DemoCard title="Tabs" contentClassName="items-stretch">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="text-sm text-muted-foreground">
+          <Tabs defaultSelectedKey="overview">
+            <TabList aria-label="Invoice sections">
+              <Tab id="overview">Overview</Tab>
+              <Tab id="activity" count={8}>
+                Activity
+              </Tab>
+              <Tab id="settings">Settings</Tab>
+            </TabList>
+            <TabPanel id="overview" className="text-body-regular text-text-secondary">
               Tab content renders here.
-            </TabsContent>
-            <TabsContent value="activity" className="text-sm text-muted-foreground">
+            </TabPanel>
+            <TabPanel id="activity" className="text-body-regular text-text-secondary">
               Recent activity.
-            </TabsContent>
-            <TabsContent value="settings" className="text-sm text-muted-foreground">
+            </TabPanel>
+            <TabPanel id="settings" className="text-body-regular text-text-secondary">
               Settings form.
-            </TabsContent>
+            </TabPanel>
           </Tabs>
         </DemoCard>
 
-        <DemoCard title="Pagination" contentClassName="justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <DemoCard title="Pagination" contentClassName="items-stretch">
+          <Pagination page={page} totalPages={10} onChange={setPage} />
         </DemoCard>
 
         <DemoCard title="Navigation menu">
@@ -139,11 +100,15 @@ export default function GalleryNavigation() {
         <DemoCard title="Collapsible" contentClassName="items-stretch">
           <Collapsible open={open} onOpenChange={setOpen} className="w-full">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">3 starred workspaces</span>
+              <span className="text-body-medium text-text-primary">3 starred workspaces</span>
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="icon-sm" aria-label="Toggle list">
-                  <ChevronsUpDownIcon />
-                </Button>
+                <Button
+                  variant="ghost"
+                  size="small"
+                  iconOnly
+                  leadingIcon={ChevronsUpDownIcon}
+                  aria-label="Toggle list"
+                />
               </CollapsibleTrigger>
             </div>
             <CollapsibleContent className="flex flex-col gap-1.5 pt-2">

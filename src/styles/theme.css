@@ -1,0 +1,405 @@
+/* ---------------------------------------------------------------------------
+ * BoardUI theme tokens
+ *
+ * Layered as Tailwind v4 expects:
+ *   @theme { ... }     primitives + ramp overrides → Tailwind utilities
+ *   :root { ... }      semantic tokens (light mode) — reference primitives
+ *   .dark { ... }      semantic overrides (dark mode) — landed when designed
+ *   @theme inline {..} re-export of semantic tokens so they become utilities
+ *
+ * See docs/FIGMA_WORKFLOW.md for how tokens get added (Figma is source of truth).
+ * --------------------------------------------------------------------------- */
+
+@theme {
+  /* ----- Color primitives ----------------------------------------------------
+   * Almost the entire palette matches Tailwind v4's OKLCH defaults. The four
+   * overrides below are the only intentional deviations (see Figma → variables
+   * → color/...).
+   * --------------------------------------------------------------------------*/
+  --color-slate-200:   #ebeff5;
+  --color-neutral-100: #f7f7f7;
+  --color-neutral-200: #ebebeb;
+  --color-blue-400:    #3392ff;
+
+  /* ----- Typography ----------------------------------------------------------
+   * Font sizes, weights, line-heights, and tracking all match Tailwind v4
+   * defaults. The only override is the family: Inter, loaded via next/font
+   * in app/layout.tsx, which exposes --font-inter to the document.
+   * --------------------------------------------------------------------------*/
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif,
+               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+               "Noto Color Emoji";
+
+  /* Monospace ramp for code blocks. Loaded via next/font in app/layout.tsx
+   * (--font-mono-source → JetBrains Mono). Figma's spec uses IBM Plex Mono;
+   * JetBrains Mono is the closest already-bundled face. */
+  --font-mono: var(--font-mono-source), ui-monospace, "SFMono-Regular", Menlo,
+               Consolas, "Liberation Mono", monospace;
+
+  /* ----- Radii ---------------------------------------------------------------
+   * Extra step between lg (8) and xl (12). Used by medium-size buttons.
+   * Figma name: radius/2lg.
+   * --------------------------------------------------------------------------*/
+  --radius-2lg: 10px;
+
+  /* ----- Shadows -------------------------------------------------------------
+   * 2xs, xs, 2xl and the inner shadows already match Tailwind v4. Sizes sm, md,
+   * lg, xl follow the Figma 6%/10% recipe (slightly softer than Tailwind v4's
+   * 10%/10% default).
+   * --------------------------------------------------------------------------*/
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06), 0 1px 3px 0 rgb(0 0 0 / 0.10);
+  --shadow-md: 0 2px 4px -1px rgb(0 0 0 / 0.06), 0 4px 6px -1px rgb(0 0 0 / 0.10);
+  --shadow-lg: 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 10px 15px -3px rgb(0 0 0 / 0.10);
+  --shadow-xl: 0 10px 10px -5px rgb(0 0 0 / 0.04), 0 20px 25px -5px rgb(0 0 0 / 0.10);
+
+  /* Figma effect style "Background/Sidebar Elevation" — copied 1:1:
+   *   DROP_SHADOW #00000005 offset(0,1) radius 0  spread 0  → 0 1px 0px  0 / 0.0196
+   *   DROP_SHADOW #0000000F offset(0,1) radius 12 spread 0  → 0 1px 12px 0 / 0.0588
+   *   DROP_SHADOW #00000052 offset(0,0) radius 1  spread 0  → 0 0   1px  0 / 0.3216
+   * (alpha = hex byte / 255: 05→0.0196, 0F→0.0588, 52→0.3216). */
+  --shadow-sidebar:
+    0 1px 0 0 rgb(0 0 0 / 0.0196),
+    0 1px 12px 0 rgb(0 0 0 / 0.0588),
+    0 0 1px 0 rgb(0 0 0 / 0.3216);
+
+  /* Figma effect style "Sidebar selected" — copied 1:1:
+   *   DROP_SHADOW  color/blue/500 offset(0,0) radius 0 spread 1 → 0 0 0 1px blue-500
+   *   INNER_SHADOW #FFFFFF40       offset(0,1) radius 0 spread 0 → inset 0 1px 0 0 / 0.251
+   * (#FFFFFF40 alpha = 0x40/255 = 0.251). */
+  --shadow-nav-selected:
+    0 0 0 1px var(--color-blue-500),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.251);
+
+  /* Checkbox checked/indeterminate surface (from the Figma Checkbox component):
+   * inner top highlight + 1px inner blue edge over the primary gradient. */
+  --shadow-checkbox-selected:
+    inset 0 2px 0 0 rgb(255 255 255 / 0.25),
+    inset 0 0 0 1px var(--color-blue-500);
+
+  /* 1px contact shadow used on white cards/dropdown triggers sitting on the
+   * secondary background (Figma drop shadow 0 1 1 5%). */
+  --shadow-card: 0 1px 1px 0 rgb(0 0 0 / 0.05);
+
+  /* Floating menu/dropdown panel (Figma → sidebar profile menu node 3823:3699):
+   *   DROP_SHADOW #0000000A offset(0,1) radius 1 → 0 1px 1px 0 / 0.04
+   *   DROP_SHADOW #00000005 offset(0,4) radius 4 → 0 4px 4px 0 / 0.02 */
+  --shadow-dropdown:
+    0 1px 1px 0 rgb(0 0 0 / 0.04),
+    0 4px 4px 0 rgb(0 0 0 / 0.02);
+
+  /* Inner shadows (Figma names inner-shadow/*; Tailwind utility prefix is
+   * inset-shadow-*).
+   */
+  --inset-shadow-2xs: inset 0 1px 0 0 rgb(0 0 0 / 0.05);
+  --inset-shadow-xs:  inset 0 1px 1px 0 rgb(0 0 0 / 0.05);
+  --inset-shadow-sm:  inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+}
+
+/* ---------------------------------------------------------------------------
+ * Semantic tokens — light mode.
+ *
+ * All values reference primitives via var(--color-{family}-{shade}). Edit the
+ * primitives in @theme above and these update automatically.
+ *
+ * Figma name on the left, var name on the right:
+ *   foreground/full                  → --color-foreground-full
+ *   foreground/icon/primary          → --color-foreground-icon-primary
+ *   foreground/disabled              → --color-foreground-disabled
+ *   foreground/disabled-danger       → --color-foreground-disabled-danger
+ *   text/primary                     → --color-text-primary
+ *   text/tertiary                    → --color-text-tertiary
+ *   text/disabled-danger             → --color-text-disabled-danger
+ *   background/primary/default       → --color-background-primary-default
+ *   background/primary/hover         → --color-background-primary-hover
+ *   background/primary/active        → --color-background-primary-active
+ *   background/primary/disabled      → --color-background-primary-disabled
+ *   background/secondary/default     → --color-background-secondary-default
+ *   border/button/default            → --color-border-button-default
+ *   border/button/hover              → --color-border-button-hover
+ *   border/button/active             → --color-border-button-active
+ *
+ * Button gradients (linear, 180°, light stop → dark stop) sourced from the
+ * blue/red primitives that each Button/{type}/{state} style references in
+ * Figma. Direction inferred — confirm visually against Figma.
+ * --------------------------------------------------------------------------- */
+:root {
+  /* Foreground (icons + on-fill content) */
+  --color-foreground-full:               var(--color-white);
+  --color-foreground-icon-primary:       var(--color-neutral-950);
+  --color-foreground-icon-secondary:     var(--color-neutral-500);
+  --color-foreground-icon-tertiary:      var(--color-neutral-400);
+  --color-foreground-icon-quaternary:    var(--color-neutral-300);
+  --color-foreground-icon-error:         var(--color-red-600);
+  --color-foreground-icon-disabled:      var(--color-neutral-300);
+  --color-foreground-disabled:           var(--color-neutral-400);
+  --color-foreground-disabled-danger:    var(--color-red-300);
+
+  /* Text */
+  --color-text-primary:         var(--color-neutral-950);
+  --color-text-secondary:       var(--color-neutral-500);
+  --color-text-tertiary:        var(--color-neutral-400);
+  --color-text-disabled:        var(--color-neutral-300);
+  --color-text-disabled-danger: var(--color-red-300);
+  --color-text-error-primary:   var(--color-red-500);
+
+  /* Background */
+  --color-background-primary-default:   var(--color-white);
+  --color-background-primary-hover:     var(--color-neutral-100);
+  --color-background-primary-active:    var(--color-neutral-200);
+  --color-background-primary-disabled:  var(--color-neutral-100);
+  --color-background-secondary-default: var(--color-neutral-100);
+  --color-background-secondary-hover:   var(--color-neutral-200);
+  --color-background-tertiary-default:  var(--color-neutral-200);
+  --color-background-tertiary-hover:    var(--color-neutral-300);
+  --color-background-tertiary-error:    var(--color-red-100);
+
+  /* Border */
+  --color-border-button-default:   var(--color-neutral-200);
+  --color-border-button-hover:     var(--color-neutral-300);
+  --color-border-button-active:    var(--color-neutral-400);
+  --color-border-button-white:     var(--color-white);
+  --color-border-checkbox-default: var(--color-neutral-300);
+  --color-border-focus-ring:       var(--color-blue-500);
+
+  /* Placeholder colors that don't map cleanly to existing text tokens */
+  --color-text-error-placeholder: var(--color-red-400);
+
+  /* Charts (graphs) — shared neutrals + a categorical accent ramp.
+   * `track` is the background bar/ring behind a series; `cursor` the hover
+   * outline / dashed reference line; `neutral` a data color for "other"-style
+   * slices. Each numbered accent pairs a base fill with a one-tone-darker
+   * `-active` used for hover emphasis (the 400 → 500 recipe every chart
+   * follows). Numbered (not hue-named) so the palette can be retuned without
+   * renaming, mirroring the chart-1…n convention common to chart systems. */
+  --color-chart-track:    var(--color-neutral-200);
+  --color-chart-cursor:   var(--color-neutral-300);
+  --color-chart-neutral:  var(--color-neutral-300);
+  --color-chart-1:        var(--color-teal-400);
+  --color-chart-1-active: var(--color-teal-500);
+  --color-chart-2:        var(--color-lime-400);
+  --color-chart-2-active: var(--color-lime-500);
+  --color-chart-3:        var(--color-pink-400);
+  --color-chart-3-active: var(--color-pink-500);
+  --color-chart-4:        var(--color-sky-400);
+  --color-chart-4-active: var(--color-sky-500);
+  --color-chart-5:        var(--color-purple-400);
+  --color-chart-5-active: var(--color-purple-500);
+  --color-chart-6:        var(--color-blue-400);
+  --color-chart-6-active: var(--color-blue-500);
+  --color-chart-7:        var(--color-emerald-400);
+  --color-chart-7-active: var(--color-emerald-500);
+  --color-chart-8:        var(--color-yellow-400);
+  --color-chart-8-active: var(--color-yellow-500);
+
+  /* Button gradients */
+  --gradient-button-primary-default:  linear-gradient(180deg, var(--color-blue-500)    0%, var(--color-blue-600)    100%);
+  --gradient-button-primary-hover:    linear-gradient(180deg, var(--color-blue-400)    0%, var(--color-blue-500)    100%);
+  --gradient-button-primary-active:   linear-gradient(180deg, var(--color-blue-600)    0%, var(--color-blue-700)    100%);
+  --gradient-button-primary-disabled: linear-gradient(180deg, var(--color-neutral-200) 0%, var(--color-neutral-300) 100%);
+
+  --gradient-button-danger-default:   linear-gradient(180deg, var(--color-red-500) 0%, var(--color-red-600) 100%);
+  --gradient-button-danger-hover:     linear-gradient(180deg, var(--color-red-400) 0%, var(--color-red-500) 100%);
+  --gradient-button-danger-active:    linear-gradient(180deg, var(--color-red-600) 0%, var(--color-red-700) 100%);
+  --gradient-button-danger-disabled:  linear-gradient(180deg, var(--color-red-100) 0%, var(--color-red-200) 100%);
+}
+
+.dark {
+  /* Semantic dark-mode overrides. BoardUI hasn't shipped dark designs yet,
+   * so this project bridges the semantic tokens onto the DNA token set
+   * (src/design/tokens.css), which already carries a WCAG-checked dark
+   * palette. Replace with the official values when BoardUI lands them. */
+  --color-foreground-full:            var(--primary-foreground);
+  --color-foreground-icon-primary:    var(--foreground);
+  --color-foreground-icon-secondary:  var(--muted-foreground);
+  --color-foreground-icon-tertiary:   var(--icon-muted);
+  --color-foreground-icon-quaternary: var(--icon-muted);
+  --color-foreground-icon-error:      var(--destructive);
+  --color-foreground-icon-disabled:   color-mix(in srgb, var(--muted-foreground) 55%, transparent);
+  --color-foreground-disabled:        color-mix(in srgb, var(--muted-foreground) 70%, transparent);
+  --color-foreground-disabled-danger: color-mix(in srgb, var(--destructive) 55%, transparent);
+
+  --color-text-primary:         var(--foreground);
+  --color-text-secondary:       var(--muted-foreground);
+  --color-text-tertiary:        var(--icon-muted);
+  --color-text-disabled:        color-mix(in srgb, var(--muted-foreground) 55%, transparent);
+  --color-text-disabled-danger: color-mix(in srgb, var(--destructive) 55%, transparent);
+  --color-text-error-primary:   var(--destructive);
+  --color-text-error-placeholder: color-mix(in srgb, var(--destructive) 75%, transparent);
+
+  --color-background-primary-default:   var(--card);
+  --color-background-primary-hover:     var(--accent);
+  --color-background-primary-active:    color-mix(in srgb, var(--accent) 80%, white 6%);
+  --color-background-primary-disabled:  var(--muted);
+  --color-background-secondary-default: var(--background);
+  --color-background-secondary-hover:   var(--muted);
+  --color-background-tertiary-default:  var(--muted);
+  --color-background-tertiary-hover:    color-mix(in srgb, var(--muted) 85%, white 8%);
+  --color-background-tertiary-error:    color-mix(in srgb, var(--destructive) 18%, var(--card));
+
+  --color-border-button-default:   var(--border);
+  --color-border-button-hover:     color-mix(in srgb, var(--border) 70%, white 12%);
+  --color-border-button-active:    color-mix(in srgb, var(--border) 55%, white 20%);
+  --color-border-button-white:     var(--border);
+  --color-border-checkbox-default: var(--border);
+
+  --color-chart-track:   var(--muted);
+  --color-chart-cursor:  color-mix(in srgb, var(--muted) 80%, white 10%);
+  --color-chart-neutral: color-mix(in srgb, var(--muted) 80%, white 10%);
+}
+
+/* Re-export semantic tokens as Tailwind utilities. The `inline` form means
+ * Tailwind reads the *current* computed value of the variable, so light↔dark
+ * flips work without rebuild. */
+@theme inline {
+  --color-foreground-full:            var(--color-foreground-full);
+  --color-foreground-icon-primary:    var(--color-foreground-icon-primary);
+  --color-foreground-icon-secondary:  var(--color-foreground-icon-secondary);
+  --color-foreground-icon-tertiary:   var(--color-foreground-icon-tertiary);
+  --color-foreground-icon-quaternary: var(--color-foreground-icon-quaternary);
+  --color-foreground-icon-error:      var(--color-foreground-icon-error);
+  --color-foreground-icon-disabled:   var(--color-foreground-icon-disabled);
+  --color-foreground-disabled:        var(--color-foreground-disabled);
+  --color-foreground-disabled-danger: var(--color-foreground-disabled-danger);
+
+  --color-text-primary:         var(--color-text-primary);
+  --color-text-secondary:       var(--color-text-secondary);
+  --color-text-tertiary:        var(--color-text-tertiary);
+  --color-text-disabled:        var(--color-text-disabled);
+  --color-text-disabled-danger: var(--color-text-disabled-danger);
+  --color-text-error-primary:   var(--color-text-error-primary);
+
+  --color-background-primary-default:   var(--color-background-primary-default);
+  --color-background-primary-hover:     var(--color-background-primary-hover);
+  --color-background-primary-active:    var(--color-background-primary-active);
+  --color-background-primary-disabled:  var(--color-background-primary-disabled);
+  --color-background-secondary-default: var(--color-background-secondary-default);
+  --color-background-secondary-hover:   var(--color-background-secondary-hover);
+  --color-background-tertiary-default:  var(--color-background-tertiary-default);
+  --color-background-tertiary-hover:    var(--color-background-tertiary-hover);
+  --color-background-tertiary-error:    var(--color-background-tertiary-error);
+
+  --color-border-button-default:   var(--color-border-button-default);
+  --color-border-button-hover:     var(--color-border-button-hover);
+  --color-border-button-active:    var(--color-border-button-active);
+  --color-border-button-white:     var(--color-border-button-white);
+  --color-border-checkbox-default: var(--color-border-checkbox-default);
+  --color-border-focus-ring:       var(--color-border-focus-ring);
+
+  --color-text-error-placeholder: var(--color-text-error-placeholder);
+
+  --color-chart-track:    var(--color-chart-track);
+  --color-chart-cursor:   var(--color-chart-cursor);
+  --color-chart-neutral:  var(--color-chart-neutral);
+  --color-chart-1:        var(--color-chart-1);
+  --color-chart-1-active: var(--color-chart-1-active);
+  --color-chart-2:        var(--color-chart-2);
+  --color-chart-2-active: var(--color-chart-2-active);
+  --color-chart-3:        var(--color-chart-3);
+  --color-chart-3-active: var(--color-chart-3-active);
+  --color-chart-4:        var(--color-chart-4);
+  --color-chart-4-active: var(--color-chart-4-active);
+  --color-chart-5:        var(--color-chart-5);
+  --color-chart-5-active: var(--color-chart-5-active);
+  --color-chart-6:        var(--color-chart-6);
+  --color-chart-6-active: var(--color-chart-6-active);
+  --color-chart-7:        var(--color-chart-7);
+  --color-chart-7-active: var(--color-chart-7-active);
+  --color-chart-8:        var(--color-chart-8);
+  --color-chart-8-active: var(--color-chart-8-active);
+}
+
+/* ---------------------------------------------------------------------------
+ * Component utilities — Buttons
+ *
+ * Each variant collapses the four interactive states (default / hover / active
+ * / disabled) into a single class. Use them on the component:
+ *
+ *   <button class="bg-button-primary">…</button>
+ *   <button class="bg-button-danger">…</button>
+ *
+ * Smooth default→hover transition trick:
+ *   CSS can't interpolate `background-image`, so swapping gradients on :hover
+ *   would snap. Instead we keep the *default* gradient on the element and
+ *   layer the *hover* gradient on a `::before` pseudo-element whose opacity
+ *   fades 0→1 over `--button-transition-ms`. Active/disabled gradients still
+ *   swap instantly (we hide the pseudo to reveal them).
+ *
+ * Stacking: `isolation: isolate` keeps the pseudo behind the button's text
+ * and icons (z-index -1) while staying above the element's own background.
+ * `border-radius: inherit` + `overflow: hidden` keeps it within the rounded
+ * corners.
+ * --------------------------------------------------------------------------- */
+@theme {
+  --button-transition-ms: 150ms;
+  --input-transition-ms:  150ms;
+}
+
+@utility bg-button-primary {
+  position: relative;
+  isolation: isolate;
+  background-image: var(--gradient-button-primary-default);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: var(--gradient-button-primary-hover);
+    opacity: 0;
+    transition: opacity var(--button-transition-ms) ease;
+  }
+  &:hover:not(:disabled):not([aria-disabled="true"])::before {
+    opacity: 1;
+  }
+  &:active:not(:disabled):not([aria-disabled="true"]) {
+    background-image: var(--gradient-button-primary-active);
+  }
+  &:active:not(:disabled):not([aria-disabled="true"])::before {
+    opacity: 0;
+  }
+  &:disabled,
+  &[aria-disabled="true"] {
+    background-image: var(--gradient-button-primary-disabled);
+  }
+  &:disabled::before,
+  &[aria-disabled="true"]::before {
+    display: none;
+  }
+}
+
+@utility bg-button-danger {
+  position: relative;
+  isolation: isolate;
+  background-image: var(--gradient-button-danger-default);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: var(--gradient-button-danger-hover);
+    opacity: 0;
+    transition: opacity var(--button-transition-ms) ease;
+  }
+  &:hover:not(:disabled):not([aria-disabled="true"])::before {
+    opacity: 1;
+  }
+  &:active:not(:disabled):not([aria-disabled="true"]) {
+    background-image: var(--gradient-button-danger-active);
+  }
+  &:active:not(:disabled):not([aria-disabled="true"])::before {
+    opacity: 0;
+  }
+  &:disabled,
+  &[aria-disabled="true"] {
+    background-image: var(--gradient-button-danger-disabled);
+  }
+  &:disabled::before,
+  &[aria-disabled="true"]::before {
+    display: none;
+  }
+}

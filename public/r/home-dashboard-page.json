@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "home-dashboard-page",
+  "type": "registry:block",
+  "title": "home dashboard page",
+  "description": "Timbal blueprint block: home-dashboard-page. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@remixicon/react"
+  ],
+  "registryDependencies": [
+    "contributions-card",
+    "customers-table",
+    "earnings-chart-card",
+    "page-body",
+    "page-header",
+    "recent-hires-card",
+    "revenue-trend-card",
+    "stat-cards",
+    "ui-button"
+  ],
+  "files": [
+    {
+      "path": "components/pages/home-dashboard-page.tsx",
+      "content": "import { RiAddFill, RiFilter3Fill } from \"@remixicon/react\";\n\nimport { PageBody } from \"@/components/blocks/page-body\";\nimport { PageHeader } from \"@/components/blocks/page-header\";\nimport { ContributionsCard } from \"@/components/application/dashboard/contributions-card\";\nimport { CustomersTable } from \"@/components/application/dashboard/customers-table\";\nimport { EarningsChartCard } from \"@/components/application/dashboard/earnings-chart-card\";\nimport { RecentHiresCard } from \"@/components/application/dashboard/recent-hires-card\";\nimport { RevenueTrendCard } from \"@/components/application/dashboard/revenue-trend-card\";\nimport { StatCards } from \"@/components/application/dashboard/stat-cards\";\nimport { Button } from \"@/components/base/buttons/button\";\n\n/**\n * HomeDashboardPage — the BoardUI Pro \"Home Dashboard\" template (Figma\n * node 3731:2932), rehosted on the house shell grammar: the Pro template's\n * own sidebar/header chrome is replaced by `RoutedAppShell` + `PageHeader`\n * (this file renders the CONTENT only — mount it as a route inside the\n * shell).\n *\n * Rhythm: PageHeader with actions → RecentHiresCard + EarningsChartCard\n * band → RevenueTrendCard + ContributionsCard band → StatCards KPI row →\n * CustomersTable (the native BoardUI data-table card with search, facets,\n * selection, and pagination).\n *\n * Fork this for a BoardUI-native overview screen. For the richer\n * block-kit dashboard grammar (AI recommendations, score rings, FormSheet\n * create) fork `insights-dashboard-page` instead.\n */\nexport function HomeDashboardPage({\n  onAction,\n}: {\n  /** Wire header actions (e.g. toast in the gallery, real handlers in apps). */\n  onAction?: (action: string) => void;\n} = {}) {\n  return (\n    <PageBody>\n      <PageHeader\n        title=\"Welcome back\"\n        description=\"Sales, hiring, and customer activity at a glance.\"\n        actions={\n          <>\n            <Button\n              variant=\"secondary\"\n              size=\"medium\"\n              leadingIcon={RiFilter3Fill}\n              onClick={() => onAction?.(\"Filters\")}\n            >\n              Filters\n            </Button>\n            <Button\n              variant=\"primary\"\n              size=\"medium\"\n              leadingIcon={RiAddFill}\n              onClick={() => onAction?.(\"Create ticket\")}\n            >\n              Create ticket\n            </Button>\n          </>\n        }\n      />\n\n      {/* People + earnings band */}\n      <div className=\"flex w-full flex-col items-stretch gap-4 xl:flex-row xl:items-start\">\n        <RecentHiresCard />\n        <EarningsChartCard />\n      </div>\n\n      {/* Trend + contributions band */}\n      <div className=\"flex w-full flex-col items-stretch gap-4 lg:flex-row lg:items-start\">\n        <RevenueTrendCard className=\"h-[337px]\" />\n        <ContributionsCard />\n      </div>\n\n      <StatCards />\n\n      <CustomersTable />\n    </PageBody>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/pages/home-dashboard-page.tsx"
+    }
+  ]
+}

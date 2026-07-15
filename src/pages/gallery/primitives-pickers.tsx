@@ -1,25 +1,28 @@
 import * as React from "react";
+import { CalendarDate } from "@internationalized/date";
+
+import { DatePicker } from "@/components/base/date-picker/date-picker";
+import { DateRangePicker } from "@/components/base/date-picker/date-range-picker";
+import type { DateRangeValue } from "@/components/base/date-picker/date-range-picker";
 
 import { Calendar } from "@/components/ui/calendar";
-import {
-  DatePicker,
-  DatePickerButton,
-  DatePickerCalendar,
-  DatePickerContent,
-  DatePickerTrigger,
-} from "@/components/ui/date-picker";
 
 import { DemoCard, DemoGrid, GalleryPage } from "./section";
 
 export default function GalleryPickers() {
   const [date, setDate] = React.useState<Date | undefined>(new Date(2026, 6, 8));
-  const [pickerDate, setPickerDate] = React.useState<Date | undefined>();
-  const [open, setOpen] = React.useState(false);
+  const [pickerDate, setPickerDate] = React.useState<CalendarDate | null>(
+    new CalendarDate(2026, 7, 8),
+  );
+  const [range, setRange] = React.useState<DateRangeValue | null>({
+    start: new CalendarDate(2026, 7, 1),
+    end: new CalendarDate(2026, 7, 14),
+  });
 
   return (
     <GalleryPage
       title="Date & time"
-      description="Calendar and date picker on react-day-picker."
+      description="BoardUI single-date and range pickers, plus the retained inline calendar."
     >
       <DemoGrid>
         <DemoCard title="Calendar" contentClassName="justify-center">
@@ -32,21 +35,19 @@ export default function GalleryPickers() {
         </DemoCard>
 
         <DemoCard title="Date picker">
-          <DatePicker open={open} onOpenChange={setOpen}>
-            <DatePickerTrigger asChild>
-              <DatePickerButton date={pickerDate} className="w-56" />
-            </DatePickerTrigger>
-            <DatePickerContent>
-              <DatePickerCalendar
-                mode="single"
-                selected={pickerDate}
-                onSelect={(d: Date | undefined) => {
-                  setPickerDate(d);
-                  setOpen(false);
-                }}
-              />
-            </DatePickerContent>
-          </DatePicker>
+          <DatePicker
+            aria-label="Invoice date"
+            value={pickerDate}
+            onChange={setPickerDate}
+          />
+        </DemoCard>
+
+        <DemoCard title="Date range picker">
+          <DateRangePicker
+            aria-label="Billing period"
+            value={range}
+            onChange={setRange}
+          />
         </DemoCard>
       </DemoGrid>
     </GalleryPage>

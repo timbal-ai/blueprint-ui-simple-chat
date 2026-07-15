@@ -50,24 +50,29 @@ Three layers, all in this repo:
      (+ `IconCell`/`AvatarChipCell`/`AvatarChip`, checkbox-facet
      `moreFilters` popover), `BulkActionBar` (floating selection bubble —
      pair with row selection), detail-panel sections, `FormSheet`/`FormField`
-     (sheet `size` presets up to `full`), settings scaffolding,
+     (sheet `size` presets up to `full`), settings scaffolding —
+     `SettingsSection`/`SettingsRow` for a settings PAGE (own route),
+     `SettingsDialog` for the two-pane settings MODAL (grouped rail nav +
+     `SettingsDialogRow`/`SettingsDialogGroup`/`SettingsPlanCard` panes,
+     mobile pill-row rail),
      `StatOverview`/`ChartCard` (edge-less charts), `ResourceGrid`,
      `AssistantPill` (the floating AI pill, streaming pre-wired),
      `EmbeddedChat` (the chat PAGE for apps in RoutedAppShell — full-bleed
      on the content card, no title, streaming pre-wired),
      `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
      donut-with-total, radar — no legends, gradient fills),
-     `interactive-charts` (the consumer-metrics kit — `TrackedBarChart`
-     gradient capped bars in tone-tinted ghost tracks, per-datum `track`
-     for value-vs-total, `MetricLegendList` (chart legend rows: gradient
-     tone pill, big number + caption, View action), `ActivityRings`,
-     `SegmentedScoreRing` + `ScoreBreakdownList`, `ContributionHeatmap`,
-     `RingCalendar`, plus `ChartPeriodPager`/`ChartRangeTabs` chrome;
-     tones via `--chart-1..8`; everything animates by default — mount
-     sweeps, hover lifts/pops),
-     `MetricTrendCard` (headline number + delta badge + range tabs over a
-     morphing gradient area chart), `RosterCard` (gray people tile —
-     count headline, paginated 2-up person grid with role chips),
+     `MetricLegendList` (`blocks/interactive-charts` — chart legend rows:
+     gradient tone pill, big number + caption, View action; the ONLY piece
+     left of the old house interactive kit),
+     **interactive metric CARDS are the BoardUI Pro components** in
+     `src/components/application/{dashboard,medical}` — `RevenueTrendCard`
+     (gradient trend area, count-up headline, props `title`/`periods`),
+     `RecentHiresCard` (paged 2×2 people grid, props `title`/`count`/
+     `people`), `EarningsChartCard` (period-switched bars),
+     `ContributionsCard`/`ContributionsGrid` (heat grid; grid takes real
+     `data` counts), `StepsCard`, `SleepScoreCard` (generic score ring via
+     `metrics` prop), `ActivityRingsCard`, `MostActiveDaysCard`,
+     `WeekRangePill` — never rebuild these patterns from primitives,
      `PdfViewer` (toolbar + native PDF embed, zero deps — mount in a page
      section or a wide Sheet/Drawer), `ImageCard`/`MediaGrid` (image-first
      cards for galleries and asset libraries, overlay or below-image
@@ -80,15 +85,25 @@ Three layers, all in this repo:
      grammar; `insights-dashboard-page.tsx` is the reference dashboard grammar
      (stats → cards → chart → table); `customer-detail-page.tsx` and
      `workspace-detail-page.tsx` are condensed full-page record details
-     (Stripe / Cloudflare grammar); `health-dashboard-page.tsx` is the
-     consumer-metrics grammar (interactive tracked bars driving a headline,
-     score ring, activity rings, ring calendar, alerts feed);
-     `earnings-page.tsx` is the earnings/usage-analytics grammar (range
-     tabs swap the dataset, MetricTrendCard + RosterCard band, stat
-     chips, contribution heatmap);
+     (Stripe / Cloudflare grammar);
      `media-library-page.tsx` is the asset-library grammar (ImageCard grid
      + document list → photo Sheet preview / PdfViewer in a wide right
-     Drawer). Fork them, don't restart. Index pages ship row click →
+     Drawer).      **BoardUI Pro templates (2026-07-15, purchased kit, project-owned —
+     these are THE metrics/overview grammars; the old house health/earnings
+     replica pages were deleted in their favor):** `home-dashboard-page.tsx`
+     (overview grammar — RecentHiresCard, EarningsChartCard,
+     RevenueTrendCard, ContributionsCard, StatCards, CustomersTable),
+     `medical-profile-page.tsx` (consumer-metrics grammar — six-card health
+     grid: steps/sleep/most-active-days/activity-rings + patients table),
+     `ai-profile-page.tsx` (centered profile cover card + activity charts),
+     `calendar-page.tsx` (month grid with event chips → anchored
+     EventDetailsModal, in-place month switcher, inbox feed — NEVER
+     hand-roll a calendar). Their card kits live under
+     `src/components/application/{dashboard,medical,calendar,ai-profile}` —
+     see the `pro-*` entries in `BLOCKS_CATALOG`. The Pro AI chat template
+     (`application/ai-chat`, mounted at `/gallery/templates/ai-chat`) is a
+     full-viewport VISUAL REFERENCE only — real chat still goes through the
+     Timbal shells. Fork them, don't restart. Index pages ship row click →
      detail Sheet; detail pages are their own routes with breadcrumb
      eyebrow + MetadataGrid + tabs.
    - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
@@ -305,17 +320,21 @@ src/
 ├── components/
 │   ├── discovery.ts   # intent index — agents read FIRST (INTENT_INDEX, DO_NOT_BUILD)
 │   ├── ui/            # project-owned primitives (fork freely)
+│   ├── base/          # BoardUI primitives (button, select, dropdown, date-picker, avatar, chip…)
+│   ├── application/   # BoardUI Pro cards — dashboard/ medical/ calendar/ ai-profile/ ai-chat/
+│   ├── foundations/   # BoardUI foundations (brand logo, chevron icons)
 │   ├── blocks/        # block kit + catalog.ts — compose screens from these first
-│   ├── pages/         # page templates (invoices-page — fork for index screens)
-│   ├── app/           # page scaffold, sections, stats
+│   ├── pages/         # page templates + catalog.ts (invoices-page — fork for index screens)
+│   ├── app/           # page scaffold, sections, stats, score-gauge
 │   └── chat/          # chat chrome slots (welcome, user bubble)
 ├── pages/             # Home (chat shell) · Placeholder (replace!) · gallery/ showcase (dev/CI) · NotFound
 ├── lib/               # cn(), studio-chat-chrome (chat slot registration), thread layout classes
-├── hooks/             # use-mobile, use-title
+├── hooks/             # use-mobile, use-title, use-count-up
+├── utils/             # cx(), use-dismiss-on-outside-press (popover dismiss + trigger toggle)
 ├── App.tsx            # providers + router
 ├── config.ts          # env flags
 └── index.css          # import order — see non-negotiables
-scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs (shadcn registry)
+scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs (shadcn registry — covers ui/base/application/blocks/pages)
 ```
 
 `ls src/` before assuming a file exists — the scaffold evolves.
@@ -326,7 +345,7 @@ scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs
 |---|---|
 | `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
 | `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/{customer,workspace,health,earnings,media}`, `/gallery/chat` (EmbeddedChat), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts` (Recharts recipes + the interactive kit); see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
+| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/{customer,workspace,media,home,medical,ai-profile,calendar,invoice-review}`, `/gallery/chat` (EmbeddedChat), `/gallery/templates/ai-chat` (Pro chat visual reference), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts` (Recharts recipes, ScoreGauge, HeroMetricCard, MetricLegendList); see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
 | `VITE_APP_TITLE` | document title |
 
 There is **no theme preset flag** — theming has exactly one source of truth:

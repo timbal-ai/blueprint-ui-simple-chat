@@ -2,7 +2,38 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { ImageIcon } from "@/components/icons";
-import { Badge } from "@/components/ui/badge";
+import { Chip } from "@/components/base/badges/chip";
+
+/** Legacy ui/badge variant names — kept so page callers don't change. */
+type MediaBadgeVariant =
+  | "default"
+  | "secondary"
+  | "outline"
+  | "destructive"
+  | "success"
+  | "warning"
+  | "info"
+  | "destructive-solid"
+  | "success-solid"
+  | "warning-solid"
+  | "info-solid";
+
+const BADGE_COLOR: Record<
+  MediaBadgeVariant,
+  React.ComponentProps<typeof Chip>["color"]
+> = {
+  default: "gray",
+  secondary: "gray",
+  outline: "soft",
+  destructive: "rose",
+  "destructive-solid": "rose",
+  success: "lime",
+  "success-solid": "lime",
+  warning: "yellow",
+  "warning-solid": "yellow",
+  info: "blue",
+  "info-solid": "blue",
+};
 
 /**
  * Media kit — image-first cards for galleries, template pickers, asset
@@ -47,7 +78,7 @@ function ImageCard({
   /** Status chip pinned to the image's top-left corner. */
   badge?: {
     label: string;
-    variant?: React.ComponentProps<typeof Badge>["variant"];
+    variant?: MediaBadgeVariant;
   };
   /** Footer row under the caption — file size, date, avatar chips… */
   meta?: React.ReactNode;
@@ -79,12 +110,13 @@ function ImageCard({
         </div>
       )}
       {badge ? (
-        <Badge
-          variant={badge.variant ?? "secondary"}
+        <Chip
+          variant="caption"
+          color={BADGE_COLOR[badge.variant ?? "secondary"]}
           className="absolute top-2 left-2 h-5 px-1.5 text-[11px]"
         >
           {badge.label}
-        </Badge>
+        </Chip>
       ) : null}
       {overlay ? (
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/65 to-transparent px-3 pt-8 pb-2.5 text-left">

@@ -31,23 +31,28 @@ import {
   FilteredTable,
 } from "@/components/blocks/filtered-table";
 import {
-  ContributionHeatmap,
-  ScoreBreakdownList,
-  SegmentedScoreRing,
-  type HeatmapDatum,
-} from "@/components/blocks/interactive-charts";
-import { MetricTrendCard } from "@/components/blocks/metric-trend-card";
+  ContributionsGrid,
+  type ContributionDatum,
+} from "@/components/application/dashboard/contributions-card";
+import {
+  RecentHiresCard,
+  type RosterPerson,
+} from "@/components/application/dashboard/recent-hires-card";
+import {
+  RevenueTrendCard,
+  type TrendPeriod,
+} from "@/components/application/dashboard/revenue-trend-card";
+import { SleepScoreCard } from "@/components/application/medical/sleep-score-card";
 import { PageHeader } from "@/components/blocks/page-header";
 import { PageBody } from "@/components/blocks/page-body";
 import {
   RecommendationCard,
   type Recommendation,
 } from "@/components/blocks/recommendation-card";
-import { RosterCard, type RosterPerson } from "@/components/blocks/roster-card";
 import { ChartCard, StatOverview } from "@/components/blocks/stat-overview";
 import { DemoComposedChart, DemoDonutChart } from "@/components/blocks/chart-demos";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Button } from "@/components/base/buttons/button";
 import {
   Card,
   CardContent,
@@ -55,34 +60,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DatePicker,
-  DatePickerButton,
-  DatePickerCalendar,
-  DatePickerContent,
-  DatePickerTrigger,
-} from "@/components/ui/date-picker";
-import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/base/date-picker/date-picker";
+import type { CalendarDate } from "@internationalized/date";
+import { InputBase } from "@/components/base/input/input";
 import {
   DataTableColumnHeader,
   selectionColumn,
   type ColumnDef,
-} from "@/components/ui/data-table";
+} from "@/components/blocks/filtered-table";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dropdown,
+  DropdownDivider,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import { Progress } from "@/components/ui/progress";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectItem } from "@/components/base/select/select";
 import {
   Sheet,
   SheetContent,
@@ -167,79 +162,79 @@ const DEMO_RECOMMENDATIONS: Recommendation[] = [
   },
 ];
 
-/** Payroll trend per range — the MetricTrendCard morphs between these. */
-const DEMO_PAYROLL = {
-  Weekly: {
-    value: "$482,300",
+/** Payroll trend per range — the RevenueTrendCard morphs between these. */
+const DEMO_PAYROLL: Record<string, TrendPeriod> = {
+  weekly: {
+    id: "weekly",
+    total: 482_300,
     delta: "+2.1%",
+    deltaColor: "lime",
     data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label, i) => ({
       label,
-      value: [64, 71, 69, 78, 82, 58, 52][i],
+      value: [64_000, 71_000, 69_000, 78_000, 82_000, 58_000, 52_000][i],
     })),
   },
-  Monthly: {
-    value: "$1.94M",
+  monthly: {
+    id: "monthly",
+    total: 1_940_000,
     delta: "+6.8%",
+    deltaColor: "lime",
     data: ["W1", "W2", "W3", "W4"].map((label, i) => ({
       label,
-      value: [430, 465, 488, 512][i],
+      value: [430_000, 465_000, 488_000, 512_000][i],
     })),
   },
-  Yearly: {
-    value: "$22.8M",
+  yearly: {
+    id: "yearly",
+    total: 22_800_000,
     delta: "+11.4%",
+    deltaColor: "lime",
     data: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map(
       (label, i) => ({
         label,
-        value: [1.51, 1.55, 1.62, 1.68, 1.71, 1.79, 1.85, 1.88, 1.94, 1.99, 2.08, 2.18][i],
+        value: [1.51, 1.55, 1.62, 1.68, 1.71, 1.79, 1.85, 1.88, 1.94, 1.99, 2.08, 2.18][i] * 1_000_000,
       }),
     ),
   },
 };
 
 const DEMO_HIRES: RosterPerson[] = [
-  { id: "h1", name: "June Rodriguez", meta: "Joined today", tag: "Product Designer" },
-  { id: "h2", name: "Miguel Santos", meta: "Joined 2 days ago", tag: "Backend Engineer" },
-  { id: "h3", name: "Anna Kowalska", meta: "Joined this week", tag: "Account Executive" },
-  { id: "h4", name: "Tom Becker", meta: "Joined this week", tag: "Data Analyst" },
-  { id: "h5", name: "Leire Zubiri", meta: "Joined last week", tag: "People Partner" },
-  { id: "h6", name: "Oriol Serra", meta: "Joined last week", tag: "Frontend Engineer" },
-  { id: "h7", name: "Claire Dubois", meta: "Joined last week", tag: "QA Engineer" },
-  { id: "h8", name: "Iker Mendoza", meta: "Joined 2 weeks ago", tag: "Solutions Architect" },
+  { name: "June Rodriguez", meta: "Joined today", tag: "Product Designer" },
+  { name: "Miguel Santos", meta: "Joined 2 days ago", tag: "Backend Engineer" },
+  { name: "Anna Kowalska", meta: "Joined this week", tag: "Account Executive" },
+  { name: "Tom Becker", meta: "Joined this week", tag: "Data Analyst" },
+  { name: "Leire Zubiri", meta: "Joined last week", tag: "People Partner" },
+  { name: "Oriol Serra", meta: "Joined last week", tag: "Frontend Engineer" },
+  { name: "Claire Dubois", meta: "Joined last week", tag: "QA Engineer" },
+  { name: "Iker Mendoza", meta: "Joined 2 weeks ago", tag: "Solutions Architect" },
 ];
 
-/** Engagement score ring segments + companion breakdown rows. */
-const DEMO_ENGAGEMENT = {
-  score: 82,
-  segments: [
-    { value: 34, tone: 1, label: "Recognition" } as const,
-    { value: 28, tone: 3, label: "Growth" } as const,
-    { value: 20, tone: 5, label: "Wellbeing" } as const,
-  ],
-  breakdown: [
-    { id: "recognition", label: "Recognition", value: "8.6", tone: 1 as const },
-    { id: "growth", label: "Growth", value: "7.9", tone: 3 as const },
-    { id: "wellbeing", label: "Wellbeing", value: "7.2", tone: 5 as const },
-  ],
-};
+/**
+ * Engagement score metrics for the SleepScoreCard ring — arc share = score
+ * (34 + 28 + 20 = the 82 headline; maxes sum to 100 so the grey track
+ * shows the unearned 18), right column shows the survey averages.
+ */
+const DEMO_ENGAGEMENT = [
+  { label: "Recognition", score: 34, max: 40, display: "8.6", color: "var(--color-chart-1)" },
+  { label: "Growth", score: 28, max: 35, display: "7.9", color: "var(--color-chart-3)" },
+  { label: "Wellbeing", score: 20, max: 25, display: "7.2", color: "var(--color-chart-6)" },
+];
 
 /** ~26 weeks of deterministic pseudo-random hiring events for the heatmap. */
-const DEMO_HIRING_ACTIVITY: HeatmapDatum[] = Array.from({ length: 26 * 7 }, (_, i) => {
+const DEMO_HIRING_ACTIVITY: ContributionDatum[] = Array.from({ length: 26 * 7 }, (_, i) => {
   const count = Math.max(0, Math.round(Math.sin(i / 3.1) * 2 + Math.sin(i / 11.7) * 2) + (i % 5 === 0 ? 2 : 0));
   return { count, label: `${count} hiring ${count === 1 ? "event" : "events"}` };
 });
 
-const HIRING_MONTH_LABELS: Record<number, string> = {
-  0: "Feb", 4: "Mar", 9: "Apr", 13: "May", 17: "Jun", 22: "Jul",
-};
+const HIRING_MONTH_LABELS = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
 const WORKLOAD_BADGE: Record<
   Employee["workload"],
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  light: { label: "Light", variant: "success" },
-  balanced: { label: "Balanced", variant: "info" },
-  heavy: { label: "Heavy", variant: "warning" },
+  light: { label: "Light", color: "lime" },
+  balanced: { label: "Balanced", color: "blue" },
+  heavy: { label: "Heavy", color: "yellow" },
 };
 
 function employeeColumns(
@@ -310,48 +305,70 @@ function employeeColumns(
       size: 110,
       cell: ({ row }) => {
         const w = WORKLOAD_BADGE[row.original.workload];
-        return <Badge variant={w.variant}>{w.label}</Badge>;
+        return <Chip variant="caption" color={w.color}>{w.label}</Chip>;
       },
     },
     {
       id: "actions",
       size: 48,
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={`Actions for ${row.original.name}`}
-              // Never let the row's onRowClick fire too — two overlays at
-              // once (dropdown + sheet) deadlock Radix's pointer-events lock.
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MoreHorizontalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-            <DropdownMenuItem onSelect={() => onAction?.("view", row.original)}>
-              <UserIcon />
-              View profile
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onAction?.("edit", row.original)}>
-              <PencilIcon />
-              Edit assignments
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onSelect={() => onAction?.("offboard", row.original)}
-            >
-              <UserMinusIcon />
-              Start offboarding
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <EmployeeRowActions employee={row.original} onAction={onAction} />
       ),
     },
   ];
+}
+
+/** Per-row overflow menu — owns its open state so item clicks can close it. */
+function EmployeeRowActions({
+  employee,
+  onAction,
+}: {
+  employee: Employee;
+  onAction?: (action: string, employee: Employee) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const select = (action: string) => {
+    setOpen(false);
+    onAction?.(action, employee);
+  };
+
+  return (
+    // Never let the row's onRowClick fire too — two overlays at once
+    // (dropdown + sheet) fight over focus and pointer interception.
+    <span onClick={(e) => e.stopPropagation()}>
+      <Dropdown isOpen={open} onOpenChange={setOpen}>
+        <DropdownTrigger
+          aria-label={`Actions for ${employee.name}`}
+          className="inline-flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background-primary-hover hover:text-text-primary [&_svg]:size-4"
+        >
+          <MoreHorizontalIcon />
+        </DropdownTrigger>
+        <DropdownPopover
+          aria-label={`Actions for ${employee.name}`}
+          placement="bottom end"
+          className="w-56"
+        >
+          <DropdownGroup>
+            <DropdownItem onSelect={() => select("view")}>
+              <UserIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+              <span className="text-body-medium text-text-primary">View profile</span>
+            </DropdownItem>
+            <DropdownItem onSelect={() => select("edit")}>
+              <PencilIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+              <span className="text-body-medium text-text-primary">Edit assignments</span>
+            </DropdownItem>
+          </DropdownGroup>
+          <DropdownDivider />
+          <DropdownGroup>
+            <DropdownItem onSelect={() => select("offboard")}>
+              <UserMinusIcon className="size-4 shrink-0 text-destructive" />
+              <span className="text-body-medium text-destructive">Start offboarding</span>
+            </DropdownItem>
+          </DropdownGroup>
+        </DropdownPopover>
+      </Dropdown>
+    </span>
+  );
 }
 
 function InsightsDashboardPage({
@@ -395,12 +412,15 @@ function InsightsDashboardPage({
         description="KPIs, trends, recommendations, and the records that need attention"
         actions={
           <>
-            <Button variant="outline" onClick={onExport}>
-              <DownloadIcon />
+            <Button
+              variant="secondary"
+              size="small"
+              leadingIcon={DownloadIcon}
+              onClick={onExport}
+            >
               Export
             </Button>
-            <Button onClick={() => setAddOpen(true)}>
-              <PlusIcon />
+            <Button size="small" leadingIcon={PlusIcon} onClick={() => setAddOpen(true)}>
               Add employee
             </Button>
           </>
@@ -418,9 +438,13 @@ function InsightsDashboardPage({
             deltaTone: "positive",
             hint: "Compared to the previous period",
             action: (
-              <Button variant="ghost" size="icon-sm" aria-label="Employee stat options">
-                <MoreHorizontalIcon />
-              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                iconOnly
+                leadingIcon={MoreHorizontalIcon}
+                aria-label="Employee stat options"
+              />
             ),
           },
           {
@@ -444,29 +468,23 @@ function InsightsDashboardPage({
         ]}
       />
 
-      {/* Trend + roster band — MetricTrendCard morphs between ranges,
-          RosterCard pages through recent hires. Both are standalone blocks. */}
+      {/* Trend + roster band — the BoardUI Pro cards: RevenueTrendCard
+          morphs between periods (hover rolls the headline to that point),
+          RecentHiresCard pages through people 4-up. */}
       <div className="grid items-stretch gap-4 lg:grid-cols-2">
-        <MetricTrendCard
-          title="Payroll cost"
-          ranges={DEMO_PAYROLL}
-          defaultRange="Monthly"
-          tone={5}
-          seriesLabel="Payroll"
-        />
-        <RosterCard
+        <RevenueTrendCard title="Payroll cost" periods={DEMO_PAYROLL} />
+        <RecentHiresCard
           title="Recent hires"
           count={DEMO_HIRES.length}
           people={DEMO_HIRES}
-          pageSize={4}
           action={
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="xs"
+              iconOnly
+              leadingIcon={MoreHorizontalIcon}
               aria-label="Recent hires options"
-            >
-              <MoreHorizontalIcon />
-            </Button>
+            />
           }
         />
       </div>
@@ -501,15 +519,16 @@ function InsightsDashboardPage({
           description="Track employee growth and attrition trends over time."
           height="18rem"
           action={
-            <Select value={range} onValueChange={setRange}>
-              <SelectTrigger size="sm" className="w-28" aria-label="Chart range">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="end">
-                <SelectItem value="monthly">Monthly</SelectItem>
-                <SelectItem value="quarterly">Quarterly</SelectItem>
-                <SelectItem value="yearly">Yearly</SelectItem>
-              </SelectContent>
+            <Select
+              aria-label="Chart range"
+              size="sm"
+              selectedKey={range}
+              onSelectionChange={(k) => setRange(String(k))}
+              className="w-28"
+            >
+              <SelectItem id="monthly" textValue="Monthly">Monthly</SelectItem>
+              <SelectItem id="quarterly" textValue="Quarterly">Quarterly</SelectItem>
+              <SelectItem id="yearly" textValue="Yearly">Yearly</SelectItem>
             </Select>
           }
         >
@@ -526,27 +545,16 @@ function InsightsDashboardPage({
         </ChartCard>
       </div>
 
-      {/* Engagement + hiring-activity band — the interactive-charts kit:
-          segmented score ring with breakdown rows, contribution heatmap. */}
+      {/* Engagement + hiring-activity band — the BoardUI Pro score-ring
+          card (segmented arcs + breakdown rows) and contributions grid. */}
       <div className="grid items-stretch gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Engagement score</CardTitle>
-            <CardDescription>
-              Quarterly pulse survey across all departments.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col gap-5">
-            <div className="flex flex-1 items-center justify-center">
-              <SegmentedScoreRing segments={DEMO_ENGAGEMENT.segments} size={140}>
-                <span className="text-4xl font-medium tracking-tight tabular-nums">
-                  {DEMO_ENGAGEMENT.score}
-                </span>
-              </SegmentedScoreRing>
-            </div>
-            <ScoreBreakdownList items={DEMO_ENGAGEMENT.breakdown} />
-          </CardContent>
-        </Card>
+        <SleepScoreCard
+          title="Engagement score"
+          headline="Good"
+          rangeLabel="This quarter"
+          metrics={DEMO_ENGAGEMENT}
+          className="h-auto"
+        />
         <Card>
           <CardHeader>
             <CardTitle>Hiring activity</CardTitle>
@@ -554,13 +562,13 @@ function InsightsDashboardPage({
               Offers, starts, and interviews over the last six months.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-1 items-center">
-            <ContributionHeatmap
-              data={DEMO_HIRING_ACTIVITY}
-              tone={1}
-              columnLabels={HIRING_MONTH_LABELS}
-              className="w-full"
-            />
+          <CardContent className="flex flex-1 flex-col justify-center gap-1.5">
+            <ContributionsGrid data={DEMO_HIRING_ACTIVITY} accent="teal" />
+            <div className="flex w-full justify-between text-body-2-medium text-text-tertiary">
+              {HIRING_MONTH_LABELS.map((month) => (
+                <span key={month}>{month}</span>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -677,8 +685,7 @@ function AddEmployeeSheet({
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [department, setDepartment] = React.useState("Engineering");
-  const [startDate, setStartDate] = React.useState<Date | undefined>();
-  const [dateOpen, setDateOpen] = React.useState(false);
+  const [startDate, setStartDate] = React.useState<CalendarDate | null>(null);
   const [error, setError] = React.useState<string>();
 
   const submit = () => {
@@ -699,7 +706,7 @@ function AddEmployeeSheet({
     onOpenChange(false);
     setName("");
     setEmail("");
-    setStartDate(undefined);
+    setStartDate(null);
   };
 
   return (
@@ -713,7 +720,7 @@ function AddEmployeeSheet({
     >
       <FormGrid>
         <FormField label="Full name" htmlFor="new-employee-name" required error={error}>
-          <Input
+          <InputBase
             id="new-employee-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -725,7 +732,7 @@ function AddEmployeeSheet({
           htmlFor="new-employee-email"
           help="They'll receive the onboarding invite here."
         >
-          <Input
+          <InputBase
             id="new-employee-email"
             type="email"
             value={email}
@@ -735,34 +742,25 @@ function AddEmployeeSheet({
         </FormField>
         <FormGrid columns={2}>
           <FormField label="Department">
-            <Select value={department} onValueChange={setDepartment}>
-              <SelectTrigger className="w-full" aria-label="Department">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Engineering">Engineering</SelectItem>
-                <SelectItem value="Design">Design</SelectItem>
-                <SelectItem value="People">People</SelectItem>
-                <SelectItem value="Sales">Sales</SelectItem>
-              </SelectContent>
+            <Select
+              aria-label="Department"
+              selectedKey={department}
+              onSelectionChange={(k) => setDepartment(String(k))}
+              className="w-full"
+            >
+              <SelectItem id="Engineering" textValue="Engineering">Engineering</SelectItem>
+              <SelectItem id="Design" textValue="Design">Design</SelectItem>
+              <SelectItem id="People" textValue="People">People</SelectItem>
+              <SelectItem id="Sales" textValue="Sales">Sales</SelectItem>
             </Select>
           </FormField>
           <FormField label="Start date">
-            <DatePicker open={dateOpen} onOpenChange={setDateOpen}>
-              <DatePickerTrigger asChild>
-                <DatePickerButton date={startDate} className="w-full" />
-              </DatePickerTrigger>
-              <DatePickerContent>
-                <DatePickerCalendar
-                  mode="single"
-                  selected={startDate}
-                  onSelect={(d: Date | undefined) => {
-                    setStartDate(d);
-                    setDateOpen(false);
-                  }}
-                />
-              </DatePickerContent>
-            </DatePicker>
+            <DatePicker
+              aria-label="Start date"
+              value={startDate}
+              onChange={setStartDate}
+              className="w-full"
+            />
           </FormField>
         </FormGrid>
       </FormGrid>
@@ -821,9 +819,9 @@ function MemberDetailSheet({
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
-                <Badge variant={workload.variant}>{workload.label} workload</Badge>
-                <Badge variant="outline">{member.department}</Badge>
-                <Badge variant="secondary">Full-time</Badge>
+                <Chip variant="caption" color={workload.color}>{workload.label} workload</Chip>
+                <Chip variant="caption" color="soft">{member.department}</Chip>
+                <Chip variant="caption" color="gray">Full-time</Chip>
               </div>
             </SheetHeader>
 
@@ -849,10 +847,10 @@ function MemberDetailSheet({
                 action={
                   <Button
                     variant="ghost"
-                    size="sm"
+                    size="small"
+                    leadingIcon={PencilIcon}
                     onClick={() => onAction?.("edit", member)}
                   >
-                    <PencilIcon />
                     Edit
                   </Button>
                 }
@@ -924,18 +922,26 @@ function MemberDetailSheet({
             <SheetFooter className="flex-row justify-end gap-2 border-t border-border">
               <Button
                 variant="ghost"
+                size="small"
+                leadingIcon={UserMinusIcon}
                 className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => onAction?.("offboard", member)}
               >
-                <UserMinusIcon />
                 Offboard
               </Button>
-              <Button variant="outline" onClick={() => onAction?.("export", member)}>
-                <DownloadIcon />
+              <Button
+                variant="secondary"
+                size="small"
+                leadingIcon={DownloadIcon}
+                onClick={() => onAction?.("export", member)}
+              >
                 Export
               </Button>
-              <Button onClick={() => onAction?.("edit", member)}>
-                <PencilIcon />
+              <Button
+                size="small"
+                leadingIcon={PencilIcon}
+                onClick={() => onAction?.("edit", member)}
+              >
                 Edit assignments
               </Button>
             </SheetFooter>

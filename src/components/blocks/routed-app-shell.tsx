@@ -5,6 +5,7 @@ import {
   AppShell,
   type AppShellNavGroup,
 } from "@/components/blocks/app-shell";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * RoutedAppShell — AppShell pre-wired to react-router. **The default frame
@@ -77,7 +78,20 @@ function RoutedAppShell({
       onNavigate={(id) => navigate(id)}
       {...appShellProps}
     >
-      <Outlet />
+      {/* Boundary INSIDE the shell: while a lazy page chunk loads, the
+          sidebar + content card stay mounted and only the page area shows a
+          spinner. Without this, the suspend bubbles to the route-level
+          `Suspense fallback={null}` and the ENTIRE app goes blank — which
+          reads as "this page is slow/broken" on every first visit. */}
+      <React.Suspense
+        fallback={
+          <div className="flex flex-1 items-center justify-center py-24">
+            <Spinner className="text-muted-foreground" />
+          </div>
+        }
+      >
+        <Outlet />
+      </React.Suspense>
       {children}
     </AppShell>
   );

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ui-button",
+  "type": "registry:ui",
+  "title": "ui button",
+  "description": "Timbal blueprint ui: ui-button. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "secondary-chrome"
+  ],
+  "files": [
+    {
+      "path": "components/ui/button.tsx",
+      "content": "import * as React from \"react\";\nimport { Slot } from \"@radix-ui/react-slot\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nimport {\n  SECONDARY_CHROME,\n  SECONDARY_DISABLED,\n} from \"@/components/base/buttons/secondary-chrome\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * LEGACY shadcn-shaped Button — kept only for the remaining shadcn-shaped\n * consumers (`ui/alert-dialog`, `ui/carousel`). Its chrome is mapped 1:1 to\n * the BoardUI `base/buttons/button` tiers so both button systems render\n * identically; for new work import `@/components/base/buttons/button`.\n */\n\n/** Soft two-layer drop shared by the filled tiers (matches base Button). */\nconst FILLED_SHADOW =\n  \"shadow-[0_1px_2px_0_rgb(0_0_0/0.14),0_2px_4px_-2px_rgb(0_0_0/0.10)]\";\n\nconst buttonVariants = cva(\n  \"inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2lg text-body-medium transition-[color,background-color,border-color,box-shadow] duration-150 ease outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring disabled:pointer-events-none aria-disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0\",\n  {\n    variants: {\n      variant: {\n        default: cn(\n          \"bg-button-primary text-foreground-full\",\n          FILLED_SHADOW,\n          \"disabled:text-foreground-disabled disabled:shadow-none aria-disabled:text-foreground-disabled aria-disabled:shadow-none\",\n        ),\n        secondary: cn(\n          \"text-text-primary\",\n          SECONDARY_CHROME,\n          SECONDARY_DISABLED,\n          \"disabled:text-text-tertiary aria-disabled:text-text-tertiary\",\n        ),\n        outline: cn(\n          \"text-text-primary\",\n          SECONDARY_CHROME,\n          SECONDARY_DISABLED,\n          \"disabled:text-text-tertiary aria-disabled:text-text-tertiary\",\n        ),\n        ghost: cn(\n          \"bg-transparent text-text-secondary\",\n          \"hover:bg-background-primary-hover hover:text-text-primary\",\n          \"active:bg-background-primary-active\",\n          \"disabled:text-text-disabled aria-disabled:text-text-disabled\",\n        ),\n        destructive: cn(\n          \"bg-button-danger text-foreground-full\",\n          FILLED_SHADOW,\n          \"disabled:text-foreground-disabled-danger disabled:shadow-none aria-disabled:text-foreground-disabled-danger aria-disabled:shadow-none\",\n        ),\n        link: \"text-text-primary underline-offset-4 hover:underline disabled:text-text-disabled aria-disabled:text-text-disabled\",\n      },\n      size: {\n        default: \"h-9 px-3\",\n        sm: \"h-8 rounded-lg px-2.5\",\n        lg: \"h-10 px-4\",\n        icon: \"size-9\",\n        \"icon-sm\": \"size-8 rounded-lg\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n);\n\nfunction Button({\n  className,\n  variant,\n  size,\n  asChild = false,\n  ...props\n}: React.ComponentProps<\"button\"> &\n  VariantProps<typeof buttonVariants> & {\n    asChild?: boolean;\n  }) {\n  const Comp = asChild ? Slot : \"button\";\n  return (\n    <Comp\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  );\n}\n\nexport { Button, buttonVariants };\n",
+      "type": "registry:ui",
+      "target": "src/components/ui/button.tsx"
+    }
+  ]
+}

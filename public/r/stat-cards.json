@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat-cards",
+  "type": "registry:block",
+  "title": "stat cards",
+  "description": "Timbal blueprint block: stat-cards. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@remixicon/react"
+  ],
+  "registryDependencies": [
+    "chip",
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/application/dashboard/stat-cards.tsx",
+      "content": "import type { ComponentType } from \"react\";\nimport {\n  RiBox3Line,\n  RiChatSmile2Line,\n  RiGroupLine,\n  RiShoppingBasketLine,\n} from \"@remixicon/react\";\nimport { Chip } from \"@/components/base/badges/chip\";\nimport { cx } from \"@/utils/cx\";\n\n/**\n * Figma source: Board UI → dashboard 1 → Frame 20 (node 3731:3160).\n *\n * Four KPI cards: white icon tile, label, value, delta chip.\n */\n\ntype IconComponent = ComponentType<{\n  className?: string;\n  \"aria-hidden\"?: boolean | \"true\" | \"false\";\n}>;\n\ntype Stat = {\n  icon: IconComponent;\n  label: string;\n  value: string;\n  delta: string;\n  deltaColor: \"lime\" | \"rose\" | \"neutral\";\n};\n\nconst stats: Stat[] = [\n  { icon: RiGroupLine, label: \"Customers\", value: \"14,592\", delta: \"+5.3%\", deltaColor: \"lime\" },\n  { icon: RiBox3Line, label: \"Unit sold\", value: \"385\", delta: \"-2.1%\", deltaColor: \"rose\" },\n  { icon: RiShoppingBasketLine, label: \"Orders\", value: \"1,394\", delta: \"0.00%\", deltaColor: \"neutral\" },\n  { icon: RiChatSmile2Line, label: \"Support tickets\", value: \"708\", delta: \"+12.8%\", deltaColor: \"lime\" },\n];\n\nexport function StatCards({\n  count = stats.length,\n  className,\n}: {\n  /** How many KPI cards to render (from the start of the list). */\n  count?: number;\n  className?: string;\n} = {}) {\n  return (\n    <div className={cx(\"grid w-full grid-cols-2 gap-4 lg:grid-cols-4\", className)}>\n      {stats.slice(0, count).map((stat) => (\n        <section\n          key={stat.label}\n          className=\"flex h-[132px] min-w-0 flex-col items-start justify-between rounded-2xl bg-background-secondary-default p-4\"\n        >\n          <span className=\"flex items-center rounded-md bg-foreground-full p-1.5\">\n            <stat.icon className=\"size-5 shrink-0 text-foreground-icon-primary\" aria-hidden />\n          </span>\n          <div className=\"flex w-full flex-col gap-0.5\">\n            <p className=\"w-full text-body-medium text-text-secondary\">{stat.label}</p>\n            <div className=\"flex w-full flex-wrap items-center gap-2\">\n              <p className=\"text-title-1-medium whitespace-nowrap text-text-primary\">\n                {stat.value}\n              </p>\n              <Chip variant=\"bold\" color={stat.deltaColor}>\n                {stat.delta}\n              </Chip>\n            </div>\n          </div>\n        </section>\n      ))}\n    </div>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/application/dashboard/stat-cards.tsx"
+    }
+  ]
+}

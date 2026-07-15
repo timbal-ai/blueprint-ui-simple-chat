@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-page",
+  "type": "registry:block",
+  "title": "calendar page",
+  "description": "Timbal blueprint block: calendar-page. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@internationalized/date"
+  ],
+  "registryDependencies": [
+    "calendar-data",
+    "calendar-header",
+    "calendar-month-grid",
+    "page-body"
+  ],
+  "files": [
+    {
+      "path": "components/pages/calendar-page.tsx",
+      "content": "import { useMemo, useState } from \"react\";\nimport type { CalendarDate } from \"@internationalized/date\";\nimport { getLocalTimeZone, startOfMonth } from \"@internationalized/date\";\n\nimport { PageBody } from \"@/components/blocks/page-body\";\nimport { CalendarHeader } from \"@/components/application/calendar/calendar-header\";\nimport { CALENDAR_SHOWCASE_MONTH } from \"@/components/application/calendar/calendar-data\";\nimport { CalendarMonthGrid } from \"@/components/application/calendar/calendar-month-grid\";\n\n/**\n * CalendarPage — the BoardUI Pro \"Calendar\" template (Figma node\n * 3905:9119), rehosted on the house shell grammar (the Pro template's own\n * sidebar chrome is dropped — mount as a route inside `RoutedAppShell`).\n *\n * `CalendarHeader` is kept (it is functional chrome, not brand chrome):\n * month title, notification bell, inbox feed menu, the in-place month\n * switcher (prev/next + expanding month panel), and the \"New event\"\n * primary action. Below it, the month grid card — event chips open the\n * anchored `EventDetailsModal` popover; picking a date in the switcher\n * pulses that day in the grid.\n *\n * Fork this for scheduling, bookings, or content-calendar screens; feed\n * real events through `calendar-data.ts`'s shapes.\n */\nexport function CalendarPage({\n  onNewEvent,\n}: {\n  onNewEvent?: () => void;\n} = {}) {\n  const [month, setMonth] = useState(CALENDAR_SHOWCASE_MONTH);\n  // Transient — pulses on the picked day in the main grid, then fades out\n  // on its own (see CalendarMonthGrid's onHighlightEnd).\n  const [highlightedDate, setHighlightedDate] = useState<CalendarDate | null>(null);\n\n  const monthLabel = useMemo(\n    () =>\n      new Intl.DateTimeFormat(undefined, { month: \"long\", year: \"numeric\" }).format(\n        month.toDate(getLocalTimeZone()),\n      ),\n    [month],\n  );\n\n  return (\n    <PageBody>\n      <CalendarHeader\n        month={month}\n        monthLabel={monthLabel}\n        showBreadcrumb={false}\n        onPrevMonth={() => setMonth((m) => m.subtract({ months: 1 }))}\n        onNextMonth={() => setMonth((m) => m.add({ months: 1 }))}\n        onSelectDate={(date) => {\n          setMonth(startOfMonth(date));\n          setHighlightedDate(date);\n        }}\n        onNewEvent={onNewEvent}\n      />\n      <div className=\"w-full rounded-3xl bg-background-secondary-default p-3\">\n        <CalendarMonthGrid\n          month={month}\n          highlightedDate={highlightedDate}\n          onHighlightEnd={() => setHighlightedDate(null)}\n        />\n      </div>\n    </PageBody>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/pages/calendar-page.tsx"
+    }
+  ]
+}

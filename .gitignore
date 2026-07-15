@@ -35,3 +35,6 @@ dist-ssr
 
 # Local-only dev pages (mounted at /dev when present; never committed)
 src/pages/dev/
+
+# Screenshot smoke output (CI uploads these as artifacts; never committed)
+screenshots/

@@ -1,17 +1,20 @@
 import { useLocation } from "react-router-dom";
 import { TimbalMark } from "@timbal-ai/timbal-react/studio";
 import {
+  ActivityIcon,
   BarChart3Icon,
   BoxesIcon,
+  CalendarIcon,
   ChatBotIcon,
   CreditCardIcon,
   GlobeIcon,
-  HeartPulseIcon,
+  HomeIcon,
   ImagesIcon,
   FileTextIcon,
   ReceiptIcon,
+  SparklesIcon,
   TextCursorInputIcon,
-  WalletIcon,
+  UserIcon,
 } from "@/components/icons";
 
 import { RoutedAppShell } from "@/components/blocks/routed-app-shell";
@@ -60,11 +63,21 @@ export default function GalleryShell() {
             { id: "/gallery/blocks", label: "Dashboard", icon: BoxesIcon },
             { id: "/gallery/pages/customer", label: "Customer", icon: CreditCardIcon },
             { id: "/gallery/pages/workspace", label: "Workspace", icon: GlobeIcon },
-            { id: "/gallery/pages/health", label: "Health", icon: HeartPulseIcon },
-            { id: "/gallery/pages/earnings", label: "Earnings", icon: WalletIcon },
             { id: "/gallery/pages/media", label: "Media", icon: ImagesIcon },
             // EmbeddedChat reference — full-bleed on the content card, no title.
             { id: "/gallery/chat", label: "Assistant", icon: ChatBotIcon },
+          ],
+        },
+        {
+          // BoardUI Pro templates, rehosted on the house shell grammar.
+          label: "Pro templates",
+          items: [
+            { id: "/gallery/pages/home", label: "Home", icon: HomeIcon },
+            { id: "/gallery/pages/medical", label: "Medical", icon: ActivityIcon },
+            { id: "/gallery/pages/ai-profile", label: "AI profile", icon: UserIcon },
+            { id: "/gallery/pages/calendar", label: "Calendar", icon: CalendarIcon },
+            // Full-viewport visual reference — leaves the gallery shell.
+            { id: "/gallery/templates/ai-chat", label: "AI chat (mock)", icon: SparklesIcon },
           ],
         },
         {

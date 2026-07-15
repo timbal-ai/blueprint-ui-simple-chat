@@ -9,8 +9,17 @@
  *   1. This file — match INTENT_INDEX / DO_NOT_BUILD
  *   2. PAGES_CATALOG — fork the closest full-page template
  *   3. BLOCKS_CATALOG — import blocks for anything the page doesn't cover
- *   4. src/components/ui/* — primitives for gaps only
+ *   4. Primitives for gaps only — BoardUI first (src/components/base/*:
+ *      button, input, select, checkbox, radio, switch, tabs, tooltip,
+ *      avatar, chip/badge, dropdown, table, breadcrumb, pagination,
+ *      date-picker, kbd, segmented-control), then src/components/ui/* for
+ *      what BoardUI lacks (dialog, sheet, drawer, popover, command, card,
+ *      form, charts, …)
  *   5. Raw HTML — last resort
+ *
+ * Design system: BoardUI (boardui.com) since 2026-07-14 — see
+ * src/design/DESIGN.md. BoardUI source is project-owned under
+ * src/components/base|application|foundations.
  *
  * Live gallery (VITE_GALLERY): GALLERY_CATALOG in src/pages/gallery/catalog.ts
  */
@@ -134,33 +143,81 @@ const INTENT_INDEX: IntentMatch[] = [
   },
   {
     triggers: [
+      "home dashboard",
+      "welcome dashboard",
+      "boardui dashboard",
+      "customers table",
+      "recent hires",
+      "revenue trend",
+      "earnings",
+      "earnings chart",
+      "revenue analytics",
+      "payouts",
+      "creator dashboard",
+      "usage over time",
+      "contribution heatmap",
+      "KPI stat cards",
+    ],
+    kind: "page",
+    target: "home-dashboard-page",
+    importFrom: "@/components/pages/home-dashboard-page",
+    exports: ["HomeDashboardPage"],
+    insteadOf: "Hand-assembled chart cards + a custom table for a BoardUI-native overview",
+  },
+  {
+    triggers: [
+      "medical profile",
+      "patient report",
+      "patient dashboard",
+      "health report",
       "health dashboard",
       "fitness",
       "activity rings",
       "steps chart",
       "wellness metrics",
       "consumer metrics",
+      "sleep score",
+      "steps card",
+      "most active days",
+      "clinic",
     ],
     kind: "page",
-    target: "health-dashboard-page",
-    importFrom: "@/components/pages/health-dashboard-page",
-    exports: ["HealthDashboardPage"],
-    insteadOf: "Hand-rolled SVG rings + bar chart + calendar grid",
+    target: "medical-profile-page",
+    importFrom: "@/components/pages/medical-profile-page",
+    exports: ["MedicalProfilePage"],
+    insteadOf: "Hand-rolled rings/bars health cards — the Pro medical kit is already wired",
   },
   {
     triggers: [
-      "earnings",
-      "revenue analytics",
-      "payouts",
-      "creator dashboard",
-      "usage over time",
-      "contribution heatmap",
+      "profile page",
+      "user profile",
+      "member profile",
+      "contributor profile",
+      "agent profile",
+      "profile with charts",
+      "cover card",
     ],
     kind: "page",
-    target: "earnings-page",
-    importFrom: "@/components/pages/earnings-page",
-    exports: ["EarningsPage"],
-    insteadOf: "Trend div + heatmap div + range tabs wired manually",
+    target: "ai-profile-page",
+    importFrom: "@/components/pages/ai-profile-page",
+    exports: ["AiProfilePage"],
+    insteadOf: "Custom cover + avatar + stats column built from Card primitives",
+  },
+  {
+    triggers: [
+      "calendar",
+      "month view",
+      "events calendar",
+      "scheduling",
+      "bookings",
+      "event details",
+      "agenda",
+    ],
+    kind: "page",
+    target: "calendar-page",
+    importFrom: "@/components/pages/calendar-page",
+    exports: ["CalendarPage"],
+    insteadOf: "Hand-rolled month grid + event chips + a centered modal for event details",
   },
   {
     triggers: [
@@ -190,6 +247,23 @@ const INTENT_INDEX: IntentMatch[] = [
     importFrom: "@/components/blocks/settings-page",
     exports: ["SettingsStack", "SettingsSection", "SettingsRow", "DangerZone"],
     insteadOf: "Stack of Card + flex rows + Switch for every settings screen",
+  },
+  {
+    triggers: [
+      "settings modal",
+      "settings dialog",
+      "preferences modal",
+      "settings popup",
+      "settings with sidebar",
+      "plan and billing modal",
+      "app settings overlay",
+    ],
+    kind: "block",
+    target: "settings-dialog",
+    importFrom: "@/components/blocks/settings-dialog",
+    exports: ["SettingsDialog", "SettingsDialogGroup", "SettingsDialogRow", "SettingsPlanCard"],
+    insteadOf:
+      "Dialog + hand-rolled two-pane layout with nav buttons and gray setting rows",
   },
 
   // ── Blocks (when no page fits, or inside a forked page) ──────────────
@@ -303,10 +377,10 @@ const INTENT_INDEX: IntentMatch[] = [
       "area chart KPI",
     ],
     kind: "block",
-    target: "metric-trend-card",
-    importFrom: "@/components/blocks/metric-trend-card",
-    exports: ["MetricTrendCard"],
-    insteadOf: "Card + Recharts AreaChart wired by hand",
+    target: "pro-dashboard-cards",
+    importFrom: "@/components/application/dashboard/revenue-trend-card",
+    exports: ["RevenueTrendCard"],
+    insteadOf: "Card + Recharts AreaChart wired by hand — pass title/periods/formatValue props",
   },
   {
     triggers: [
@@ -317,10 +391,10 @@ const INTENT_INDEX: IntentMatch[] = [
       "assignee list",
     ],
     kind: "block",
-    target: "roster-card",
-    importFrom: "@/components/blocks/roster-card",
-    exports: ["RosterCard"],
-    insteadOf: "Grid of avatar + name divs",
+    target: "pro-dashboard-cards",
+    importFrom: "@/components/application/dashboard/recent-hires-card",
+    exports: ["RecentHiresCard"],
+    insteadOf: "Grid of avatar + name divs — pass title/count/people props",
   },
   {
     triggers: [
@@ -359,10 +433,22 @@ const INTENT_INDEX: IntentMatch[] = [
       "ring calendar",
     ],
     kind: "block",
+    target: "pro-medical-cards",
+    importFrom: "@/components/application/medical (one file per card) + application/dashboard/contributions-card",
+    exports: ["StepsCard", "SleepScoreCard", "ActivityRingsCard", "MostActiveDaysCard", "ContributionsGrid"],
+    insteadOf: "Hand-rolled SVG arcs or custom heatmap divs — the BoardUI Pro cards are the only implementations",
+  },
+  {
+    triggers: [
+      "status breakdown legend",
+      "metric legend",
+      "big number legend rows",
+    ],
+    kind: "block",
     target: "interactive-charts",
     importFrom: "@/components/blocks/interactive-charts",
-    exports: ["TrackedBarChart", "ActivityRings", "SegmentedScoreRing", "ContributionHeatmap"],
-    insteadOf: "Hand-rolled SVG arcs or custom heatmap divs",
+    exports: ["MetricLegendList"],
+    insteadOf: "Hand-rolled legend rows under a chart",
   },
   {
     triggers: ["PDF viewer", "embed PDF", "document viewer", "invoice PDF"],
@@ -478,6 +564,16 @@ const INTENT_INDEX: IntentMatch[] = [
 /** Hard bans — if you catch yourself doing the left column, use the right. */
 const DO_NOT_BUILD: { wrong: string; use: string; importFrom: string }[] = [
   {
+    wrong: "Hand-rolled month calendar grid / event popover",
+    use: "CalendarPage (Pro calendar kit)",
+    importFrom: "@/components/pages/calendar-page",
+  },
+  {
+    wrong: "Chat UI forked from the ai-chat template mock",
+    use: "TimbalChatShell / EmbeddedChat (template is chrome reference only)",
+    importFrom: "@/components/blocks/embedded-chat",
+  },
+  {
     wrong: "useState-switched pages in one component",
     use: "RoutedAppShell + one Route per page",
     importFrom: "@/components/blocks/routed-app-shell",
@@ -514,8 +610,18 @@ const DO_NOT_BUILD: { wrong: string; use: string; importFrom: string }[] = [
   },
   {
     wrong: "Hand-rolled SVG gauge / ring score",
-    use: "ScoreGauge or SegmentedScoreRing",
+    use: "ScoreGauge (semicircle) or SleepScoreCard (full segmented ring card)",
     importFrom: "@/components/app/score-gauge",
+  },
+  {
+    wrong: "Dialog + hand-rolled two-pane settings layout (nav buttons + rows)",
+    use: "SettingsDialog (grouped rail nav + SettingsDialogRow/Group panes)",
+    importFrom: "@/components/blocks/settings-dialog",
+  },
+  {
+    wrong: "Rebuilding trend/roster/rings/heatmap cards from primitives",
+    use: "The BoardUI Pro cards — the ONLY implementations of these patterns",
+    importFrom: "@/components/application/dashboard + @/components/application/medical",
   },
 ];
 

@@ -7,11 +7,9 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        // Beacon reference (2026-07): plain neutral fill (NO gradient), big
-        // soft corners, and a quiet two-layer shadow — the card reads as a
-        // calm rounded slab, texture lives on the controls instead.
-        "flex flex-col gap-6 rounded-2xl border border-border bg-card py-6 text-card-foreground",
-        "shadow-[0_1px_2px_0_color-mix(in_srgb,black_3%,transparent),0_3px_8px_-4px_color-mix(in_srgb,black_4%,transparent)]",
+        // BoardUI card surface: flat white, neutral-200 hairline, the kit's
+        // single soft `shadow-card` drop, generous corners.
+        "flex flex-col gap-6 rounded-2xl border border-border-button-default bg-card py-6 text-card-foreground shadow-card",
         className,
       )}
       {...props}

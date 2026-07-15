@@ -49,12 +49,12 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     importFrom: "@/components/blocks/app-shell",
     exports: ["AppShell"],
     purpose:
-      "Canonical application frame: sidebar nav (groups, icons, badges, nested sub-items, footer) + content. Default variant='inset' is the signature look — gray canvas, content as a flat white bordered card. Applies PAGE_INSET (px-4 sm:px-6 lg:px-8 + top/bottom breathing room) on the content region by default — pages inside must NOT duplicate px-/py- on their root (use PageBody for gap only). Also has an optional sticky topbar and a dock slot for floating chrome. For multi-page apps prefer RoutedAppShell (blocks/routed-app-shell), which wires this to the router.",
+      "Canonical application frame on the BoardUI sidebar grammar: a floating rounded sidebar panel (white hairline border, sidebar-elevation shadow, 260px ↔ 60px morphing collapse, primary-gradient selected row, Badge counters) beside a white rounded content card on the gray canvas. Sidebar nav supports groups, icons, badges, nested sub-items, and a footer slot; mobile gets an in-flow brand bar + sheet drawer (nav taps auto-close) and a plain white content surface. Applies PAGE_INSET (px-4 sm:px-6 lg:px-8 + top/bottom breathing room) on the content region by default — pages inside must NOT duplicate px-/py- on their root (use PageBody for gap only). Also has an optional sticky topbar and a dock slot for floating chrome. For multi-page apps prefer RoutedAppShell (blocks/routed-app-shell), which wires this to the router.",
     useWhen: [
       "A single-screen embed or a shell you wire to navigation yourself — multi-page apps use RoutedAppShell",
       "You need a sidebar, nested nav tree, topbar, or a docked AI pill",
     ],
-    composes: ["ui/sidebar", "ui/separator", "ui/badge"],
+    composes: ["base/badges/badge", "ui/sheet", "hooks/use-mobile"],
   },
   "list-detail": {
     importFrom: "@/components/blocks/list-detail",
@@ -100,18 +100,34 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "AP automation / OCR validation flows paired with DocumentReviewLayout",
       "Any review pane that needs field-level confidence + editable entries",
     ],
-    composes: ["ui/input", "ui/select", "ui/progress", "ui/button"],
+    composes: ["base/input", "base/select", "ui/progress", "base/buttons/button"],
   },
   "filtered-table": {
     importFrom: "@/components/blocks/filtered-table",
-    exports: ["FilteredTable", "IconCell", "AvatarChipCell", "AvatarChip"],
+    exports: [
+      "FilteredTable",
+      "DataTable",
+      "DataTableColumnHeader",
+      "selectionColumn",
+      "IconCell",
+      "AvatarChipCell",
+      "AvatarChip",
+    ],
     purpose:
-      "Search + faceted Select filters + DataTable wired together, with a wrapping toolbar, clear-filters affordance, and a toolbarEnd slot for the primary action. Columns are drag-to-reorder and edge-resizable by default (built into DataTable — never rebuild). Supports row selection (pair with selectionColumn from ui/data-table), numbered pagination with a 'Showing X to Y of Z' summary, and cell helpers: IconCell (muted icon + value), AvatarChipCell (colored initial tile + name), and AvatarChip (standalone identity tile, sm/lg).",
+      "Search + faceted filters + data table wired together on the BoardUI table grammar: TanStack drives sorting/filtering/pagination/selection, rendered through the React Aria Table primitive (.bui-table — neutral header band, bordered rows), BoardUI Selects as facet triggers, the rounded-full secondary search field, and the BoardUI numbered Pagination footer with a 'Showing X to Y of Z' summary. Supports row selection (pair with selectionColumn, exported here) and cell helpers: IconCell (muted icon + value), AvatarChipCell (colored initial tile + name), and AvatarChip (standalone identity tile, sm/lg).",
     useWhen: [
       "Any table that needs search or filters — do not hand-roll a toolbar",
       "Entity index pages (invoices, users, orders)",
     ],
-    composes: ["ui/data-table", "ui/input", "ui/select", "ui/button", "ui/checkbox"],
+    composes: [
+      "base/table",
+      "base/select",
+      "base/input",
+      "base/buttons/button",
+      "base/checkbox",
+      "base/pagination",
+      "ui/popover",
+    ],
   },
   "score-gauge": {
     importFrom: "@/components/app/score-gauge",
@@ -176,13 +192,24 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["ui/sheet", "ui/label", "ui/button", "ui/scroll-area"],
   },
+  "settings-dialog": {
+    importFrom: "@/components/blocks/settings-dialog",
+    exports: ["SettingsDialog", "SettingsDialogGroup", "SettingsDialogRow", "SettingsPlanCard"],
+    purpose:
+      "Two-pane settings MODAL (Cursor/Linear style): grouped section nav on a gray left rail, white content pane that swaps per section. Panes compose from SettingsDialogGroup (labelled cluster), SettingsDialogRow (gray row — title/description left, ONE base/* control right), SettingsPlanCard (current-plan banner with artwork slot). Rail collapses to a horizontal pill row on mobile. Data-driven: pass nav `groups` with per-section `content`.",
+    useWhen: [
+      "Settings/preferences that open OVER the app (shortcut, avatar menu) instead of navigating away",
+      "Multi-section preference panels — general, profile, appearance, billing, notifications",
+    ],
+    composes: ["ui/dialog", "base/buttons/close-button", "base/switch", "base/select"],
+  },
   "settings-page": {
     importFrom: "@/components/blocks/settings-page",
     exports: ["SettingsStack", "SettingsSection", "SettingsRow", "DangerZone"],
     purpose:
-      "Settings scaffolding: one card per topic, label-left/control-right rows that stack on mobile, and a quarantined danger zone.",
+      "Settings scaffolding for a full PAGE (own route): one card per topic, label-left/control-right rows that stack on mobile, and a quarantined danger zone. For settings that open over the app as a modal, use settings-dialog instead.",
     useWhen: [
-      "Preferences, account, workspace, or notification settings screens",
+      "Preferences, account, workspace, or notification settings screens with their own route",
       "Any list of toggles/selects paired with descriptions",
     ],
     composes: ["ui/card"],
@@ -222,25 +249,14 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
   },
   "interactive-charts": {
     importFrom: "@/components/blocks/interactive-charts",
-    exports: [
-      "TrackedBarChart",
-      "MetricLegendList",
-      "ActivityRings",
-      "SegmentedScoreRing",
-      "ScoreBreakdownList",
-      "ContributionHeatmap",
-      "RingCalendar",
-      "ChartPeriodPager",
-      "ChartRangeTabs",
-    ],
+    exports: ["MetricLegendList"],
     purpose:
-      "The consumer-grade interactive chart kit (Beacon / Apple-Health grammar) — NOT Recharts: TrackedBarChart (gradient capped bars with an inset top sheen rising in tone-tinted ghost tracks; per-datum `track` renders value-vs-total headroom; click-to-select drives a headline readout), MetricLegendList (the legend under a chart: gradient tone pill + label + count, BIG number with muted caption, trailing View action, two muted column headers), ActivityRings (concentric progress rings), SegmentedScoreRing + ScoreBreakdownList (score ring with airy colored segments + labeled rows), ContributionHeatmap (GitHub-style intensity grid with per-cell tooltips), RingCalendar (month grid of mini rings), plus the chrome: ChartPeriodPager (‹ 29 Jun – 5 Jul ›) and ChartRangeTabs (Weekly/Monthly/Yearly). Everything animates by default: bars cascade up on mount and ripple when a range swap changes the data, rings/segments draw in clockwise (staggered), bars lift + deepen and heatmap cells pop on hover — no extra props needed. All colors flow through the ChartTone scale from lib/chart-tone (`chartToneVar` — --chart-1..8 + status tones).",
+      "MetricLegendList — the Beacon-style legend under a chart: hairline-separated status rows with a gradient tone pill, label + count, a BIG number with muted caption, and a trailing action (View), under two muted column headers. This is the ONLY surviving piece of the old house interactive kit — tracked bars, rings, score rings, ring calendar, heatmap, trend card, roster card, and the period pager were all retired in favor of the BoardUI Pro cards (see the pro-dashboard-cards / pro-medical-cards entries below).",
     useWhen: [
-      "Personal-metrics / wellbeing / usage dashboards where the plot IS the product",
-      "Selectable bar charts that drive a big-number headline; rings, score breakdowns, heatmaps",
-      "NOT for classic analytics plots — those stay on blocks/chart-demos (Recharts)",
+      "A labeled per-status breakdown under any chart",
+      "NOT for bars/rings/heatmaps — those are the BoardUI Pro cards in src/components/application",
     ],
-    composes: ["ui/tooltip", "lib/control-surface", "lib/chart-tone"],
+    composes: ["lib/chart-tone"],
   },
   "pdf-viewer": {
     importFrom: "@/components/blocks/pdf-viewer",
@@ -251,29 +267,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "Document-centric screens (contracts, reports, invoices as files)",
       "Click-to-preview flows — mount inside Sheet size='xl'|'full' or a side DrawerContent size='xl'",
     ],
-    composes: ["ui/button", "ui/empty-state", "ui/separator"],
-  },
-  "metric-trend-card": {
-    importFrom: "@/components/blocks/metric-trend-card",
-    exports: ["MetricTrendCard"],
-    purpose:
-      "The 'Revenue $18,240 +9.4%' reference card: muted title over a big money number with a vivid delta badge, ChartRangeTabs on the right, and a smooth gradient-filled area chart underneath (Recharts, house grammar — no legend, no Y-axis numbers, ChartTooltipContent). Switching the range swaps the dataset and the line MORPHS to the new shape; headline + delta update with it. Tone flows through lib/chart-tone.",
-    useWhen: [
-      "One headline metric with a trend line and Weekly/Monthly/Yearly toggles",
-      "Revenue/usage/growth cards on dashboards — self-contained, just pass ranges",
-    ],
-    composes: ["blocks/interactive-charts ChartRangeTabs", "ui/chart", "ui/badge", "ui/card", "lib/chart-tone"],
-  },
-  "roster-card": {
-    importFrom: "@/components/blocks/roster-card",
-    exports: ["RosterCard"],
-    purpose:
-      "The 'Recent hires' reference card: soft gray tile with a muted label + big count headline and an `action` slot (team selector dropdown), a 2-up grid of white person tiles (avatar, name, muted meta, full-width role chip), and built-in Previous/Next pagination — page turns cascade the tiles in. `onSelectPerson` makes tiles clickable (hover lift). Generic beyond hires: on-call rotations, top contributors, assignees.",
-    useWhen: [
-      "A dashboard band showing people a few at a time (hires, on-call, attendees)",
-      "Any paged card of identity tiles — never hand-roll the avatar grid",
-    ],
-    composes: ["ui/avatar", "ui/button"],
+    composes: ["base/buttons/button", "ui/empty-state", "ui/separator"],
   },
   "media-card": {
     importFrom: "@/components/blocks/media-card",
@@ -284,7 +278,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "Photo/asset galleries, template or theme pickers, content catalogs with cover art",
       "Any card whose primary content is an image — never hand-roll <img> in a Card",
     ],
-    composes: ["ui/badge"],
+    composes: ["base/badges chip"],
   },
   "sidebar-user": {
     importFrom: "@/components/blocks/sidebar-user",
@@ -295,7 +289,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "Every AppShell should end with this in `footer` — never hand-roll the user row",
       "You need account actions reachable from the sidebar in any state",
     ],
-    composes: ["ui/avatar", "ui/dropdown-menu", "ui/sidebar"],
+    composes: ["base/avatar", "base/dropdown", "blocks/app-shell"],
   },
   "page-header": {
     importFrom: "@/components/blocks/page-header",
@@ -317,7 +311,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "Integration/marketplace/catalog screens",
       "Any collection of enableable resources shown as cards",
     ],
-    composes: ["ui/badge", "ui/switch"],
+    composes: ["base/badges chip", "base/switch"],
   },
   assistant: {
     importFrom: "@/components/blocks/assistant",
@@ -343,10 +337,9 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "blocks/filtered-table",
       "blocks/bulk-action-bar",
       "blocks/detail-panel",
-      "ui/data-table",
       "ui/sheet",
-      "ui/badge",
-      "ui/dropdown-menu",
+      "base/badges chip",
+      "base/dropdown",
     ],
   },
   "insights-dashboard-page": {
@@ -359,19 +352,18 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "DEMO_RECOMMENDATIONS",
     ],
     purpose:
-      "THE reference DASHBOARD template — domain-agnostic; fork for sales, ops, finance, product, support, inventory, or any command-center screen (demo data is HR-flavored only to exercise people blocks). Full composition: PageHeader with actions (outline Export + dark primary → create FormSheet), 3-up KPI band, MetricTrendCard + RosterCard band, RecommendationCard triage grid, charts band (composed ChartCard + donut), engagement band (SegmentedScoreRing + ContributionHeatmap), FilteredTable + detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
+      "THE reference DASHBOARD template — domain-agnostic; fork for sales, ops, finance, product, support, inventory, or any command-center screen (demo data is HR-flavored only to exercise people blocks). Full composition: PageHeader with actions (outline Export + dark primary → create FormSheet), 3-up KPI band, RevenueTrendCard + RecentHiresCard band (the BoardUI Pro cards, fed page data via props), RecommendationCard triage grid, charts band (composed ChartCard + donut), engagement band (SleepScoreCard as a generic score ring + ContributionsGrid heatmap), FilteredTable + detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
     useWhen: [
       "Building ANY dashboard/overview/analytics screen — start from this file (NOT HR-only)",
       "You need the canonical stats → trend/roster → recommendations → charts → table rhythm",
-      "A wired example of ANY dashboard block (trend card, roster, score ring, heatmap, RecommendationCard, FormSheet)",
+      "A wired example of feeding the BoardUI Pro cards custom data (trend periods, roster people, score metrics, heatmap counts)",
     ],
     composes: [
       "blocks/page-header",
       "blocks/stat-overview",
-      "blocks/metric-trend-card",
-      "blocks/roster-card",
+      "application/dashboard revenue-trend-card + recent-hires-card + contributions-card",
+      "application/medical sleep-score-card",
       "blocks/chart-demos",
-      "blocks/interactive-charts",
       "blocks/recommendation-card",
       "blocks/entity-form",
       "blocks/filtered-table",
@@ -379,10 +371,10 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "blocks/detail-panel",
       "ui/sheet",
       "ui/progress",
-      "ui/dropdown-menu",
-      "ui/select",
-      "ui/date-picker",
-      "ui/input",
+      "base/dropdown",
+      "base/select",
+      "base/date-picker",
+      "base/input",
     ],
   },
   "recommendation-card": {
@@ -394,7 +386,7 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "A triage feed of AI suggestions/alerts the user approves or dismisses",
       "Any card needing the title/summary/details/actions grammar",
     ],
-    composes: ["ui/card", "ui/badge", "ui/button"],
+    composes: ["ui/card", "base/badges chip", "base/buttons/button"],
   },
   "embedded-chat": {
     importFrom: "@/components/blocks/embedded-chat",
@@ -433,6 +425,88 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
       "NOT inside AppShell — a chat nav entry is EmbeddedChat; in-page AI is AssistantPill",
     ],
     composes: ["@timbal-ai/timbal-react TimbalChatShell"],
+  },
+
+  // ── BoardUI Pro cards (application/*) — purchased kit, project-owned ──
+  // Native BoardUI screen-level cards. Self-contained (demo data inside the
+  // file — fork and swap). Wired examples: pages/home-dashboard-page,
+  // pages/medical-profile-page, pages/ai-profile-page, pages/calendar-page.
+  "pro-dashboard-cards": {
+    importFrom: "@/components/application/dashboard/…(one file per card)",
+    exports: [
+      "RecentHiresCard",
+      "EarningsChartCard",
+      "RevenueTrendCard",
+      "ContributionsCard",
+      "ContributionsGrid",
+      "StatCards",
+      "CustomersTable",
+    ],
+    purpose:
+      "The BoardUI Pro dashboard card kit — THE canonical metric cards (the old house replicas MetricTrendCard/RosterCard/ContributionHeatmap were deleted in their favor): RecentHiresCard (2×2 people grid on the gray tile; props `title`/`count`/`people`/`action`, pages 4-up), EarningsChartCard (Recharts bars + count-up headline + period SegmentedControl + hover outline), RevenueTrendCard (gradient area/line + count-up + animated active dot; props `title`/`periods`/`formatValue` — key order becomes the tabs), ContributionsCard + ContributionsGrid (GitHub-style heat grid; grid accepts real `data` counts + `accent` family, tooltips per cell), StatCards (4-up KPI tiles with vivid delta Chips), CustomersTable (the native BoardUI data-table card: count header, facet Selects, search pill, selectable rows, numbered pagination). All props default to the Figma demo data — pass your own to wire real content (see insights-dashboard-page for a fully custom-data example).",
+    useWhen: [
+      "ANY trend/roster/heatmap/KPI band on a dashboard — these are the only implementations",
+      "Fork pages/home-dashboard-page for the full BoardUI-native overview",
+    ],
+    composes: ["base/badges/chip", "base/segmented-control", "hooks/use-count-up", "recharts"],
+  },
+  "pro-medical-cards": {
+    importFrom: "@/components/application/medical/…(one file per card)",
+    exports: [
+      "PatientInfoCard",
+      "StepsCard",
+      "SleepScoreCard",
+      "MostActiveDaysCard",
+      "ActivityRingsCard",
+      "ImportantAlertsCard",
+      "PatientsTable",
+      "WeekRangePill",
+    ],
+    purpose:
+      "The BoardUI Pro health/metrics card kit (330px cards) — THE canonical consumer-metrics visuals (the old house interactive-charts replicas were deleted in their favor): StepsCard (weekly bars + week switcher + count-up), SleepScoreCard (segmented score ring with hover-focused sub-scores + breakdown rows; props `title`/`headline`/`rangeLabel`/`metrics` make it a GENERIC score-ring card — see the engagement band on insights-dashboard-page), MostActiveDaysCard (continuous vertical month calendar with per-day mini rings — reports day clicks), ActivityRingsCard (Apple-Watch concentric rings + stat tiles — accepts the selected day), ImportantAlertsCard, PatientInfoCard, PatientsTable, WeekRangePill (the ‹ label › period pager). Shared demo dataset in medical/medical-data.ts. Wire MostActiveDaysCard.onSelectDay → ActivityRingsCard.selectedDay for the linked interaction.",
+    useWhen: [
+      "Health/wellbeing/habit verticals — fork pages/medical-profile-page first",
+      "ANY score ring, activity rings, ring calendar, or tracked-bar card — these are the only implementations",
+    ],
+    composes: ["base/date-picker/shared", "application/medical/week-range-pill", "recharts"],
+  },
+  "pro-calendar": {
+    importFrom: "@/components/application/calendar/…(one file per piece)",
+    exports: [
+      "CalendarHeader",
+      "CalendarMonthGrid",
+      "CalendarMonthSwitcher",
+      "CalendarInboxMenu",
+      "EventDetailsModal",
+    ],
+    purpose:
+      "The BoardUI Pro month calendar: CalendarMonthGrid (event chips per day; chip click opens the anchored EventDetailsModal popover — Meet row, time range, participants, reminders), CalendarHeader (month title, notifications, CalendarInboxMenu feed, in-place CalendarMonthSwitcher, New event action). Event shapes + demo month in calendar/calendar-data.ts. Wired example: pages/calendar-page (fork it — it owns the month/highlight state).",
+    useWhen: [
+      "Scheduling, bookings, editorial/content calendars — fork pages/calendar-page",
+      "NEVER hand-roll a month grid or event popover",
+    ],
+    composes: ["base/date-picker/shared MonthPanel", "@internationalized/date", "motion"],
+  },
+  "pro-ai-profile-cards": {
+    importFrom: "@/components/application/ai-profile/…(one file per card)",
+    exports: ["AiProfileCard", "AgentsChartCard", "TokensChartCard"],
+    purpose:
+      "The BoardUI Pro AI-profile kit: AiProfileCard (cover photo, avatar, follower stats, ContributionsGrid heat map), AgentsChartCard (30-day agents bar chart), TokensChartCard (tokens trend line). Demo data in ai-profile/ai-profile-data.ts; cover art at public/templates/ai-profile-cover.png. Wired example: pages/ai-profile-page (centered 680px column).",
+    useWhen: [
+      "Profile + activity-charts surfaces (member profile, agent detail, contributor page)",
+    ],
+    composes: ["application/dashboard/contributions-card", "hooks/use-count-up", "recharts"],
+  },
+  "pro-ai-chat-template": {
+    importFrom: "@/components/application/ai-chat/ai-chat-shell",
+    exports: ["AiChatShell"],
+    purpose:
+      "VISUAL REFERENCE ONLY — the BoardUI Pro AI chat template (sidebar, mock thread, composer with AddMenu/ModelMenu/effort slider, resizable prism-highlighted code panel). It owns the whole viewport (mounts at /gallery/templates/ai-chat, OUTSIDE the gallery shell). HARD RULE unchanged: real chat products stream through Timbal machinery (TimbalChatShell / EmbeddedChat / ChatScreen). Borrow CHROME from this template (composer controls, code panel, sidebar grammar) — never its mock message list.",
+    useWhen: [
+      "Borrowing composer/model-menu/code-panel chrome for a Timbal-powered chat surface",
+      "NOT for building a chat product — that is TimbalChatShell / EmbeddedChat",
+    ],
+    composes: ["application/ai-chat/*", "prism-react-renderer", "motion", "base/kbd"],
   },
 };
 

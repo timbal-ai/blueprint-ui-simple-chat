@@ -2,72 +2,64 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { SURFACE_BORDER, SURFACE_GRADE, SURFACE_SHADOW } from "@/lib/control-surface";
+import {
+  SECONDARY_CHROME,
+  SECONDARY_DISABLED,
+} from "@/components/base/buttons/secondary-chrome";
 import { cn } from "@/lib/utils";
 
 /**
- * Skeuomorphic chrome for filled controls: a bright top sheen that fades a
- * third of the way down + the reference recipe's single soft drop (X:0 Y:1
- * blur 2). All stops are keyword/`color-mix` based (never raw literals) so
- * the token system stays the single color source.
+ * LEGACY shadcn-shaped Button — kept only for the remaining shadcn-shaped
+ * consumers (`ui/alert-dialog`, `ui/carousel`). Its chrome is mapped 1:1 to
+ * the BoardUI `base/buttons/button` tiers so both button systems render
+ * identically; for new work import `@/components/base/buttons/button`.
  */
-const FILLED_CHROME =
-  "shadow-[inset_0_1px_0_0_color-mix(in_srgb,white_30%,transparent),inset_0_10px_10px_-8px_color-mix(in_srgb,white_16%,transparent),0_1px_2px_0_color-mix(in_srgb,black_18%,transparent)]";
 
-/**
- * White controls: SAME shadow as inputs (one shared source) + the shared
- * at-rest surface grade — the tactile "textured" white button.
- */
-const SURFACE_CHROME = cn(SURFACE_GRADE, SURFACE_SHADOW);
+/** Soft two-layer drop shared by the filled tiers (matches base Button). */
+const FILLED_SHADOW =
+  "shadow-[0_1px_2px_0_rgb(0_0_0/0.14),0_2px_4px_-2px_rgb(0_0_0/0.10)]";
 
 const buttonVariants = cva(
-  // Press feedback: scale(0.97) on :active with a strong ease-out — instant
-  // confirmation the press registered (see DESIGN.md § Motion).
-  // Geometry per the reference recipe: 30px control, 10px corners
-  // (`rounded-md` = --radius − 2px = 10px at the current DNA radius).
-  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-out-strong active:scale-[0.97] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2lg text-body-medium transition-[color,background-color,border-color,box-shadow] duration-150 ease outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring disabled:pointer-events-none aria-disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
-      // Fills come from the DNA finish tokens: under finish "timbal" they
-      // render the signature gradient; under finish "flat" the stops are
-      // degenerate (from == to) and this same source renders flat controls.
       variant: {
         default: cn(
-          "bg-linear-to-b from-primary-fill-from to-primary-fill-to text-primary-foreground hover:from-primary-fill-hover-from hover:to-primary-fill-hover-to active:from-primary-fill-active-from active:to-primary-fill-active-to",
-          FILLED_CHROME,
+          "bg-button-primary text-foreground-full",
+          FILLED_SHADOW,
+          "disabled:text-foreground-disabled disabled:shadow-none aria-disabled:text-foreground-disabled aria-disabled:shadow-none",
         ),
         secondary: cn(
-          "bg-card text-secondary-foreground hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
-          "[&_svg:not([class*='text-'])]:text-icon-muted",
-          SURFACE_BORDER,
-          SURFACE_CHROME,
+          "text-text-primary",
+          SECONDARY_CHROME,
+          SECONDARY_DISABLED,
+          "disabled:text-text-tertiary aria-disabled:text-text-tertiary",
         ),
         outline: cn(
-          // Hover must move the gradient STOPS (a plain bg-color change would
-          // hide under the at-rest surface grade).
-          "bg-card text-foreground hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to hover:text-accent-foreground active:from-secondary-fill-active-from active:to-secondary-fill-active-to",
-          "[&_svg:not([class*='text-'])]:text-icon-muted",
-          SURFACE_BORDER,
-          SURFACE_CHROME,
+          "text-text-primary",
+          SECONDARY_CHROME,
+          SECONDARY_DISABLED,
+          "disabled:text-text-tertiary aria-disabled:text-text-tertiary",
         ),
         ghost: cn(
-          "hover:bg-ghost-fill-hover hover:text-accent-foreground active:bg-ghost-fill-active",
-          "[&_svg:not([class*='text-'])]:text-icon-muted",
+          "bg-transparent text-text-secondary",
+          "hover:bg-background-primary-hover hover:text-text-primary",
+          "active:bg-background-primary-active",
+          "disabled:text-text-disabled aria-disabled:text-text-disabled",
         ),
         destructive: cn(
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95 focus-visible:ring-destructive/20",
-          FILLED_CHROME,
+          "bg-button-danger text-foreground-full",
+          FILLED_SHADOW,
+          "disabled:text-foreground-disabled-danger disabled:shadow-none aria-disabled:text-foreground-disabled-danger aria-disabled:shadow-none",
         ),
-        link: "text-primary underline-offset-4 hover:underline active:scale-100",
+        link: "text-text-primary underline-offset-4 hover:underline disabled:text-text-disabled aria-disabled:text-text-disabled",
       },
-      // Compressed: fixed heights with minimal vertical padding — the label
-      // sits tight inside the pill like the dashboard reference.
       size: {
-        default: "h-7.5 px-3.5 py-0 has-[>svg]:px-3",
-        sm: "h-7 rounded-md px-3 py-0 text-xs has-[>svg]:px-2.5",
-        lg: "h-9 px-5 py-0 has-[>svg]:px-4",
-        icon: "size-7.5",
-        "icon-sm": "size-7 rounded-md",
+        default: "h-9 px-3",
+        sm: "h-8 rounded-lg px-2.5",
+        lg: "h-10 px-4",
+        icon: "size-9",
+        "icon-sm": "size-8 rounded-lg",
       },
     },
     defaultVariants: {

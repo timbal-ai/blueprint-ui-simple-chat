@@ -58,7 +58,8 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border border-border bg-popover bg-linear-to-b from-modal-from to-modal-to p-6 text-popover-foreground shadow-lg sm:max-w-lg",
+          // BoardUI modal surface: flat white, neutral hairline, 16px corners.
+          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border border-border-button-default bg-popover p-6 text-popover-foreground shadow-dropdown sm:max-w-lg",
           // Modal: stays center-origin (not trigger-anchored). Enter 200ms,
           // exit snaps in 150ms with the strong ease-out curve.
           "ease-out-strong data-[state=open]:animate-in data-[state=open]:duration-200 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:duration-150 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-97",

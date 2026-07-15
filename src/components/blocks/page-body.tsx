@@ -31,7 +31,14 @@ function PageBody({
     <div
       data-slot="page-body"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-5 stagger-children",
+        // `grow shrink-0` (NOT `flex-1`): inside the shell's scroll container
+        // the default shrink collapses a long page to the viewport height, so
+        // its content overflows the box and spills past the scroller's bottom
+        // inset (pages end flush at the card edge). shrink-0 keeps the body
+        // content-sized (the scroller scrolls it), grow still stretches short
+        // pages to fill. Fill-style pages that inner-scroll (invoice review)
+        // opt back into the capped height with `flex-1 shrink`.
+        "flex min-h-0 grow shrink-0 flex-col gap-5 stagger-children",
         inset && PAGE_INSET_CLASS,
         className,
       )}

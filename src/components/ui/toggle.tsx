@@ -10,7 +10,7 @@ const toggleVariants = cva(
     variants: {
       variant: {
         default: cn(
-          "border border-border bg-gradient-to-b from-elevated-from to-elevated-to shadow-card",
+          "border border-border-button-default bg-card shadow-card",
           "hover:from-secondary-fill-hover-from hover:to-secondary-fill-hover-to",
           "data-[state=on]:border-foreground/15 data-[state=on]:from-primary-fill-from data-[state=on]:to-primary-fill-to data-[state=on]:text-primary-foreground",
           "focus-visible:ring-2 focus-visible:ring-foreground/10",

@@ -79,7 +79,7 @@ function SheetContent({
         data-slot="sheet-content"
         className={cn(
           // iOS-like drawer curve; enter 300ms, exit snaps in 200ms.
-          "fixed z-50 flex flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl ease-drawer data-[state=open]:animate-in data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=closed]:duration-200",
+          "fixed z-50 flex flex-col gap-4 overflow-hidden rounded-2xl border border-border-button-default bg-popover text-popover-foreground shadow-2xl ease-drawer data-[state=open]:animate-in data-[state=open]:duration-300 data-[state=closed]:animate-out data-[state=closed]:duration-200",
           side === "right" &&
             cn(
               "inset-y-3 right-3 data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",

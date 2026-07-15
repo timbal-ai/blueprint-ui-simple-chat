@@ -1,8 +1,18 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Chip } from "@/components/base/badges/chip";
+import { Switch } from "@/components/base/switch/switch";
+
+const BADGE_COLOR: Record<
+  NonNullable<NonNullable<ResourceGridItem["badge"]>["variant"]>,
+  React.ComponentProps<typeof Chip>["color"]
+> = {
+  success: "lime",
+  secondary: "gray",
+  info: "blue",
+  warning: "yellow",
+};
 
 /**
  * ResourceGrid — a responsive grid of resource cards: integrations,
@@ -83,12 +93,14 @@ function ResourceGrid({
               ) : null}
               {item.action ??
                 (item.enabled !== undefined ? (
-                  <Switch
-                    checked={item.enabled}
-                    onCheckedChange={(v) => onToggle?.(item.id, v)}
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label={`Toggle ${item.name}`}
-                  />
+                  <span onClick={(e) => e.stopPropagation()}>
+                    <Switch
+                      size="sm"
+                      isSelected={item.enabled}
+                      onChange={(v) => onToggle?.(item.id, v)}
+                      aria-label={`Toggle ${item.name}`}
+                    />
+                  </span>
                 ) : null)}
             </div>
             <div className="flex min-w-0 flex-col gap-1">
@@ -97,12 +109,13 @@ function ResourceGrid({
                   {item.name}
                 </span>
                 {item.badge ? (
-                  <Badge
-                    variant={item.badge.variant ?? "secondary"}
+                  <Chip
+                    variant="caption"
+                    color={BADGE_COLOR[item.badge.variant ?? "secondary"]}
                     className="h-5 px-1.5 text-[11px]"
                   >
                     {item.badge.label}
-                  </Badge>
+                  </Chip>
                 ) : null}
               </div>
               {item.description ? (

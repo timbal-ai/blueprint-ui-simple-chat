@@ -10,16 +10,11 @@ import {
 } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/base/buttons/button";
+import { IconButton } from "@/components/base/buttons/icon-button";
+import { InputBase } from "@/components/base/input/input";
 import { Progress } from "@/components/ui/progress";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectItem } from "@/components/base/select/select";
 
 /**
  * Review extraction kit — field rows, editable line items, queue chrome, and
@@ -202,27 +197,29 @@ function ReviewLineItemEditor({
                 </span>
                 <Button
                   variant="ghost"
-                  size="icon-sm"
+                  size="xs"
+                  iconOnly
+                  leadingIcon={XIcon}
                   className="size-7 text-muted-foreground"
                   aria-label="Remove line item"
                   onClick={(e) => {
                     e.stopPropagation();
                     removeItem(item.id);
                   }}
-                >
-                  <XIcon />
-                </Button>
+                />
               </div>
             </div>
             <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_4.5rem_6.5rem]">
-              <Input
+              <InputBase
+                size="small"
                 value={item.description}
                 placeholder="Line description"
                 aria-label="Description"
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => updateItem(item.id, { description: e.target.value })}
               />
-              <Input
+              <InputBase
+                size="small"
                 type="number"
                 min={0}
                 value={item.qty}
@@ -233,7 +230,8 @@ function ReviewLineItemEditor({
                   updateItem(item.id, { qty: Number(e.target.value) || 0 })
                 }
               />
-              <Input
+              <InputBase
+                size="small"
                 type="number"
                 min={0}
                 step={0.01}
@@ -248,19 +246,19 @@ function ReviewLineItemEditor({
             </div>
             <div onClick={(e) => e.stopPropagation()}>
               <Select
-                value={item.glCode ?? "6100"}
-                onValueChange={(v) => updateItem(item.id, { glCode: v })}
+                aria-label="GL code"
+                placeholder="Select GL code"
+                className="w-full"
+                selectedKey={item.glCode ?? "6100"}
+                onSelectionChange={(k) =>
+                  updateItem(item.id, { glCode: String(k) })
+                }
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select GL code" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DEMO_GL_CODES.map((code) => (
-                    <SelectItem key={code.value} value={code.value}>
-                      {code.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                {DEMO_GL_CODES.map((code) => (
+                  <SelectItem key={code.value} id={code.value} textValue={code.label}>
+                    {code.label}
+                  </SelectItem>
+                ))}
               </Select>
             </div>
           </div>
@@ -270,11 +268,11 @@ function ReviewLineItemEditor({
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
-          size="sm"
-          className="-ml-2 gap-1.5 text-muted-foreground hover:text-foreground"
+          size="small"
+          leadingIcon={PlusIcon}
+          className="-ml-2 text-muted-foreground hover:text-foreground"
           onClick={addItem}
         >
-          <PlusIcon />
           Add line item
         </Button>
         <span className="text-sm text-muted-foreground">
@@ -428,24 +426,20 @@ function ReviewQueueHeader({
         />
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="icon-sm"
+        <IconButton
+          icon={ChevronLeftIcon}
+          size="small"
           aria-label="Previous invoice"
           disabled={position <= 0}
           onClick={onPrevious}
-        >
-          <ChevronLeftIcon />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon-sm"
+        />
+        <IconButton
+          icon={ChevronRightIcon}
+          size="small"
           aria-label="Next invoice"
           disabled={position >= total - 1}
           onClick={onNext}
-        >
-          <ChevronRightIcon />
-        </Button>
+        />
       </div>
     </div>
   );

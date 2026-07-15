@@ -1,5 +1,18 @@
 import * as React from "react";
 import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type Column,
+  type ColumnDef,
+  type Row,
+  type RowSelectionState,
+  type SortingState,
+} from "@tanstack/react-table";
+import {
   FilterIcon,
   SearchIcon,
   XIcon,
@@ -7,33 +20,38 @@ import {
 } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DataTable, type ColumnDef } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/base/badges/badge";
+import { Button } from "@/components/base/buttons/button";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
+import { InputBase } from "@/components/base/input/input";
+import { Pagination } from "@/components/base/pagination/pagination";
+import { Select, SelectItem } from "@/components/base/select/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@/components/base/table/table";
+import { ChevronSortDown } from "@/components/foundations/icons/chevrons";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type { Row } from "@tanstack/react-table";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * FilteredTable — search + faceted filters + DataTable, wired together.
+ * FilteredTable — search + faceted filters + data table, wired together.
  *
- * The toolbar wraps instead of overflowing, search is debounced into the
- * table's global filter, and facet filtering happens here so column defs stay
- * presentation-only. Fork when you need server-side filtering — keep the
- * toolbar structure.
+ * Rebuilt on the BoardUI table grammar (2026-07-14): the React Aria `Table`
+ * primitive (`@/components/base/table`) rendered from a TanStack instance,
+ * BoardUI Selects as facet triggers, the rounded-full secondary search
+ * field, and the BoardUI Pagination footer — the same recipe as BoardUI's
+ * Data Table block, generalized to column defs.
  *
  * Overlay discipline: the "Filters" popover renders checkbox option rows —
  * NEVER nest a Select (or any second overlay) inside a popover; stacked
@@ -58,8 +76,12 @@ function FilteredTable<TData, TValue>({
   onRowClick,
   loading,
   empty,
+  pagination = true,
+  pageSize = 20,
+  itemsLabel = "results",
+  rowSelection,
+  onRowSelectionChange,
   className,
-  ...tableProps
 }: {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -72,18 +94,16 @@ function FilteredTable<TData, TValue>({
   onRowClick?: (row: Row<TData>) => void;
   loading?: boolean;
   empty?: React.ReactNode;
+  /** Client-side pagination. Default true; disable for short lists. */
+  pagination?: boolean;
+  pageSize?: number;
+  /** Noun for the pagination summary, e.g. "invoices" → "Showing 1 to 10 of 24 invoices". */
+  itemsLabel?: string;
+  /** Controlled row selection (pair with `selectionColumn()`). */
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   className?: string;
-} & Pick<
-  React.ComponentProps<typeof DataTable<TData, TValue>>,
-  | "pagination"
-  | "pageSize"
-  | "maxHeight"
-  | "stickyHeader"
-  | "bordered"
-  | "itemsLabel"
-  | "rowSelection"
-  | "onRowSelectionChange"
->) {
+}) {
   const [search, setSearch] = React.useState("");
   // Primary facets are single-value (Select); popover facets are
   // multi-value (checkbox rows). Both filter with AND across facets.
@@ -128,116 +148,342 @@ function FilteredTable<TData, TValue>({
     });
 
   return (
-    <div className={cn("flex min-w-0 flex-col gap-3", className)}>
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative w-full max-w-64 min-w-40">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-icon-muted" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={searchPlaceholder}
-            className="pl-8"
-            aria-label="Search"
-          />
+    // The native BoardUI Data Table card (application/data-table grammar):
+    // one bordered rounded section owning the count header, the filter
+    // cluster + round search on the right, the full-bleed table, and the
+    // Pagination footer.
+    <section
+      className={cn(
+        "flex w-full min-w-0 flex-col rounded-2xl border border-border-button-default bg-card pt-2 pb-3",
+        className,
+      )}
+    >
+      <div className="flex w-full flex-col items-start gap-3 px-3 py-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col justify-center">
+          <p className="text-body-medium whitespace-nowrap text-text-tertiary">Total Results</p>
+          <p className="text-body-medium whitespace-nowrap text-text-primary">
+            {filtered.length.toLocaleString()} {itemsLabel}
+          </p>
         </div>
-        {facets.map((facet) => (
-          <Select
-            key={facet.id}
-            value={active[facet.id] ?? ""}
-            onValueChange={(value) =>
-              setActive((prev) => ({ ...prev, [facet.id]: value }))
-            }
-          >
-            {/* Facet triggers read like buttons: full-strength label color,
-                identical to the "Filters" button beside them. */}
-            <SelectTrigger
-              className="w-auto min-w-28 text-foreground data-[placeholder]:text-foreground [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-foreground"
+        <div className="-mx-3 flex w-[calc(100%+1.5rem)] items-center gap-2.5 overflow-x-auto px-3 sm:mx-0 sm:w-auto sm:flex-wrap sm:justify-end sm:overflow-visible sm:px-0">
+          {facets.map((facet) => (
+            <Select
+              key={facet.id}
               aria-label={facet.label}
+              placeholder={facet.label}
+              className="shrink-0"
+              popoverClassName="min-w-40"
+              selectedKey={active[facet.id] ?? null}
+              onSelectionChange={(key) =>
+                setActive((prev) => ({ ...prev, [facet.id]: String(key) }))
+              }
             >
-              <SelectValue placeholder={facet.label} />
-            </SelectTrigger>
-            <SelectContent>
               {facet.options.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
+                <SelectItem key={opt.value} id={opt.value} textValue={opt.label}>
                   {opt.label}
                 </SelectItem>
               ))}
-            </SelectContent>
-          </Select>
-        ))}
-        {moreFilters.length > 0 ? (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="gap-1.5">
-                <FilterIcon className="size-3.5" />
-                Filters
-                {moreFiltersActive > 0 ? (
-                  <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[10px]">
-                    {moreFiltersActive}
-                  </Badge>
-                ) : null}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="w-60 p-2">
-              {/* Checkbox rows, never a nested Select — a popover must be
-                  the only overlay open. */}
-              {moreFilters.map((facet, fi) => (
-                <div key={facet.id}>
-                  {fi > 0 ? <Separator className="my-2" /> : null}
-                  <p className="px-1.5 pb-1 text-xs font-medium text-muted-foreground">
-                    {facet.label}
-                  </p>
-                  <div className="flex flex-col">
-                    {facet.options.map((opt) => {
-                      const isOn = (checked[facet.id] ?? []).includes(opt.value);
-                      return (
-                        <label
-                          key={opt.value}
-                          className="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1.5 text-sm text-foreground transition-colors hover:bg-accent"
-                        >
-                          <Checkbox
-                            checked={isOn}
-                            onCheckedChange={() =>
-                              toggleChecked(facet.id, opt.value)
-                            }
-                          />
-                          {opt.label}
-                        </label>
-                      );
-                    })}
+            </Select>
+          ))}
+          {moreFilters.length > 0 ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="secondary" size="medium" leadingIcon={FilterIcon} className="shrink-0">
+                  Filters
+                  {moreFiltersActive > 0 ? (
+                    <Badge color="neutral" className="ml-1">
+                      {moreFiltersActive}
+                    </Badge>
+                  ) : null}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-60 p-2">
+                {/* Checkbox rows, never a nested Select — a popover must be
+                    the only overlay open. */}
+                {moreFilters.map((facet, fi) => (
+                  <div key={facet.id}>
+                    {fi > 0 ? <Separator className="my-2" /> : null}
+                    <p className="px-1.5 pb-1 text-caption-1-medium text-text-tertiary">
+                      {facet.label}
+                    </p>
+                    <div className="flex flex-col">
+                      {facet.options.map((opt) => {
+                        const isOn = (checked[facet.id] ?? []).includes(opt.value);
+                        return (
+                          <label
+                            key={opt.value}
+                            className="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1.5 text-body-medium text-text-primary transition-colors hover:bg-background-primary-hover"
+                          >
+                            <Checkbox
+                              aria-label={opt.label}
+                              isSelected={isOn}
+                              onChange={() => toggleChecked(facet.id, opt.value)}
+                            />
+                            {opt.label}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </PopoverContent>
-          </Popover>
-        ) : null}
-        {hasFilters ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSearch("");
-              setActive({});
-              setChecked({});
-            }}
-          >
-            <XIcon />
-            Clear
-          </Button>
-        ) : null}
-        {toolbarEnd ? <div className="ml-auto flex items-center gap-2">{toolbarEnd}</div> : null}
+                ))}
+              </PopoverContent>
+            </Popover>
+          ) : null}
+          {hasFilters ? (
+            <Button
+              variant="ghost"
+              size="medium"
+              leadingIcon={XIcon}
+              className="shrink-0"
+              onClick={() => {
+                setSearch("");
+                setActive({});
+                setChecked({});
+              }}
+            >
+              Clear
+            </Button>
+          ) : null}
+          {/* Native BoardUI search: the rounded-full gray pill, last in the cluster. */}
+          <InputBase
+            aria-label="Search"
+            placeholder={searchPlaceholder}
+            leadingIcon={SearchIcon}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            fieldClassName="min-w-[153px] flex-1 rounded-full bg-background-secondary-default sm:w-[153px] sm:min-w-0 sm:flex-none"
+            className="text-body-medium"
+          />
+          {toolbarEnd ? <div className="flex shrink-0 items-center gap-2">{toolbarEnd}</div> : null}
+        </div>
       </div>
       <DataTable
+        className="mt-2"
         columns={columns}
         data={filtered}
         globalFilter={search}
         onRowClick={onRowClick}
         loading={loading}
         empty={empty}
-        {...tableProps}
+        pagination={pagination}
+        pageSize={pageSize}
+        itemsLabel={itemsLabel}
+        rowSelection={rowSelection}
+        onRowSelectionChange={onRowSelectionChange}
       />
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+ * DataTable — TanStack instance rendered through the BoardUI React Aria
+ * Table primitive (fork of BoardUI's Data Table block, generalized to
+ * column defs). Sorting, pagination, row selection, and the global text
+ * filter come from TanStack; the visuals are the `.bui-table` grammar.
+ * ------------------------------------------------------------------------- */
+
+function DataTable<TData, TValue>({
+  columns,
+  data,
+  loading = false,
+  empty,
+  pagination = true,
+  pageSize = 20,
+  onRowClick,
+  rowSelection,
+  onRowSelectionChange,
+  globalFilter,
+  itemsLabel = "results",
+  className,
+}: {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  loading?: boolean;
+  empty?: React.ReactNode;
+  pagination?: boolean;
+  pageSize?: number;
+  onRowClick?: (row: Row<TData>) => void;
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>;
+  globalFilter?: string;
+  itemsLabel?: string;
+  className?: string;
+}) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      ...(rowSelection !== undefined ? { rowSelection } : {}),
+      ...(globalFilter !== undefined ? { globalFilter } : {}),
+    },
+    onSortingChange: setSorting,
+    ...(onRowSelectionChange ? { onRowSelectionChange, enableRowSelection: true } : {}),
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    ...(pagination
+      ? {
+          getPaginationRowModel: getPaginationRowModel(),
+          initialState: { pagination: { pageSize } },
+        }
+      : {}),
+  });
+
+  const rows = table.getRowModel().rows;
+  const headers = table.getHeaderGroups()[0].headers;
+  const columnCount = table.getVisibleLeafColumns().length || columns.length;
+  const pageCount = table.getPageCount();
+  const { pageIndex } = table.getState().pagination;
+
+  return (
+    <div data-slot="data-table" className={cn("flex w-full min-w-0 flex-col", className)}>
+      <Table aria-label={itemsLabel} selectionMode="none">
+        <TableHeader>
+          {headers.map((header, i) => {
+            const width = header.getSize() !== 150 ? header.getSize() : undefined;
+            return (
+              <TableColumn
+                key={header.id}
+                id={header.id}
+                isRowHeader={i === 0}
+                style={width ? { width } : undefined}
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(header.column.columnDef.header, header.getContext())}
+              </TableColumn>
+            );
+          })}
+        </TableHeader>
+        <TableBody
+          renderEmptyState={
+            loading
+              ? undefined
+              : () =>
+                  empty ?? (
+                    <EmptyState
+                      title="No results"
+                      description="Nothing matches yet. Adjust filters or add data."
+                      className="min-h-32 rounded-none border-0"
+                    />
+                  )
+          }
+        >
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`} id={`skeleton-${i}`}>
+                  {Array.from({ length: columnCount }).map((_, j) => (
+                    <TableCell key={j}>
+                      <Skeleton className="h-4 w-full max-w-32" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            : rows.map((row) => {
+                const selected = row.getIsSelected();
+                return (
+                  <TableRow
+                    key={row.id}
+                    id={row.id}
+                    onAction={onRowClick ? () => onRowClick(row) : undefined}
+                    className={cn(
+                      onRowClick && "cursor-pointer hover:bg-background-primary-hover",
+                    )}
+                    style={
+                      selected
+                        ? { backgroundColor: "var(--color-background-secondary-default)" }
+                        : undefined
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+        </TableBody>
+      </Table>
+      {/* Native BoardUI footer: Previous | numbered pages | Next, inside the card. */}
+      {pagination && !loading && pageCount > 1 ? (
+        <div className="px-3 pt-3">
+          <Pagination
+            page={pageIndex + 1}
+            totalPages={pageCount}
+            onChange={(p) => table.setPageIndex(p - 1)}
+          />
+        </div>
+      ) : null}
     </div>
   );
+}
+
+/** Sortable column header — use in column defs: `header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />`. */
+function DataTableColumnHeader<TData, TValue>({
+  column,
+  title,
+  className,
+}: {
+  column: Column<TData, TValue>;
+  title: string;
+  className?: string;
+}) {
+  if (!column.getCanSort()) {
+    return <span className={className}>{title}</span>;
+  }
+  const sorted = column.getIsSorted();
+  return (
+    <button
+      type="button"
+      onClick={column.getToggleSortingHandler()}
+      className={cn("flex cursor-pointer items-center gap-0.5", className)}
+    >
+      {title}
+      <ChevronSortDown
+        className={cn(
+          "size-6 shrink-0 transition-[transform,color] duration-150",
+          sorted === "asc" && "rotate-180",
+          sorted ? "text-text-secondary" : "text-text-tertiary",
+        )}
+      />
+    </button>
+  );
+}
+
+/**
+ * Ready-made leading checkbox column — pair with `rowSelection` +
+ * `onRowSelectionChange` on `FilteredTable`.
+ */
+function selectionColumn<TData>(): ColumnDef<TData> {
+  return {
+    id: "select",
+    size: 36,
+    enableSorting: false,
+    enableHiding: false,
+    header: ({ table }) => (
+      <Checkbox
+        slot={null}
+        aria-label="Select all"
+        isSelected={table.getIsAllPageRowsSelected()}
+        isIndeterminate={
+          table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
+        }
+        onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        slot={null}
+        aria-label="Select row"
+        isSelected={row.getIsSelected()}
+        onChange={(value) => row.toggleSelected(!!value)}
+      />
+    ),
+  };
 }
 
 /* ---------------------------------------------------------------------------
@@ -256,8 +502,8 @@ function IconCell({
   className?: string;
 }) {
   return (
-    <span className={cn("flex items-center gap-1.5 text-foreground", className)}>
-      <Icon className="size-3.5 shrink-0 text-muted-foreground/70" />
+    <span className={cn("flex items-center gap-1.5 text-text-primary", className)}>
+      <Icon className="size-3.5 shrink-0 text-foreground-icon-tertiary" />
       {children}
     </span>
   );
@@ -265,6 +511,7 @@ function IconCell({
 
 // Vibrant identity tones — saturated fill + a darker outline of the same
 // tone so chips pop like the reference avatars (not washed-out pastels).
+// `--chart-*` now maps to the BoardUI categorical ramp (see dna.json).
 const CHIP_TONES = [
   "bg-chart-1/20 text-chart-1 ring-chart-1/30",
   "bg-chart-2/20 text-chart-2 ring-chart-2/30",
@@ -329,5 +576,13 @@ function AvatarChipCell({
   );
 }
 
-export { AvatarChip, AvatarChipCell, FilteredTable, IconCell };
-export type { TableFacet };
+export {
+  AvatarChip,
+  AvatarChipCell,
+  DataTable,
+  DataTableColumnHeader,
+  FilteredTable,
+  IconCell,
+  selectionColumn,
+};
+export type { ColumnDef, TableFacet };

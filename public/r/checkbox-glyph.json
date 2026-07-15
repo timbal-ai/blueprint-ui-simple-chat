@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-glyph",
+  "type": "registry:ui",
+  "title": "checkbox glyph",
+  "description": "Timbal blueprint ui: checkbox-glyph. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/checkbox/checkbox-glyph.tsx",
+      "content": "import { cx } from \"@/utils/cx\";\n\nexport type CheckboxSize = \"sm\" | \"md\";\n\nexport const checkboxSizes: Record<\n  CheckboxSize,\n  { box: string; glyph: string; label: string; gap: string }\n> = {\n  md: { box: \"size-4\", glyph: \"size-4\", label: \"text-body-medium\", gap: \"gap-2\" },\n  sm: { box: \"size-3.5\", glyph: \"size-3.5\", label: \"text-body-2-medium\", gap: \"gap-1.5\" },\n};\n\nexport interface CheckboxGlyphState {\n  isSelected: boolean;\n  isIndeterminate: boolean;\n  isFocusVisible: boolean;\n  isDisabled: boolean;\n  isHovered: boolean;\n}\n\n/**\n * The 16px (or 14px) checkbox box + tick/indeterminate glyph. Shared by the\n * standalone Checkbox and the CheckboxCard so their visuals stay identical.\n */\nexport function CheckboxGlyph({\n  state,\n  size = \"md\",\n}: {\n  state: CheckboxGlyphState;\n  size?: CheckboxSize;\n}) {\n  const { isSelected, isIndeterminate, isFocusVisible, isDisabled, isHovered } = state;\n  const s = checkboxSizes[size];\n  const isMarked = isSelected || isIndeterminate;\n  const hover = isHovered && !isDisabled;\n\n  return (\n    <span\n      aria-hidden\n      className={cx(\n        \"flex shrink-0 items-center justify-center rounded-sm\",\n        \"transition-[background-color,border-color,box-shadow] duration-150 ease\",\n        s.box,\n        isMarked\n          ? cx(\n              \"bg-linear-to-b shadow-checkbox-selected\",\n              hover ? \"from-blue-400 to-blue-500\" : \"from-blue-500 to-blue-600\",\n            )\n          : cx(\n              \"border bg-background-primary-default shadow-xs\",\n              hover ? \"border-neutral-400\" : \"border-border-checkbox-default\",\n            ),\n        isDisabled && \"opacity-50\",\n        isFocusVisible && \"ring-2 ring-border-focus-ring ring-offset-2\",\n      )}\n    >\n      <svg viewBox=\"0 0 16 16\" fill=\"none\" className={s.glyph}>\n        {isIndeterminate ? (\n          <path d=\"M4.5 8H8H11.5\" stroke=\"white\" strokeWidth=\"2\" strokeLinecap=\"round\" />\n        ) : isSelected ? (\n          <path\n            d=\"M4 7.7002L6.64645 10.3466C6.84171 10.5419 7.15829 10.5419 7.35355 10.3466L12 5.7002\"\n            stroke=\"white\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            pathLength={1}\n            className=\"animate-check-draw\"\n          />\n        ) : null}\n      </svg>\n    </span>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/checkbox/checkbox-glyph.tsx"
+    }
+  ]
+}

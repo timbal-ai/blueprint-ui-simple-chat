@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-profile-page",
+  "type": "registry:block",
+  "title": "ai profile page",
+  "description": "Timbal blueprint block: ai-profile-page. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "agents-chart-card",
+    "ai-profile-card",
+    "page-body",
+    "tokens-chart-card"
+  ],
+  "files": [
+    {
+      "path": "components/pages/ai-profile-page.tsx",
+      "content": "import { PageBody } from \"@/components/blocks/page-body\";\nimport { AgentsChartCard } from \"@/components/application/ai-profile/agents-chart-card\";\nimport { AiProfileCard } from \"@/components/application/ai-profile/ai-profile-card\";\nimport { TokensChartCard } from \"@/components/application/ai-profile/tokens-chart-card\";\n\n/**\n * AiProfilePage — the BoardUI Pro \"AI Profile\" template (Figma node\n * 4063:5675), rehosted on the house shell grammar (the Pro template's own\n * sidebar chrome is dropped — mount as a route inside `RoutedAppShell`).\n *\n * A single centered 680px column: the profile cover card (avatar, stats,\n * contributions heat grid), the 30-day agents bar chart, and the tokens\n * trend chart. Intentionally no PageHeader — the profile card IS the\n * page's header (same pattern as a social profile).\n *\n * Fork this for any \"public profile + activity charts\" surface (member\n * profile, agent detail, contributor page).\n */\nexport function AiProfilePage() {\n  return (\n    <PageBody className=\"items-center\">\n      <div className=\"flex w-full max-w-[680px] flex-col gap-4\">\n        <AiProfileCard />\n        <AgentsChartCard />\n        <TokensChartCard />\n      </div>\n    </PageBody>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/pages/ai-profile-page.tsx"
+    }
+  ]
+}

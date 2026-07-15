@@ -1,4 +1,38 @@
-import { CalendarIcon, SearchIcon, SettingsIcon, SmileIcon, UserIcon } from "@/components/icons";
+import { Focusable } from "react-aria-components";
+import {
+  BellIcon,
+  CalendarIcon,
+  CreditCardIcon,
+  SearchIcon,
+  SettingsIcon,
+  ShapesIcon,
+  SmileIcon,
+  UserIcon,
+} from "@/components/icons";
+
+import { Button } from "@/components/base/buttons/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Select, SelectItem } from "@/components/base/select/select";
+import { Switch } from "@/components/base/switch/switch";
+import {
+  SettingsDialog,
+  SettingsDialogGroup,
+  SettingsDialogRow,
+  SettingsPlanCard,
+} from "@/components/blocks/settings-dialog";
+import { IconButton } from "@/components/base/buttons/icon-button";
+import { SECONDARY_CHROME } from "@/components/base/buttons/secondary-chrome";
+import { cx as cn } from "@/utils/cx";
+import {
+  Dropdown,
+  DropdownDivider,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
+import { Input } from "@/components/base/input/input";
+import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip";
 
 import {
   AlertDialog,
@@ -11,7 +45,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -48,20 +81,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Menubar,
   MenubarContent,
@@ -84,12 +107,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { DemoCard, DemoGrid, GalleryPage } from "./section";
 
@@ -97,23 +114,23 @@ export default function GalleryOverlays() {
   return (
     <GalleryPage
       title="Overlays"
-      description="Dialogs, menus, and floating panels — all portaled, animated, and token-wired."
+      description="Dialogs, menus, and floating panels — BoardUI dropdown and tooltip, retained portal surfaces."
     >
       <DemoGrid>
+        <DemoCard title="Settings dialog">
+          <SettingsDialogDemo />
+        </DemoCard>
         <DemoCard title="Dialog · Alert dialog">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">Open dialog</Button>
+              <Button variant="secondary">Open dialog</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Rename project</DialogTitle>
                 <DialogDescription>This only changes the display name.</DialogDescription>
               </DialogHeader>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="po-rename">Name</Label>
-                <Input id="po-rename" defaultValue="Blueprint" />
-              </div>
+              <Input label="Name" defaultValue="Blueprint" />
               <DialogFooter>
                 <Button variant="ghost">Cancel</Button>
                 <Button>Save</Button>
@@ -122,7 +139,7 @@ export default function GalleryOverlays() {
           </Dialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">Delete…</Button>
+              <Button variant="danger">Delete…</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -142,7 +159,7 @@ export default function GalleryOverlays() {
         <DemoCard title="Sheet · Drawer">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline">Open sheet</Button>
+              <Button variant="secondary">Open sheet</Button>
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
@@ -153,7 +170,7 @@ export default function GalleryOverlays() {
           </Sheet>
           <Drawer>
             <DrawerTrigger asChild>
-              <Button variant="outline">Open drawer</Button>
+              <Button variant="secondary">Open drawer</Button>
             </DrawerTrigger>
             <DrawerContent>
               <DrawerHeader>
@@ -167,7 +184,7 @@ export default function GalleryOverlays() {
           </Drawer>
           <Drawer direction="right">
             <DrawerTrigger asChild>
-              <Button variant="outline">Wide drawer (xl)</Button>
+              <Button variant="secondary">Wide drawer (xl)</Button>
             </DrawerTrigger>
             {/* size presets: sm | default | lg | xl | full — width for side
                 drawers, height for top/bottom. Wide sizes fit previews
@@ -189,7 +206,7 @@ export default function GalleryOverlays() {
         <DemoCard title="Popover · Hover card · Tooltip">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline">Popover</Button>
+              <Button variant="secondary">Popover</Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 text-sm">
               Rich content panel — forms, help text, filters.
@@ -203,31 +220,41 @@ export default function GalleryOverlays() {
               The AI platform for building enterprise apps.
             </HoverCardContent>
           </HoverCard>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Search">
-                  <SearchIcon />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Search everything</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <TooltipTrigger delay={0}>
+            <Focusable>
+              <IconButton icon={SearchIcon} aria-label="Search" />
+            </Focusable>
+            <Tooltip>Search everything</Tooltip>
+          </TooltipTrigger>
         </DemoCard>
 
-        <DemoCard title="Dropdown menu · Context menu">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Menu</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuLabel>Invoice</DropdownMenuLabel>
-              <DropdownMenuItem>Duplicate</DropdownMenuItem>
-              <DropdownMenuItem>Export CSV</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <DemoCard title="Dropdown · Context menu">
+          <Dropdown>
+            <DropdownTrigger
+              className={cn(
+                "inline-flex h-9 items-center rounded-2lg px-3 text-body-medium text-text-primary transition-colors",
+                SECONDARY_CHROME,
+              )}
+            >
+              Menu
+            </DropdownTrigger>
+            <DropdownPopover aria-label="Invoice actions">
+              <DropdownGroup label="Invoice">
+                <DropdownItem>
+                  <span className="text-body-medium text-text-primary">Duplicate</span>
+                </DropdownItem>
+                <DropdownItem>
+                  <span className="text-body-medium text-text-primary">Export CSV</span>
+                </DropdownItem>
+              </DropdownGroup>
+              <DropdownDivider />
+              <DropdownGroup>
+                <DropdownItem>
+                  <span className="text-body-medium text-text-error-primary">Delete</span>
+                </DropdownItem>
+              </DropdownGroup>
+            </DropdownPopover>
+          </Dropdown>
           <ContextMenu>
             <ContextMenuTrigger asChild>
               <div className="flex h-16 w-40 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">
@@ -299,5 +326,89 @@ export default function GalleryOverlays() {
         </DemoCard>
       </DemoGrid>
     </GalleryPage>
+  );
+}
+
+/** The forkable settings-dialog recipe — mirrors the reference modal. */
+function SettingsDialogDemo() {
+  const general = (
+    <>
+      <SettingsPlanCard
+        chip={<Chip variant="caption">Current plan</Chip>}
+        title="Ultra $149/mo"
+        description="You are on 7x more usage than Regular."
+        action={<Button variant="secondary" size="small">Upgrade to Max</Button>}
+        artwork={
+          <div className="h-full w-full bg-gradient-to-l from-blue-200 via-purple-100 to-transparent" />
+        }
+      />
+      <SettingsDialogRow
+        title="Limits"
+        description="You are on 7x more usage than Premium"
+      >
+        <Button variant="secondary" size="small">Manage limits</Button>
+      </SettingsDialogRow>
+      <SettingsDialogGroup label="Pull Requests">
+        <SettingsDialogRow
+          title="Review provider"
+          description="Select GitHub or other providers for reviews"
+        >
+          <Select aria-label="Review provider" size="sm" defaultSelectedKey="github">
+            <SelectItem id="github">GitHub</SelectItem>
+            <SelectItem id="gitlab">GitLab</SelectItem>
+            <SelectItem id="bitbucket">Bitbucket</SelectItem>
+          </Select>
+        </SettingsDialogRow>
+        <SettingsDialogRow
+          title="PR destination"
+          description="Open pull request links inside your app"
+        >
+          <Select aria-label="PR destination" size="sm" defaultSelectedKey="inside">
+            <SelectItem id="inside">Inside app</SelectItem>
+            <SelectItem id="browser">Browser</SelectItem>
+          </Select>
+        </SettingsDialogRow>
+      </SettingsDialogGroup>
+      <SettingsDialogGroup label="Notifications">
+        <SettingsDialogRow
+          title="Critical requests"
+          description="Get notified when the model needs a critical decision"
+        >
+          <Switch aria-label="Critical requests" defaultSelected />
+        </SettingsDialogRow>
+        <SettingsDialogRow
+          title="System notifications"
+          description="Show notifications when an agent completes a task"
+        >
+          <Switch aria-label="System notifications" />
+        </SettingsDialogRow>
+      </SettingsDialogGroup>
+    </>
+  );
+
+  const placeholder = (label: string) => (
+    <SettingsDialogRow title={label} description={`${label} settings live here.`} />
+  );
+
+  return (
+    <SettingsDialog
+      trigger={<Button variant="secondary">Open settings</Button>}
+      groups={[
+        {
+          items: [
+            { id: "general", label: "General", icon: SettingsIcon, content: general },
+            { id: "profile", label: "Profile", icon: UserIcon, content: placeholder("Profile") },
+            { id: "appearance", label: "Appearance", icon: ShapesIcon, content: placeholder("Appearance") },
+            { id: "billing", label: "Billing", icon: CreditCardIcon, content: placeholder("Billing") },
+          ],
+        },
+        {
+          label: "Workspace",
+          items: [
+            { id: "notifications", label: "Notifications", icon: BellIcon, content: placeholder("Notifications") },
+          ],
+        },
+      ]}
+    />
   );
 }

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-card",
+  "type": "registry:ui",
+  "title": "checkbox card",
+  "description": "Timbal blueprint ui: checkbox-card. Token-wired to the project design DNA.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/checkbox/checkbox-card.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode, Ref } from \"react\";\nimport { Checkbox as AriaCheckbox } from \"react-aria-components\";\nimport type { CheckboxProps as AriaCheckboxProps } from \"react-aria-components\";\nimport { cx } from \"@/utils/cx\";\nimport { CheckboxGlyph } from \"./checkbox-glyph\";\n\n/**\n * Figma source: Board UI → Checkbox items (node 3793:2966).\n *\n * Selectable card: title + description on the left, checkbox on the right.\n *   card    radius/2lg (10px), 1px border/button/default, pl 16 pr 20 py 12\n *   hover   bg background/primary/hover (#f7f7f7)\n *   title   Body 1/Medium, text/primary\n *   desc    Body 1/Regular, text/secondary\n *\n * The whole card toggles the checkbox (react-aria Checkbox renders the label),\n * so a click anywhere flips the state.\n */\n\nexport interface CheckboxCardProps extends Omit<AriaCheckboxProps, \"children\"> {\n  title: ReactNode;\n  description?: ReactNode;\n  ref?: Ref<HTMLLabelElement>;\n}\n\nexport function CheckboxCard({\n  className,\n  title,\n  description,\n  ref,\n  ...props\n}: CheckboxCardProps) {\n  return (\n    <AriaCheckbox\n      ref={ref}\n      {...props}\n      className={(state) =>\n        cx(\n          \"group flex w-full items-center justify-between gap-3 rounded-2lg border border-border-button-default py-3 pr-5 pl-4 select-none\",\n          \"transition-colors duration-150 ease\",\n          state.isHovered && !state.isDisabled\n            ? \"bg-background-primary-hover\"\n            : \"bg-background-primary-default\",\n          state.isDisabled ? \"cursor-not-allowed opacity-50\" : \"cursor-pointer\",\n          typeof className === \"function\" ? className(state) : className,\n        )\n      }\n    >\n      {(state) => (\n        <>\n          <span className=\"flex min-w-0 flex-col gap-0.5\">\n            <span className=\"truncate text-body-medium text-text-primary\">{title}</span>\n            {description !== undefined && description !== null && (\n              <span className=\"truncate text-body-regular text-text-secondary\">{description}</span>\n            )}\n          </span>\n          <span className=\"flex shrink-0 items-center py-1\">\n            <CheckboxGlyph state={state} />\n          </span>\n        </>\n      )}\n    </AriaCheckbox>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/checkbox/checkbox-card.tsx"
+    }
+  ]
+}

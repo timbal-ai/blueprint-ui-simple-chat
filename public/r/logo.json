@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo",
+  "type": "registry:component",
+  "title": "logo",
+  "description": "Timbal blueprint component: logo. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/foundations/brand/logo.tsx",
+      "content": "import { cx } from \"@/utils/cx\";\n\n/**\n * Brand mark for BoardUI-derived chrome (docs breadcrumbs, mock panels).\n * The upstream template rendered the BoardUI logo via next/image; this\n * project renders the Timbal mark (public/timbal.png) at a fixed pixel\n * size instead. `mono` is accepted for API compatibility (the mark is\n * already monochrome-friendly).\n */\nexport function Logo({\n  size = 32,\n  className,\n}: {\n  size?: number;\n  /** Accepted for BoardUI API compatibility — the Timbal mark has no mono variant. */\n  mono?: boolean;\n  className?: string;\n}) {\n  return (\n    <img\n      src=\"/timbal.png\"\n      alt=\"Timbal\"\n      width={size}\n      height={size}\n      style={{ width: size, height: size }}\n      className={cx(\"shrink-0 rounded-[3px] object-contain\", className)}\n    />\n  );\n}\n",
+      "type": "registry:component",
+      "target": "src/components/foundations/brand/logo.tsx"
+    }
+  ]
+}

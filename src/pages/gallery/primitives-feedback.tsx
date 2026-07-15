@@ -1,8 +1,8 @@
 import * as React from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/base/buttons/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
@@ -56,13 +56,13 @@ export default function GalleryFeedback() {
 
         <DemoCard title="Toast (sonner)">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => toast.success("Invoice INV-2026-115 sent")}
           >
             Show success toast
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => toast.error("Export failed — retry")}
           >
             Show error toast

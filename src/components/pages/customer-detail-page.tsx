@@ -20,23 +20,26 @@ import {
   RecordDetailHeader,
 } from "@/components/blocks/detail-panel";
 import { AvatarChip } from "@/components/blocks/filtered-table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Button } from "@/components/base/buttons/button";
+import { SECONDARY_CHROME } from "@/components/base/buttons/secondary-chrome";
+import { cx as cn } from "@/utils/cx";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableColumn,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/base/table/table";
+import { Tab, TabList, TabPanel, Tabs } from "@/components/base/tabs/tabs";
 
 /**
  * CustomerDetailPage — condensed full-page record detail (Stripe dashboard
@@ -86,32 +89,30 @@ const DEMO_PAYMENTS: Payment[] = [
 
 const STATUS_BADGE: Record<
   Customer["status"],
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  active: { label: "Active", variant: "success" },
-  delinquent: { label: "Delinquent", variant: "warning" },
-  canceled: { label: "Canceled", variant: "outline" },
+  active: { label: "Active", color: "lime" },
+  delinquent: { label: "Delinquent", color: "yellow" },
+  canceled: { label: "Canceled", color: "soft" },
 };
 
 const PAYMENT_BADGE: Record<
   Payment["status"],
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  succeeded: { label: "Succeeded", variant: "success" },
-  failed: { label: "Failed", variant: "destructive" },
-  refunded: { label: "Refunded", variant: "outline" },
+  succeeded: { label: "Succeeded", color: "lime" },
+  failed: { label: "Failed", color: "rose" },
+  refunded: { label: "Refunded", color: "soft" },
 };
 
 function PaymentsTable({ payments }: { payments: Payment[] }) {
   return (
-    <Table>
+    <Table aria-label="Payments" size="sm">
       <TableHeader>
-        <TableRow>
-          <TableHead>Amount</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead className="text-right">ID</TableHead>
-        </TableRow>
+        <TableColumn isRowHeader>Amount</TableColumn>
+        <TableColumn>Status</TableColumn>
+        <TableColumn>Date</TableColumn>
+        <TableColumn className="text-right">ID</TableColumn>
       </TableHeader>
       <TableBody>
         {payments.map((payment) => {
@@ -120,7 +121,7 @@ function PaymentsTable({ payments }: { payments: Payment[] }) {
             <TableRow key={payment.id}>
               <TableCell className="font-medium tabular-nums">{payment.amount}</TableCell>
               <TableCell>
-                <Badge variant={badge.variant}>{badge.label}</Badge>
+                <Chip variant="caption" color={badge.color}>{badge.label}</Chip>
               </TableCell>
               <TableCell className="text-muted-foreground">{payment.date}</TableCell>
               <TableCell className="text-right font-mono text-xs text-muted-foreground">
@@ -149,6 +150,11 @@ function CustomerDetailPage({
   onAction?: (action: string) => void;
 }) {
   const status = STATUS_BADGE[customer.status];
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const selectMenuAction = (action: string) => {
+    setMenuOpen(false);
+    onAction?.(action);
+  };
 
   return (
     <PageBody className="mx-auto w-full max-w-3xl gap-10">
@@ -177,34 +183,48 @@ function CustomerDetailPage({
           leading={<AvatarChip name={customer.name} size="lg" />}
           title={customer.name}
           subtitle={customer.email}
-          badges={<Badge variant={status.variant}>{status.label}</Badge>}
+          badges={<Chip variant="caption" color={status.color}>{status.label}</Chip>}
           actions={
             <>
-              <Button variant="outline" size="sm" onClick={() => onAction?.("edit")}>
-                <PencilIcon />
+              <Button
+                variant="secondary"
+                size="small"
+                leadingIcon={PencilIcon}
+                onClick={() => onAction?.("edit")}
+              >
                 Edit
               </Button>
-              <Button variant="outline" size="sm" onClick={() => onAction?.("invoice")}>
-                <MailIcon />
+              <Button
+                variant="secondary"
+                size="small"
+                leadingIcon={MailIcon}
+                onClick={() => onAction?.("invoice")}
+              >
                 Send invoice
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon-sm" aria-label="More actions">
-                    <MoreHorizontalIcon />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => onAction?.("export")}>
-                    <DownloadIcon />
-                    Export
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
-                    <CopyIcon />
-                    Copy customer ID
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Dropdown isOpen={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownTrigger
+                  aria-label="More actions"
+                  className={cn(
+                    "inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-foreground-icon-primary transition-colors [&_svg]:size-4",
+                    SECONDARY_CHROME,
+                  )}
+                >
+                  <MoreHorizontalIcon />
+                </DropdownTrigger>
+                <DropdownPopover aria-label="More actions" placement="bottom end" className="w-56">
+                  <DropdownGroup>
+                    <DropdownItem onSelect={() => selectMenuAction("export")}>
+                      <DownloadIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+                      <span className="text-body-medium text-text-primary">Export</span>
+                    </DropdownItem>
+                    <DropdownItem onSelect={() => selectMenuAction("copy-id")}>
+                      <CopyIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+                      <span className="text-body-medium text-text-primary">Copy customer ID</span>
+                    </DropdownItem>
+                  </DropdownGroup>
+                </DropdownPopover>
+              </Dropdown>
             </>
           }
         />
@@ -222,30 +242,34 @@ function CustomerDetailPage({
         ]}
       />
 
-      <Tabs defaultValue="overview" className="gap-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="flex flex-col gap-5">
+      <Tabs defaultSelectedKey="overview" className="gap-6">
+        <TabList aria-label="Customer sections">
+          <Tab id="overview">Overview</Tab>
+          <Tab id="payments">Payments</Tab>
+          <Tab id="subscriptions">Subscriptions</Tab>
+          <Tab id="events">Events</Tab>
+        </TabList>
+        <TabPanel id="overview" className="flex flex-col gap-5">
           <DetailSection
             title="Recent payments"
             action={
-              <Button variant="ghost" size="sm" onClick={() => onAction?.("refresh")}>
-                <RefreshIcon />
+              <Button
+                variant="ghost"
+                size="small"
+                leadingIcon={RefreshIcon}
+                onClick={() => onAction?.("refresh")}
+              >
                 Refresh
               </Button>
             }
           >
             <PaymentsTable payments={payments.slice(0, 4)} />
           </DetailSection>
-        </TabsContent>
-        <TabsContent value="payments">
+        </TabPanel>
+        <TabPanel id="payments">
           <PaymentsTable payments={payments} />
-        </TabsContent>
-        <TabsContent value="subscriptions" className="flex flex-col gap-3">
+        </TabPanel>
+        <TabPanel id="subscriptions" className="flex flex-col gap-3">
           <div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
             <div className="flex items-center gap-3">
               <WalletIcon className="size-4 text-muted-foreground" />
@@ -254,10 +278,10 @@ function CustomerDetailPage({
                 <p className="text-xs text-muted-foreground">$1,240.00 / month · Renews Aug 1</p>
               </div>
             </div>
-            <Badge variant="success">Active</Badge>
+            <Chip variant="caption" color="lime">Active</Chip>
           </div>
-        </TabsContent>
-        <TabsContent value="events">
+        </TabPanel>
+        <TabPanel id="events">
           <ActivityFeed
             items={[
               {
@@ -280,7 +304,7 @@ function CustomerDetailPage({
               },
             ]}
           />
-        </TabsContent>
+        </TabPanel>
       </Tabs>
     </PageBody>
   );

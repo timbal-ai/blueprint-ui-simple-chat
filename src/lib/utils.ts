@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { twMergeWithTextStyles } from "@/utils/cx"
 
 /**
  * Detects if the application is running inside an iframe
@@ -8,11 +8,12 @@ import { twMerge } from "tailwind-merge"
 export const isEmbedded = typeof window !== 'undefined' && window.self !== window.top
 
 /**
- * Combines Tailwind CSS classes with clsx and tailwind-merge
- * Used throughout UI components for conditional styling
+ * Combines Tailwind CSS classes with clsx and tailwind-merge.
+ * Uses the BoardUI-aware merge (composite text-{family}-{weight} utilities
+ * from styles/typography.css register as font-size, not text color).
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMergeWithTextStyles(clsx(inputs))
 }
 
 /**

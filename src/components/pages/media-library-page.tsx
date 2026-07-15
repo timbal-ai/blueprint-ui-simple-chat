@@ -12,7 +12,9 @@ import { PageHeader } from "@/components/blocks/page-header";
 import { MetadataGrid } from "@/components/blocks/detail-panel";
 import { ImageCard, MediaGrid } from "@/components/blocks/media-card";
 import { PdfViewer } from "@/components/blocks/pdf-viewer";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
+import { InputBase } from "@/components/base/input/input";
+import { Select, SelectItem } from "@/components/base/select/select";
 import {
   Drawer,
   DrawerContent,
@@ -21,14 +23,6 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -98,33 +92,32 @@ function MediaLibraryPage({
         title="Media library"
         description="Photos, brand assets, and documents shared across the workspace."
         actions={
-          <Button onClick={() => onAction?.("upload")}>
-            <UploadIcon />
+          <Button size="small" leadingIcon={UploadIcon} onClick={() => onAction?.("upload")}>
             Upload
           </Button>
         }
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative w-full max-w-64 min-w-40">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-icon-muted" />
-          <Input
+        <div className="w-full max-w-64 min-w-40">
+          <InputBase
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search assets…"
-            className="pl-8"
             aria-label="Search assets"
+            leadingIcon={SearchIcon}
+            fieldClassName="border border-border-button-default bg-background-primary-default shadow-xs"
           />
         </div>
-        <Select value={kind} onValueChange={(v) => setKind(v as typeof kind)}>
-          <SelectTrigger className="w-36">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All types</SelectItem>
-            <SelectItem value="image">Images</SelectItem>
-            <SelectItem value="document">Documents</SelectItem>
-          </SelectContent>
+        <Select
+          aria-label="Asset type"
+          selectedKey={kind}
+          onSelectionChange={(k) => setKind(String(k) as typeof kind)}
+          className="w-36"
+        >
+          <SelectItem id="all" textValue="All types">All types</SelectItem>
+          <SelectItem id="image" textValue="Images">Images</SelectItem>
+          <SelectItem id="document" textValue="Documents">Documents</SelectItem>
         </Select>
       </div>
 

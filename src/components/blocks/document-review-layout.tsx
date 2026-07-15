@@ -8,7 +8,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import {
   Drawer,
   DrawerContent,
@@ -272,7 +272,8 @@ function ReviewActionBar({
     <div className={cn("flex flex-wrap items-center gap-2", className)}>
       {primary ? (
         <Button
-          className="order-first w-full sm:order-last sm:w-auto"
+          size="small"
+          className="order-first w-full sm:order-last sm:w-auto [&>span]:gap-1.5 [&_svg]:size-4"
           disabled={primary.disabled}
           onClick={primary.onClick}
         >
@@ -287,8 +288,9 @@ function ReviewActionBar({
       ) : null}
       {leading ? (
         <Button
-          variant="outline"
-          className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
+          variant="secondary"
+          size="small"
+          className="mr-auto text-text-error-primary hover:bg-background-tertiary-error hover:text-text-error-primary"
           disabled={leading.disabled}
           onClick={leading.onClick}
         >
@@ -298,7 +300,9 @@ function ReviewActionBar({
       {secondary.map((action) => (
         <Button
           key={action.id}
-          variant="outline"
+          variant="secondary"
+          size="small"
+          className="[&>span]:gap-1.5 [&_svg]:size-4"
           disabled={action.disabled}
           onClick={action.onClick}
         >

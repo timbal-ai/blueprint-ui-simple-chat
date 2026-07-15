@@ -44,10 +44,14 @@ const GalleryChat = lazy(() => import("@/pages/gallery/chat"));
 const GalleryBlocks = lazy(() => import("@/pages/gallery/blocks"));
 const GalleryCustomerDetail = lazy(() => import("@/pages/gallery/customer-detail"));
 const GalleryWorkspaceDetail = lazy(() => import("@/pages/gallery/workspace-detail"));
-const GalleryHealth = lazy(() => import("@/pages/gallery/health"));
-const GalleryEarnings = lazy(() => import("@/pages/gallery/earnings"));
 const GalleryMedia = lazy(() => import("@/pages/gallery/media"));
 const GalleryInvoiceReview = lazy(() => import("@/pages/gallery/invoice-review"));
+const GalleryHomeDashboard = lazy(() => import("@/pages/gallery/home-dashboard"));
+const GalleryMedical = lazy(() => import("@/pages/gallery/medical"));
+const GalleryAiProfile = lazy(() => import("@/pages/gallery/ai-profile"));
+const GalleryCalendar = lazy(() => import("@/pages/gallery/calendar"));
+// Full-viewport BoardUI Pro chat template — mounts OUTSIDE the gallery shell.
+const GalleryAiChatTemplate = lazy(() => import("@/pages/gallery/ai-chat-template"));
 const GalleryForms = lazy(() => import("@/pages/gallery/primitives-forms"));
 const GalleryOverlays = lazy(() => import("@/pages/gallery/primitives-overlays"));
 const GalleryData = lazy(() => import("@/pages/gallery/primitives-data"));
@@ -118,10 +122,12 @@ function App() {
                   <Route path="blocks" element={<GalleryBlocks />} />
                   <Route path="pages/customer" element={<GalleryCustomerDetail />} />
                   <Route path="pages/workspace" element={<GalleryWorkspaceDetail />} />
-                  <Route path="pages/health" element={<GalleryHealth />} />
-                  <Route path="pages/earnings" element={<GalleryEarnings />} />
                   <Route path="pages/media" element={<GalleryMedia />} />
                   <Route path="pages/invoice-review" element={<GalleryInvoiceReview />} />
+                  <Route path="pages/home" element={<GalleryHomeDashboard />} />
+                  <Route path="pages/medical" element={<GalleryMedical />} />
+                  <Route path="pages/ai-profile" element={<GalleryAiProfile />} />
+                  <Route path="pages/calendar" element={<GalleryCalendar />} />
                   <Route path="primitives/forms" element={<GalleryForms />} />
                   <Route
                     path="primitives/overlays"
@@ -142,6 +148,19 @@ function App() {
                   />
                   <Route path="charts" element={<GalleryCharts />} />
                 </Route>
+              ) : null}
+              {GalleryShell ? (
+                // The AI chat TEMPLATE owns its own viewport (sidebar +
+                // resizable code panel) — never nested inside the gallery
+                // shell. Visual reference only; real chat = Timbal shells.
+                <Route
+                  path="/gallery/templates/ai-chat"
+                  element={
+                    <Suspense fallback={null}>
+                      <GalleryAiChatTemplate />
+                    </Suspense>
+                  }
+                />
               ) : null}
               {DevHub ? (
                 <Route

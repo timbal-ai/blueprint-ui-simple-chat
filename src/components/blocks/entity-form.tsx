@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Label } from "@/components/ui/label";
 import {
   Sheet,
@@ -123,10 +123,10 @@ function FormSheet({
           </form>
         </ScrollArea>
         <SheetFooter className="flex-row justify-end border-t border-border">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="secondary" size="small" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSubmit} disabled={submitting}>
+          <Button size="small" onClick={onSubmit} disabled={submitting}>
             {submitting ? "Saving…" : submitLabel}
           </Button>
         </SheetFooter>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Chip } from "@/components/base/badges/chip";
 
 /**
  * Single KPI tile — the "Total Employee / New Hires" reference grammar:
@@ -50,15 +50,16 @@ function Stat({
             {value}
           </span>
           {delta ? (
-            <Badge
-              variant={
+            <Chip
+              variant="caption"
+              color={
                 deltaTone === "positive"
-                  ? "success"
+                  ? "lime"
                   : deltaTone === "negative"
-                    ? "destructive"
-                    : "secondary"
+                    ? "rose"
+                    : "gray"
               }
-              className="gap-0.5 px-1.5 text-[11px]"
+              className="gap-0.5 [&>svg]:size-3"
             >
               {deltaTone === "positive" ? (
                 <TrendingUpIcon />
@@ -66,7 +67,7 @@ function Stat({
                 <TrendingDownIcon />
               ) : null}
               {delta}
-            </Badge>
+            </Chip>
           ) : null}
         </div>
         {hint ? (

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-card",
+  "type": "registry:ui",
+  "title": "radio card",
+  "description": "Timbal blueprint ui: radio-card. Token-wired to the project design DNA.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/radio/radio-card.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode, Ref } from \"react\";\nimport { Radio as AriaRadio } from \"react-aria-components\";\nimport type { RadioProps as AriaRadioProps } from \"react-aria-components\";\nimport { cx } from \"@/utils/cx\";\nimport { RadioDot } from \"./radio\";\n\n/**\n * Selectable radio card — the radio flavor of CheckboxCard (Figma checkbox\n * items, node 3793:2966): title + optional description on the left, the\n * radio dot on the right.\n *   card    radius/2lg (10px), 1px border/button/default, pl 16 pr 20 py 12\n *   hover   bg background/primary/hover (#f7f7f7)\n *   title   Body 1/Medium, text/primary\n *   desc    Body 1/Regular, text/secondary\n *\n * The whole card selects the radio (react-aria Radio renders the label).\n * Must live inside a `RadioGroup`, which provides single-selection and\n * arrow-key navigation across cards.\n */\n\nexport interface RadioCardProps extends Omit<AriaRadioProps, \"children\"> {\n  title: ReactNode;\n  description?: ReactNode;\n  ref?: Ref<HTMLLabelElement>;\n}\n\nexport function RadioCard({ className, title, description, ref, ...props }: RadioCardProps) {\n  return (\n    <AriaRadio\n      ref={ref}\n      {...props}\n      className={(state) =>\n        cx(\n          \"group flex w-full items-center justify-between gap-3 rounded-2lg border border-border-button-default py-3 pr-5 pl-4 select-none\",\n          \"transition-colors duration-150 ease\",\n          state.isHovered && !state.isDisabled\n            ? \"bg-background-primary-hover\"\n            : \"bg-background-primary-default\",\n          state.isDisabled ? \"cursor-not-allowed opacity-50\" : \"cursor-pointer\",\n          typeof className === \"function\" ? className(state) : className,\n        )\n      }\n    >\n      {(state) => (\n        <>\n          <span className=\"flex min-w-0 flex-col gap-0.5\">\n            <span className=\"truncate text-body-medium text-text-primary\">{title}</span>\n            {description !== undefined && description !== null && (\n              <span className=\"truncate text-body-regular text-text-secondary\">{description}</span>\n            )}\n          </span>\n          <span className=\"flex shrink-0 items-center py-1\">\n            <RadioDot size=\"md\" selected={state.isSelected} focusVisible={state.isFocusVisible} />\n          </span>\n        </>\n      )}\n    </AriaRadio>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/radio/radio-card.tsx"
+    }
+  ]
+}

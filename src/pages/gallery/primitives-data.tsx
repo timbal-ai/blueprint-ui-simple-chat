@@ -1,5 +1,21 @@
 import { InboxIcon, StarIcon } from "@/components/icons";
 
+import { Avatar } from "@/components/base/avatar/avatar";
+import { Badge } from "@/components/base/badges/badge";
+import { Chip } from "@/components/base/badges/chip";
+import { StatusDot } from "@/components/base/badges/status-dot";
+import { Button } from "@/components/base/buttons/button";
+import { Kbd } from "@/components/base/kbd/kbd";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@/components/base/table/table";
+import { DataTableExample } from "@/components/application/data-table/data-table";
+
 import {
   Accordion,
   AccordionContent,
@@ -7,9 +23,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -35,17 +48,8 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
-import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 import { DemoCard, DemoGrid, GalleryPage } from "./section";
 
@@ -53,7 +57,7 @@ export default function GalleryData() {
   return (
     <GalleryPage
       title="Data display"
-      description="Cards, tables, lists, and media surfaces."
+      description="BoardUI chips, avatars, tables, and the advanced data table, plus retained cards, lists, and media surfaces."
     >
       <DemoGrid>
         <DemoCard title="Card · Avatar">
@@ -63,54 +67,78 @@ export default function GalleryData() {
               <CardDescription>Supporting description text.</CardDescription>
             </CardHeader>
             <CardContent className="flex items-center gap-3">
-              <Avatar>
-                <AvatarFallback>TB</AvatarFallback>
-              </Avatar>
+              <Avatar initials="TB" color="blue" />
               <div className="flex flex-col">
-                <span className="text-sm text-foreground">Timbal Blueprint</span>
-                <span className="text-xs text-muted-foreground">Owner</span>
+                <span className="text-body-medium text-text-primary">Timbal Blueprint</span>
+                <span className="text-caption-1-medium text-text-secondary">Owner</span>
               </div>
             </CardContent>
           </Card>
         </DemoCard>
 
-        <DemoCard title="Badge">
-          <Badge>Default</Badge>
-          <Badge variant="secondary">Draft</Badge>
-          <Badge variant="outline">Outline</Badge>
-          <Badge variant="success">Paid</Badge>
-          <Badge variant="warning">Pending</Badge>
-          <Badge variant="destructive">Overdue</Badge>
-          <Badge variant="info">Synced</Badge>
-          <Badge variant="success-solid">Closed Won</Badge>
-          <Badge variant="warning-solid">On hold</Badge>
-          <Badge variant="destructive-solid">Failed</Badge>
-          <Badge variant="info-solid">Negotiation</Badge>
+        <DemoCard title="Avatar sizes & tints">
+          <Avatar size="xs" initials="A" />
+          <Avatar size="sm" initials="BC" color="blue" />
+          <Avatar size="md" initials="D" color="lime" />
+          <Avatar size="lg" initials="EF" color="pink" />
+          <Avatar size="md" src="/avatars/john-clarkson.jpg" alt="John Clarkson" />
+        </DemoCard>
+
+        <DemoCard title="Chip · Badge · Status dot" contentClassName="flex-col items-start">
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip color="lime">Paid</Chip>
+            <Chip color="yellow">Pending</Chip>
+            <Chip color="rose">Overdue</Chip>
+            <Chip color="blue">Synced</Chip>
+            <Chip color="cyan">Confirmed</Chip>
+            <Chip color="purple">+12.4%</Chip>
+            <Chip color="neutral">Draft</Chip>
+            <Chip color="gray">$1.250</Chip>
+            <Chip color="soft">Outline-ish</Chip>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip variant="subtle" color="gray">
+              Subtle price
+            </Chip>
+            <Chip variant="caption" color="blue">
+              Role tag
+            </Chip>
+            <Badge color="primary">8</Badge>
+            <Badge color="neutral">24</Badge>
+            <span className="flex items-center gap-1.5 text-body-medium text-text-primary">
+              <StatusDot color="green" /> Completed
+            </span>
+            <span className="flex items-center gap-1.5 text-body-medium text-text-primary">
+              <StatusDot color="yellow" /> Waiting
+            </span>
+          </div>
         </DemoCard>
 
         <DemoCard title="Table" contentClassName="items-stretch">
-          <Table>
+          <Table aria-label="Invoices" size="sm">
             <TableHeader>
-              <TableRow>
-                <TableHead>Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
+              <TableColumn isRowHeader>Invoice</TableColumn>
+              <TableColumn>Status</TableColumn>
+              <TableColumn>Amount</TableColumn>
             </TableHeader>
             <TableBody>
               <TableRow>
                 <TableCell>INV-001</TableCell>
                 <TableCell>
-                  <Badge variant="success">Paid</Badge>
+                  <Chip color="lime">Paid</Chip>
                 </TableCell>
-                <TableCell className="text-right tabular-nums">$250.00</TableCell>
+                <TableCell>
+                  <span className="tabular-nums">$250.00</span>
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>INV-002</TableCell>
                 <TableCell>
-                  <Badge variant="destructive">Overdue</Badge>
+                  <Chip color="rose">Overdue</Chip>
                 </TableCell>
-                <TableCell className="text-right tabular-nums">$150.00</TableCell>
+                <TableCell>
+                  <span className="tabular-nums">$150.00</span>
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -144,7 +172,7 @@ export default function GalleryData() {
                 <ItemDescription>Pinned to the top of your list.</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <Button variant="outline" size="sm">
+                <Button variant="secondary" size="small">
                   Manage
                 </Button>
               </ItemActions>
@@ -188,15 +216,15 @@ export default function GalleryData() {
         </DemoCard>
 
         <DemoCard title="Kbd · Separator" contentClassName="flex-col items-start">
-          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <p className="flex items-center gap-1.5 text-body-regular text-text-secondary">
             Toggle the sidebar with
-            <KbdGroup>
+            <span className="flex items-center gap-1">
               <Kbd>⌘</Kbd>
               <Kbd>B</Kbd>
-            </KbdGroup>
+            </span>
           </p>
           <Separator />
-          <p className="text-sm text-muted-foreground">Content below the divider.</p>
+          <p className="text-body-regular text-text-secondary">Content below the divider.</p>
         </DemoCard>
 
         <DemoCard title="Scroll area" contentClassName="items-stretch">
@@ -214,8 +242,16 @@ export default function GalleryData() {
             icon={<InboxIcon />}
             title="No invoices yet"
             description="Invoices appear here as soon as you send one."
-            action={<Button size="sm">Create invoice</Button>}
+            action={<Button size="small">Create invoice</Button>}
           />
+        </DemoCard>
+
+        <DemoCard
+          title="Data table (sorting · selection · filters)"
+          className="lg:col-span-2 xl:col-span-3"
+          contentClassName="items-stretch"
+        >
+          <DataTableExample />
         </DemoCard>
       </DemoGrid>
     </GalleryPage>

@@ -15,7 +15,16 @@ interface PageEntry {
   importFrom: string;
   exports: string[];
   /** What grammar this page demonstrates. */
-  grammar: "index" | "dashboard" | "detail" | "settings" | "chat" | "metrics" | "library";
+  grammar:
+    | "index"
+    | "dashboard"
+    | "detail"
+    | "settings"
+    | "chat"
+    | "metrics"
+    | "library"
+    | "calendar"
+    | "profile";
   purpose: string;
   useWhen: string[];
   /** Primary blocks this template composes. */
@@ -54,21 +63,20 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
     ],
     grammar: "dashboard",
     purpose:
-      "THE reference dashboard template — domain-agnostic block-kit composition to fork for any analytics/overview/command-center screen (sales, ops, finance, product, support, inventory…). Demo copy uses HR sample data only to exercise people-centric blocks. Full rhythm: PageHeader with actions (Export + create FormSheet), StatOverview KPI band, MetricTrendCard + RosterCard band, RecommendationCard triage grid, composed + donut ChartCards, SegmentedScoreRing + ContributionHeatmap band, FilteredTable with row detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
+      "THE reference dashboard template — domain-agnostic composition to fork for any analytics/overview/command-center screen (sales, ops, finance, product, support, inventory…). Demo copy uses HR sample data only to exercise people-centric blocks. Full rhythm: PageHeader with actions (Export + create FormSheet), StatOverview KPI band, RevenueTrendCard + RecentHiresCard band (the BoardUI Pro cards fed page data via props), RecommendationCard triage grid, composed + donut ChartCards, SleepScoreCard (as a generic score ring) + ContributionsGrid band, FilteredTable with row detail Sheet + BulkActionBar. Cut bands you don't need — never flatten into plain divs.",
     useWhen: [
       "ANY dashboard, overview, analytics, or command-center screen — start here, not from scratch",
       "You need stats → trend/roster → AI recommendations → charts → tracked table rhythm",
-      "A wired example of dashboard blocks (MetricTrendCard, RosterCard, score ring, heatmap, RecommendationCard, FormSheet create)",
+      "A wired example of the BoardUI Pro cards with CUSTOM data (trend periods, roster people, score metrics, heatmap counts)",
       "NOT only for HR — the filename used to say hr-dashboard; ignore the demo employee data",
     ],
     composes: [
       "blocks/page-header",
       "blocks/stat-overview",
-      "blocks/metric-trend-card",
-      "blocks/roster-card",
+      "application/dashboard revenue-trend-card + recent-hires-card + contributions-card",
+      "application/medical sleep-score-card",
       "blocks/recommendation-card",
       "blocks/chart-demos",
-      "blocks/interactive-charts",
       "blocks/entity-form",
       "blocks/filtered-table",
       "blocks/bulk-action-bar",
@@ -89,8 +97,8 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
       "blocks/page-header",
       "blocks/detail-panel",
       "blocks/page-body",
-      "ui/tabs",
-      "ui/table",
+      "base/tabs",
+      "base/table",
     ],
     galleryRoute: "/gallery/pages/customer",
   },
@@ -108,57 +116,10 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
       "blocks/page-header",
       "blocks/detail-panel",
       "blocks/page-body",
-      "ui/tabs",
-      "ui/table",
+      "base/tabs",
+      "base/table",
     ],
     galleryRoute: "/gallery/pages/workspace",
-  },
-  "health-dashboard-page": {
-    importFrom: "@/components/pages/health-dashboard-page",
-    exports: ["HealthDashboardPage", "DEMO_WEEK_STEPS", "DEMO_ALERTS"],
-    grammar: "metrics",
-    purpose:
-      "Consumer-metrics dashboard (Apple-Health grammar): two-column card grid where a TrackedBarChart selection drives the headline (Friday — 7,100 steps), a SegmentedScoreRing + ScoreBreakdownList sleep card, a resting-heart-rate MetricTrendCard (morphing area line), a recovery card (house ScoreGauge over a MetricLegendList of vitals with View actions), a RingCalendar month, today's ActivityRings with legend chips, a profile card, and a tinted-icon alerts feed.",
-    useWhen: [
-      "Personal metrics, wellbeing, habits, or usage surfaces — big friendly numbers over tables",
-      "Any screen built on blocks/interactive-charts — fork this for the composition",
-      "A wired example of ScoreGauge or MetricLegendList",
-    ],
-    composes: [
-      "blocks/page-header",
-      "blocks/interactive-charts",
-      "blocks/metric-trend-card",
-      "app/score-gauge",
-      "blocks/page-body",
-      "ui/card",
-      "ui/badge",
-    ],
-    galleryRoute: "/gallery/pages/health",
-  },
-  "earnings-page": {
-    importFrom: "@/components/pages/earnings-page",
-    exports: ["EarningsPage", "DEMO_EARNINGS", "DEMO_CONTRIBUTIONS"],
-    grammar: "metrics",
-    purpose:
-      "Earnings/usage analytics (creator-dashboard grammar): headline money number + vivid delta Badge, ChartRangeTabs (Weekly/Monthly/Yearly) swapping the TrackedBarChart dataset, a MetricTrendCard (morphing area chart) paired with a RosterCard (recent hires with pagination), a stat-chip band, a ContributionHeatmap with sparse month labels, and a payout-history FilteredTable (search, status facet, selectable rows → BulkActionBar).",
-    useWhen: [
-      "Revenue, payouts, contributions, or usage-over-time screens",
-      "Range-toggled bar charts, trend cards, people bands, GitHub-style activity grids",
-      "Analytics pages that end in a transaction/payout table",
-    ],
-    composes: [
-      "blocks/page-header",
-      "blocks/interactive-charts",
-      "blocks/metric-trend-card",
-      "blocks/roster-card",
-      "blocks/filtered-table",
-      "blocks/bulk-action-bar",
-      "blocks/page-body",
-      "ui/card",
-      "ui/badge",
-      "ui/dropdown-menu",
-    ],
-    galleryRoute: "/gallery/pages/earnings",
   },
   "invoice-review-page": {
     importFrom: "@/components/pages/invoice-review-page",
@@ -179,10 +140,94 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
       "blocks/review-extraction",
       "blocks/pdf-viewer",
       "blocks/page-body",
-      "ui/tabs",
-      "ui/badge",
+      "base/segmented-control",
+      "base/badges",
     ],
     galleryRoute: "/gallery/pages/invoice-review",
+  },
+  "home-dashboard-page": {
+    importFrom: "@/components/pages/home-dashboard-page",
+    exports: ["HomeDashboardPage"],
+    grammar: "dashboard",
+    purpose:
+      "The BoardUI Pro 'Home Dashboard' template rehosted on the house shell grammar: PageHeader with Filters + primary action, RecentHiresCard + EarningsChartCard band, RevenueTrendCard + ContributionsCard band, StatCards KPI row, CustomersTable (native BoardUI data-table card). Count-up headlines and hover-outline charts throughout.",
+    useWhen: [
+      "A BoardUI-native overview screen (people + revenue + customers) — fork and swap card data",
+      "You want the Pro chart cards (count-up, period switchers) over blocks/chart-demos",
+      "For the richer block-kit dashboard (AI recommendations, FormSheet create) fork insights-dashboard-page instead",
+    ],
+    composes: [
+      "application/dashboard/recent-hires-card",
+      "application/dashboard/earnings-chart-card",
+      "application/dashboard/revenue-trend-card",
+      "application/dashboard/contributions-card",
+      "application/dashboard/stat-cards",
+      "application/dashboard/customers-table",
+      "blocks/page-header",
+      "blocks/page-body",
+    ],
+    galleryRoute: "/gallery/pages/home",
+  },
+  "medical-profile-page": {
+    importFrom: "@/components/pages/medical-profile-page",
+    exports: ["MedicalProfilePage"],
+    grammar: "metrics",
+    purpose:
+      "The BoardUI Pro 'Medical Report' template rehosted on the house shell grammar: PageHeader with Filters + File a report, a 3-up grid of six 330px cards (patient info, weekly steps with week switcher, sleep-score segmented ring, most-active-days month calendar, activity rings, important alerts), then PatientsTable. Clicking a day in Most active days swaps the Activity rings card to that day.",
+    useWhen: [
+      "Patient/member/wellbeing/habit report screens — THE consumer-metrics grammar",
+      "Any 6-card metrics grid + records table page",
+    ],
+    composes: [
+      "application/medical/patient-info-card",
+      "application/medical/steps-card",
+      "application/medical/sleep-score-card",
+      "application/medical/most-active-days-card",
+      "application/medical/activity-rings-card",
+      "application/medical/important-alerts-card",
+      "application/medical/patients-table",
+      "blocks/page-header",
+      "blocks/page-body",
+    ],
+    galleryRoute: "/gallery/pages/medical",
+  },
+  "ai-profile-page": {
+    importFrom: "@/components/pages/ai-profile-page",
+    exports: ["AiProfilePage"],
+    grammar: "profile",
+    purpose:
+      "The BoardUI Pro 'AI Profile' template rehosted on the house shell grammar: a centered 680px column — profile cover card (avatar, stats, contributions heat grid), 30-day agents bar chart, tokens trend chart. Intentionally NO PageHeader: the profile card IS the page header (social-profile pattern).",
+    useWhen: [
+      "Public-profile + activity-charts surfaces: member profile, agent detail, contributor page",
+      "Any centered single-column record page led by a cover card",
+    ],
+    composes: [
+      "application/ai-profile/ai-profile-card",
+      "application/ai-profile/agents-chart-card",
+      "application/ai-profile/tokens-chart-card",
+      "blocks/page-body",
+    ],
+    galleryRoute: "/gallery/pages/ai-profile",
+  },
+  "calendar-page": {
+    importFrom: "@/components/pages/calendar-page",
+    exports: ["CalendarPage"],
+    grammar: "calendar",
+    purpose:
+      "The BoardUI Pro 'Calendar' template rehosted on the house shell grammar: CalendarHeader (month title, notifications, inbox feed menu, in-place month switcher, New event action) over the month grid card — event chips open an anchored EventDetailsModal popover (Meet row, time range, participants, reminders); picking a date in the switcher pulses that day.",
+    useWhen: [
+      "Scheduling, bookings, or content-calendar screens — NEVER hand-roll a month grid",
+      "Feed real events through application/calendar/calendar-data.ts shapes",
+    ],
+    composes: [
+      "application/calendar/calendar-header",
+      "application/calendar/calendar-month-grid",
+      "application/calendar/calendar-month-switcher",
+      "application/calendar/calendar-inbox-menu",
+      "application/calendar/event-details-modal",
+      "blocks/page-body",
+    ],
+    galleryRoute: "/gallery/pages/calendar",
   },
   "media-library-page": {
     importFrom: "@/components/pages/media-library-page",
@@ -201,7 +246,7 @@ const PAGES_CATALOG: Record<string, PageEntry> = {
       "blocks/detail-panel",
       "ui/drawer",
       "ui/sheet",
-      "ui/select",
+      "base/select",
     ],
     galleryRoute: "/gallery/pages/media",
   },

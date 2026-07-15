@@ -9,6 +9,12 @@
    It loads FIRST so the project-owned design system below wins the cascade. */
 @import "@timbal-ai/timbal-react/styles.css";
 
+/* BoardUI design system (boardui.com) — theme primitives + semantic tokens,
+   the composite typography ramp, base resets, component animations, and the
+   .bui-table styles. Loads after the library and before the DNA tokens so
+   shared names (e.g. --font-sans, --color-chart-*) resolve from tokens.css. */
+@import "./styles/globals.css";
+
 /* Design DNA — the project-owned design system. GENERATED from
    src/design/dna.json by `bun run dna:compile`; never hand-edit tokens.css.
    To change any color, font, radius, shadow, density, or motion value:
@@ -21,6 +27,16 @@
 @source "../node_modules/@timbal-ai/timbal-react/dist";
 
 /* The `dark` custom variant ships from the library styles.css import above. */
+
+/* BoardUI's theme.css builds --font-sans/--font-mono from these two hooks
+   (loaded via next/font upstream). This blueprint runs on GEIST (not Inter) —
+   the faces come from the Google Fonts link in index.html, and the DNA
+   pairing ("geist") re-declares --font-sans in tokens.css, which loads after
+   theme.css and wins the cascade. */
+:root {
+  --font-inter: "Geist";
+  --font-mono-source: "JetBrains Mono";
+}
 
 /* ---------------------------------------------------------------------------
    Motion craft layer — strong custom easing curves (built-in CSS easings are
@@ -105,8 +121,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
-    /* Inter reads best slightly tightened — pairs with DNA tracking: "tight". */
-    letter-spacing: -0.01em;
+    /* BoardUI's Inter ramp runs at zero tracking (letter-spacing: 0 across
+       the type scale) — no body-level tightening. */
   }
   h1,
   h2,

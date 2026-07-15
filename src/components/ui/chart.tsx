@@ -114,14 +114,15 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
  * padding and an 11px base type scale.
  */
 const CHART_TOOLTIP_SURFACE =
-  // `primary` is the inverted surface by construction (near-black on light,
-  // near-white on dark), so the tooltip stays contrary-to-theme through any
-  // rebrand without hardcoded palette stops.
-  "rounded-xl border border-primary/20 px-5 py-4 text-left text-[11px] leading-snug shadow-[0_12px_40px_-10px_color-mix(in_srgb,black_55%,transparent)] bg-linear-to-b from-primary-fill-from to-primary-fill-to text-primary-foreground";
+  // ALWAYS the neutral dark card: `foreground`/`background` invert with the
+  // theme (near-black on light, near-white on dark) and never follow the
+  // brand/chart tone — a rebrand or a scoped theme must not tint the tooltip.
+  // Condensed padding + big radius: a small rounded pill, not a floating slab.
+  "rounded-2xl border border-foreground/20 px-3 py-2 text-left text-[11px] leading-snug shadow-[0_8px_24px_-8px_color-mix(in_srgb,black_45%,transparent)] bg-foreground text-background";
 /** Primary text / values (inverted foreground). */
-const CHART_TOOLTIP_TEXT = "text-primary-foreground";
+const CHART_TOOLTIP_TEXT = "text-background";
 /** Row names / labels. */
-const CHART_TOOLTIP_MUTED = "text-primary-foreground/65";
+const CHART_TOOLTIP_MUTED = "text-background/65";
 
 /**
  * A value usable as a CSS color for a legend/tooltip swatch. Recharts often
@@ -306,7 +307,7 @@ function ChartTooltipContent({
               <div
                 key={`${item.dataKey ?? index}`}
                 className={cn(
-                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-primary-foreground/60",
+                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-background/60",
                   indicator === "dot" && "items-center",
                 )}
               >

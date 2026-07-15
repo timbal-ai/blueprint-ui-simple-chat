@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-label",
+  "type": "registry:ui",
+  "title": "input label",
+  "description": "Timbal blueprint ui: input-label. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@remixicon/react",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/input/label.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode, Ref } from \"react\";\nimport { RiInformationFill } from \"@remixicon/react\";\nimport type { LabelProps as AriaLabelProps } from \"react-aria-components\";\nimport { Label as AriaLabel } from \"react-aria-components\";\nimport { cx } from \"@/utils/cx\";\n\n/**\n * Field label. Wraps `react-aria-components`' Label so the parent `TextField`\n * automatically wires `htmlFor` / `aria-labelledby`.\n *\n * Visuals come from Figma:\n *   - Inter Medium 14/20, color text/primary\n *   - 2px gap between label + required asterisk + info icon\n *   - asterisk is text/error-primary (red/500)\n *   - info icon is 16×16 in foreground/icon/quaternary\n *\n * Pass `isRequired` to show the asterisk. Pass `tooltip` to show the info\n * icon (currently a static glyph — when the Tooltip component lands it'll\n * wire up here).\n */\n\nexport interface LabelProps extends AriaLabelProps {\n  children: ReactNode;\n  isRequired?: boolean;\n  /** Reserved for invalid-aware styling (asterisk color, etc.) once we need it. */\n  isInvalid?: boolean;\n  /** Show the info icon next to the label. */\n  tooltip?: boolean | string;\n  ref?: Ref<HTMLLabelElement>;\n}\n\nexport function Label({\n  isRequired = false,\n  isInvalid: _isInvalid,\n  tooltip,\n  className,\n  children,\n  ...props\n}: LabelProps) {\n  void _isInvalid;\n  return (\n    <AriaLabel\n      data-label=\"true\"\n      {...props}\n      className={cx(\n        \"flex cursor-default items-center gap-0.5\",\n        \"text-body-medium text-text-primary\",\n        className,\n      )}\n    >\n      {children}\n      {isRequired && (\n        <span\n          aria-hidden=\"true\"\n          className=\"text-body-medium text-text-error-primary\"\n        >\n          *\n        </span>\n      )}\n      {tooltip && (\n        <RiInformationFill\n          className=\"size-4 shrink-0 text-foreground-icon-quaternary\"\n          aria-hidden\n        />\n      )}\n    </AriaLabel>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/input/label.tsx"
+    }
+  ]
+}

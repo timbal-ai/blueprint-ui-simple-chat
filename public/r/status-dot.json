@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-dot",
+  "type": "registry:ui",
+  "title": "status dot",
+  "description": "Timbal blueprint ui: status-dot. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/badges/status-dot.tsx",
+      "content": "import type { HTMLAttributes, Ref } from \"react\";\nimport { cx, sortCx } from \"@/utils/cx\";\n\n/**\n * Figma source: Board UI → dashboard 1 status dropdown dots (node 3731:3266).\n *\n * 12×12 status indicator: a 6px solid dot centered on a tinted halo.\n * Color pairs from Figma variables:\n *   green  → halo color/green/100,  dot color/green/500\n *   yellow → halo color/yellow/200, dot color/yellow/500\n */\n\ntype StatusDotColor = \"green\" | \"yellow\";\n\nexport interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {\n  color?: StatusDotColor;\n  ref?: Ref<HTMLSpanElement>;\n}\n\nconst styles = sortCx({\n  base: \"inline-flex size-3 shrink-0 items-center justify-center rounded-full\",\n  halo: {\n    green: \"bg-green-100\",\n    yellow: \"bg-yellow-200\",\n  },\n  dot: {\n    green: \"bg-green-500\",\n    yellow: \"bg-yellow-500\",\n  },\n});\n\nexport function StatusDot({ color = \"green\", className, ref, ...props }: StatusDotProps) {\n  return (\n    <span\n      ref={ref}\n      aria-hidden\n      className={cx(styles.base, styles.halo[color], className)}\n      {...props}\n    >\n      <span className={cx(\"size-1.5 rounded-full\", styles.dot[color])} />\n    </span>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/badges/status-dot.tsx"
+    }
+  ]
+}

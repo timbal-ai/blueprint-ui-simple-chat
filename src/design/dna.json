@@ -1,44 +1,44 @@
 {
   "version": 1,
   "meta": {
-    "name": "Blueprint default",
-    "summary": "Neutral product default — calm, readable, works for chat and dashboards. Ships the signature Timbal finish."
+    "name": "BoardUI",
+    "summary": "BoardUI (boardui.com) visual language — Inter, blue-500 brand with gradient-filled controls, pure-gray neutrals, soft 6%/10% shadows, cool categorical chart ramp."
   },
   "finish": "timbal",
   "personality": {
     "minimal_expressive": 0.35,
     "flat_dimensional": 0.45,
-    "cool_warm": 0.5,
+    "cool_warm": 0.4,
     "dense_airy": 0.5,
     "serious_playful": 0.35
   },
   "color": {
-    "brand": "#18181b",
+    "brand": "#2563eb",
     "neutrals": { "chroma": 0 },
     "surfaces": "panel",
     "defaultMode": "light",
     "status": "vivid",
-    "selection": "#3B76FF",
+    "selection": "#3b82f6",
     "charts": [
-      "oklch(0.62 0.19 262)",
-      "oklch(0.64 0.19 295)",
-      "oklch(0.70 0.13 200)",
-      "oklch(0.62 0.21 330)",
-      "oklch(0.68 0.14 232)",
-      "oklch(0.56 0.17 275)",
-      "oklch(0.71 0.11 180)",
-      "oklch(0.58 0.15 250)"
+      "oklch(0.777 0.152 181.912)",
+      "oklch(0.841 0.238 128.85)",
+      "oklch(0.718 0.202 349.761)",
+      "oklch(0.746 0.16 232.661)",
+      "oklch(0.714 0.203 305.504)",
+      "#3392ff",
+      "oklch(0.765 0.177 163.223)",
+      "oklch(0.852 0.199 91.936)"
     ]
   },
   "typography": {
     "pairing": "geist",
-    "tracking": "tight",
+    "tracking": "normal",
     "headingWeight": 500,
     "baseSize": 16,
     "scale": 1.15
   },
   "shape": {
-    "radius": 0.75,
+    "radius": 0.625,
     "controls": "rounded"
   },
   "elevation": {
@@ -62,7 +62,7 @@
   },
   "overrides": {
     "light": {
-      "--sidebar": "color-mix(in srgb, white 96%, black)",
+      "--sidebar": "color-mix(in srgb, white 96.9%, black)",
       "--icon-muted": "color-mix(in srgb, white 72.9%, black)"
     },
     "dark": {

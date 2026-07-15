@@ -1,0 +1,209 @@
+/* BoardUI globals — imported from src/index.css AFTER the timbal-react
+ * styles.css (which already provides `@import "tailwindcss"` and the `dark`
+ * custom variant) and BEFORE design/tokens.css (DNA wins the cascade).
+ * The stock BoardUI header (tailwind import + @custom-variant dark) was
+ * removed here to avoid double-registration. */
+@import "./theme.css";
+@import "./typography.css";
+
+/* Reset + base */
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-ligatures: contextual;
+  font-kerning: normal;
+}
+
+/* Hide default expand arrow on Safari */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Hide default number-input spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Hide default search clear button */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+/* iOS Safari auto-zooms the page when a focused form field's font-size is
+ * under 16px — our text-body-regular/medium tokens are 14px by design, so
+ * bump just the font-size (not the whole token) on small screens instead of
+ * changing the design system's type scale. */
+@media (max-width: 639px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Soft fade applied to an animated number each time its target changes */
+@keyframes number-fade {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-number-fade {
+  animation: number-fade 220ms ease-out;
+}
+
+/* Rolling-counter label swap: the old value lifts 5px and fades out while the
+ * new one rises in from 5px below and fades in. */
+@keyframes label-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+}
+@keyframes label-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-label-out {
+  animation: label-out 220ms ease-out forwards;
+}
+.animate-label-in {
+  animation: label-in 220ms ease-out;
+}
+
+/* Checkbox tick: draws the stroke on like it's being ticked by hand.
+ * The path sets pathLength=1 so the dash math is resolution-independent. */
+@keyframes check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-check-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: check-draw 200ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-check-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Chart entrance animations (AI profile template & contributions heatmap)
+ * ------------------------------------------------------------------------- */
+
+/* Heatmap cells pop in softly — each cell gets a random-looking per-cell
+ * animation-delay so the grid fills in a scattered order. */
+@keyframes cell-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-cell-pop {
+  animation: cell-pop 380ms ease-out both;
+}
+
+/* Bars grow up from the baseline; a per-bar delay staggers them left→right. */
+@keyframes bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.animate-bar-rise {
+  transform-origin: bottom;
+  animation: bar-rise 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Line chart draws in left→right via a clip-path sweep over the whole plot
+ * (line + gradient area together). */
+@keyframes chart-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.animate-chart-reveal {
+  animation: chart-reveal 1800ms cubic-bezier(0.33, 0, 0.15, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cell-pop,
+  .animate-bar-rise,
+  .animate-chart-reveal {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Table primitive (components/base/table)
+ *
+ * React Aria's collection components (Column/Row/Cell/…) can't be wrapped in
+ * custom components without losing collection behaviour, so the primitive
+ * re-exports them untouched and styling lives here, scoped to `.bui-table`.
+ * React Aria renders real <table>/<thead>/<th>/<tr>/<td> elements.
+ * --------------------------------------------------------------------------- */
+.bui-table {
+  @apply w-full border-collapse text-left;
+}
+/* Header background + border-y live on the cells: with border-collapse the
+ * browser doesn't paint backgrounds/borders set on the <thead> row group.
+ * Backgrounds/borders are set with explicit CSS (theme vars) rather than
+ * @apply, which drops border-width/bg on these row-group cells. */
+.bui-table th {
+  @apply px-3 py-2.5 text-left align-middle text-body-medium text-text-tertiary whitespace-nowrap outline-none;
+  background-color: var(--color-neutral-100);
+  border-top: 1px solid var(--color-border-button-default);
+  border-bottom: 1px solid var(--color-border-button-default);
+  transition: padding 200ms ease, font-size 200ms ease;
+}
+.bui-table td {
+  /* whitespace-nowrap: cell values (IDs, dates, amounts) must never wrap into
+   * broken multi-line stacks when the table squeezes — the container
+   * scroll-x's instead (the wrapper div is overflow-x-auto). */
+  @apply px-3 py-2.5 align-middle text-body-medium whitespace-nowrap text-neutral-800 outline-none;
+  transition: padding 200ms ease, font-size 200ms ease;
+}
+.bui-table tbody tr {
+  @apply transition-colors duration-150;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.bui-table tbody tr[data-focus-visible] {
+  @apply ring-2 ring-inset ring-border-focus-ring;
+}
+.bui-table.bui-table-sm th,
+.bui-table.bui-table-sm td {
+  @apply px-2.5 py-1.5 text-body-2-medium;
+}

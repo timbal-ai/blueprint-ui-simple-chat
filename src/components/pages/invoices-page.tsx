@@ -11,20 +11,21 @@ import {
 } from "@/components/icons";
 import type { RowSelectionState } from "@tanstack/react-table";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Button } from "@/components/base/buttons/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dropdown,
+  DropdownDivider,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import {
   DataTableColumnHeader,
   selectionColumn,
   type ColumnDef,
-} from "@/components/ui/data-table";
+} from "@/components/blocks/filtered-table";
 import {
   Sheet,
   SheetContent,
@@ -37,10 +38,10 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableColumn,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/base/table/table";
 import { BulkActionBar } from "@/components/blocks/bulk-action-bar";
 import { PageBody } from "@/components/blocks/page-body";
 import {
@@ -78,20 +79,20 @@ interface Invoice {
 
 const STATUS_META: Record<
   Invoice["status"],
-  { label: string; variant: "success" | "destructive" | "secondary"; icon?: React.ReactNode }
+  { label: string; color: "lime" | "rose" | "gray"; icon?: React.ReactNode }
 > = {
-  paid: { label: "Paid", variant: "success", icon: <CheckIcon /> },
-  overdue: { label: "Overdue", variant: "destructive", icon: <CircleSlashIcon /> },
-  draft: { label: "Draft", variant: "secondary" },
+  paid: { label: "Paid", color: "lime", icon: <CheckIcon /> },
+  overdue: { label: "Overdue", color: "rose", icon: <CircleSlashIcon /> },
+  draft: { label: "Draft", color: "gray" },
 };
 
 function StatusBadge({ status }: { status: Invoice["status"] }) {
   const meta = STATUS_META[status];
   return (
-    <Badge variant={meta.variant} className="gap-1 rounded-md px-1.5 [&>svg]:size-3">
+    <Chip variant="caption" color={meta.color} className="gap-1 [&>svg]:size-3">
       {meta.icon}
       {meta.label}
-    </Badge>
+    </Chip>
   );
 }
 
@@ -156,37 +157,59 @@ function invoiceColumns(onAction?: (action: string, invoice: Invoice) => void): 
       enableSorting: false,
       header: () => <span className="sr-only">Actions</span>,
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="size-7 text-muted-foreground data-[state=open]:bg-accent"
-              aria-label={`Actions for ${row.original.id}`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MoreHorizontalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-            <DropdownMenuItem onClick={() => onAction?.("view", row.original)}>
-              View invoice
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAction?.("download", row.original)}>
-              Download PDF
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onAction?.("void", row.original)}
-            >
-              Void invoice
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <InvoiceRowActions invoice={row.original} onAction={onAction} />
       ),
     },
   ];
+}
+
+/** Per-row overflow menu — owns its open state so item clicks can close it. */
+function InvoiceRowActions({
+  invoice,
+  onAction,
+}: {
+  invoice: Invoice;
+  onAction?: (action: string, invoice: Invoice) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const select = (action: string) => {
+    setOpen(false);
+    onAction?.(action, invoice);
+  };
+
+  return (
+    // Keep the row's onRowClick from firing when the menu is used.
+    <span onClick={(e) => e.stopPropagation()}>
+      <Dropdown isOpen={open} onOpenChange={setOpen}>
+        <DropdownTrigger
+          aria-label={`Actions for ${invoice.id}`}
+          className="inline-flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background-primary-hover hover:text-text-primary [&_svg]:size-4"
+        >
+          <MoreHorizontalIcon />
+        </DropdownTrigger>
+        <DropdownPopover
+          aria-label={`Actions for ${invoice.id}`}
+          placement="bottom end"
+          className="w-48"
+        >
+          <DropdownGroup>
+            <DropdownItem onSelect={() => select("view")}>
+              <span className="text-body-medium text-text-primary">View invoice</span>
+            </DropdownItem>
+            <DropdownItem onSelect={() => select("download")}>
+              <span className="text-body-medium text-text-primary">Download PDF</span>
+            </DropdownItem>
+          </DropdownGroup>
+          <DropdownDivider />
+          <DropdownGroup>
+            <DropdownItem onSelect={() => select("void")}>
+              <span className="text-body-medium text-destructive">Void invoice</span>
+            </DropdownItem>
+          </DropdownGroup>
+        </DropdownPopover>
+      </Dropdown>
+    </span>
+  );
 }
 
 function InvoicesPage({
@@ -258,8 +281,7 @@ function InvoicesPage({
           },
         ]}
         toolbarEnd={
-          <Button className="gap-1.5" onClick={onExport}>
-            <DownloadIcon className="size-3.5" />
+          <Button size="small" leadingIcon={DownloadIcon} onClick={onExport}>
             Export
           </Button>
         }
@@ -348,7 +370,7 @@ function InvoiceDetailSheet({
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
                 <StatusBadge status={invoice.status} />
-                <Badge variant="outline">Due {invoice.dueDate}</Badge>
+                <Chip variant="caption" color="soft">Due {invoice.dueDate}</Chip>
               </div>
             </SheetHeader>
 
@@ -369,13 +391,11 @@ function InvoiceDetailSheet({
               <DetailDivider />
 
               <DetailSection title="Line items">
-                <Table>
-                  <TableHeader className="[&_tr]:border-0">
-                    <TableRow className="hover:[&>td]:bg-transparent">
-                      <TableHead className="rounded-l-lg bg-muted">Description</TableHead>
-                      <TableHead className="bg-muted text-right">Qty</TableHead>
-                      <TableHead className="rounded-r-lg bg-muted text-right">Amount</TableHead>
-                    </TableRow>
+                <Table aria-label="Line items" size="sm">
+                  <TableHeader>
+                    <TableColumn isRowHeader>Description</TableColumn>
+                    <TableColumn className="text-right">Qty</TableColumn>
+                    <TableColumn className="text-right">Amount</TableColumn>
                   </TableHeader>
                   <TableBody>
                     {demoLineItems(invoice).map((item) => (
@@ -415,18 +435,26 @@ function InvoiceDetailSheet({
             <SheetFooter className="flex-row justify-end gap-2 border-t border-border">
               <Button
                 variant="ghost"
+                size="small"
+                leadingIcon={CircleSlashIcon}
                 className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => onAction?.("void", invoice)}
               >
-                <CircleSlashIcon />
                 Void
               </Button>
-              <Button variant="outline" onClick={() => onAction?.("send", invoice)}>
-                <MailIcon />
+              <Button
+                variant="secondary"
+                size="small"
+                leadingIcon={MailIcon}
+                onClick={() => onAction?.("send", invoice)}
+              >
                 Send reminder
               </Button>
-              <Button onClick={() => onAction?.("download", invoice)}>
-                <DownloadIcon />
+              <Button
+                size="small"
+                leadingIcon={DownloadIcon}
+                onClick={() => onAction?.("download", invoice)}
+              >
                 Download PDF
               </Button>
             </SheetFooter>

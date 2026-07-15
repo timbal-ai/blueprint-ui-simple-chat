@@ -5,15 +5,17 @@
   "title": "checkbox",
   "description": "Timbal blueprint ui: checkbox. Token-wired to the project design DNA.",
   "dependencies": [
-    "@radix-ui/react-checkbox"
+    "react-aria-components"
   ],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "cx"
+  ],
   "files": [
     {
-      "path": "components/ui/checkbox.tsx",
-      "content": "import * as React from \"react\";\nimport * as CheckboxPrimitive from \"@radix-ui/react-checkbox\";\nimport { CheckIcon } from \"@/components/icons\";\n\nimport { cn } from \"@/lib/utils\";\n\nfunction Checkbox({\n  className,\n  ...props\n}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {\n  return (\n    <CheckboxPrimitive.Root\n      data-slot=\"checkbox\"\n      className={cn(\n        // Checked fill is the DNA selection accent (see dna.json\n        // color.selection) — the house blue, not primary/info.\n        \"peer size-4 shrink-0 rounded-[4px] border border-input bg-card shadow-xs transition-[color,background-color,border-color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-selection data-[state=checked]:bg-selection data-[state=checked]:text-selection-foreground\",\n        className,\n      )}\n      {...props}\n    >\n      <CheckboxPrimitive.Indicator\n        data-slot=\"checkbox-indicator\"\n        className=\"flex items-center justify-center text-current transition-none\"\n      >\n        {/* Deliberately small tick — breathing room inside the box. */}\n        <CheckIcon className=\"size-2.5\" strokeWidth={2.5} />\n      </CheckboxPrimitive.Indicator>\n    </CheckboxPrimitive.Root>\n  );\n}\n\nexport { Checkbox };\n",
+      "path": "components/base/checkbox/checkbox.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode, Ref } from \"react\";\nimport { Checkbox as AriaCheckbox } from \"react-aria-components\";\nimport type { CheckboxProps as AriaCheckboxProps } from \"react-aria-components\";\nimport { cx } from \"@/utils/cx\";\nimport { CheckboxGlyph, checkboxSizes } from \"./checkbox-glyph\";\nimport type { CheckboxSize } from \"./checkbox-glyph\";\n\n/**\n * Figma source: Board UI → Checkbox (node 3699:2557 family; used in\n * dashboard 1 table, nodes 3731:3258 etc.).\n *\n * radius/sm (4px). Two sizes:\n *   md  16×16, label Body 1/Medium (14)\n *   sm  14×14, label Body 2/Medium (13)\n *\n * States (per Figma):\n *   default        bg background/primary/default, 1px border/checkbox/default,\n *                  shadow/xs\n *   hover          border darkens to neutral/400\n *   checked /      Button/Primary gradient (blue/500 → blue/600) with the\n *   indeterminate  checkbox inner highlight (see --shadow-checkbox-selected),\n *                  white 2px rounded stroke glyph; on hover the gradient\n *                  lightens to blue/400 → blue/500\n *\n * Built on react-aria Checkbox: keyboard toggling, aria-checked=\"mixed\" for\n * indeterminate, label association when `children` is passed.\n */\n\nexport interface CheckboxProps extends Omit<AriaCheckboxProps, \"children\"> {\n  children?: ReactNode;\n  size?: CheckboxSize;\n  ref?: Ref<HTMLLabelElement>;\n}\n\nexport function Checkbox({ className, children, size = \"md\", ref, ...props }: CheckboxProps) {\n  const s = checkboxSizes[size];\n\n  return (\n    <AriaCheckbox\n      ref={ref}\n      {...props}\n      className={(state) =>\n        cx(\n          \"group inline-flex items-center select-none\",\n          s.gap,\n          state.isDisabled ? \"cursor-not-allowed\" : \"cursor-pointer\",\n          typeof className === \"function\" ? className(state) : className,\n        )\n      }\n    >\n      {(state) => (\n        <>\n          <CheckboxGlyph state={state} size={size} />\n          {children !== undefined && children !== null && (\n            <span className={cx(s.label, \"text-text-primary\")}>{children}</span>\n          )}\n        </>\n      )}\n    </AriaCheckbox>\n  );\n}\n",
       "type": "registry:ui",
-      "target": "src/components/ui/checkbox.tsx"
+      "target": "src/components/base/checkbox/checkbox.tsx"
     }
   ]
 }

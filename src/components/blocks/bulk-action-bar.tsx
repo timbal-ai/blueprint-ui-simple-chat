@@ -2,7 +2,7 @@ import * as React from "react";
 import { XIcon, type IconComponent } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Separator } from "@/components/ui/separator";
 
 /**
@@ -77,15 +77,15 @@ function BulkActionBar({
             <Button
               key={action.id}
               variant="ghost"
-              size="sm"
+              size="small"
+              leadingIcon={action.icon}
               className={cn(
-                "h-7 gap-1.5 rounded-full px-2.5",
+                "h-7 gap-1 rounded-full px-2.5 [&_svg]:size-3.5",
                 action.tone === "destructive" &&
-                  "text-destructive hover:bg-destructive/10 hover:text-destructive",
+                  "text-text-error-primary hover:bg-background-tertiary-error hover:text-text-error-primary",
               )}
               onClick={action.onClick}
             >
-              {action.icon ? <action.icon className="size-3.5" /> : null}
               {action.label}
             </Button>
           ))}
@@ -93,13 +93,13 @@ function BulkActionBar({
         <Separator orientation="vertical" className="mx-1 !h-4" />
         <Button
           variant="ghost"
-          size="icon-sm"
-          className="size-7 rounded-full text-muted-foreground hover:text-foreground"
+          size="xs"
+          iconOnly
+          leadingIcon={XIcon}
+          className="size-7 rounded-full text-muted-foreground hover:text-foreground [&_svg]:size-3.5"
           onClick={onClear}
           aria-label="Clear selection"
-        >
-          <XIcon className="size-3.5" />
-        </Button>
+        />
       </div>
     </div>
   );

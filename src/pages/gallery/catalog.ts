@@ -47,22 +47,6 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     importFrom: "@/components/pages/workspace-detail-page",
   },
   {
-    path: "/gallery/pages/health",
-    label: "Health",
-    kind: "page",
-    purpose:
-      "Consumer-metrics dashboard (HealthDashboardPage) — interactive tracked bars, score ring, activity rings, ring calendar, alerts feed.",
-    importFrom: "@/components/pages/health-dashboard-page",
-  },
-  {
-    path: "/gallery/pages/earnings",
-    label: "Earnings",
-    kind: "page",
-    purpose:
-      "Earnings analytics (EarningsPage) — range-toggled tracked bars, stat chips, contribution heatmap.",
-    importFrom: "@/components/pages/earnings-page",
-  },
-  {
     path: "/gallery/pages/media",
     label: "Media",
     kind: "page",
@@ -77,6 +61,46 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     purpose:
       "Document review split (InvoiceReviewPage) — 50/50 PdfViewer + extracted entries, confidence badges, approve/reject actions.",
     importFrom: "@/components/pages/invoice-review-page",
+  },
+  {
+    path: "/gallery/pages/home",
+    label: "Home",
+    kind: "page",
+    purpose:
+      "BoardUI Pro home dashboard (HomeDashboardPage) — recent hires, earnings bars, revenue trend, contributions heatmap, KPI stats, customers table.",
+    importFrom: "@/components/pages/home-dashboard-page",
+  },
+  {
+    path: "/gallery/pages/medical",
+    label: "Medical",
+    kind: "page",
+    purpose:
+      "BoardUI Pro medical report (MedicalProfilePage) — six-card health grid (steps, sleep ring, most-active-days calendar, activity rings, alerts) + patients table.",
+    importFrom: "@/components/pages/medical-profile-page",
+  },
+  {
+    path: "/gallery/pages/ai-profile",
+    label: "AI profile",
+    kind: "page",
+    purpose:
+      "BoardUI Pro AI profile (AiProfilePage) — centered cover card with contributions heat grid, agents bar chart, tokens trend.",
+    importFrom: "@/components/pages/ai-profile-page",
+  },
+  {
+    path: "/gallery/pages/calendar",
+    label: "Calendar",
+    kind: "page",
+    purpose:
+      "BoardUI Pro month calendar (CalendarPage) — event chips, anchored event-details popover, in-place month switcher, inbox feed.",
+    importFrom: "@/components/pages/calendar-page",
+  },
+  {
+    path: "/gallery/templates/ai-chat",
+    label: "AI chat (mock)",
+    kind: "chat",
+    purpose:
+      "BoardUI Pro AI chat template (AiChatShell) — full-viewport VISUAL REFERENCE (mounts outside the gallery shell). Borrow chrome only; real chat = TimbalChatShell / EmbeddedChat.",
+    importFrom: "@/components/application/ai-chat/ai-chat-shell",
   },
   {
     path: "/gallery/chat",
@@ -127,7 +151,7 @@ const GALLERY_CATALOG: GalleryEntry[] = [
     label: "Charts",
     kind: "charts",
     purpose:
-      "Recharts recipes (blocks/chart-demos) plus the interactive kit (blocks/interactive-charts): tracked bars, rings, score ring, heatmap, ring calendar.",
+      "Recharts recipes (blocks/chart-demos), ScoreGauge, HeroMetricCard, MetricLegendList. Interactive metric CARDS (bars, rings, heatmap, trend) are the BoardUI Pro components — see the Home / Medical / AI profile template pages.",
     importFrom: "@/components/blocks/chart-demos",
   },
 ];

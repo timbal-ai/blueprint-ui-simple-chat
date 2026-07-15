@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-title",
+  "type": "registry:hook",
+  "title": "use title",
+  "description": "Timbal blueprint hook: use-title. Token-wired to the project design DNA.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-title.ts",
+      "content": "import { useEffect } from 'react';\n\nexport const useTitle = (title: string) => {\n  useEffect(() => {\n    const previousTitle = document.title;\n    document.title = title;\n    \n    return () => {\n      document.title = previousTitle;\n    };\n  }, [title]);\n};",
+      "type": "registry:hook",
+      "target": "src/hooks/use-title.ts"
+    }
+  ]
+}

@@ -8,9 +8,14 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Separator } from "@/components/ui/separator";
+
+/** Ghost icon-button look for toolbar anchors (BoardUI Button is a real
+ *  <button>, so links get the same classes on a plain <a>). */
+const TOOLBAR_LINK_CLASS =
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-text-secondary transition-colors hover:bg-background-primary-hover hover:text-text-primary [&_svg]:size-3.5";
 
 /**
  * PdfViewer — an inline document viewer with the house chrome: a toolbar
@@ -91,36 +96,43 @@ function PdfViewer({
           {actions}
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="xs"
+            iconOnly
+            leadingIcon={ZoomOutIcon}
             aria-label="Zoom out"
             disabled={zoomIndex === 0}
             onClick={() => setZoomIndex((i) => Math.max(i - 1, 0))}
-          >
-            <ZoomOutIcon />
-          </Button>
+          />
           <span className="w-10 text-center text-xs tabular-nums text-muted-foreground">
             {zoom}%
           </span>
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="xs"
+            iconOnly
+            leadingIcon={ZoomInIcon}
             aria-label="Zoom in"
             disabled={zoomIndex === ZOOM_LEVELS.length - 1}
             onClick={() => setZoomIndex((i) => Math.min(i + 1, ZOOM_LEVELS.length - 1))}
-          >
-            <ZoomInIcon />
-          </Button>
+          />
           <Separator orientation="vertical" className="mx-1 h-4" />
-          <Button variant="ghost" size="icon-sm" asChild>
-            <a href={src} target="_blank" rel="noreferrer" aria-label="Open in new tab">
-              <ArrowUpRightIcon />
-            </a>
-          </Button>
-          <Button variant="ghost" size="icon-sm" asChild>
-            <a href={downloadUrl ?? src} download aria-label="Download">
-              <DownloadIcon />
-            </a>
-          </Button>
+          <a
+            href={src}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open in new tab"
+            className={TOOLBAR_LINK_CLASS}
+          >
+            <ArrowUpRightIcon />
+          </a>
+          <a
+            href={downloadUrl ?? src}
+            download
+            aria-label="Download"
+            className={TOOLBAR_LINK_CLASS}
+          >
+            <DownloadIcon />
+          </a>
         </div>
       ) : null}
       <div className="min-h-0 flex-1 bg-muted">

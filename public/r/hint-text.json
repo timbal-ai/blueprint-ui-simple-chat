@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hint-text",
+  "type": "registry:ui",
+  "title": "hint text",
+  "description": "Timbal blueprint ui: hint-text. Token-wired to the project design DNA.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "cx"
+  ],
+  "files": [
+    {
+      "path": "components/base/input/hint-text.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode, Ref } from \"react\";\nimport type { TextProps as AriaTextProps } from \"react-aria-components\";\nimport { Text as AriaText } from \"react-aria-components\";\nimport { cx } from \"@/utils/cx\";\n\n/**\n * Caption text rendered below a field. Wraps `react-aria-components`' Text\n * so the parent `TextField` automatically wires `aria-describedby` (when\n * `slot=\"description\"`) or `aria-errormessage` (when `slot=\"errorMessage\"`).\n *\n * Visuals come from Figma:\n *   - Inter Medium 12/16, letter-spacing 0.15px\n *   - color text/secondary (default) or text/error-primary (invalid)\n *   - 1px top padding to align with the field's bottom edge\n */\n\nexport interface HintTextProps extends AriaTextProps {\n  children: ReactNode;\n  isInvalid?: boolean;\n  ref?: Ref<HTMLElement>;\n}\n\nexport function HintText({\n  isInvalid = false,\n  className,\n  ...props\n}: HintTextProps) {\n  return (\n    <AriaText\n      slot={isInvalid ? \"errorMessage\" : \"description\"}\n      {...props}\n      className={cx(\n        \"pt-px text-caption-1-medium text-text-secondary\",\n        isInvalid && \"text-text-error-primary\",\n        className,\n      )}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "src/components/base/input/hint-text.tsx"
+    }
+  ]
+}

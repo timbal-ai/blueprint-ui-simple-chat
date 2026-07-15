@@ -21,23 +21,26 @@ import {
   MetadataGrid,
   RecordDetailHeader,
 } from "@/components/blocks/detail-panel";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Button } from "@/components/base/buttons/button";
+import { SECONDARY_CHROME } from "@/components/base/buttons/secondary-chrome";
+import { cx as cn } from "@/utils/cx";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableColumn,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/base/table/table";
+import { Tab, TabList, TabPanel, Tabs } from "@/components/base/tabs/tabs";
 
 /**
  * WorkspaceDetailPage — condensed infra/zone record detail (Cloudflare
@@ -85,32 +88,30 @@ const DEMO_DNS: DnsRecord[] = [
 
 const STATUS_BADGE: Record<
   Workspace["status"],
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  active: { label: "Active", variant: "success" },
-  pending: { label: "Pending", variant: "warning" },
-  paused: { label: "Paused", variant: "outline" },
+  active: { label: "Active", color: "lime" },
+  pending: { label: "Pending", color: "yellow" },
+  paused: { label: "Paused", color: "soft" },
 };
 
 function DnsTable({ records }: { records: DnsRecord[] }) {
   return (
-    <Table>
+    <Table aria-label="DNS records" size="sm">
       <TableHeader>
-        <TableRow>
-          <TableHead>Type</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Content</TableHead>
-          <TableHead>Proxy</TableHead>
-          <TableHead className="text-right">TTL</TableHead>
-        </TableRow>
+        <TableColumn isRowHeader>Type</TableColumn>
+        <TableColumn>Name</TableColumn>
+        <TableColumn>Content</TableColumn>
+        <TableColumn>Proxy</TableColumn>
+        <TableColumn className="text-right">TTL</TableColumn>
       </TableHeader>
       <TableBody>
         {records.map((record) => (
           <TableRow key={`${record.type}-${record.name}`}>
             <TableCell>
-              <Badge variant="outline" className="font-mono text-xs">
+              <Chip variant="caption" color="soft" className="font-mono">
                 {record.type}
-              </Badge>
+              </Chip>
             </TableCell>
             <TableCell className="font-medium">{record.name}</TableCell>
             <TableCell className="max-w-[12rem] truncate font-mono text-xs text-muted-foreground">
@@ -118,7 +119,7 @@ function DnsTable({ records }: { records: DnsRecord[] }) {
             </TableCell>
             <TableCell>
               {record.proxied ? (
-                <Badge variant="info">Proxied</Badge>
+                <Chip variant="caption" color="blue">Proxied</Chip>
               ) : (
                 <span className="text-sm text-muted-foreground">DNS only</span>
               )}
@@ -170,6 +171,11 @@ function WorkspaceDetailPage({
   onAction?: (action: string) => void;
 }) {
   const status = STATUS_BADGE[workspace.status];
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const selectMenuAction = (action: string) => {
+    setMenuOpen(false);
+    onAction?.(action);
+  };
 
   return (
     <PageBody className="mx-auto w-full max-w-3xl gap-10">
@@ -204,33 +210,43 @@ function WorkspaceDetailPage({
           subtitle={`Zone ID ${workspace.id}`}
           badges={
             <>
-              <Badge variant={status.variant}>{status.label}</Badge>
-              <Badge variant="secondary">{workspace.plan}</Badge>
+              <Chip variant="caption" color={status.color}>{status.label}</Chip>
+              <Chip variant="caption" color="gray">{workspace.plan}</Chip>
             </>
           }
           actions={
             <>
-              <Button variant="outline" size="sm" onClick={() => onAction?.("purge")}>
-                <RefreshIcon />
+              <Button
+                variant="secondary"
+                size="small"
+                leadingIcon={RefreshIcon}
+                onClick={() => onAction?.("purge")}
+              >
                 Purge cache
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon-sm" aria-label="More actions">
-                    <MoreHorizontalIcon />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => onAction?.("edit")}>
-                    <PencilIcon />
-                    Edit zone
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => onAction?.("copy-id")}>
-                    <CopyIcon />
-                    Copy zone ID
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Dropdown isOpen={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownTrigger
+                  aria-label="More actions"
+                  className={cn(
+                    "inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-foreground-icon-primary transition-colors [&_svg]:size-4",
+                    SECONDARY_CHROME,
+                  )}
+                >
+                  <MoreHorizontalIcon />
+                </DropdownTrigger>
+                <DropdownPopover aria-label="More actions" placement="bottom end" className="w-56">
+                  <DropdownGroup>
+                    <DropdownItem onSelect={() => selectMenuAction("edit")}>
+                      <PencilIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+                      <span className="text-body-medium text-text-primary">Edit zone</span>
+                    </DropdownItem>
+                    <DropdownItem onSelect={() => selectMenuAction("copy-id")}>
+                      <CopyIcon className="size-4 shrink-0 text-foreground-icon-secondary" />
+                      <span className="text-body-medium text-text-primary">Copy zone ID</span>
+                    </DropdownItem>
+                  </DropdownGroup>
+                </DropdownPopover>
+              </Dropdown>
             </>
           }
         />
@@ -248,60 +264,60 @@ function WorkspaceDetailPage({
         ]}
       />
 
-      <Tabs defaultValue="dns" className="gap-6">
-        <TabsList>
-          <TabsTrigger value="dns">DNS</TabsTrigger>
-          <TabsTrigger value="ssl">SSL</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
-        <TabsContent value="dns">
+      <Tabs defaultSelectedKey="dns" className="gap-6">
+        <TabList aria-label="Zone sections">
+          <Tab id="dns">DNS</Tab>
+          <Tab id="ssl">SSL</Tab>
+          <Tab id="security">Security</Tab>
+          <Tab id="analytics">Analytics</Tab>
+        </TabList>
+        <TabPanel id="dns">
           <DetailSection
             title="DNS records"
             action={
-              <Button variant="outline" size="sm" onClick={() => onAction?.("add-record")}>
+              <Button variant="secondary" size="small" onClick={() => onAction?.("add-record")}>
                 Add record
               </Button>
             }
           >
             <DnsTable records={dnsRecords} />
           </DetailSection>
-        </TabsContent>
-        <TabsContent value="ssl" className="flex flex-col gap-3">
+        </TabPanel>
+        <TabPanel id="ssl" className="flex flex-col gap-3">
           <SecurityRow
             icon={LockIcon}
             title="SSL/TLS encryption mode"
             description={workspace.sslMode}
-            status={<Badge variant="success">Enabled</Badge>}
+            status={<Chip variant="caption" color="lime">Enabled</Chip>}
           />
           <SecurityRow
             icon={ShieldIcon}
             title="Always use HTTPS"
             description="Redirect all HTTP requests to HTTPS"
-            status={<Badge variant="success">On</Badge>}
+            status={<Chip variant="caption" color="lime">On</Chip>}
           />
-        </TabsContent>
-        <TabsContent value="security" className="flex flex-col gap-3">
+        </TabPanel>
+        <TabPanel id="security" className="flex flex-col gap-3">
           <SecurityRow
             icon={ShieldIcon}
             title="Web Application Firewall"
             description="Managed ruleset blocking common threats"
-            status={<Badge variant="success">Active</Badge>}
+            status={<Chip variant="caption" color="lime">Active</Chip>}
           />
           <SecurityRow
             icon={BoltIcon}
             title="DDoS protection"
             description="Automatic L3/L4 mitigation"
-            status={<Badge variant="info">Always on</Badge>}
+            status={<Chip variant="caption" color="blue">Always on</Chip>}
           />
           <SecurityRow
             icon={ServerIcon}
             title="Bot fight mode"
             description="Challenge automated traffic"
-            status={<Badge variant="outline">Off</Badge>}
+            status={<Chip variant="caption" color="soft">Off</Chip>}
           />
-        </TabsContent>
-        <TabsContent value="analytics" className="flex flex-col gap-3">
+        </TabPanel>
+        <TabPanel id="analytics" className="flex flex-col gap-3">
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               { label: "Requests", value: "1.2M", icon: ActivityIcon },
@@ -320,7 +336,7 @@ function WorkspaceDetailPage({
               </div>
             ))}
           </div>
-        </TabsContent>
+        </TabPanel>
       </Tabs>
     </PageBody>
   );

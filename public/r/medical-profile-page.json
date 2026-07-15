@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "medical-profile-page",
+  "type": "registry:block",
+  "title": "medical profile page",
+  "description": "Timbal blueprint block: medical-profile-page. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@remixicon/react"
+  ],
+  "registryDependencies": [
+    "activity-rings-card",
+    "important-alerts-card",
+    "medical-data",
+    "most-active-days-card",
+    "page-body",
+    "page-header",
+    "patient-info-card",
+    "patients-table",
+    "sleep-score-card",
+    "steps-card",
+    "ui-button"
+  ],
+  "files": [
+    {
+      "path": "components/pages/medical-profile-page.tsx",
+      "content": "import { useState } from \"react\";\nimport { RiAddFill, RiFilter3Fill } from \"@remixicon/react\";\n\nimport { PageBody } from \"@/components/blocks/page-body\";\nimport { PageHeader } from \"@/components/blocks/page-header\";\nimport { ActivityRingsCard } from \"@/components/application/medical/activity-rings-card\";\nimport { ImportantAlertsCard } from \"@/components/application/medical/important-alerts-card\";\nimport type { SelectedDay } from \"@/components/application/medical/medical-data\";\nimport { MostActiveDaysCard } from \"@/components/application/medical/most-active-days-card\";\nimport { PatientInfoCard } from \"@/components/application/medical/patient-info-card\";\nimport { PatientsTable } from \"@/components/application/medical/patients-table\";\nimport { SleepScoreCard } from \"@/components/application/medical/sleep-score-card\";\nimport { StepsCard } from \"@/components/application/medical/steps-card\";\nimport { Button } from \"@/components/base/buttons/button\";\n\n/**\n * MedicalProfilePage — the BoardUI Pro \"Medical Report\" template (Figma\n * node 3950:5573), rehosted on the house shell grammar (`RoutedAppShell` +\n * `PageHeader`; the Pro template's own sidebar/header chrome is dropped).\n *\n * Rhythm: PageHeader with actions → a 3-per-row (2 at md, 1 stacked) grid\n * of six 330px cards — patient info, weekly steps (count-up + week\n * switcher), sleep score ring, most-active-days month calendar (click a\n * day…), activity rings (…and this card swaps to that day), important\n * alerts — then the patients table.\n *\n * The steps/sleep/rings/most-active cards are the BoardUI Pro versions\n * (application/medical/*) — richer than the house interactive-charts kit\n * for health verticals. Fork this page for patient/member/wellbeing\n * report screens.\n */\nexport function MedicalProfilePage({\n  onAction,\n}: {\n  onAction?: (action: string) => void;\n} = {}) {\n  // Selected calendar day — Most active days reports clicks here, and the\n  // Activity card swaps its rings/values to that day's data.\n  const [selectedDay, setSelectedDay] = useState<SelectedDay | null>({ month: 6, day: 10 });\n\n  return (\n    <PageBody>\n      <PageHeader\n        title=\"Medical profile\"\n        description=\"Patient vitals, activity, and care alerts.\"\n        actions={\n          <>\n            <Button\n              variant=\"secondary\"\n              size=\"medium\"\n              leadingIcon={RiFilter3Fill}\n              onClick={() => onAction?.(\"Filters\")}\n            >\n              Filters\n            </Button>\n            <Button\n              variant=\"primary\"\n              size=\"medium\"\n              leadingIcon={RiAddFill}\n              onClick={() => onAction?.(\"File a report\")}\n            >\n              File a report\n            </Button>\n          </>\n        }\n      />\n\n      {/* One grid for all six cards: 2-per-row at md with no empty cell,\n          3-per-row at xl (the Figma layout). */}\n      <div className=\"grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3\">\n        <PatientInfoCard />\n        <StepsCard />\n        <SleepScoreCard />\n        <MostActiveDaysCard selectedDay={selectedDay} onSelectDay={setSelectedDay} />\n        <ActivityRingsCard selectedDay={selectedDay} />\n        <ImportantAlertsCard />\n      </div>\n\n      <PatientsTable />\n    </PageBody>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/pages/medical-profile-page.tsx"
+    }
+  ]
+}

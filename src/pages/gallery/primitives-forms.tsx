@@ -8,12 +8,22 @@ import {
   UnderlineIcon,
 } from "@/components/icons";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import {
   ButtonGroup,
-  ButtonGroupText,
-} from "@/components/ui/button-group";
-import { Checkbox } from "@/components/ui/checkbox";
+  ButtonGroupItem,
+} from "@/components/base/buttons/button-group";
+import { IconButton } from "@/components/base/buttons/icon-button";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
+import { Input, InputBase } from "@/components/base/input/input";
+import { Radio, RadioGroup } from "@/components/base/radio/radio";
+import {
+  SegmentedControl,
+  SegmentedControlItem,
+} from "@/components/base/segmented-control/segmented-control";
+import { Select, SelectItem } from "@/components/base/select/select";
+import { Switch } from "@/components/base/switch/switch";
+
 import {
   Combobox,
   ComboboxCommand,
@@ -25,12 +35,6 @@ import {
   ComboboxTrigger,
 } from "@/components/ui/combobox";
 import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import {
   Form,
   FormControl,
   FormField,
@@ -38,12 +42,7 @@ import {
   FormMessage,
   FormSubmit,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Input as UiInput } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
@@ -51,18 +50,8 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Label as UiLabel } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Spinner } from "@/components/ui/spinner";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -74,70 +63,88 @@ const FRAMEWORKS = ["Next.js", "Vite", "Remix", "Astro", "Nuxt"];
 export default function GalleryForms() {
   const [framework, setFramework] = React.useState<string | null>(null);
   const [comboOpen, setComboOpen] = React.useState(false);
+  const [plan, setPlan] = React.useState<string | null>(null);
 
   return (
     <GalleryPage
       title="Forms & inputs"
-      description="Buttons, fields, and every input control — project-owned, DNA-token wired."
+      description="BoardUI buttons, fields, and selection controls, plus the retained form machinery."
     >
       <DemoGrid>
         <DemoCard title="Button">
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
+          <Button variant="danger">Delete</Button>
           <Button variant="ghost">Ghost</Button>
-          <Button variant="destructive">Delete</Button>
           <Button variant="link">Link</Button>
-          <Button disabled>
-            <Spinner />
-            Saving…
+          <Button disabled>Disabled</Button>
+          <Button size="small">Small</Button>
+          <Button size="xs">Extra small</Button>
+          <Button variant="secondary" leadingIcon={PlusIcon}>
+            New invoice
           </Button>
-          <Button size="sm">Small</Button>
-          <Button size="icon" variant="outline" aria-label="Add">
-            <PlusIcon />
-          </Button>
+          <Button iconOnly leadingIcon={PlusIcon} aria-label="Add" />
+          <IconButton icon={SearchIcon} size="small" aria-label="Search" />
         </DemoCard>
 
         <DemoCard title="Button group">
-          <ButtonGroup>
-            <Button variant="outline">Day</Button>
-            <Button variant="outline">Week</Button>
-            <Button variant="outline">Month</Button>
+          <ButtonGroup aria-label="Range">
+            <ButtonGroupItem selected>Day</ButtonGroupItem>
+            <ButtonGroupItem>Week</ButtonGroupItem>
+            <ButtonGroupItem>Month</ButtonGroupItem>
           </ButtonGroup>
-          <ButtonGroup>
-            <ButtonGroupText>https://</ButtonGroupText>
-            <Input placeholder="timbal.ai" className="rounded-l-none" />
+          <ButtonGroup size="small" aria-label="Formatting">
+            <ButtonGroupItem iconOnly leadingIcon={BoldIcon} aria-label="Bold" />
+            <ButtonGroupItem iconOnly leadingIcon={ItalicIcon} aria-label="Italic" />
+            <ButtonGroupItem iconOnly leadingIcon={UnderlineIcon} aria-label="Underline" />
           </ButtonGroup>
         </DemoCard>
 
-        <DemoCard title="Input & input group" contentClassName="flex-col items-stretch">
-          <Input placeholder="Plain input" aria-label="Plain input" />
-          <InputGroup>
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-            <InputGroupInput placeholder="Search…" aria-label="Search" />
-          </InputGroup>
-          <Input aria-invalid defaultValue="not-an-email" aria-label="Invalid input" />
+        <DemoCard title="Input" contentClassName="flex-col items-stretch">
+          <Input
+            label="Workspace name"
+            isRequired
+            placeholder="Acme Inc."
+            hint="Shown on invoices and emails."
+          />
+          <InputBase
+            aria-label="Search"
+            placeholder="Search"
+            leadingIcon={SearchIcon}
+            fieldClassName="rounded-full bg-background-secondary-default"
+          />
+          <Input
+            label="Email"
+            isInvalid
+            defaultValue="not-an-email"
+            hint="Not a valid email."
+          />
         </DemoCard>
 
         <DemoCard title="Textarea" contentClassName="flex-col items-stretch">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-notes">Notes</Label>
+            <UiLabel htmlFor="pf-notes">Notes</UiLabel>
             <Textarea id="pf-notes" placeholder="Anything we should know?" />
           </div>
         </DemoCard>
 
         <DemoCard title="Select">
-          <Select>
-            <SelectTrigger className="w-44" aria-label="Plan">
-              <SelectValue placeholder="Choose a plan" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="starter">Starter</SelectItem>
-              <SelectItem value="pro">Pro</SelectItem>
-              <SelectItem value="enterprise">Enterprise</SelectItem>
-            </SelectContent>
+          <Select
+            aria-label="Plan"
+            placeholder="Choose a plan"
+            className="w-44"
+            selectedKey={plan}
+            onSelectionChange={(k) => setPlan(k === null ? null : String(k))}
+          >
+            <SelectItem id="starter" textValue="Starter">
+              Starter
+            </SelectItem>
+            <SelectItem id="pro" textValue="Pro">
+              Pro
+            </SelectItem>
+            <SelectItem id="enterprise" textValue="Enterprise">
+              Enterprise
+            </SelectItem>
           </Select>
         </DemoCard>
 
@@ -171,24 +178,30 @@ export default function GalleryForms() {
         </DemoCard>
 
         <DemoCard title="Checkbox · Radio · Switch" contentClassName="flex-col items-start">
-          <div className="flex items-center gap-2">
-            <Checkbox id="pf-terms" defaultChecked />
-            <Label htmlFor="pf-terms">Email me a receipt</Label>
-          </div>
-          <RadioGroup defaultValue="monthly" className="flex gap-4">
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="monthly" id="pf-monthly" />
-              <Label htmlFor="pf-monthly">Monthly</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="yearly" id="pf-yearly" />
-              <Label htmlFor="pf-yearly">Yearly</Label>
-            </div>
+          <Checkbox defaultSelected>Email me a receipt</Checkbox>
+          <Checkbox isIndeterminate>Select all line items</Checkbox>
+          <RadioGroup
+            aria-label="Billing period"
+            defaultValue="monthly"
+            orientation="horizontal"
+            className="flex-row gap-4"
+          >
+            <Radio value="monthly">Monthly</Radio>
+            <Radio value="yearly">Yearly</Radio>
           </RadioGroup>
-          <div className="flex items-center gap-2">
-            <Switch id="pf-notify" defaultChecked />
-            <Label htmlFor="pf-notify">Weekly summary</Label>
-          </div>
+          <Switch defaultSelected>Weekly summary</Switch>
+          <Switch size="sm">Compact toggle</Switch>
+        </DemoCard>
+
+        <DemoCard title="Segmented control">
+          <SegmentedControl
+            aria-label="Reporting period"
+            defaultSelectedKeys={new Set(["monthly"])}
+          >
+            <SegmentedControlItem id="weekly">Weekly</SegmentedControlItem>
+            <SegmentedControlItem id="monthly">Monthly</SegmentedControlItem>
+            <SegmentedControlItem id="yearly">Yearly</SegmentedControlItem>
+          </SegmentedControl>
         </DemoCard>
 
         <DemoCard title="Slider" contentClassName="items-stretch">
@@ -229,16 +242,6 @@ export default function GalleryForms() {
           </InputOTP>
         </DemoCard>
 
-        <DemoCard title="Field" contentClassName="items-stretch">
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="pf-field-name">Workspace name</FieldLabel>
-              <Input id="pf-field-name" placeholder="Acme Inc." />
-              <FieldDescription>Shown on invoices and emails.</FieldDescription>
-            </Field>
-          </FieldGroup>
-        </DemoCard>
-
         <DemoCard title="Form (validation)" contentClassName="items-stretch">
           <Form
             className="flex w-full flex-col gap-4"
@@ -247,7 +250,7 @@ export default function GalleryForms() {
             <FormField name="email" className="flex flex-col gap-1.5">
               <FormLabel>Email</FormLabel>
               <FormControl asChild>
-                <Input type="email" required placeholder="you@company.com" />
+                <UiInput type="email" required placeholder="you@company.com" />
               </FormControl>
               <FormMessage match="valueMissing">Enter your email.</FormMessage>
               <FormMessage match="typeMismatch">Not a valid email.</FormMessage>

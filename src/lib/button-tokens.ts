@@ -29,10 +29,10 @@ export type TimbalV2Size = "xs" | "sm" | "md" | "lg";
 export const TIMBAL_V2_ELEVATED_GRADIENT =
   "bg-gradient-to-b from-elevated-from to-elevated-to";
 
-/** Opaque modal/dialog surface — elevated gradient without alpha bleed-through. */
+/** Opaque modal/dialog surface — BoardUI flat white panel (no gradient). */
 export const TIMBAL_V2_MODAL_SURFACE = cn(
-  "bg-gradient-to-b from-modal-from to-modal-to",
-  "border border-border shadow-card-elevated",
+  "bg-popover",
+  "border border-border-button-default shadow-dropdown",
 );
 
 /** Primary pill gradient (static — no hover group). */

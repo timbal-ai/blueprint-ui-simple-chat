@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronDownIcon } from "@/components/icons";
 
+import { SECONDARY_CHROME } from "@/components/base/buttons/secondary-chrome";
 import { controlClass, type ControlSize } from "@/lib/control-surface";
 import { cn } from "@/lib/utils";
 import {
@@ -40,6 +41,9 @@ function ComboboxTrigger({
       data-slot="combobox-trigger"
       className={cn(
         controlClass({ size }),
+        // Triggers are buttons — layer the shared secondary-button chrome
+        // over the flat field surface so it matches Selects/Buttons beside it.
+        SECONDARY_CHROME,
         "flex w-full items-center justify-between gap-2 whitespace-nowrap font-normal",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,

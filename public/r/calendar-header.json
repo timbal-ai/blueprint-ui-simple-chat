@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-header",
+  "type": "registry:block",
+  "title": "calendar header",
+  "description": "Timbal blueprint block: calendar-header. Token-wired to the project design DNA.",
+  "dependencies": [
+    "@internationalized/date",
+    "@remixicon/react"
+  ],
+  "registryDependencies": [
+    "avatar",
+    "breadcrumb",
+    "calendar-inbox-menu",
+    "calendar-month-switcher",
+    "icon-button",
+    "ui-button"
+  ],
+  "files": [
+    {
+      "path": "components/application/calendar/calendar-header.tsx",
+      "content": "import { RiAddFill, RiCalendarLine, RiMenuLine, RiNotificationLine } from \"@remixicon/react\";\nimport type { CalendarDate } from \"@internationalized/date\";\nimport { Avatar } from \"@/components/base/avatar/avatar\";\nimport { Breadcrumb, BreadcrumbItem } from \"@/components/base/breadcrumb/breadcrumb\";\nimport { Button } from \"@/components/base/buttons/button\";\nimport { IconButton } from \"@/components/base/buttons/icon-button\";\nimport { CalendarInboxMenu } from \"@/components/application/calendar/calendar-inbox-menu\";\nimport { CalendarMonthSwitcher } from \"@/components/application/calendar/calendar-month-switcher\";\n\n/**\n * Figma source: Board UI → \"calendar_view\" → Frame 60 (node 3905:9200).\n *\n * Breadcrumb (Board team → Mertcan → Calendar) + a title/actions row: month\n * label, notification bell (unread badge, same recipe as `DashboardHeader`),\n * inbox, the month switcher (`CalendarMonthSwitcher` — enlarges in place\n * rather than opening node 3906:9797's own popover), and the primary\n * \"New event\" button.\n */\n\nexport function CalendarHeader({\n  month,\n  monthLabel,\n  onPrevMonth,\n  onNextMonth,\n  onSelectDate,\n  unreadCount = 5,\n  onMenuClick,\n  onNewEvent,\n  showBreadcrumb = true,\n}: {\n  month: CalendarDate;\n  monthLabel: string;\n  onPrevMonth: () => void;\n  onNextMonth: () => void;\n  onSelectDate: (date: CalendarDate) => void;\n  unreadCount?: number;\n  onMenuClick?: () => void;\n  onNewEvent?: () => void;\n  /** Hide the workspace breadcrumb — used by the docs preview, which shows\n   *  the calendar standalone without the surrounding app shell. */\n  showBreadcrumb?: boolean;\n}) {\n  return (\n    <header className=\"flex w-full flex-col gap-1\">\n      {/* Breadcrumb */}\n      {showBreadcrumb && (\n        <Breadcrumb>\n          <BreadcrumbItem href=\"#\">\n            <Avatar size=\"xs\" color=\"blue\" initials=\"B\" />\n            Board team\n          </BreadcrumbItem>\n          <BreadcrumbItem href=\"#\">\n            <Avatar size=\"xs\" color=\"neutral\" initials=\"M\" />\n            Mertcan\n          </BreadcrumbItem>\n          <BreadcrumbItem current icon={RiCalendarLine}>\n            Calendar\n          </BreadcrumbItem>\n        </Breadcrumb>\n      )}\n\n      {/* Title + actions */}\n      <div className=\"flex w-full flex-wrap items-end justify-between gap-2\">\n        <div className=\"flex min-w-0 items-center gap-1.5\">\n          {onMenuClick && (\n            <IconButton\n              icon={RiMenuLine}\n              size=\"medium\"\n              aria-label=\"Open navigation\"\n              onClick={onMenuClick}\n              className=\"lg:hidden\"\n            />\n          )}\n          <h1 className=\"px-1 text-title-2-medium whitespace-nowrap text-text-primary\">\n            {monthLabel}\n          </h1>\n        </div>\n\n        <div className=\"flex flex-wrap items-start justify-end gap-2.5\">\n          <span className=\"relative inline-flex\">\n            <IconButton icon={RiNotificationLine} size=\"medium\" aria-label=\"Notifications\" />\n            {unreadCount > 0 && (\n              <span className=\"absolute top-0.5 left-[18px] flex size-4 items-center justify-center rounded-full border-[1.5px] border-white bg-red-600\">\n                <span className=\"w-4 text-center text-[10px] leading-4 font-bold text-white\">\n                  {unreadCount}\n                </span>\n              </span>\n            )}\n          </span>\n\n          <CalendarInboxMenu />\n\n          <CalendarMonthSwitcher\n            month={month}\n            monthLabel={monthLabel}\n            onPrevMonth={onPrevMonth}\n            onNextMonth={onNextMonth}\n            onSelectDate={onSelectDate}\n          />\n\n          <Button variant=\"primary\" size=\"medium\" leadingIcon={RiAddFill} onClick={onNewEvent}>\n            New event\n          </Button>\n        </div>\n      </div>\n    </header>\n  );\n}\n",
+      "type": "registry:block",
+      "target": "src/components/application/calendar/calendar-header.tsx"
+    }
+  ]
+}

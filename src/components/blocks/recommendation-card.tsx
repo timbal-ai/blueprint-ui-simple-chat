@@ -1,8 +1,9 @@
 import * as React from "react";
 import { CheckIcon, PencilIcon, XIcon } from "@/components/icons";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/base/badges/chip";
+import { Button } from "@/components/base/buttons/button";
+import { IconButton } from "@/components/base/buttons/icon-button";
 import { Card } from "@/components/ui/card";
 
 /**
@@ -27,11 +28,11 @@ interface Recommendation {
 
 const PRIORITY_META: Record<
   Recommendation["priority"],
-  { label: string; variant: React.ComponentProps<typeof Badge>["variant"] }
+  { label: string; color: React.ComponentProps<typeof Chip>["color"] }
 > = {
-  high: { label: "High", variant: "success" },
-  medium: { label: "Medium", variant: "warning" },
-  low: { label: "Low", variant: "outline" },
+  high: { label: "High", color: "lime" },
+  medium: { label: "Medium", color: "yellow" },
+  low: { label: "Low", color: "soft" },
 };
 
 function RecommendationCard({
@@ -53,9 +54,9 @@ function RecommendationCard({
         <h3 className="text-[17px] leading-snug font-medium tracking-tight text-foreground">
           {recommendation.title}
         </h3>
-        <Badge variant={priority.variant} className="mt-0.5 rounded-full px-2.5">
+        <Chip variant="caption" color={priority.color} className="mt-0.5 rounded-full px-2.5">
           {priority.label}
-        </Badge>
+        </Chip>
       </div>
       <p className="px-5 pt-2 pb-4 text-sm leading-relaxed text-muted-foreground">
         {recommendation.summary}
@@ -69,24 +70,27 @@ function RecommendationCard({
         ))}
       </div>
       <div className="flex items-center gap-2 border-t border-border p-3">
-        <Button
-          variant="outline"
-          size="icon"
+        <IconButton
+          icon={PencilIcon}
+          size="small"
           aria-label="Edit recommendation"
           onClick={() => onEdit?.(recommendation)}
-        >
-          <PencilIcon />
-        </Button>
+        />
         <Button
-          variant="outline"
+          variant="secondary"
+          size="small"
+          leadingIcon={XIcon}
           className="flex-1"
           onClick={() => onDismiss?.(recommendation)}
         >
-          <XIcon />
           Dismiss
         </Button>
-        <Button className="flex-1" onClick={() => onApprove?.(recommendation)}>
-          <CheckIcon />
+        <Button
+          size="small"
+          leadingIcon={CheckIcon}
+          className="flex-1"
+          onClick={() => onApprove?.(recommendation)}
+        >
           Approve
         </Button>
       </div>
