@@ -38,3 +38,4 @@ src/pages/dev/
 
 # Screenshot smoke output (CI uploads these as artifacts; never committed)
 screenshots/
+screenshots-*/
