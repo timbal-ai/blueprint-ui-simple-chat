@@ -19,10 +19,9 @@ import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-
  * The same recipe powers the dashboard sidebar's team/account menus and the
  * AI chat template's add/model/folder menus:
  *
- * - Panel: white, 1px border/button/default, radius 12, p 6, shadow/dropdown
- *   (condensed from the Figma p-10/radius-16 — house density).
+ * - Panel: white, 1px border/button/default, radius 16, p 10, shadow/dropdown.
  * - Appear animation: 150ms fade + scale-95 + 2px blur in and out.
- * - Rows: rounded-lg px-2 py-1.5, background/primary/hover on hover and on the selected
+ * - Rows: rounded-2lg, background/primary/hover on hover and on the selected
  *   row, body-medium labels.
  *
  * Composition:
@@ -82,7 +81,6 @@ export function Dropdown({ isOpen: controlledOpen, onOpenChange, children }: Dro
 
   useDismissOnOutsidePress(isOpen, () => setOpen(false), [triggerRef, popoverRef]);
   // Pressing the trigger while open closes the menu instead of reopening
-  // (upstream BoardUI fix — see utils/use-dismiss-on-outside-press.ts).
   const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
 
   return (
@@ -139,8 +137,12 @@ export function DropdownPopover({
       offset={offset}
       crossOffset={crossOffset}
       className={cx(
+        // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none` on
+        // <body>; this popover portals under <body>, so it must restore its
+        // own pointer events or the menu is dead inside a modal.
+        "pointer-events-auto",
         "w-[266px] max-w-[calc(100vw-32px)] overflow-y-auto",
-        "rounded-xl border border-border-button-default bg-background-primary-default p-1.5 shadow-dropdown",
+        "rounded-2xl border border-border-button-default bg-background-primary-default p-2.5 shadow-dropdown",
         "transition duration-150 ease-out",
         "data-[entering]:opacity-0 data-[entering]:scale-95 data-[entering]:blur-[2px]",
         "data-[exiting]:opacity-0 data-[exiting]:scale-95 data-[exiting]:blur-[2px]",
@@ -169,9 +171,9 @@ export interface DropdownGroupProps {
 
 export function DropdownGroup({ label, className, children }: DropdownGroupProps) {
   return (
-    <div className={cx("flex w-full flex-col gap-1 pt-0.5", className)}>
+    <div className={cx("flex w-full flex-col gap-1.5 pt-1", className)}>
       {label && <span className="pl-2 text-body-medium text-text-secondary">{label}</span>}
-      <div className="flex w-full flex-col gap-0.5">{children}</div>
+      <div className="flex w-full flex-col gap-1">{children}</div>
     </div>
   );
 }
@@ -180,7 +182,7 @@ export interface DropdownItemProps {
   /** Highlights the row like the hover state (current selection). */
   selected?: boolean;
   onSelect?: () => void;
-  /** Row padding defaults to px-2 py-1.5 — override for roomier rows (p-2). */
+  /** Row padding defaults to p-2 — override for denser rows (px-2 py-1.5). */
   className?: string;
   children: ReactNode;
 }
@@ -196,7 +198,7 @@ export function DropdownItem({ selected, onSelect, className, children }: Dropdo
       aria-pressed={selected}
       onClick={onSelect}
       className={cx(
-        "flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-left outline-none transition-colors",
+        "flex w-full cursor-pointer items-center gap-2 rounded-2lg p-2 text-left outline-none transition-colors",
         selected
           ? "bg-background-primary-hover"
           : "hover:bg-background-primary-hover focus-visible:bg-background-primary-hover",
@@ -210,5 +212,5 @@ export function DropdownItem({ selected, onSelect, className, children }: Dropdo
 
 /** Full-bleed 1px divider between groups (bleeds through the panel's p-2.5). */
 export function DropdownDivider({ className }: { className?: string }) {
-  return <div className={cx("-mx-1.5 my-1.5 h-px shrink-0 bg-border-button-default", className)} />;
+  return <div className={cx("-mx-2.5 my-2.5 h-px shrink-0 bg-border-button-default", className)} />;
 }

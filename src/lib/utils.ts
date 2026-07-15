@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
-import { twMergeWithTextStyles } from "@/utils/cx"
+import { cx } from "@/utils/cx"
 
 /**
  * Detects if the application is running inside an iframe
@@ -13,7 +13,7 @@ export const isEmbedded = typeof window !== 'undefined' && window.self !== windo
  * from styles/typography.css register as font-size, not text color).
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMergeWithTextStyles(clsx(inputs))
+  return cx(clsx(inputs))
 }
 
 /**

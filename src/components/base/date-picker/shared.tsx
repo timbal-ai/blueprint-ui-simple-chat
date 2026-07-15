@@ -13,10 +13,6 @@ import {
 } from "react-aria-components";
 import type { CalendarCellRenderProps } from "react-aria-components";
 import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
-import {
-  SECONDARY_CHROME,
-  SECONDARY_DISABLED,
-} from "@/components/base/buttons/secondary-chrome";
 import { cx } from "@/utils/cx";
 
 /**
@@ -144,7 +140,7 @@ export function DayCell(props: CalendarCellRenderProps & { isRange: boolean }) {
             isEdge ? "opacity-100" : "opacity-0",
           )}
         />
-        <span className={cx("relative text-body-medium text-text-primary", isDisabled && "text-text-tertiary")}>
+        <span className={cx("relative text-body-medium text-black", isDisabled && "text-text-tertiary")}>
           {formattedDate}
         </span>
       </div>
@@ -199,7 +195,7 @@ export function MonthPanel({
             ) : (
               <span className="size-4" aria-hidden />
             )}
-            <span className="flex-1 text-center text-body-medium text-text-primary">{title}</span>
+            <span className="flex-1 text-center text-body-medium text-black">{title}</span>
             {showNext ? (
               <RACButton
                 slot="next"
@@ -284,20 +280,22 @@ export function DateChipInput({
 }
 
 /** Shared trigger-button chrome for both pickers (Figma's "Primary" button —
- *  calendar icon + formatted-value text, radius/2lg) — carries the shared
- *  secondary-button chrome so it matches Buttons/Selects beside it. */
+ *  calendar icon + formatted-value text, white surface, radius/2lg). */
 export const triggerButtonClassName = cx(
-  "inline-flex shrink-0 cursor-pointer items-center gap-0.5 rounded-2lg p-2 outline-none",
-  SECONDARY_CHROME,
-  SECONDARY_DISABLED,
+  "inline-flex shrink-0 cursor-pointer items-center gap-0.5 rounded-2lg border border-border-button-default bg-background-primary-default p-2 shadow-xs outline-none",
   "transition-[background-color,border-color,box-shadow] duration-150 ease",
+  "hover:bg-background-primary-hover hover:border-border-button-hover",
   "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
-  "disabled:cursor-not-allowed disabled:text-text-tertiary",
+  "disabled:cursor-not-allowed disabled:bg-background-primary-disabled disabled:text-text-tertiary disabled:shadow-none",
 );
 
 /** Shared popover chrome (Figma's rounded/3xl, background/secondary/default
  *  "Calendar component" surface) for both pickers. */
 export const popoverClassName = cx(
+  // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none` on <body>;
+  // popovers portal under <body>, so they must restore their own pointer
+  // events or the calendar is dead inside a modal.
+  "pointer-events-auto",
   "origin-top rounded-3xl bg-background-secondary-default shadow-dropdown",
   "transition duration-150 ease-out",
   "data-[entering]:opacity-0 data-[entering]:scale-95 data-[entering]:blur-[2px]",

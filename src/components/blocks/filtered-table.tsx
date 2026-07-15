@@ -154,7 +154,10 @@ function FilteredTable<TData, TValue>({
     // Pagination footer.
     <section
       className={cn(
-        "flex w-full min-w-0 flex-col rounded-2xl border border-border-button-default bg-card pt-2 pb-3",
+        // pb only when the pagination footer renders — without it the card
+        // border is the bottom rule (last row border is dropped in
+        // globals.css) and extra padding would read as a stray blank band.
+        "flex w-full min-w-0 flex-col rounded-2xl border border-border-button-default bg-card pt-2 pb-0 has-[[data-slot=table-pagination]]:pb-3",
         className,
       )}
     >
@@ -410,7 +413,7 @@ function DataTable<TData, TValue>({
       </Table>
       {/* Native BoardUI footer: Previous | numbered pages | Next, inside the card. */}
       {pagination && !loading && pageCount > 1 ? (
-        <div className="px-3 pt-3">
+        <div data-slot="table-pagination" className="px-3 pt-3">
           <Pagination
             page={pageIndex + 1}
             totalPages={pageCount}

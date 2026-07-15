@@ -321,6 +321,7 @@ export function DataTableExample({
   return (
     <div className="flex w-full flex-col items-center gap-5">
     <section
+      data-slot="data-table"
       className={cx(
         "flex w-full flex-col rounded-2xl border border-border-button-default pt-2",
         totalPages > 1 ? "pb-3" : "pb-0",
@@ -481,7 +482,7 @@ export function DataTableExample({
 
       {/* Pagination footer */}
       {totalPages > 1 && (
-        <div className="px-3 pt-3">
+        <div data-slot="table-pagination" className="px-3 pt-3">
           <Pagination
             page={pagination.pageIndex + 1}
             totalPages={totalPages}

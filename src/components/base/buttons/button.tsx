@@ -5,10 +5,6 @@ import type {
   Ref,
 } from "react";
 import { cx, sortCx } from "@/utils/cx";
-import {
-  SECONDARY_CHROME,
-  SECONDARY_DISABLED,
-} from "@/components/base/buttons/secondary-chrome";
 
 /**
  * Figma source: Board UI → Buttons (node 3656:13819).
@@ -47,9 +43,10 @@ import {
  */
 
 /**
- * Project extension (2026-07-14): `ghost` (borderless toolbar/quiet action)
- * and `link` (inline text action) tiers — BoardUI ships neither, this app
- * needs both everywhere. Styled strictly with BoardUI semantic tokens.
+ * Project extension (2026-07-14, re-applied after the 2026-07-15 upstream
+ * overwrite): `ghost` (borderless toolbar/quiet action) and `link` (inline
+ * text action) tiers — BoardUI ships neither, this app needs both
+ * everywhere. Styled strictly with BoardUI semantic tokens.
  */
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "link";
 type ButtonSize = "medium" | "small" | "xs";
@@ -111,30 +108,24 @@ const styles = sortCx({
   },
 
   variant: {
-    // Filled tiers keep BoardUI's gradient and add the soft drop (house finish).
     primary: [
-      "bg-button-primary text-foreground-full",
-      "shadow-[0_1px_2px_0_rgb(0_0_0/0.14),0_2px_4px_-2px_rgb(0_0_0/0.10)]",
+      "bg-button-primary text-foreground-full shadow-xs",
       "disabled:text-foreground-disabled disabled:shadow-none",
       "aria-disabled:text-foreground-disabled aria-disabled:shadow-none",
     ].join(" "),
     danger: [
-      "bg-button-danger text-foreground-full",
-      "shadow-[0_1px_2px_0_rgb(0_0_0/0.14),0_2px_4px_-2px_rgb(0_0_0/0.10)]",
+      "bg-button-danger text-foreground-full shadow-xs",
       "disabled:text-foreground-disabled-danger disabled:shadow-none",
       "aria-disabled:text-foreground-disabled-danger aria-disabled:shadow-none",
     ].join(" "),
-    // Project extension (2026-07-14): secondary carries a SUBTLE top-lit
-    // gradient + soft drop shadow (house finish) instead of BoardUI's flat
-    // white. The recipe lives in `secondary-chrome.ts` and is shared by
-    // EVERY button-like control (Select trigger, date-picker trigger,
-    // ButtonGroup, pagination…) so toolbars never mix two surfaces.
-    secondary: cx(
-      "text-text-primary",
-      SECONDARY_CHROME,
-      SECONDARY_DISABLED,
-      "disabled:text-text-tertiary aria-disabled:text-text-tertiary",
-    ),
+    secondary: [
+      "bg-background-primary-default text-text-primary",
+      "border border-border-button-default shadow-xs",
+      "hover:bg-background-primary-hover  hover:border-border-button-hover",
+      "active:bg-background-primary-active active:border-border-button-active",
+      "disabled:bg-background-primary-disabled disabled:border-border-button-default disabled:text-text-tertiary disabled:shadow-none",
+      "aria-disabled:bg-background-primary-disabled aria-disabled:border-border-button-default aria-disabled:text-text-tertiary aria-disabled:shadow-none",
+    ].join(" "),
     ghost: [
       "bg-transparent text-text-secondary",
       "hover:bg-background-primary-hover hover:text-text-primary",

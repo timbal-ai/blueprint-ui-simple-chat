@@ -1,4 +1,3 @@
-import { clsx, type ClassValue } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
 /**
@@ -34,7 +33,7 @@ const TEXT_STYLE_SUFFIXES = TEXT_FAMILIES.flatMap((family) =>
   TEXT_WEIGHTS.map((weight) => `${family}-${weight}`),
 );
 
-export const twMergeWithTextStyles = extendTailwindMerge({
+const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       "font-size": [{ text: TEXT_STYLE_SUFFIXES }],
@@ -44,11 +43,8 @@ export const twMergeWithTextStyles = extendTailwindMerge({
 
 /**
  * Merge Tailwind classes safely. Last-write-wins on conflicting utilities.
- * Accepts clsx-style conditional inputs, same as `cn`.
  */
-export function cx(...inputs: ClassValue[]) {
-  return twMergeWithTextStyles(clsx(inputs));
-}
+export const cx = twMerge;
 
 /**
  * Identity helper that gives the Tailwind IntelliSense extension a hook for

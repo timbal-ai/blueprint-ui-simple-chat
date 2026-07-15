@@ -31,11 +31,10 @@ export function useDismissOnOutsidePress(
 }
 
 /**
- * Companion fix for the same `isNonModal` popovers (upstream BoardUI fix,
- * adopted 2026-07-15): pressing the trigger while the popover is open should
- * close it (toggle), but React Aria fires `onOpenChange(false)` immediately
- * followed by `onOpenChange(true)` within the same press, so the popover
- * never actually closes.
+ * Companion fix for the same `isNonModal` popovers: pressing the trigger
+ * while the popover is open should close it (toggle), but React Aria fires
+ * `onOpenChange(false)` immediately followed by `onOpenChange(true)` within
+ * the same press, so the popover never actually closes.
  *
  * This watches for a pointerdown on the trigger while open and swallows the
  * spurious reopen that follows. Wire the returned guard into the component's

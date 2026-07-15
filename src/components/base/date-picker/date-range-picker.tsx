@@ -221,7 +221,6 @@ export function DateRangePicker({
   const popoverRef = useRef<HTMLElement>(null);
   useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
   // Pressing the trigger while open closes the popover instead of reopening
-  // (upstream BoardUI fix — same guard as base/select and base/dropdown).
   const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
 
   return (

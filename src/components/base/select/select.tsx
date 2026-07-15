@@ -15,10 +15,6 @@ import type {
   SelectProps as AriaSelectProps,
   SelectValueRenderProps as AriaSelectValueRenderProps,
 } from "react-aria-components";
-import {
-  SECONDARY_CHROME,
-  SECONDARY_DISABLED,
-} from "@/components/base/buttons/secondary-chrome";
 import { ChevronDownSmall } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
 import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-on-outside-press";
@@ -83,12 +79,8 @@ export function Select<T extends object>({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  // Unlike the DialogTrigger-based popovers (dropdown, date pickers), RAC
-  // Select opens via useMenuTrigger's onPressStart (`state.open()`, never a
-  // toggle) — so the trigger must NOT be whitelisted here: pressing it while
-  // open counts as an outside press (dismiss), and useTriggerToggle below
-  // swallows the reopen that the same press would otherwise cause.
-  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [popoverRef]);
+  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
+  // Pressing the trigger while open closes the popover instead of reopening
   const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
 
   return (
@@ -105,14 +97,12 @@ export function Select<T extends object>({
             ref={triggerRef}
             className={cx(
               "flex w-full cursor-pointer items-center justify-between rounded-2lg",
-              // Shared secondary-button chrome — the trigger must be
-              // indistinguishable from a secondary Button beside it.
-              SECONDARY_CHROME,
-              SECONDARY_DISABLED,
+              "border border-border-button-default bg-background-primary-default shadow-xs",
               "text-text-primary",
               "transition-[background-color,border-color,box-shadow,padding,font-size] duration-200 ease",
+              "hover:bg-background-primary-hover hover:border-border-button-hover",
               "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
-              "disabled:cursor-not-allowed disabled:text-text-tertiary",
+              "disabled:cursor-not-allowed disabled:bg-background-primary-disabled disabled:text-text-tertiary disabled:shadow-none",
               size === "sm"
                 ? "gap-1 px-[7px] py-1 text-body-2-medium"
                 : "gap-1.5 px-2.5 py-2 text-body-medium",
@@ -140,6 +130,11 @@ export function Select<T extends object>({
             isNonModal
             offset={2}
             className={cx(
+              // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none`
+              // on <body> while open; this popover portals under <body>, so
+              // it must restore its own pointer events or every option is
+              // dead inside a modal.
+              "pointer-events-auto",
               "min-w-(--trigger-width) origin-top overflow-auto rounded-2lg",
               "border border-border-button-default bg-background-primary-default p-1 shadow-sidebar",
               "transition duration-150 ease-out",
@@ -170,9 +165,7 @@ export function SelectItem({ className, children, ...props }: SelectItemProps) {
       className={(state) =>
         cx(
           "flex cursor-pointer items-center rounded-md text-text-primary outline-none",
-          // Condensed rows (2026-07-14): py-1.5 instead of the Figma py-2 —
-          // matches the condensed dropdown density.
-          size === "sm" ? "gap-1 px-2 py-1 text-body-2-medium" : "gap-[5px] px-2.5 py-1.5 text-body-medium",
+          size === "sm" ? "gap-1 px-2 py-1.5 text-body-2-medium" : "gap-[5px] px-2.5 py-2 text-body-medium",
           state.isFocused && "bg-background-primary-hover",
           state.isSelected && "bg-background-secondary-default",
           state.isDisabled && "cursor-not-allowed text-text-disabled",

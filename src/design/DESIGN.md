@@ -35,6 +35,25 @@ cool categorical chart ramp. The kit must scale to different domains and
   legacy `ui/` primitives remain only where BoardUI has no equivalent
   (dialog, sheet, drawer, popover, command, card, form, charts …).
 
+## BoardUI upstream refresh + modal popover fix (2026-07-15)
+
+- `npx boardui add select dropdown date-range-picker --overwrite` re-synced
+  `base/select`, `base/dropdown`, `base/buttons/button`, `base/date-picker/*`,
+  `foundations/icons/chevrons`, `utils/cx`, `utils/use-dismiss-on-outside-press`
+  to upstream. Re-applied local extensions upstream doesn't ship: Button
+  `ghost` + `link` variants (used across blocks/pages). `cx` no longer wraps
+  clsx (tailwind-merge handles conditional arrays natively); `cn` (lib/utils)
+  now composes `clsx` + the exported `cx`.
+- Upstream select/dropdown drops the `SECONDARY_CHROME` gradient trigger for
+  the flat BoardUI white surface (`secondary-chrome.ts` still exists for the
+  components that use it).
+- **Popovers inside Radix modals:** Dialog/Sheet/Drawer set
+  `pointer-events: none` on `<body>` while open; React Aria popovers
+  (`isNonModal`) portal under `<body>` and inherited it — every option was
+  click-dead inside a modal. All three popover surfaces (`base/select`,
+  `base/dropdown`, date-picker `popoverClassName` in `shared.tsx`) now carry
+  `pointer-events-auto`. Keep this class when re-syncing from upstream.
+
 ## BoardUI Pro adoption (2026-07-15)
 
 - The purchased BoardUI Pro kit is merged in, project-owned:
