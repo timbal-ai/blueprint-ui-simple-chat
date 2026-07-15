@@ -415,6 +415,10 @@ function NavScrollArea({ children }: { children: React.ReactNode }) {
       className={cn(
         "flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto",
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        // Gutter INSIDE the scroll container: overflow clipping otherwise
+        // amputates the selected item's 1px ring (shadow-nav-selected) and
+        // focus rings at the container edges.
+        "-m-1 p-1",
       )}
     >
       {children}
