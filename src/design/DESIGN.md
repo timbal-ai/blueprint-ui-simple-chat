@@ -302,6 +302,16 @@ Change any of this in `dna.json`, then run `bun run dna:compile`.
   (`blocks/interactive-charts`) — the Beacon legend rows (gradient tone
   pill, big number + caption, View action) with no Pro equivalent, kept
   and showcased on /gallery/charts.
+- **Loading states = skeletons by default (user direction 2026-07-15, "we
+  use skeletons by default").** Any page/section gated on data renders a
+  skeleton of the grammar it's about to show — `blocks/page-skeleton`
+  (`PageSkeleton` full page; `PageHeaderSkeleton`/`StatGridSkeleton`/
+  `TableSkeleton`/`CardSkeleton` per band) or `FilteredTable`'s `loading`
+  prop for a mounted table. Never "…"/"Loading…" text, never a bare
+  Spinner for content (Spinner remains only for chat runtime bootstrap —
+  EmbeddedChat/AssistantPill — and inline button actions).
+  `RoutedAppShell`'s lazy-route Suspense fallback switched from the
+  centered Spinner to `PageSkeleton` the same day.
 - **Sign out (SidebarUser):** the account dropdown always ends with a
   destructive Sign out item (LogOutIcon). Apps wire `onSignOut` (falls
   back to `onSelect("sign-out")`) — the entry ships by default so the

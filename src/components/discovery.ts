@@ -343,6 +343,23 @@ const INTENT_INDEX: IntentMatch[] = [
   },
   {
     triggers: [
+      "loading state",
+      "skeleton",
+      "loading placeholder",
+      "suspense fallback",
+      "data loading",
+      "loading spinner",
+      "shimmer",
+    ],
+    kind: "block",
+    target: "page-skeleton",
+    importFrom: "@/components/blocks/page-skeleton",
+    exports: ["PageSkeleton", "PageHeaderSkeleton", "StatGridSkeleton", "TableSkeleton", "CardSkeleton"],
+    insteadOf:
+      "A centered Spinner, '…'/'Loading…' text, or blank space while page data loads — skeletons are the house default",
+  },
+  {
+    triggers: [
       "page title",
       "page header",
       "breadcrumb",
@@ -582,6 +599,11 @@ const DO_NOT_BUILD: { wrong: string; use: string; importFrom: string }[] = [
     wrong: "Hand-rolled app layout (sidebar div + main div)",
     use: "RoutedAppShell or AppShell",
     importFrom: "@/components/blocks/routed-app-shell",
+  },
+  {
+    wrong: "Spinner, '…'/'Loading…' text, or blank space while page data loads",
+    use: "PageSkeleton / PageHeaderSkeleton / StatGridSkeleton / TableSkeleton / CardSkeleton — skeletons by default",
+    importFrom: "@/components/blocks/page-skeleton",
   },
   {
     wrong: "Search + filter toolbar + table",

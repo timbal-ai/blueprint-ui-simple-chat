@@ -27,6 +27,7 @@ export * from "./media-card";
 export * from "./pdf-viewer";
 export * from "./page-header";
 export * from "./page-body";
+export * from "./page-skeleton";
 export * from "./recommendation-card";
 export * from "./resource-grid";
 export * from "./routed-app-shell";

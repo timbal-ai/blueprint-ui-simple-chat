@@ -308,7 +308,15 @@ chat reference), not by reimplementing the thread.
 - **Fork, don't fight.** If a block is 80% right, fork the file and adjust —
   don't rebuild the pattern from primitives.
 - **Empty/loading/error states are part of every screen** — `EmptyState`,
-  `Skeleton`, `Alert`, `Spinner` exist for this.
+ `Skeleton`, `Alert`, `Spinner` exist for this. **Loading = skeletons by
+ default (hard rule).** While page or section data loads, render the
+ skeleton of what's coming: `PageSkeleton` (or `PageHeaderSkeleton`/
+ `StatGridSkeleton`/`TableSkeleton`/`CardSkeleton`) from
+ `blocks/page-skeleton`, or `FilteredTable`'s `loading` prop for a mounted
+ table. NEVER "…"/"Loading…" text placeholders, and never a bare `Spinner`
+ for page/section content — `Spinner` is only for chat runtime bootstrap
+ and inline button-level actions. `RoutedAppShell`'s Suspense fallback is
+ already `PageSkeleton`.
 - **Responsive by default:** 375 px must work. The sidebar collapses to a
   sheet, `DataTable` scrolls in its container, `StatGrid` stacks.
 

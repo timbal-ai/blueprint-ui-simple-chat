@@ -34,6 +34,24 @@ const BLOCKS_CATALOG: Record<string, BlockEntry> = {
     ],
     composes: ["lib/page-inset"],
   },
+  "page-skeleton": {
+    importFrom: "@/components/blocks/page-skeleton",
+    exports: [
+      "PageSkeleton",
+      "PageHeaderSkeleton",
+      "StatGridSkeleton",
+      "StatSkeleton",
+      "TableSkeleton",
+      "CardSkeleton",
+    ],
+    purpose:
+      "THE house loading state — skeletons by default, always. While page data (or a lazy route chunk) loads, render PageSkeleton (header band → KPI tiles → table card; tune stats/tableRows, 0 hides a band) or the per-band pieces (PageHeaderSkeleton, StatGridSkeleton, TableSkeleton, CardSkeleton) for partially-async pages. NEVER text placeholders ('…', 'Loading…') and never a bare Spinner for page/section content — Spinner is only for chat runtime bootstrap and inline button-level actions. RoutedAppShell already uses PageSkeleton as its Suspense fallback; FilteredTable skeletons its own rows via its `loading` prop.",
+    useWhen: [
+      "Any page/section that fetches data before it can render — gate on it with PageSkeleton or a band piece, not a spinner or dots",
+      "Suspense fallbacks for lazy-loaded pages",
+    ],
+    composes: ["ui/skeleton", "blocks/page-body"],
+  },
   "routed-app-shell": {
     importFrom: "@/components/blocks/routed-app-shell",
     exports: ["RoutedAppShell"],

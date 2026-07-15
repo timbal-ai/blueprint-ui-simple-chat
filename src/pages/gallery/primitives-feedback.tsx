@@ -2,6 +2,11 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/base/buttons/button";
+import {
+  PageHeaderSkeleton,
+  StatGridSkeleton,
+  TableSkeleton,
+} from "@/components/blocks/page-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -52,6 +57,23 @@ export default function GalleryFeedback() {
           <div className="flex items-center gap-2 pt-1 text-sm text-muted-foreground">
             <Spinner /> Loading region
           </div>
+        </DemoCard>
+
+        <DemoCard
+          title="PageSkeleton — the default loading state"
+          contentClassName="flex-col items-stretch gap-4"
+          className="lg:col-span-2"
+        >
+          <p className="text-sm text-muted-foreground">
+            Pages gated on data render skeletons of the grammar they will
+            show — never “…” text or a bare spinner. Full page:{" "}
+            <code>PageSkeleton</code>; per band:{" "}
+            <code>PageHeaderSkeleton</code> / <code>StatGridSkeleton</code> /{" "}
+            <code>TableSkeleton</code> / <code>CardSkeleton</code>.
+          </p>
+          <PageHeaderSkeleton />
+          <StatGridSkeleton count={4} />
+          <TableSkeleton rows={3} />
         </DemoCard>
 
         <DemoCard title="Toast (sonner)">
