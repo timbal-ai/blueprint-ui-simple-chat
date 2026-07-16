@@ -242,12 +242,22 @@ function SidebarPanelBody({
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-3">
+    <div
+      className={cn(
+        "flex h-full w-full flex-col gap-3",
+        // Icon rail: pin every w-9 control to the column center — without
+        // this, flex-col defaults to stretch/start and leftover gutter from
+        // the scroll-area ring inset reads as a left bias.
+        collapsed && "items-center",
+      )}
+    >
       {/* Header row: brand + always-visible collapse toggle. */}
       <div
         className={cn(
           "flex w-full items-center gap-2 transition-[gap] duration-300 ease-in-out",
-          collapsed ? "flex-col-reverse justify-center gap-2.5" : "flex-row justify-between",
+          collapsed
+            ? "flex-col-reverse items-center justify-center gap-2.5"
+            : "flex-row justify-between",
         )}
       >
         <Collapsible collapsed={collapsed} className="min-w-0 flex-1">
@@ -277,7 +287,10 @@ function SidebarPanelBody({
           disappears when you reach the end). */}
       <NavScrollArea>
         {nav.map((group, gi) => (
-          <div key={gi} className="flex w-full flex-col gap-1">
+          <div
+            key={gi}
+            className={cn("flex w-full flex-col gap-1", collapsed && "items-center")}
+          >
             {group.label ? (
               <Collapsible collapsed={collapsed}>
                 <span className="px-2 pb-0.5 text-caption-1-medium whitespace-nowrap text-text-tertiary">
@@ -285,7 +298,9 @@ function SidebarPanelBody({
                 </span>
               </Collapsible>
             ) : null}
-            <nav className="flex w-full flex-col gap-1">
+            <nav
+              className={cn("flex w-full flex-col gap-1", collapsed && "items-center")}
+            >
               {group.items.map((item) => {
                 const childActive = item.children?.some((c) => c.id === activeId);
                 const isSelected = item.id === activeId || childActive;
@@ -298,16 +313,26 @@ function SidebarPanelBody({
                       title={collapsed ? item.label : undefined}
                       onClick={() => navigate(item.id)}
                       className={cn(
-                        "flex cursor-pointer items-center justify-between overflow-hidden rounded-2lg p-2",
+                        "flex cursor-pointer items-center overflow-hidden rounded-2lg p-2",
                         "outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring",
                         "transition-[width,background-color] duration-300 ease-in-out",
-                        collapsed ? "w-9" : "w-full",
+                        // Collapsed: center the glyph in the 36px hit target.
+                        // Expanded: label + badge at opposite ends.
+                        collapsed ? "w-9 justify-center" : "w-full justify-between",
                         isSelected
                           ? "shadow-nav-selected [background-image:var(--gradient-button-primary-default)]"
                           : "hover:bg-background-secondary-hover",
                       )}
                     >
-                      <span className="flex min-w-0 items-center gap-2">
+                      <span
+                        className={cn(
+                          "flex min-w-0 items-center",
+                          // Drop the icon→label gap when the label is collapsed
+                          // to max-w-0 — otherwise the orphan gap pushes the
+                          // icon off-center inside the w-9 rail button.
+                          !collapsed && "gap-2",
+                        )}
+                      >
                         {item.icon ? (
                           <item.icon
                             className={cn(
@@ -417,8 +442,10 @@ function NavScrollArea({ children }: { children: React.ReactNode }) {
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         // Gutter INSIDE the scroll container: overflow clipping otherwise
         // amputates the selected item's 1px ring (shadow-nav-selected) and
-        // focus rings at the container edges.
-        "-m-1 p-1",
+        // focus rings at the container edges. Width must grow with the
+        // negative margin — bare `-m-1` on a stretched child only shifts
+        // left, which reads as a left-biased icon rail when collapsed.
+        "w-[calc(100%+0.5rem)] -m-1 p-1",
       )}
     >
       {children}
