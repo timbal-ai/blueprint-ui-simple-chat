@@ -45,7 +45,7 @@
     "@remixicon/react": "^4.9.0",
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/react-table": "^8.21.3",
-    "@timbal-ai/timbal-react": "^4.2.2",
+    "@timbal-ai/timbal-react": "^4.2.3",
     "@timbal-ai/timbal-sdk": "^0.11.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
