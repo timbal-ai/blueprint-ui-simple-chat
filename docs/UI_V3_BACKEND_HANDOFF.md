@@ -161,19 +161,24 @@ otherwise                                     → legacy kit    → references/l
 
 1. **Direction first (mandatory, written to `ui/DESIGN.md` before any code):**
    shell (`sidebar-shell` / `topbar-shell` / focused / full-page chat /
-   split), accent (set the 11 `--color-accent-*` vars in `styles/brand.css`;
-   never leave the default blue unless the brand is blue), density, tone (two
-   adjectives from the brief), template-or-compose (name the template or say
-   "compose from cards"), 1–2 references (`mcp__timbal__search_screens` when
-   the brief is visual). **Anti-repetition:** if the last project used the
-   same shell + accent + template, change at least one.
-2. **Discover in `ui/registry/`:** `INDEX.md` → `components.md` / `props.md`
-   / `templates.md` / `patterns.md`. Names are exact; never rebuild what the
-   registry has; never write Radix/shadcn; `cx()` only.
+   split), density, tone (two adjectives from the brief), template-or-compose
+   (name the template or say "compose from cards"), 1–2 references
+   (`mcp__timbal__search_screens` when the brief is visual). **Accent stays
+   BoardUI blue** unless the brief names a brand colour (then the 11
+   `--color-accent-*` vars in `styles/brand.css`); hue is *not* a variety knob
+   — the orange/violet builds came from the old "change the accent" wording.
+   **Anti-repetition:** if the last project used the same shell + template,
+   change one of them or the density.
+2. **Discover in `ui/registry/`:** `INDEX.md` (incl. the **intent → component
+   table** and the never-hand-roll list) → `components.md` / `props.md` /
+   `templates.md` / `patterns.md`. Names are exact; never rebuild what the
+   registry has (charts, tables, stat tiles, settings, calendar, auth, agent
+   UI); never write Radix/shadcn; `cx()` only.
 3. **Timbal seam** (25 lines, from `registry/timbal.md`): chat surfaces table
-   (chat product → `Home` pattern; chat page in an app → `EmbeddedChat`;
-   in-page AI → `AssistantPill`), slots (`boardChatComponents`), `Login`,
-   uploads through the runtime, `/api` via `authFetch`.
+   (chat product → keep `Home` = the ai-chat template layout with history rail
+   and `/chat/:id` routes, change brand/copy only; chat page in an app →
+   `EmbeddedChat`; in-page AI → `AssistantPill`), slots (`boardChatComponents`),
+   `Login`, uploads through the runtime, `/api` via `authFetch`.
 4. **Verify:** `bun run lint && bun run build`, `bun run screenshots` (or
    `mcp__timbal-browser__browser_screenshot`) at 1280/375, critique rubric
    incl. Distinctiveness, max 3 rounds.
@@ -192,8 +197,9 @@ add `timbal-seam.md`, vendor BoardUI's `components.md`, `patterns.md`,
 - Detect v3: `node -p "require('./ui/package.json').timbal?.blueprint" == ui-v3`.
 - v3 runs, in order: **`node scripts/design-check.mjs`** (the anti-sameness
   gate: exit 1 while `DESIGN.md`'s direction table still has placeholders —
-  shell / accent / density / template-or-compose / tone must be decided before
-  screens are built; warns when the accent ramp is still default blue),
+  shell / density / template-or-compose / tone must be decided before screens
+  are built; blue needs no justification, it only warns when `DESIGN.md` names
+  a non-blue accent while `brand.css` still ships the default ramp),
   **`tsc -b`**, **`timbal-ui-lint` errors-only**; skip `timbal-dna check`.
   `MAX_ATTEMPTS=3` and exit-2 contract unchanged. Feed `design-check`'s stderr
   back verbatim — it tells the agent exactly what to decide.
@@ -209,9 +215,11 @@ add `timbal-seam.md`, vendor BoardUI's `components.md`, `patterns.md`,
 
 - `timbal-ui` row → "Frontend UI — any screen, chat chrome, theming (React,
   Vite, Tailwind v4, BoardUI)".
-- Add: *"Design direction is a decision, not a default — pick shell, accent,
-  density and template per project (see `timbal-ui` §1) and never reuse the
-  previous project's."*
+- Add: *"Design direction is a decision, not a default — pick shell, density
+  and template per project (see `timbal-ui` §1) and never reuse the previous
+  project's. The accent stays BoardUI blue unless the brief names a brand
+  colour. Every chart, table, KPI tile and form comes from `ui/registry/`;
+  never hand-roll one."*
 
 ### 4.4 Tarball
 
@@ -262,15 +270,18 @@ bun run build && bun run lint          # gate parity
 bun run dev:fake                       # vite + scripts/fake-api.mjs on :5301 — no backend needed:
                                        #   GET /api/config (providers), GET /api/workforce (3 workforces),
                                        #   POST /api/workforce/:id/stream (tool → web search → chart → markdown),
+                                       #   GET /api/runs?roots=true (history), ?group_id= + /api/runs/:id (hydration),
                                        #   POST /api/files/upload, POST /api/auth/magic-link; prompt "fail" → 500, "slow" → 6 s tool
-bun run dev                            # / (chat), /login, /templates/* and /examples/* (DEV only)
-bun run screenshots                    # screenshots/<route>-{1280,375}[-dark].png, exits 1 on page errors
+bun run dev                            # / (placeholder), /chat, /chat/:id, /login, /templates/* and /examples/* (DEV only)
+bun run screenshots -- --fake          # screenshots/<route>-{1280,375}[-dark].png, exits 1 on page errors
 bun run registry:build                 # after any boardui:sync; `--check` = CI drift check
 bun run boardui:sync                   # pulls upstream (needs `npx boardui login` on the machine)
 ```
 
-Routes: `/`, `/login`, `/templates/{dashboard,finance,hr,marketing,medical,calendar,
-ai-profile,ai-chat,ai-image-generation}`, `/examples/shell-sidebar/{,settings,chat}`,
+Routes: `/` (neutral `Placeholder` — Timbal mark, "Your app will live here"; the
+agent replaces it), `/chat`, `/chat/:conversationId`, `/login`,
+`/templates/{dashboard,finance,hr,marketing,medical,calendar,ai-profile,ai-chat,
+ai-image-generation}`, `/examples/shell-sidebar/{,settings,chat}`,
 `/examples/shell-topbar/{,chat}`.
 
 Compose-turn smoke (what the hook should see): 1) a turn that edits `ui/src/pages`
@@ -279,8 +290,10 @@ undecided axes; 2) after `DESIGN.md` is filled → `tsc` + lint run; 3) the comp
 picks a template by slug from `registry/templates.md` or composes from
 `registry/components.md`, never from a house kit (there is none).
 
-Expected: `/` renders the BoardUI chat chrome on the Timbal runtime (sending
-without a backend shows the runtime error state, not a crash); `/login`
+Expected: `/` renders the placeholder (never a chat the user didn't ask for);
+`/chat` renders the ai-chat template layout (history rail + framed thread) on
+the Timbal runtime, and after the first turn the URL becomes `/chat/<run id>`
+(sending without a backend shows the runtime error state, not a crash); `/login`
 renders `AuthCard` with the providers from `/api/config`; each template route
 renders its BoardUI shell; build has no `tsc` errors and no raw-color lint
 errors.
