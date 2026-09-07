@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-07T10:06:12.331Z",
+  "generatedAt": "2026-09-07T16:31:15.139Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -18820,6 +18820,241 @@
       ]
     },
     {
+      "name": "ChatFrame",
+      "kind": "component",
+      "path": "src/components/timbal/chat/frame.tsx",
+      "importFrom": "@/components/timbal/chat/frame",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "ChatFrame — the BoardUI Pro `ai-chat` container grammar (Figma \"ai_chat\" → Chat_container) as the surface every Timbal chat sits on.",
+      "props": [
+        {
+          "name": "header",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "chat",
+        "frame",
+        "chat-frame"
+      ]
+    },
+    {
+      "name": "ChatFrameCrumb",
+      "kind": "type",
+      "path": "src/components/timbal/chat/frame.tsx",
+      "importFrom": "@/components/timbal/chat/frame",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "RemixiconComponentType",
+          "optional": true
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "current",
+          "type": "boolean",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "chat",
+        "frame",
+        "chat-frame-crumb"
+      ]
+    },
+    {
+      "name": "ChatFrameHeader",
+      "kind": "component",
+      "path": "src/components/timbal/chat/frame.tsx",
+      "importFrom": "@/components/timbal/chat/frame",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "The container's header row: `project › chat` breadcrumb on the left, icon actions on the right (px-4 pt-4, the template's measurements).",
+      "props": [
+        {
+          "name": "crumbs",
+          "type": "ChatFrameCrumb[]",
+          "optional": false
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "chat",
+        "frame",
+        "chat-frame-header"
+      ]
+    },
+    {
+      "name": "ChatHistoryRailProps",
+      "kind": "type",
+      "path": "src/components/timbal/chat/history-rail.tsx",
+      "importFrom": "@/components/timbal/chat/history-rail",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "ChatHistoryRail — the BoardUI Pro `ai-chat` sidebar grammar (260px floating panel, \"New chat\" row, recent threads with relative-time chips, theme toggle and account card pinned to the bottom) on real…",
+      "props": [],
+      "tags": [
+        "timbal",
+        "chat",
+        "history-rail",
+        "chat-history-rail-props"
+      ],
+      "propsOf": [
+        "ChatHistoryRail"
+      ]
+    },
+    {
+      "name": "ChatHistoryRail",
+      "kind": "component",
+      "path": "src/components/timbal/chat/history-rail.tsx",
+      "importFrom": "@/components/timbal/chat/history-rail",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "",
+      "props": [
+        {
+          "name": "brand",
+          "type": "ShellBrand",
+          "optional": false
+        },
+        {
+          "name": "workforceId",
+          "type": "string",
+          "optional": true,
+          "doc": "Scope the list to this workforce (recommended; the API lists everything otherwise)."
+        },
+        {
+          "name": "activeId",
+          "type": "string",
+          "optional": true,
+          "doc": "The conversation currently open, if any."
+        },
+        {
+          "name": "newChatPath",
+          "type": "string",
+          "optional": true,
+          "default": "\"/chat\""
+        },
+        {
+          "name": "conversationPath",
+          "type": "(id: string) => string",
+          "optional": true,
+          "default": "(id) => `/chat/${encodeURIComponent(id)}`"
+        },
+        {
+          "name": "user",
+          "type": "ShellUser",
+          "optional": true
+        },
+        {
+          "name": "mobile",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Rendered inside the phone drawer: full width, close control.",
+          "default": "false"
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": true
+        },
+        {
+          "name": "onNavigate",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Fired when a row is clicked (drawers close on it)."
+        },
+        {
+          "name": "refreshKey",
+          "type": "number",
+          "optional": true,
+          "doc": "Bump to re-list from the first page (e.g. after a new thread gets its id).",
+          "default": "0"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "chat",
+        "history-rail",
+        "chat-history-rail"
+      ]
+    },
+    {
+      "name": "conversationLabel",
+      "kind": "util",
+      "path": "src/components/timbal/chat/history-rail.tsx",
+      "importFrom": "@/components/timbal/chat/history-rail",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "A title for a root run.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "chat",
+        "history-rail",
+        "conversation-label"
+      ],
+      "type": "(run: RunPreview) => string"
+    },
+    {
+      "name": "relativeTime",
+      "kind": "util",
+      "path": "src/components/timbal/chat/history-rail.tsx",
+      "importFrom": "@/components/timbal/chat/history-rail",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "\"now\" · \"34m\" · \"2h\" · \"3d\" · \"2w\" — the template's chip vocabulary.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "chat",
+        "history-rail",
+        "relative-time"
+      ],
+      "type": "(iso?: string) => string"
+    },
+    {
       "name": "BoardUserMessage",
       "kind": "component",
       "path": "src/components/timbal/chat/messages.tsx",
@@ -19017,7 +19252,7 @@
         "embedded-chat",
         "embedded-chat-props"
       ],
-      "type": "Omit<TimbalChatProps, \"workforceId\"> & { workforceId?: string }",
+      "type": "Omit<TimbalChatProps, \"workforceId\"> & { workforceId?: string; /** Optional `ChatFrameHeader` (breadcrumb + actions) on the frame's top edge. */ header?: React…",
       "extends": [
         "Omit<TimbalChatProps, \"workforceId\">"
       ],
@@ -19038,6 +19273,12 @@
           "name": "workforceId",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "header",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Optional `ChatFrameHeader` (breadcrumb + actions) on the frame's top edge."
         },
         {
           "name": "className",
@@ -20896,6 +21137,26 @@
       }
     },
     {
+      "name": "SHELL_FRAME_INSET_CLASS",
+      "kind": "data",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `SHELL_FRAME_INSET_CLASS` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "shell-frame-inset-class"
+      ],
+      "reexportOf": {
+        "name": "SHELL_FRAME_INSET_CLASS",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
       "name": "SHELL_INSET_CLASS",
       "kind": "data",
       "path": "src/components/timbal/shells/index.ts",
@@ -20912,26 +21173,6 @@
       ],
       "reexportOf": {
         "name": "SHELL_INSET_CLASS",
-        "from": "@/components/timbal/shells/shell-nav"
-      }
-    },
-    {
-      "name": "SHELL_INSET_NEGATE_CLASS",
-      "kind": "data",
-      "path": "src/components/timbal/shells/index.ts",
-      "importFrom": "@/components/timbal/shells/index",
-      "layer": "timbal",
-      "group": "shells",
-      "summary": "Re-export of `SHELL_INSET_NEGATE_CLASS` from `@/components/timbal/shells/shell-nav`.",
-      "props": [],
-      "tags": [
-        "timbal",
-        "shells",
-        "index",
-        "shell-inset-negate-class"
-      ],
-      "reexportOf": {
-        "name": "SHELL_INSET_NEGATE_CLASS",
         "from": "@/components/timbal/shells/shell-nav"
       }
     },
@@ -21575,7 +21816,7 @@
       "type": "string"
     },
     {
-      "name": "SHELL_INSET_NEGATE_CLASS",
+      "name": "SHELL_FRAME_INSET_CLASS",
       "kind": "util",
       "path": "src/components/timbal/shells/shell-nav.ts",
       "importFrom": "@/components/timbal/shells/shell-nav",
@@ -21587,7 +21828,7 @@
         "timbal",
         "shells",
         "shell-nav",
-        "shell-inset-negate-class"
+        "shell-frame-inset-class"
       ],
       "type": "string"
     },

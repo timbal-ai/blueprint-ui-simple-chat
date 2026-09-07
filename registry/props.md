@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 268 components · 17 hooks · generated 2026-09-07
+BoardUI 0.5.3 · 271 components · 17 hooks · generated 2026-09-07
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2319,6 +2319,43 @@ No parameters.
 
 Types: `BoardChatWorkforces` = `Pick<UseWorkforcesResult, "workforces" | "selectedId" | "setSelectedId" | "selected">`
 
+### chat — `@/components/timbal/chat/frame`
+
+**ChatFrame** — ChatFrame — the BoardUI Pro `ai-chat` container grammar (Figma "ai_chat" → Chat_container) as the surface every Timbal chat sits on.
+| prop | type | default | doc |
+|---|---|---|---|
+| header? | `ReactNode` |  |  |
+| children | `ReactNode` |  |  |
+| className? | `string` |  |  |
+
+**ChatFrameHeader** — The container's header row: `project › chat` breadcrumb on the left, icon actions on the right (px-4 pt-4, the template's measurements).
+| prop | type | default | doc |
+|---|---|---|---|
+| crumbs | `ChatFrameCrumb[]` |  |  |
+| actions? | `ReactNode` |  |  |
+| className? | `string` |  |  |
+
+Types: `ChatFrameCrumb` = `{ label: string; icon?: RemixiconComponentType; href?: string; current?: boolean }`
+
+### chat — `@/components/timbal/chat/history-rail`
+
+**ChatHistoryRail**
+| prop | type | default | doc |
+|---|---|---|---|
+| brand | `ShellBrand` |  |  |
+| workforceId? | `string` |  | Scope the list to this workforce (recommended; the API lists everything otherwise). |
+| activeId? | `string` |  | The conversation currently open, if any. |
+| newChatPath? | `string` | `"/chat"` |  |
+| conversationPath? | `(id: string) => string` | `` (id) => `/chat/${encodeURIComponent(id)}` `` |  |
+| user? | `ShellUser` |  |  |
+| mobile? | `boolean` | `false` | Rendered inside the phone drawer: full width, close control. |
+| onClose? | `() => void` |  |  |
+| onNavigate? | `() => void` |  | Fired when a row is clicked (drawers close on it). |
+| refreshKey? | `number` | `0` | Bump to re-list from the first page (e.g. after a new thread gets its id). |
+| className? | `string` |  |  |
+
+Other exports: `ChatHistoryRailProps` (props of ChatHistoryRail) · `conversationLabel(run: RunPreview) => string` · `relativeTime(iso?: string) => string`
+
 ### chat — `@/components/timbal/chat/messages`
 
 **BoardUserMessage** — BoardUI Pro message chrome for the Timbal thread (`UserMessage` / `AssistantMessage` slots).
@@ -2349,6 +2386,7 @@ Extends: `Omit<TimbalChatProps, "workforceId">`
 | prop | type | default | doc |
 |---|---|---|---|
 | workforceId? | `string` |  |  |
+| header? | `ReactNode` |  | Optional `ChatFrameHeader` (breadcrumb + actions) on the frame's top edge. |
 | className | — |  | (inherited) |
 | components | — |  | (inherited) |
 
@@ -2471,7 +2509,7 @@ Other exports: `ToasterProps` (props of Toaster)
 
 ### shells — `@/components/timbal/shells/index`
 
-Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_INSET_CLASS`, `SHELL_INSET_NEGATE_CLASS`, `initialsOf`, `resolveActiveNavItem`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
+Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `resolveActiveNavItem`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
 
 ### shells — `@/components/timbal/shells/shell-chrome`
 
@@ -2552,7 +2590,7 @@ returns `boolean`
 | query | `string` |  |  |
 
 Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }`
-Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_INSET_NEGATE_CLASS`: `string` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
+Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
 
 ### shells — `@/components/timbal/shells/sidebar-shell`
 
