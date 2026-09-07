@@ -7,6 +7,10 @@ on:
 
 jobs:
   build-and-screenshot:
+    # This file ships inside every generated app (the platform clones this repo
+    # into ui/), so it must never run in one: a product's CI is its own business,
+    # and the registry drift check would fail their build.
+    if: github.repository == 'timbal-ai/blueprint-ui-simple-chat'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
