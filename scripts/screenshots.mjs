@@ -64,7 +64,13 @@ const useFake = args.includes("--fake");
 
 /** Spawn a child, keep its output for diagnostics, and forward it when `--verbose`. */
 function start(cmd, argv, env, label) {
-  const child = spawn(cmd, argv, { stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, ...env } });
+  // `detached` puts the child in its own process group so shutdown can kill the
+  // whole tree (`npx` → `vite` grandchild), not just the wrapper.
+  const child = spawn(cmd, argv, {
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, ...env },
+    detached: process.platform !== "win32",
+  });
   child.log = "";
   const tap = (d) => {
     child.log += String(d);
@@ -94,7 +100,17 @@ async function waitFor(url, child, label, timeoutMs = 90000) {
   );
 }
 
-const shutdown = () => children.forEach((c) => c.kill());
+const shutdown = () => {
+  for (const c of children) {
+    if (c.exitCode !== null || !c.pid) continue;
+    try {
+      if (process.platform !== "win32") process.kill(-c.pid, "SIGTERM");
+      else c.kill();
+    } catch {
+      c.kill();
+    }
+  }
+};
 process.on("exit", shutdown);
 process.on("SIGINT", () => {
   shutdown();
@@ -161,3 +177,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(`\nOK — ${ROUTES.length * 4} screenshots in ${OUT}`);
+// Explicit exit: the servers' pipes would otherwise keep the event loop alive.
+process.exit(0);
