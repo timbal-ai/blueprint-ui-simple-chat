@@ -5,7 +5,7 @@ complete design system — primitives, blocks, 12 chart cards, agent UI, 8 finis
 page templates — vendored as source) on the **Timbal runtime**
 (`@timbal-ai/timbal-react`: chat streaming, uploads, artifacts, auth).
 
-Private repository: it contains BoardUI Pro source (see `LICENSE-BOARDUI.md`).
+Contains BoardUI Pro source under an author-granted permission (see `LICENSE-BOARDUI.md`).
 
 ## Run
 

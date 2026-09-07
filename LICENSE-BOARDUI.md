@@ -11,12 +11,14 @@
 - **Pro** items (chart cards, agent UI, calendar, the 8 templates) are licensed
   under BoardUI Pro. Timbal holds a Pro license (2 seats) **and an explicit
   redistribution/OEM permission from the BoardUI author (2026-09-07, obtained
-  by Pedro Olivares) covering (a) vendoring Pro source in this private
+  by Pedro Olivares) covering (a) vendoring Pro source in this
   blueprint and (b) shipping it inside UIs generated for Timbal customers.**
   Keep the written confirmation next to this file when it arrives.
-- Consequences: this repository stays **private**; do not publish Pro source in
-  public repos, gists, templates or registries; the generated end products may
-  ship it.
+- Scope confirmed with the author on 2026-09-07: the Pro source may live in this
+  Timbal blueprint repository (currently public on GitHub — the author is aware
+  and fine with it; making it private is still the recommended default) and may
+  ship inside UIs generated for Timbal customers. Do not republish it anywhere
+  else (other repos, gists, registries, marketplaces).
 - Upstream version: see `package.json` → `timbal.boardui`. Refresh with
   `bun run boardui:sync` (needs `npx boardui login <key>` on the machine).
 

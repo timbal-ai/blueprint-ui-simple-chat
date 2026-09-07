@@ -9,8 +9,9 @@
 author). **FE phase 1 is built** on `blueprint-ui-simple-chat` branch `v3`
 (11 commits on top of `main`): lint/tsc/build green, registry `--check` green,
 64 route screenshots (16 routes × 1280/375 × light/dark) with zero page errors
-against the fake API. Not pushed yet — the GitHub remote is still public.
-Nothing in the monolith has been changed; this doc lists what to change.
+against the fake API. **Pushed to `origin/v3`** (BoardUI author OK'd hosting the
+Pro source in this repo). Nothing in the monolith has been changed; §4 lists
+what to change — please implement it on the monolith `dev` branch.
 
 **Rev 2** — supersedes rev 1 (which assumed free-tier-only + BYOK + MCP).
 
@@ -38,12 +39,14 @@ Nothing in the monolith has been changed; this doc lists what to change.
    evals** that fails when outputs converge.
 4. **Monolith work shrinks to:** rewrite the skill (~100 lines + vendored
    BoardUI references), simplify the gate (tsc + lint errors-only, no DNA
-   check), one prompt line, repack the tarball from the **private** v3
-   repo, add the diversity metric. No MCP server, no license plumbing, no
+   check), one prompt line, repack the tarball from the v3
+   branch, add the diversity metric. No MCP server, no license plumbing, no
    sandbox egress change.
-5. **Licensing:** the blueprint repo becomes private (it vendors Pro
-   source). Timbal's key is used only by Timbal devs (`npx boardui login`,
-   2 seats). Keep the written OEM permission with the repo (`LICENSE-BOARDUI.md`).
+5. **Licensing:** the BoardUI author has OK'd hosting the Pro source in this
+   blueprint repo and shipping it in generated end products (see
+   `LICENSE-BOARDUI.md`; making the repo private remains the recommended
+   default). Timbal's key is used only by Timbal devs (`npx boardui login`,
+   2 seats). Get the permission in writing and keep it with the repo.
 
 ---
 
@@ -212,7 +215,7 @@ add `timbal-seam.md`, vendor BoardUI's `components.md`, `patterns.md`,
 
 ### 4.4 Tarball
 
-Repack from the private v3 repo `main` once phase 1 lands; ship the
+Repack from `blueprint-ui-simple-chat` branch `v3` (→ `main` after review); ship the
 `registry/` folder and `package.json` marker. `ensure_ui_deps` unchanged
 (deps: `react-aria-components`, `@remixicon/react`, `@internationalized/date`,
 `motion`, `@tanstack/react-table`, `recharts`, `prism-react-renderer`,
@@ -242,7 +245,7 @@ setting, no egress change, no `timbal-dna` anywhere.
 
 | Phase | Work | Owner | Done when |
 |---|---|---|---|
-| 0 | Repo private; `LICENSE-BOARDUI.md` with the OEM permission | FE | today |
+| 0 | `LICENSE-BOARDUI.md` with the OEM permission (author OK 2026-09-07; written copy pending); repo privacy = recommended, not blocking | FE | done |
 | 1 | Blueprint v3 branch → `main` (§3), screenshots of every route at 1280/375, test recipe in README | FE | tag `ui-v3.0.0` |
 | 2 | 4.1 skill + mirror, 4.2 hook, 4.3 prompt, 4.4 repack behind `TIMBAL_UI_BLUEPRINT=v3` | BE | fresh project → v3 `ui/`, hook passes, one compose turn builds a non-dashboard screen |
 | 3 | 4.5 evals; baseline v2 vs v3 | BE/FE | report: quality ≥ baseline, diversity up |
