@@ -176,8 +176,13 @@ add `timbal-seam.md`, vendor BoardUI's `components.md`, `patterns.md`,
 ### 4.2 `src/composer/assets/ui_gate_hook.sh`
 
 - Detect v3: `node -p "require('./ui/package.json').timbal?.blueprint" == ui-v3`.
-- v3 runs **`tsc -b`** and **`timbal-ui-lint` errors-only**; skip
-  `timbal-dna check`. `MAX_ATTEMPTS=3` and exit-2 contract unchanged.
+- v3 runs, in order: **`node scripts/design-check.mjs`** (the anti-sameness
+  gate: exit 1 while `DESIGN.md`'s direction table still has placeholders —
+  shell / accent / density / template-or-compose / tone must be decided before
+  screens are built; warns when the accent ramp is still default blue),
+  **`tsc -b`**, **`timbal-ui-lint` errors-only**; skip `timbal-dna check`.
+  `MAX_ATTEMPTS=3` and exit-2 contract unchanged. Feed `design-check`'s stderr
+  back verbatim — it tells the agent exactly what to decide.
 - `timbal-react` lint (separate FE release, 4.3.0): keep as errors only raw
   hex/oklch/palette classes, `hsl(var(--x))`, unsafe chart `dataKey`s, chat
   shell nested in a constrained wrapper, displaced composer, native

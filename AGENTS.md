@@ -38,6 +38,7 @@ primitive and their props, plus the direction menu.
 ## Verify before finishing
 
 ```
+bun run design:check               # DESIGN.md direction filled? (the platform gate runs this too)
 bun run lint && bun run build      # tsc + vite; the platform gate runs the same
 bun run screenshots                # every route at 1280/375, light/dark → screenshots/
 ```
