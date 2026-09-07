@@ -47,11 +47,12 @@ export interface ShellUser {
 
 /**
  * The breathing room every page gets inside a shell's content column.
- * `EmbeddedChat` negates the lateral + bottom part so the thread owns the
- * surface edge-to-edge (the header above it keeps the top inset).
+ * `bare` routes (EmbeddedChat, canvases) get the tighter frame inset instead:
+ * 12px all round, the ai-chat template's measurement, so a `ChatFrame` sits
+ * level with the floating sidebar's top and bottom edges.
  */
 export const SHELL_INSET_CLASS = "px-3 pt-3 pb-3 sm:px-6 sm:pt-6 sm:pb-6";
-export const SHELL_INSET_NEGATE_CLASS = "-mx-3 -mb-3 sm:-mx-6 sm:-mb-6";
+export const SHELL_FRAME_INSET_CLASS = "p-3 md:pl-4";
 
 /** Longest nav path matching the pathname (exact only when `end`). */
 export function resolveActiveNavItem(items: ShellNavItem[], pathname: string): ShellNavItem | undefined {

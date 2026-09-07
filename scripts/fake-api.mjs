@@ -13,6 +13,9 @@
  *   POST /api/workforce/:id/stream      → SSE run: generic tool → web search → chart artifact → markdown
  *                                          prompt containing "fail" → HTTP 500; "slow" → 6 s first tool
  *   POST /api/auth/magic-link           → 200 (email in body) so the Login "check your inbox" state shows
+ *   GET  /api/runs?roots=true&workforce_id=…  → past conversations (thread roots) for the history rail
+ *   GET  /api/runs?group_id=…           → every turn of one conversation
+ *   GET  /api/runs/:id                  → one turn with its trace (runtime rebuilds the messages from it)
  */
 import { createServer } from "node:http";
 
@@ -27,6 +30,75 @@ const WORKFORCES = [
   { id: "research", name: "Research agent", type: "agent", description: "Digs through the web" },
   { id: "nightly", name: "Nightly digest", type: "workflow" },
 ];
+
+/* Past conversations. Each root run is a conversation; follow-up turns point
+ * at it through parent_id/group_id. Traces use the shape runTraceToMessages
+ * reads: an `agent` root span and an `agent.llm` step whose input carries the
+ * user message and whose output carries the assistant blocks. */
+const HOURS = 3_600_000;
+const now = Date.now();
+const turn = ({ id, parent, group, ago, workforce, user, assistant }) => {
+  const t0 = now - ago;
+  return {
+    id,
+    group_id: group ?? id,
+    parent_id: parent ?? null,
+    created_at: new Date(t0).toISOString(),
+    status: "success",
+    duration_ms: 3200,
+    workforce: { id: workforce, name: WORKFORCES.find((w) => w.id === workforce)?.name ?? workforce },
+    input: { prompt: user },
+    trace: [
+      { call_id: `${id}-root`, parent_call_id: null, path: "agent", start_time: t0, input: { prompt: user } },
+      {
+        call_id: `${id}-llm`,
+        parent_call_id: `${id}-root`,
+        path: "agent.llm",
+        start_time: t0 + 50,
+        metadata: { type: "llm" },
+        input: { messages: [{ role: "user", content: user }] },
+        output: { content: [{ type: "text", text: assistant }] },
+      },
+    ],
+  };
+};
+const RUNS = [
+  turn({
+    id: "c-101", ago: 2 * HOURS, workforce: "support",
+    user: "Summarize this week's tickets",
+    assistant: "**42 tickets** this week, 9 still open.\n\n- Login issues: 14\n- Billing: 11\n- Feature requests: 17\n\nMedian first response was 38 minutes.",
+  }),
+  turn({
+    id: "c-102", parent: "c-101", group: "c-101", ago: 2 * HOURS - 5 * 60_000, workforce: "support",
+    user: "Which of the open ones are oldest?",
+    assistant: "Three tickets are older than five days: #4812 (SSO redirect loop), #4790 (invoice PDF blank) and #4771 (export timeout).",
+  }),
+  turn({
+    id: "c-201", ago: 26 * HOURS, workforce: "support",
+    user: "Draft a reply for the refund request from Acme",
+    assistant: "Hi Dana,\n\nThanks for reaching out — I've processed the refund for the March invoice; it lands in 3–5 business days.\n\nBest,\nSupport",
+  }),
+  turn({
+    id: "c-301", ago: 3 * 24 * HOURS, workforce: "support",
+    user: "Explain what you can do",
+    assistant: "I answer customer questions, draft replies, summarise ticket queues and look up account details.",
+  }),
+  turn({
+    id: "c-401", ago: 5 * HOURS, workforce: "research",
+    user: "Compare the three open-source vector databases",
+    assistant: "Qdrant, Weaviate and Milvus differ mainly in deployment footprint and filtering…",
+  }),
+];
+const listRuns = (params) => {
+  let rows = RUNS;
+  if (params.get("group_id")) rows = rows.filter((r) => String(r.group_id) === params.get("group_id"));
+  if (params.get("roots") === "true") rows = rows.filter((r) => r.parent_id == null);
+  if (params.get("workforce_id")) rows = rows.filter((r) => r.workforce.id === params.get("workforce_id"));
+  const desc = (params.get("sort_order") ?? "desc") === "desc";
+  rows = [...rows].sort((a, b) => (desc ? 1 : -1) * (Date.parse(b.created_at) - Date.parse(a.created_at)));
+  // Previews omit the trace, like the platform's list endpoint.
+  return { runs: rows.map(({ trace: _trace, ...preview }) => preview), next_page_token: null };
+};
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const sse = (res, event) => res.write(`data: ${JSON.stringify(event)}\n\n`);
@@ -158,6 +230,11 @@ createServer(async (req, res) => {
     });
   }
   if (req.method === "GET" && path === "/workforce") return json(res, 200, WORKFORCES);
+  if (req.method === "GET" && path === "/runs") return json(res, 200, listRuns(url.searchParams));
+  if (req.method === "GET" && /^\/runs\/[^/]+$/.test(path)) {
+    const run = RUNS.find((r) => r.id === decodeURIComponent(path.slice("/runs/".length)));
+    return run ? json(res, 200, run) : json(res, 404, { error: "run not found" });
+  }
   if (req.method === "POST" && path === "/auth/magic-link") return json(res, 200, { ok: true });
   if (req.method === "POST" && path === "/files/upload") {
     const name = /filename="([^"]+)"/.exec(body)?.[1] ?? "file";

@@ -9,6 +9,7 @@ import { cx } from "@/utils/cx";
 import { ShellBrandMark, ShellHeader, ShellSidebar } from "./shell-chrome";
 import {
   SHELL_DESKTOP_QUERY,
+  SHELL_FRAME_INSET_CLASS,
   SHELL_INSET_CLASS,
   useActiveNavItem,
   useMediaQuery,
@@ -41,6 +42,8 @@ import {
  *   navigation.
  * - Content sits directly on `bg-background-full` like the templates (cards
  *   bring their own surface), centred to 1300px with `SHELL_INSET_CLASS`.
+ *   `bare` routes get the 12px frame inset instead, so a `ChatFrame` lines up
+ *   with the floating rail.
  * - The frame owns the viewport (`h-dvh`); the content column is the only
  *   scroller, so a page that is `flex-1 min-h-0` (EmbeddedChat) fills the
  *   remaining height with its composer pinned.
@@ -108,7 +111,12 @@ export function SidebarShell({
 
         {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          <div className={cx("mx-auto flex w-full max-w-[1300px] flex-1 flex-col gap-2.5", SHELL_INSET_CLASS)}>
+          <div
+            className={cx(
+              "mx-auto flex w-full flex-1 flex-col gap-2.5",
+              bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-[1300px]", SHELL_INSET_CLASS),
+            )}
+          >
             {header === false || bare
               ? null
               : (header ?? <ShellHeader brand={brand} homePath={homePath} active={active} actions={actions} />)}

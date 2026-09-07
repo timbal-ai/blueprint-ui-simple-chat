@@ -50,10 +50,10 @@ export function BoardComposer({
       <ComposerLoader active={isRunning}>
         <div
           className={cx(
-            "flex min-h-[52px] w-full items-end gap-2.5 rounded-full p-2",
+            "flex min-h-[52px] w-full items-end gap-2.5 rounded-full border p-2",
             isRunning
-              ? "bg-transparent"
-              : "bg-background-primary-default shadow-xs",
+              ? "border-transparent bg-transparent"
+              : "border-border-button-default bg-background-primary-default shadow-xs",
           )}
         >
           {attachUi ? (

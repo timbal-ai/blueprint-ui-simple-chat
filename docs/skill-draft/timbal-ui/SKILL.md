@@ -23,17 +23,20 @@ did not create it this turn, commit the pristine scaffold first
 
 1. **Direction first — write `ui/DESIGN.md` before any screen.** Decide and record:
    shell (`SidebarShell` workhorse SaaS · `TopbarShell` consumer/browse · focused
-   single page · full-page chat · split list/detail), **accent** (set the eleven
-   `--color-accent-*` stops in `ui/src/styles/brand.css`; default blue only when the
-   brand is blue), density (airy · regular · dense), start-from (a template slug or
-   "compose"), tone (two adjectives from the brief), 1–2 references. When the brief
+   single page · full-page chat · split list/detail), density (airy · regular ·
+   dense), start-from (a template slug or "compose"), tone (two adjectives from the
+   brief), 1–2 references. **Accent stays BoardUI blue** unless the brief names a
+   brand colour (then set the eleven `--color-accent-*` stops in
+   `ui/src/styles/brand.css`); never change the hue for variety. When the brief
    is visual and vague, pull 2–4 references with `mcp__timbal__search_screens` /
-   `view_screens` and extract intent (layout, density, accent) — never paste image
+   `view_screens` and extract intent (layout, density) — never paste image
    URLs into code. **Anti-repetition:** if the previous project used the same shell
-   + accent + template, change at least one and say why. The stop hook runs
-   `bun run design:check` and bounces the turn while the table has placeholders.
+   + template, change one of them (or the density) and say why. Run
+   `bun run design:check` yourself: it fails while the table has placeholders.
 2. **Discover in `ui/registry/`** — `INDEX.md` (one screen: what exists, how to
-   pick), then `templates.md` (9 finished pages: dashboard, finance, hr, marketing,
+   pick, and the **intent → component table**: charts, tables, stat tiles, forms,
+   settings, calendar, auth all have a vendored component — find yours there before
+   writing JSX), then `templates.md` (9 finished pages: dashboard, finance, hr, marketing,
    medical, calendar, ai-profile, ai-chat, ai-image-generation), `components.md`
    (BoardUI catalog, exact names, usage snippets), `props.md` (every component's
    props, generated from source), `patterns.md` (page recipes), `theming.md`,
@@ -61,8 +64,8 @@ Read `ui/registry/timbal.md` for detail. In short:
 
 | The product needs… | Build |
 |---|---|
-| A chat product | the `ui/src/pages/Home.tsx` pattern: page owns the frame, `TimbalChat` is the engine, `boardChatComponents` (`@/components/timbal/chat/chrome`) is the chrome |
-| A chat page inside an app | `EmbeddedChat` (`@/components/timbal/embedded-chat`) as its own route under the shell — full-bleed, no title, no card |
+| A chat product | keep `ui/src/pages/Home.tsx`: it is the BoardUI Pro ai-chat layout (`ChatHistoryRail` + `ChatFrame` + runtime `Thread` with `boardChatComponents`), with `/chat/:id` history wired. Change brand, welcome copy, suggestions — not the structure |
+| A chat page inside an app | `EmbeddedChat` (`@/components/timbal/embedded-chat`) as its own route under the shell — already framed, flush with the shell inset; no title, no extra card |
 | AI one tap away on data screens | `AssistantPill` (`@/components/timbal/assistant-pill`) in the shell's `dock`, once |
 | Sign-in | `SessionProvider` + `AuthGuard renderLogin={<Login />}` (`@/components/timbal/login`) — passwordless, providers come from `/api/config` |
 | Your own data | `authFetch("/api/…")` from `@timbal-ai/timbal-react`; never swallow errors |

@@ -11,6 +11,7 @@ import { cx } from "@/utils/cx";
 import { ShellBrandMark, ShellSidebar, ShellUserMenu } from "./shell-chrome";
 import {
   SHELL_DESKTOP_QUERY,
+  SHELL_FRAME_INSET_CLASS,
   SHELL_INSET_CLASS,
   useActiveNavItem,
   useMediaQuery,
@@ -110,7 +111,12 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
 
       {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        <div className={cx("mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4", SHELL_INSET_CLASS)}>
+        <div
+          className={cx(
+            "mx-auto flex w-full flex-1 flex-col gap-4",
+            bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-6xl", SHELL_INSET_CLASS),
+          )}
+        >
           {header === false || bare
             ? null
             : (header ?? (active ? <h1 className="text-title-2-medium text-text-primary">{active.label}</h1> : null))}

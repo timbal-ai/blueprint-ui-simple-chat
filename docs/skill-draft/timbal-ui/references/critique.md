@@ -6,8 +6,9 @@ summary when gaps remain.
 
 | # | Dimension | 5 looks like | 1 looks like |
 |---|---|---|---|
-| 1 | **Direction fidelity** | The screen matches `DESIGN.md`: chosen shell, accent visibly applied, density as decided, tone in copy and spacing | Default sidebar + default blue + template unchanged while DESIGN.md says otherwise |
-| 2 | **Distinctiveness** | You could not mistake this for the previous project; the template's demo copy/data is gone; the composition serves THIS brief | Same shell, same accent, same cards as last time with new labels; lorem/"Board team" left in |
+| 1 | **Direction fidelity** | The screen matches `DESIGN.md`: chosen shell, density as decided, tone in copy and spacing; accent is BoardUI blue unless the brief named a brand colour | Shell or template differs from DESIGN.md; a random accent nobody asked for |
+| 2 | **Distinctiveness** | You could not mistake this for the previous project; the template's demo copy/data is gone; the composition serves THIS brief | Same shell, same cards as last time with new labels; lorem/"Board team" left in |
+| 2b | **Registry reuse** | Every KPI, chart, list-with-bars, ring, table, calendar, composer and auth form on screen is a BoardUI component from `registry/components.md` with real data | A hand-rolled donut, progress bar, stat tile or sparkline built from divs while `application/charts` and `stat-cards` exist |
 | 3 | **Hierarchy** | One clear primary action per screen; the answer to "what needs me?" in 5 s; numbers link to detail | Everything the same weight; uniform card soup; primary action buried |
 | 4 | **Token discipline** | Only semantic tokens and composite type; dark mode reads correctly with no invisible text or muddy surfaces | Raw colors, hand-stacked type, white-on-light in dark mode |
 | 5 | **Layout integrity** | No overflow, no clipped controls, aligned gutters, sheets/modals full-width on mobile, tables scroll in place | Horizontal scrollbar on the page, stacked sticky bars, a composer pushed below the fold |
@@ -18,7 +19,7 @@ summary when gaps remain.
 | 10 | **Chat contract** (when present) | Composer pinned, message list is the only scroller, attachments and stop visible when relevant, BoardUI chrome not a hand-rolled bubble list | Composer scrolls away, chat framed as a widget with a title, second message list |
 
 Named failures (any instance = fix before returning): the previous project's
-screen with new labels · default blue with a non-blue brand in `DESIGN.md` · a
+screen with new labels · a non-blue accent with no brand colour in the brief · a
 chart legend/axis wall that duplicates the tooltip · a hand-rolled table,
-calendar, gauge, composer or auth form when the registry has one · `useState`
-page switching · raw colors.
+calendar, gauge, KPI tile, progress bar, donut, bar list, composer or auth form
+when the registry has one · `useState` page switching · raw colors.

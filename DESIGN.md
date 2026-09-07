@@ -9,13 +9,13 @@ read it first, update it when a decision changes. Keep it under 40 lines.
 |---|---|---|
 | Product | _what this app is, in one line_ | |
 | Shell | _SidebarShell · TopbarShell · focused · full-page chat · split_ | |
-| Accent | _hue (e.g. `violet`) → set in `src/styles/brand.css`_ | |
+| Accent | `blue` (BoardUI default) unless the brief names a brand colour | |
 | Density | _airy · regular · dense_ | |
 | Start from | _template slug (`finance`, `hr`, …) or "compose"_ | |
 | Tone | _two adjectives_ | |
 | References | _1–2 (Mobbin screens, brand site, user screenshot)_ | |
 
-Previous project used: _shell / accent / template_ → this one differs in: _…_
+Previous project used: _shell / template / density_ → this one differs in: _…_
 
 ## Screens
 

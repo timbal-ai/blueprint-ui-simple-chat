@@ -20,7 +20,8 @@ import { cx } from "@/utils/cx";
  * `AssistantMessage` slots).
  *
  * Styling follows the Pro `ai-chat` container: user turns are a right-aligned
- * white radius-2xl card with the card contact shadow; assistant turns are flat
+ * white radius-2xl card with the card contact shadow (plus a hairline so the
+ * card keeps its edge on a white ground); assistant turns are flat
  * 14/20 prose with a hover-revealed action row of 28px feedback buttons on the
  * tertiary surface. The Pro `AssistantMessage` / `UserMessage` wrappers in
  * `ai-chat-container.tsx` are not reused: they carry the template's mock
@@ -36,7 +37,7 @@ export function BoardUserMessage() {
   return (
     <MessagePrimitive.Root className={cx(userMessageRootClass)}>
       <UserMessageAttachments />
-      <div className="ml-auto w-fit max-w-[80%] rounded-2xl bg-background-primary-default px-3 py-[11px] text-left text-body-regular break-words whitespace-pre-wrap text-text-primary shadow-card sm:max-w-[75%]">
+      <div className="ml-auto w-fit max-w-[80%] rounded-2xl border border-border-button-default bg-background-primary-default px-3 py-[11px] text-left text-body-regular break-words whitespace-pre-wrap text-text-primary shadow-card sm:max-w-[75%]">
         <MessagePrimitive.Parts />
       </div>
     </MessagePrimitive.Root>

@@ -9,8 +9,10 @@
  * Content/data colors (charts, status chips) deliberately stay on their own
  * tokens — change those in theme.css semantics only if the brand demands it.
  *
- * Agents: pick the accent during the direction step and write the choice in
- * DESIGN.md. Do not leave the default blue unless the brand is blue.
+ * Agents: BoardUI blue is the default and stays unless the brief names a
+ * brand colour or the user asks for another hue. Do not change the accent for
+ * variety — variety comes from shell, template, density and content, not from
+ * a random colour. When you do change it, write the choice in DESIGN.md.
  *
  * Examples:
  *   Violet   → var(--color-violet-500) …   Emerald → var(--color-emerald-600) …
@@ -18,7 +20,8 @@
  *   Neutral  → var(--color-neutral-900) for 600/700, lighter stops for 50–300
  * --------------------------------------------------------------------------- */
 @theme {
-  /* Accent ramp (default: BoardUI blue). Uncomment + edit all eleven stops. */
+  /* Accent ramp (default: BoardUI blue — keep it). To re-tint for a brand,
+     uncomment + edit all eleven stops. */
   /*
   --color-accent-50:  var(--color-violet-50);
   --color-accent-100: var(--color-violet-100);

@@ -9,10 +9,10 @@ project-authored component code. Do not re-implement any of it.
 
 | The product needs… | Use | Where |
 |---|---|---|
-| A chat product (the conversation IS the app) | `src/pages/Home.tsx` pattern: page owns the frame, `TimbalChat` is the engine, `boardChatComponents` is the chrome | own route (`/chat`; move it to `/` only when chat is the whole product) |
-| A chat page inside an app with a sidebar/topbar | `EmbeddedChat` as its own route under the shell — full-bleed, no title, no card around it | `components/timbal/embedded-chat.tsx` |
+| A chat product (the conversation IS the app) | `src/pages/Home.tsx` — the BoardUI Pro **ai-chat template** layout: `ChatHistoryRail` (past conversations, `/chat` + `/chat/:id` routes) beside `ChatFrame` (the template's container + breadcrumb header) with the runtime inside (`TimbalRuntimeProvider` + `Thread` + `boardChatComponents`). Reuse it; change the brand, welcome copy and suggestions | routes `/chat`, `/chat/:conversationId` (move to `/` only when chat is the whole product) |
+| A chat page inside an app with a sidebar/topbar | `EmbeddedChat` as its own route under the shell — it already sits in a `ChatFrame` flush with the shell's inset; no title, no extra card | `components/timbal/embedded-chat.tsx` |
 | An assistant one tap away on data screens | `AssistantPill` docked once per shell (`dock` prop) | `components/timbal/assistant-pill.tsx` |
-| A bespoke chat layout (rail, split view) | Compose `TimbalChat` yourself: it must be the only scroll container (`min-h-0 flex-1`) inside a viewport-high flex column; never put messages + input in document flow | — |
+| A bespoke chat layout (split view, side panel) | Compose `ChatFrame` + `TimbalChat` (or provider + `Thread`) yourself: the thread must be the only scroll container (`min-h-0 flex-1`) inside a viewport-high flex column; never put messages + input in document flow | `components/timbal/chat/frame.tsx`, `history-rail.tsx` |
 
 Never: a chat inside a `Modal`, a chat framed as a card with a page title, a
 composer that can scroll off screen, a second message list built by hand.
@@ -47,8 +47,12 @@ const workforceId = selectedId || (error ? "default" : undefined);
 
 Streaming: `POST /api/workforce/{id}/stream` (SSE) — done by the runtime.
 Uploads: `attachments` prop → the runtime's adapter → `/api/files/upload`.
-Conversation history: `useConversations` / `useConversation` +
-`conversationRunsToMessages` → `loadMessages` (see `TimbalStreamApi`).
+Conversation history: `useConversations` (`GET /api/runs?roots=true`) lists a
+workforce's threads; `useConversation` (`GET /api/runs?group_id=…` + `/api/runs/:id`)
+returns `messages` ready for `runtime.loadMessages`. `Home.tsx`'s `ConversationSync`
+is the reference: hydrate on `/chat/:id`, `clear()` on `/chat`, and once a fresh
+thread's first assistant turn carries a `runId`, `navigate(\`/chat/${runId}\`,
+{ replace: true })` so refresh and the rail keep working.
 
 ## Auth
 

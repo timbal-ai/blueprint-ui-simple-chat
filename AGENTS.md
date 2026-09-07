@@ -11,9 +11,10 @@ primitive and their props, plus the direction menu.
 
 ## Rules
 
-1. **Direction first.** Before code, write in `DESIGN.md`: shell, accent, density,
-   template-or-compose, tone, references. Set the accent in `src/styles/brand.css`.
-   Do not reuse the previous project's direction; variety is a decision.
+1. **Direction first.** Before code, write in `DESIGN.md`: shell, density,
+   template-or-compose, tone, references. The accent stays BoardUI blue unless the
+   brief names a brand colour (then `src/styles/brand.css`). Variety comes from
+   shell, template and density — never from picking a random hue.
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.

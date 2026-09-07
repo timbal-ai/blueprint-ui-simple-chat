@@ -55,6 +55,11 @@ const HIDE_VENDORED_CONTROLS = cx(
   "[&_button[aria-label^=Voice]]:hidden",
 );
 
+/* The vendored card is white with a 2% shadow — designed for the template's
+ * grey container, where it reads as a card. Give it a hairline so it also
+ * holds its edge when a page puts it on a white ground. */
+const CARD_EDGE = "[&_.rounded-3xl]:border [&_.rounded-3xl]:border-border-button-default";
+
 /* The panel's controls row sits inside the card's 10px padding, so a 36px
  * circle at `inset 10px` lands exactly on the add menu (left) and the send
  * button (right). */
@@ -128,7 +133,7 @@ export function BoardComposerPanel({
   };
 
   const panel = (
-    <div className={cx("relative", HIDE_VENDORED_CONTROLS)} onPasteCapture={onPaste}>
+    <div className={cx("relative", HIDE_VENDORED_CONTROLS, CARD_EDGE)} onPasteCapture={onPaste}>
       <ComposerPanel
         value={text}
         onValueChange={(next) => composer.setText(next)}

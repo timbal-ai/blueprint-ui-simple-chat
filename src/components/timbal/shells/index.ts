@@ -18,8 +18,8 @@ export {
 } from "./shell-chrome";
 export {
   SHELL_DESKTOP_QUERY,
+  SHELL_FRAME_INSET_CLASS,
   SHELL_INSET_CLASS,
-  SHELL_INSET_NEGATE_CLASS,
   initialsOf,
   resolveActiveNavItem,
   useActiveNavItem,

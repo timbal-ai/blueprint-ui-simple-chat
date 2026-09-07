@@ -53,15 +53,19 @@ function App() {
               </AuthGuard>
             }
           />
-          {/* The wired chat surface: Timbal runtime + BoardUI chrome. */}
-          <Route
-            path="/chat"
-            element={
-              <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
-                <Home />
-              </AuthGuard>
-            }
-          />
+          {/* The chat product: the ai-chat template layout on the Timbal
+              runtime. /chat is a new thread, /chat/:conversationId a past one. */}
+          {["/chat", "/chat/:conversationId"].map((path) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
+                  <Home />
+                </AuthGuard>
+              }
+            />
+          ))}
           <Route path="/login" element={<LoginPage />} />
           {areTemplatesEnabled
             ? Object.entries(templates).map(([slug, Page]) => (

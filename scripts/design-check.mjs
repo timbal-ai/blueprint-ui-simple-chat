@@ -5,12 +5,12 @@
  *   bun run design:check
  *
  * Fails (exit 1) when DESIGN.md's direction table still has placeholders, i.e.
- * screens are being built without a recorded decision on shell / accent /
- * density / template / tone. Warns (exit 0) when the accent ramp in
- * src/styles/brand.css is still the default — allowed, but it must be deliberate.
+ * screens are being built without a recorded decision on shell / density /
+ * template / tone. Warns (exit 0) only when DESIGN.md names a non-blue accent
+ * while src/styles/brand.css still ships the default ramp (blue is the expected
+ * default; it needs no justification).
  *
- * The platform's stop hook runs this on every turn that touches ui/**; run it
- * locally before you build screens.
+ * Run it before you build screens; CI runs it too.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
