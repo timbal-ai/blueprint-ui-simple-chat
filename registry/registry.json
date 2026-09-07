@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-07T16:31:15.139Z",
+  "generatedAt": "2026-09-07T16:41:57.123Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -19295,68 +19295,6 @@
       ],
       "extends": [
         "Omit<TimbalChatProps, \"workforceId\">"
-      ]
-    },
-    {
-      "name": "LoginProps",
-      "kind": "type",
-      "path": "src/components/timbal/login.tsx",
-      "importFrom": "@/components/timbal/login",
-      "layer": "timbal",
-      "group": "login",
-      "summary": "Props of `Login`.",
-      "props": [],
-      "tags": [
-        "timbal",
-        "login",
-        "login-props"
-      ],
-      "propsOf": [
-        "Login"
-      ]
-    },
-    {
-      "name": "Login",
-      "kind": "component",
-      "path": "src/components/timbal/login.tsx",
-      "importFrom": "@/components/timbal/login",
-      "layer": "timbal",
-      "group": "login",
-      "summary": "Login — BoardUI auth-card grammar (rounded-3xl card, title-2, stacked social buttons under an \"or continue with\" divider) driven by the Timbal session.",
-      "props": [
-        {
-          "name": "redirectUri",
-          "type": "string",
-          "optional": true,
-          "doc": "Where to land after OAuth (`?redirect_uri=`). Defaults to the server default."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "optional": true,
-          "default": "\"Welcome back\""
-        },
-        {
-          "name": "description",
-          "type": "string",
-          "optional": true
-        },
-        {
-          "name": "logo",
-          "type": "React.ReactNode",
-          "optional": true,
-          "doc": "Mark above the title. Defaults to the Timbal mark — swap for the product logo.",
-          "default": "<TimbalMark size={28} />"
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "optional": true
-        }
-      ],
-      "tags": [
-        "timbal",
-        "login"
       ]
     },
     {

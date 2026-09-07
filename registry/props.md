@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 271 components · 17 hooks · generated 2026-09-07
+BoardUI 0.5.3 · 270 components · 17 hooks · generated 2026-09-07
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2391,19 +2391,6 @@ Extends: `Omit<TimbalChatProps, "workforceId">`
 | components | — |  | (inherited) |
 
 Other exports: `EmbeddedChatProps` (props of EmbeddedChat)
-
-### login — `@/components/timbal/login`
-
-**Login** — Login — BoardUI auth-card grammar (rounded-3xl card, title-2, stacked social buttons under an "or continue with" divider) driven by the Timbal session.
-| prop | type | default | doc |
-|---|---|---|---|
-| redirectUri? | `string` |  | Where to land after OAuth (`?redirect_uri=`). Defaults to the server default. |
-| title? | `string` | `"Welcome back"` |  |
-| description? | `string` |  |  |
-| logo? | `React.ReactNode` | `<TimbalMark size={28} />` | Mark above the title. Defaults to the Timbal mark — swap for the product logo. |
-| className? | `string` |  |  |
-
-Other exports: `LoginProps` (props of Login)
 
 ### overlays — `@/components/timbal/overlays/index`
 

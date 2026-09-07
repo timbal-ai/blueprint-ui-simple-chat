@@ -4,7 +4,7 @@ React 19 · Vite · Tailwind v4 · react-router · `@timbal-ai/timbal-react` (ch
 streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source under
 `src/components/{base,application,foundations}` — never edited by hand
 (`bun run boardui:sync` overwrites it). Project code: `src/components/timbal/`
-(chat slots, login, shells, overlays) and `src/pages/`.
+(chat slots, shells, overlays) and `src/pages/`.
 
 **Read `registry/INDEX.md` before writing UI.** It lists every template, block,
 primitive and their props, plus the direction menu.
@@ -32,7 +32,8 @@ primitive and their props, plus the direction menu.
 5. **Chat is the runtime.** `TimbalChat` + `boardChatComponents` (Home pattern),
    `EmbeddedChat` for a chat page in an app, `AssistantPill` for in-page AI. Never
    hand-roll a message list, composer, upload or streaming.
-6. **Auth is the runtime.** `SessionProvider` + `AuthGuard renderLogin={<Login />}`.
+6. **Auth is the platform.** `SessionProvider` + `AuthGuard` (no `renderLogin`): signed-out
+ users go to the Timbal login page and come back. Never build a login screen.
    API calls go through `/api` with `authFetch`. Never swallow fetch errors.
 7. **States are part of the screen.** Loading (skeleton, not spinner), empty, error.
    375 px must work: shells collapse to a drawer, tables scroll in their container.

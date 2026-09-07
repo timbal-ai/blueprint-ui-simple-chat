@@ -12,7 +12,7 @@ be installed; nothing is fetched at build time.
 | **`props.md`** | Props of every component (generated from source). Look here before guessing an API. |
 | **`patterns.md`** | Page recipes: dashboard, table page, auth, AI chat, settings. |
 | **`theming.md`** · `motion.md` | Tokens, type scale, accent ramp, dark mode; the motion language. |
-| **`timbal.md`** | The Timbal seam: chat surfaces, slots, login, uploads, `/api`. The only non-BoardUI knowledge you need. |
+| **`timbal.md`** | The Timbal seam: chat surfaces, slots, auth, uploads, `/api`. The only non-BoardUI knowledge you need. |
 | `registry.json` | Machine index (name → path → exports → props → tags → template). |
 
 ## Where things live
@@ -23,7 +23,7 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
                                 web-search/, agent-progress/, questionnaire/, calendar/, settings/,
                                 notification-center/, auth/, data-table/, and one folder per template
                                 (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/, ai-chat/)  BoardUI, verbatim
-src/components/timbal/          the seam (ours): chat/ slots · login.tsx · shells/ · overlays/ ·
+src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ ·
                                 embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
 src/styles/brand.css            accent ramp + fonts — the ONE file that restyles the product
@@ -63,7 +63,7 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 | Settings | `application/settings` (`settings-modal` and its sections) |
 | Notifications / activity | `application/notification-center`, `base/notification` (toast body), `timbal/overlays` `toast` |
 | Calendar, scheduling | `application/calendar` (month/week/day, event cards) |
-| Sign-in / sign-up | `application/auth` (`auth-card`) via `timbal/login.tsx` |
+| Sign-in | nothing to build: `AuthGuard` redirects to the platform login (`timbal.md`). `application/auth` is not for sign-in |
 | Long-running AI work, tools, sources | `application/task-list`, `agent-progress`, `agent-thinking`, `agent-log`, `web-search`, `agent-limits` — already wired into the chat slots |
 | The chat itself | `timbal/chat/*` (`ChatFrame`, `ChatHistoryRail`, `boardChatComponents`) + the runtime — see `timbal.md` |
 | Page shell | `timbal/shells` (`SidebarShell`, `TopbarShell`); a whole finished screen → `templates.md` |

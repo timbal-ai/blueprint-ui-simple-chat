@@ -110,14 +110,14 @@ ui/
 │   ├── props.md             GENERATED from src: every export + Props interface + JSDoc
 │   ├── templates.md         the 8 shells: route, domain, contents, data file
 │   ├── patterns.md · theming.md · motion.md   (vendored from the BoardUI skill)
-│   ├── timbal.md            the seam: chat surfaces, slots, login, uploads, /api
+│   ├── timbal.md            the seam: chat surfaces, slots, auth (platform redirect), uploads, /api
 │   └── registry.json        machine index: name → path → exports → tags → template
 ├── scripts/
 │   ├── boardui-sync.mjs     `boardui add <all names> --overwrite -d src`, exclusions, globals header strip
 │   ├── registry-build.mjs   regenerates props.md / registry.json / templates.md
 │   └── screenshots.mjs      shoots every route at 1280/375 (playwright) → screenshots/
 └── src/
-    ├── App.tsx              one <Route> per page; AuthGuard(renderLogin=<Login/>)
+    ├── App.tsx              one <Route> per page; AuthGuard (no renderLogin → platform login redirect)
     ├── index.css            tailwind → runtime styles.css → styles/globals.css → brand.css → timbal-bridge.css
     ├── styles/              theme.css · typography.css · globals.css (BoardUI) · brand.css · timbal-bridge.css
     ├── shims/               next-image.tsx · next-link.tsx · next-navigation.ts
@@ -125,10 +125,10 @@ ui/
     │   ├── base/ application/ foundations/   BoardUI, verbatim — NEVER edited by hand
     │   └── timbal/          the only house code (~1.5k lines): chat/ (slots on Pro ComposerPanel +
     │                        ai-chat messages + TaskList/WebSearch/AgentProgress tool adapters),
-    │                        login.tsx, shells/ (sidebar-shell, topbar-shell), overlays/ (modal, sheet,
+    │                        shells/ (sidebar-shell, topbar-shell), overlays/ (modal, sheet,
     │                        popover, toast on react-aria-components), embedded-chat, assistant-pill
     ├── hooks/ utils/        BoardUI foundations
-    └── pages/               Home (chat) · Login · NotFound · templates/* (8 route files over the shells)
+    └── pages/               Home (chat) · NotFound · templates/* (8 route files over the shells)
 ```
 
 Rules that keep it maintainable: vendored files are never edited (sync is a
@@ -178,7 +178,8 @@ otherwise                                     → legacy kit    → references/l
    (chat product → keep `Home` = the ai-chat template layout with history rail
    and `/chat/:id` routes, change brand/copy only; chat page in an app →
    `EmbeddedChat`; in-page AI → `AssistantPill`), slots (`boardChatComponents`),
-   `Login`, uploads through the runtime, `/api` via `authFetch`.
+   auth = `AuthGuard` redirecting to the platform login (no in-app login screen),
+   uploads through the runtime, `/api` via `authFetch`.
 4. **Verify:** `bun run lint && bun run build`, `bun run screenshots` (or
    `mcp__timbal-browser__browser_screenshot`) at 1280/375, critique rubric
    incl. Distinctiveness, max 3 rounds.
@@ -228,7 +229,7 @@ Repack from `blueprint-ui-simple-chat` branch `v3` (→ `main` after review); sh
 (deps: `react-aria-components`, `@remixicon/react`, `@internationalized/date`,
 `motion`, `@tanstack/react-table`, `recharts`, `prism-react-renderer`,
 `tailwind-merge`, `@timbal-ai/timbal-react`). Preview/deploy untouched (Vite,
-bun, static `dist/`). Optional: a second kind `ui-chat` (Home + Login only)
+bun, static `dist/`). Optional: a second kind `ui-chat` (Home only)
 vs `ui-app` (with shells/templates) — cheap variety at scaffold time.
 
 ### 4.5 `evals/ui-quality/`
@@ -272,14 +273,14 @@ bun run dev:fake                       # vite + scripts/fake-api.mjs on :5301 �
                                        #   POST /api/workforce/:id/stream (tool → web search → chart → markdown),
                                        #   GET /api/runs?roots=true (history), ?group_id= + /api/runs/:id (hydration),
                                        #   POST /api/files/upload, POST /api/auth/magic-link; prompt "fail" → 500, "slow" → 6 s tool
-bun run dev                            # / (placeholder), /chat, /chat/:id, /login, /templates/* and /examples/* (DEV only)
+bun run dev                            # / (placeholder), /chat, /chat/:id, /templates/* and /examples/* (DEV only)
 bun run screenshots -- --fake          # screenshots/<route>-{1280,375}[-dark].png, exits 1 on page errors
 bun run registry:build                 # after any boardui:sync; `--check` = CI drift check
 bun run boardui:sync                   # pulls upstream (needs `npx boardui login` on the machine)
 ```
 
 Routes: `/` (neutral `Placeholder` — Timbal mark, "Your app will live here"; the
-agent replaces it), `/chat`, `/chat/:conversationId`, `/login`,
+agent replaces it), `/chat`, `/chat/:conversationId`,
 `/templates/{dashboard,finance,hr,marketing,medical,calendar,ai-profile,ai-chat,
 ai-image-generation}`, `/examples/shell-sidebar/{,settings,chat}`,
 `/examples/shell-topbar/{,chat}`.
@@ -293,8 +294,10 @@ picks a template by slug from `registry/templates.md` or composes from
 Expected: `/` renders the placeholder (never a chat the user didn't ask for);
 `/chat` renders the ai-chat template layout (history rail + framed thread) on
 the Timbal runtime, and after the first turn the URL becomes `/chat/<run id>`
-(sending without a backend shows the runtime error state, not a crash); `/login`
-renders `AuthCard` with the providers from `/api/config`; each template route
+(sending without a backend shows the runtime error state, not a crash); with
+`auth.required=true` and no session, `AuthGuard` redirects to
+`/api/auth/login?return_to=…` (the platform login — the app ships no login
+screen); each template route
 renders its BoardUI shell; build has no `tsc` errors and no raw-color lint
 errors.
 

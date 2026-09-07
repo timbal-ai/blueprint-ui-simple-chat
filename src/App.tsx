@@ -4,9 +4,7 @@ import { AuthGuard, SessionProvider } from "@timbal-ai/timbal-react";
 
 import { areTemplatesEnabled, isAuthEnabled } from "@/config";
 import { useTitle } from "@/hooks/use-title";
-import { Login } from "@/components/timbal/login";
 import Home from "@/pages/Home";
-import LoginPage from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Placeholder from "@/pages/Placeholder";
 
@@ -41,14 +39,16 @@ function App() {
     <SessionProvider enabled={isAuthEnabled}>
       <BrowserRouter>
         <Routes>
-          {/* The index route is a neutral placeholder on a fresh scaffold — a
+          {/* Auth is the platform's: AuthGuard (no renderLogin) sends signed-out
+              users to the Timbal login page and back. Do not build a login screen.
+              The index route is a neutral placeholder on a fresh scaffold — a
               build should never open on a chat the user didn't ask for. Replace
               it with the real surface (<Home /> for a chat product, a template
               shell, or your own page) and delete Placeholder.tsx. */}
           <Route
             index
             element={
-              <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
+              <AuthGuard requireAuth enabled={isAuthEnabled}>
                 <Placeholder />
               </AuthGuard>
             }
@@ -60,13 +60,12 @@ function App() {
               key={path}
               path={path}
               element={
-                <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
+                <AuthGuard requireAuth enabled={isAuthEnabled}>
                   <Home />
                 </AuthGuard>
               }
             />
           ))}
-          <Route path="/login" element={<LoginPage />} />
           {areTemplatesEnabled
             ? Object.entries(templates).map(([slug, Page]) => (
                 <Route

@@ -12,7 +12,7 @@
  *   POST /api/files/upload              → { url } (images come back as data URLs so tiles render)
  *   POST /api/workforce/:id/stream      → SSE run: generic tool → web search → chart artifact → markdown
  *                                          prompt containing "fail" → HTTP 500; "slow" → 6 s first tool
- *   POST /api/auth/magic-link           → 200 (email in body) so the Login "check your inbox" state shows
+ *   POST /api/auth/magic-link           → 200 (kept for parity with the platform API; the UI has no login screen of its own)
  *   GET  /api/runs?roots=true&workforce_id=…  → past conversations (thread roots) for the history rail
  *   GET  /api/runs?group_id=…           → every turn of one conversation
  *   GET  /api/runs/:id                  → one turn with its trace (runtime rebuilds the messages from it)

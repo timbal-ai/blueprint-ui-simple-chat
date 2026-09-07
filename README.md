@@ -11,8 +11,8 @@ Contains BoardUI Pro source under an author-granted permission (see `LICENSE-BOA
 
 ```
 bun install
-bun run dev:fake            # vite + a fake Timbal API (:5301): chat streams tools/artifacts, login shows providers
-bun run dev                 # vite only — "/" placeholder, "/chat", "/login", "/templates/*", "/examples/*" (dev only)
+bun run dev:fake            # vite + a fake Timbal API (:5301): chat streams tools/artifacts, history hydrates
+bun run dev                 # vite only — "/" placeholder, "/chat", "/templates/*", "/examples/*" (dev only)
 bun run build && bun run lint
 bun run design:check        # fails until DESIGN.md's direction table is filled (by design)
 bun run screenshots         # every route at 1280/375, light/dark → screenshots/ (exits 1 on page errors)
@@ -28,7 +28,10 @@ here") — replace it in `App.tsx` with the real surface and delete
 `src/pages/Placeholder.tsx`. Never ship a build that opens on the placeholder,
 and never leave a chat mounted at `/` unless the product is a chat.
 
-Routes to look at: `/` (placeholder), `/chat`, `/login`, `/templates/{dashboard,finance,hr,
+Sign-in is the platform's: `AuthGuard` redirects signed-out users to the Timbal
+login page and back. The app has no login screen or route of its own.
+
+Routes to look at: `/` (placeholder), `/chat`, `/chat/:id`, `/templates/{dashboard,finance,hr,
 marketing,medical,calendar,ai-profile,ai-chat,ai-image-generation}`,
 `/examples/shell-sidebar/{,settings,chat}`, `/examples/shell-topbar/{,chat}`.
 
@@ -40,8 +43,8 @@ registry/                 what exists: INDEX.md → templates.md · components.m
 src/components/base/      BoardUI primitives           ┐
 src/components/application/  BoardUI blocks, charts, agent UI, template subtrees  │ vendored, never hand-edited
 src/components/foundations/  brand mark, chevrons      ┘   (bun run boardui:sync)
-src/components/timbal/    the seam: chat/ slots · login.tsx · shells/ · overlays/ · embedded-chat · assistant-pill
-src/pages/                routes: Placeholder ("/" — replace it) · Home (chat) · Login · NotFound · templates/* · examples/*
+src/components/timbal/    the seam: chat/ slots · shells/ · overlays/ · embedded-chat · assistant-pill
+src/pages/                routes: Placeholder ("/" — replace it) · Home (chat) · NotFound · templates/* · examples/*
 src/styles/               theme.css typography.css globals.css (BoardUI) · brand.css (yours) · timbal-bridge.css
 src/shims/                next/image, next/link, next/navigation → Vite/react-router
 scripts/                  boardui-sync.mjs · registry-build.mjs · screenshots.mjs

@@ -57,16 +57,18 @@ thread's first assistant turn carries a `runId`, `navigate(\`/chat/${runId}\`,
 ## Auth
 
 ```tsx
-<SessionProvider enabled={isAuthEnabled}>           // GET /api/config → providers, auth.required
-  <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>…</AuthGuard>
+<SessionProvider enabled={isAuthEnabled}>           // GET /api/config → auth.required, providers
+  <AuthGuard requireAuth enabled={isAuthEnabled}>…</AuthGuard>
 </SessionProvider>
 ```
 
-`Login` (`components/timbal/login.tsx`) is BoardUI's auth-card grammar,
-passwordless: OAuth buttons → `GET /api/auth/{google|microsoft|github}`, email →
-`POST /api/auth/magic-link {email}`. Providers come from the session
-(`useOptionalSession().authProviders`), so only enabled methods render. User
-info: `session.user.{user_name,user_email,user_photo_url}`; `session.logout()`.
+The login screen is the platform's. `AuthGuard` without `renderLogin` sends a
+signed-out user to `/api/auth/login?return_to=…` (the Timbal login page) and the
+platform brings them back with a session. There is no login route, page or form
+in this app — do not add one, and do not use `application/auth/auth-card` for
+sign-in. (If a product ever needs an in-app login, the runtime ships
+`TimbalLoginScreen` for `renderLogin`; that is a product decision, not a default.)
+User info: `session.user.{user_name,user_email,user_photo_url}`; `session.logout()`.
 
 ## Calling your own API
 

@@ -67,7 +67,7 @@ Read `ui/registry/timbal.md` for detail. In short:
 | A chat product | keep `ui/src/pages/Home.tsx`: it is the BoardUI Pro ai-chat layout (`ChatHistoryRail` + `ChatFrame` + runtime `Thread` with `boardChatComponents`), with `/chat/:id` history wired. Change brand, welcome copy, suggestions — not the structure |
 | A chat page inside an app | `EmbeddedChat` (`@/components/timbal/embedded-chat`) as its own route under the shell — already framed, flush with the shell inset; no title, no extra card |
 | AI one tap away on data screens | `AssistantPill` (`@/components/timbal/assistant-pill`) in the shell's `dock`, once |
-| Sign-in | `SessionProvider` + `AuthGuard renderLogin={<Login />}` (`@/components/timbal/login`) — passwordless, providers come from `/api/config` |
+| Sign-in | nothing: `SessionProvider` + `AuthGuard` (no `renderLogin`) redirect to the platform's login page and back. Never build a login screen or route |
 | Your own data | `authFetch("/api/…")` from `@timbal-ai/timbal-react`; never swallow errors |
 
 Never hand-roll a message list, composer, upload, streaming client, or auth form.

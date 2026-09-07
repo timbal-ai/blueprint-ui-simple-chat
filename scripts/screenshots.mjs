@@ -4,10 +4,10 @@
  * change can be reviewed visually before it ships.
  *
  *   bun run screenshots                    # boots `vite` on :5199, shoots, exits
- *   bun run screenshots -- --fake          # also boots scripts/fake-api.mjs so chat/login have data (CI)
+ *   bun run screenshots -- --fake          # also boots scripts/fake-api.mjs so chat has data (CI)
  *   bun run screenshots -- --preview       # serve the built dist/ (vite preview) instead of the dev server (CI)
  *   bun run screenshots -- --base http://localhost:5173   # against a running server
- *   bun run screenshots -- --routes /,/login             # subset
+ *   bun run screenshots -- --routes /,/chat              # subset
  *
  * Output: screenshots/<route>-<width>[-dark].png (folder is git-ignored).
  * Requires playwright + chromium: `bun add -d playwright && bunx playwright install chromium`.
@@ -32,7 +32,6 @@ const ROUTES = (
     [
       "/",
       "/chat",
-      "/login",
       "/templates/dashboard",
       "/templates/finance",
       "/templates/hr",
