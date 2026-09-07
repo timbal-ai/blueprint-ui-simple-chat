@@ -33,6 +33,9 @@ import { isAuthEnabled, isGalleryEnabled } from "@/config";
 import Home from "@/pages/Home";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";
+// SPIKE (v3 direction): BoardUI-designed chat page on the Timbal runtime.
+const BoardChat = lazy(() => import("@/pages/BoardChat"));
+import { BoardLogin } from "@/components/chat/board/board-login";
 
 // Gallery showcase (dev/CI surface): routed pages/blocks/primitives/charts
 // inside the inset AppShell. Gated behind VITE_GALLERY.
@@ -108,6 +111,24 @@ function App() {
                   </AuthGuard>
                 }
               />
+              <Route
+                path="/board"
+                element={
+                  <AuthGuard
+                    requireAuth
+                    enabled={isAuthEnabled}
+                    renderLogin={<BoardLogin />}
+                  >
+                    <Suspense fallback={null}>
+                      <BoardChat />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              {/* SPIKE: login screen preview without a backend (dev only). */}
+              {import.meta.env.DEV ? (
+                <Route path="/board/login" element={<BoardLogin />} />
+              ) : null}
               {GalleryShell ? (
                 <Route
                   path="/gallery"
