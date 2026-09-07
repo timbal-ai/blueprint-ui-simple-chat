@@ -33,7 +33,7 @@ jobs:
           bunx playwright install --with-deps chromium
 
       - name: Screenshot every route (1280 + 375, light + dark)
-        run: node scripts/screenshots.mjs --out screenshots
+        run: node scripts/screenshots.mjs --fake --out screenshots
 
       - name: Upload screenshots
         if: always()

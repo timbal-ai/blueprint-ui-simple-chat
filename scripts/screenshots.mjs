@@ -4,6 +4,7 @@
  * change can be reviewed visually before it ships.
  *
  *   bun run screenshots                    # boots `vite` on :5199, shoots, exits
+ *   bun run screenshots -- --fake          # also boots scripts/fake-api.mjs so chat/login have data (CI)
  *   bun run screenshots -- --base http://localhost:5173   # against a running server
  *   bun run screenshots -- --routes /,/login             # subset
  *
@@ -56,22 +57,61 @@ try {
   process.exit(1);
 }
 
-let server;
+const children = [];
+const FAKE_PORT = 5301;
+const useFake = args.includes("--fake");
+
+/** Spawn a child, keep its output for diagnostics, and forward it when `--verbose`. */
+function start(cmd, argv, env, label) {
+  const child = spawn(cmd, argv, { stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, ...env } });
+  child.log = "";
+  const tap = (d) => {
+    child.log += String(d);
+    if (args.includes("--verbose")) process.stdout.write(`[${label}] ${d}`);
+  };
+  child.stdout.on("data", tap);
+  child.stderr.on("data", tap);
+  child.on("error", (e) => (child.log += `\n[spawn error] ${e.message}`));
+  children.push(child);
+  return child;
+}
+
+/** Poll until the URL answers (any HTTP status), or throw with the child's output. */
+async function waitFor(url, child, label, timeoutMs = 90000) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    try {
+      await fetch(url, { signal: AbortSignal.timeout(2000) });
+      return;
+    } catch {
+      if (child.exitCode !== null) break;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+  throw new Error(
+    `${label} did not start at ${url} (exit code ${child.exitCode}).\n--- ${label} output ---\n${child.log || "(no output)"}`,
+  );
+}
+
+const shutdown = () => children.forEach((c) => c.kill());
+process.on("exit", shutdown);
+process.on("SIGINT", () => {
+  shutdown();
+  process.exit(130);
+});
+
 if (!base) {
-  server = spawn("bun", ["run", "dev", "--", "--port", String(PORT), "--strictPort"], {
-    stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env, VITE_TEMPLATES: "true" },
-  });
-  base = `http://localhost:${PORT}`;
-  await new Promise((res, rej) => {
-    const t = setTimeout(() => rej(new Error("vite did not start")), 30000);
-    server.stdout.on("data", (d) => {
-      if (String(d).includes("Local:")) {
-        clearTimeout(t);
-        res();
-      }
-    });
-  });
+  const env = { VITE_TEMPLATES: "true" };
+  if (useFake) {
+    const fake = start("node", ["scripts/fake-api.mjs"], { FAKE_API_PORT: String(FAKE_PORT) }, "fake-api");
+    await waitFor(`http://localhost:${FAKE_PORT}/api/workforce`, fake, "fake-api", 20000);
+    env.VITE_API_PROXY_TARGET = `http://localhost:${FAKE_PORT}`;
+  }
+  // `npx vite` rather than `bun run dev --`: no dependency on bun being on the
+  // PATH of the spawning process, and no stdout indirection through bun.
+  const vite = start("npx", ["vite", "--port", String(PORT), "--strictPort", "--host", "127.0.0.1"], env, "vite");
+  base = `http://127.0.0.1:${PORT}`;
+  await waitFor(`${base}/`, vite, "vite");
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -108,7 +148,7 @@ for (const route of ROUTES) {
 }
 
 await browser.close();
-server?.kill();
+shutdown();
 if (failures.length) {
   console.error("\nFailures:\n  " + [...new Set(failures)].join("\n  "));
   process.exit(1);
