@@ -4,7 +4,7 @@ import type { CSSProperties, ImgHTMLAttributes } from "react";
  * `next/image` shim for Vite. BoardUI is authored for Next.js; vendored files
  * keep their `import Image from "next/image"` and resolve here through the
  * alias in vite.config.ts / tsconfig paths. Renders a plain <img>; the
- * Next-only props are accepted and dropped.
+ * Next-only props are accepted and dropped so they never reach the DOM.
  */
 type NextImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string | { src: string };
@@ -17,19 +17,11 @@ type NextImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   loader?: unknown;
 };
 
-export default function Image({
-  src,
-  fill,
-  priority,
-  quality: _quality,
-  placeholder: _placeholder,
-  blurDataURL: _blur,
-  unoptimized: _unoptimized,
-  loader: _loader,
-  style,
-  alt = "",
-  ...rest
-}: NextImageProps) {
+const NEXT_ONLY = ["quality", "placeholder", "blurDataURL", "unoptimized", "loader"] as const;
+
+export default function Image(props: NextImageProps) {
+  const { src, fill, priority, style, alt = "", ...rest } = props;
+  for (const key of NEXT_ONLY) delete (rest as Record<string, unknown>)[key];
   const resolved = typeof src === "string" ? src : src.src;
   const fillStyle: CSSProperties | undefined = fill
     ? { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", ...style }
@@ -38,7 +30,7 @@ export default function Image({
     <img
       src={resolved}
       alt={alt}
-      loading={priority ? "eager" : rest.loading ?? "lazy"}
+      loading={priority ? "eager" : (rest.loading ?? "lazy")}
       decoding="async"
       style={fillStyle}
       {...rest}

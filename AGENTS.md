@@ -1,382 +1,46 @@
-# Agent guide — blueprint-ui-simple-chat (v2, fork-first)
+# UI — BoardUI on the Timbal runtime
 
-This repo is the **canonical scaffold** for Timbal app UIs. **The `timbal-ui` skill is the authoritative guide for HOW to design and build here — load it first.** This file carries only project facts the skill can't know. Where they overlap, the skill wins.
+React 19 · Vite · Tailwind v4 · react-router · `@timbal-ai/timbal-react` (chat, auth,
+streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source under
+`src/components/{base,application,foundations}` — never edited by hand
+(`bun run boardui:sync` overwrites it). Project code: `src/components/timbal/`
+(chat slots, login, shells, overlays) and `src/pages/`.
 
-## Discovery workflow (MANDATORY before any UI code)
+**Read `registry/INDEX.md` before writing UI.** It lists every template, block,
+primitive and their props, plus the direction menu.
 
-Agents rebuild from primitives when they skip discovery. **Read in this order:**
+## Rules
 
-1. **`src/components/discovery.ts`** — intent index (`INTENT_INDEX`, `DO_NOT_BUILD`). Match the user's request to a page template or block. Run `bun run kit:discover -- "feature description"` to search.
-2. **`PAGES_CATALOG`** (`src/components/pages/catalog.ts`) — **fork** the closest full-page template. Never compose a whole screen from `ui/*` primitives.
-3. **`BLOCKS_CATALOG`** (`src/components/blocks/catalog.ts`) — import blocks for anything the forked page doesn't already cover.
-4. **`src/components/ui/*`** — primitives for gaps between blocks only.
-5. **Fork** a block file when it is ~80% right. **Never** rebuild FilteredTable, AppShell, FormSheet, chart recipes, or review layouts from scratch.
-
-Quick search: `bun run kit:discover` lists the kit; `bun run kit:discover -- "invoice table"` matches intents.
-
-## The design system is project-owned. You are expected to edit it.
-
-Three layers, all in this repo:
-
-1. **`src/design/dna.json`** — the design DNA: every global visual decision
-   (finish, brand, neutrals, surface strategy, type pairing + scale, radius,
-   elevation, density, motion) as one validated file. `"finish": "timbal"`
-   (the default) compiles the signature Timbal chrome — soft canvas gradient,
-   gradient-filled controls with an inset highlight; set `"finish": "flat"`
-   only when the user or a visual reference calls for flat surfaces. Compile it with `bun run dna:compile`
-   → regenerates `src/design/tokens.css` (complete light+dark token set,
-   WCAG-checked). **Never hand-edit `tokens.css`** — `bun run dna:check` fails
-   the gate on drift. List curated menus with `bun run dna:registries`.
-2. **`src/design/DESIGN.md`** — the durable design record: intent, references
-   used, layout + component decisions. **Read it before UI work; update it
-   after design decisions.** This is how session 12 stays consistent with
-   session 1.
-3. **`src/components/`** — the component source, owned by this project:
-   - `ui/` — primitives (button, input, select, dialog, dropdown, table,
-     data-table, sidebar, tabs, sheet, tooltip, …). shadcn-shaped, wired to
-     DNA tokens (`bg-primary`, `h-control`, `rounded-control`, `shadow-xs`,
-     bare `transition-*` inherits DNA motion).
-   - `blocks/` — **the block kit: screen-level patterns. Compose from these
-     FIRST.** Read `src/components/discovery.ts` before any screen — it maps
-     user intents to pages/blocks. Then `catalog.ts` (`BLOCKS_CATALOG`) for
-     the full index; `blocks/index.ts` barrels the whole kit (`import { AppShell, BulkActionBar } from "@/components/blocks"`).
-     `AppShell` (default `variant="inset"` — gray canvas, white bordered
-     content card, built-in sidebar collapse toggle + a mobile brand bar with
-     an in-flow opener; on mobile, tapping a nav entry auto-closes the
-     drawer), `SidebarUser` (avatar + account dropdown for the sidebar
-     footer — always ends with a destructive Sign out entry; wire
-     `onSignOut` to the real teardown), `PageHeader`, `ListDetailLayout`,
-     `FilteredTable`
-     (+ `IconCell`/`AvatarChipCell`/`AvatarChip`, checkbox-facet
-     `moreFilters` popover), `BulkActionBar` (floating selection bubble —
-     pair with row selection), detail-panel sections, `FormSheet`/`FormField`
-     (sheet `size` presets up to `full`), settings scaffolding —
-     `SettingsSection`/`SettingsRow` for a settings PAGE (own route),
-     `SettingsDialog` for the two-pane settings MODAL (grouped rail nav +
-     `SettingsDialogRow`/`SettingsDialogGroup`/`SettingsPlanCard` panes,
-     mobile pill-row rail),
-     `StatOverview`/`ChartCard` (edge-less charts), `ResourceGrid`,
-     `AssistantPill` (the floating AI pill, streaming pre-wired),
-     `EmbeddedChat` (the chat PAGE for apps in RoutedAppShell — full-bleed
-     on the content card, no title, streaming pre-wired),
-     `chart-demos` (eight Recharts recipes incl. composed line+bar, stacked,
-     donut-with-total, radar — no legends, gradient fills),
-     `MetricLegendList` (`blocks/interactive-charts` — chart legend rows:
-     gradient tone pill, big number + caption, View action; the ONLY piece
-     left of the old house interactive kit),
-     **interactive metric CARDS are the BoardUI Pro components** in
-     `src/components/application/{dashboard,medical}` — `RevenueTrendCard`
-     (gradient trend area, count-up headline, props `title`/`periods`),
-     `RecentHiresCard` (paged 2×2 people grid, props `title`/`count`/
-     `people`), `EarningsChartCard` (period-switched bars),
-     `ContributionsCard`/`ContributionsGrid` (heat grid; grid takes real
-     `data` counts), `StepsCard`, `SleepScoreCard` (generic score ring via
-     `metrics` prop), `ActivityRingsCard`, `MostActiveDaysCard`,
-     `WeekRangePill` — never rebuild these patterns from primitives,
-     `PdfViewer` (toolbar + native PDF embed, zero deps — mount in a page
-     section or a wide Sheet/Drawer), `ImageCard`/`MediaGrid` (image-first
-     cards for galleries and asset libraries, overlay or below-image
-     captions).
-   - `icons.tsx` — **the house icon pack (Nucleo UI outline 18px). Import
-     every icon from `@/components/icons`, never from an icon library
-     directly.** Need a new glyph? Add one re-export line there.
-   - `pages/` — full page templates. `catalog.ts` (`PAGES_CATALOG`) indexes
-     every forkable page; `invoices-page.tsx` is the reference entity-index
-     grammar; `insights-dashboard-page.tsx` is the reference dashboard grammar
-     (stats → cards → chart → table); `customer-detail-page.tsx` and
-     `workspace-detail-page.tsx` are condensed full-page record details
-     (Stripe / Cloudflare grammar);
-     `media-library-page.tsx` is the asset-library grammar (ImageCard grid
-     + document list → photo Sheet preview / PdfViewer in a wide right
-     Drawer).      **BoardUI Pro templates (2026-07-15, purchased kit, project-owned —
-     these are THE metrics/overview grammars; the old house health/earnings
-     replica pages were deleted in their favor):** `home-dashboard-page.tsx`
-     (overview grammar — RecentHiresCard, EarningsChartCard,
-     RevenueTrendCard, ContributionsCard, StatCards, CustomersTable),
-     `medical-profile-page.tsx` (consumer-metrics grammar — six-card health
-     grid: steps/sleep/most-active-days/activity-rings + patients table),
-     `ai-profile-page.tsx` (centered profile cover card + activity charts),
-     `calendar-page.tsx` (month grid with event chips → anchored
-     EventDetailsModal, in-place month switcher, inbox feed — NEVER
-     hand-roll a calendar). Their card kits live under
-     `src/components/application/{dashboard,medical,calendar,ai-profile}` —
-     see the `pro-*` entries in `BLOCKS_CATALOG`. The Pro AI chat template
-     (`application/ai-chat`, mounted at `/gallery/templates/ai-chat`) is a
-     full-viewport VISUAL REFERENCE only — real chat still goes through the
-     Timbal shells. Fork them, don't restart. Index pages ship row click →
-     detail Sheet; detail pages are their own routes with breadcrumb
-     eyebrow + MetadataGrid + tabs.
-   - `app/` — compositions (`Page`, `Section`, `Stat`, `StatGrid`).
-   - `chat/` — chat chrome (`ChatWelcome`, `ChatUserMessage`) registered as
-     `components` slots in `src/lib/studio-chat-chrome.tsx`; the streaming
-     runtime stays in the package.
-
-**Restyling = editing these files.** Global changes (color, radius, font,
-density, shadows, motion) go through `dna.json` — one edit restyles every
-component. Structural personality (pill buttons, dense tables, different nav
-treatment) is a targeted edit to the component file. Matching a reference
-screenshot 1:1 is legitimate and expected — that's why the source is here.
-
-**What still comes from `@timbal-ai/timbal-react` (do not rebuild):** the
-runtime and chat machinery — `TimbalChatShell` / `TimbalStudioShell` /
-`TimbalChat`, `TimbalRuntimeProvider` + `useTimbalStream` (SSE streaming),
-artifacts rendering, `SessionProvider` / `AuthGuard` / `authFetch`,
-`AppCopilot`. Its styles.css also ships the chat polish + the `dark` variant.
-Restyle chat via shell props + the `components` slot API (see the skill's
-chat reference), not by reimplementing the thread.
-
-## Non-negotiables (build/theming correctness)
-
-1. **`src/index.css` import order matters:** `tailwindcss` → library
-   `styles.css` → `./design/tokens.css` (DNA wins the cascade) → `@source`
-   the library dist. Deleting any of these = unstyled UI or dead chat polish.
-2. **Colors only through tokens.** Raw hex/oklch/palette classes
-   (`bg-blue-600`) punch through the DNA and break dark mode + re-theming.
-   New color roles belong in `dna.json` (`overrides` accepts only
-   token-referential values).
-3. **Chart token contract:** pass `var(--chart-3)` directly — never
-   `hsl(var(--chart-3))` (invalid CSS, silently renders black). Chart
-   `dataKey`s must be safe identifiers (`waterPct`, not `"Water %"`).
-4. **Verify imports exist.** Library surfaces move between subpaths; when
-   unsure import from the root `@timbal-ai/timbal-react` or grep the installed
-   `dist/*.d.ts`. Local components import from `@/components/...`.
-5. **Never swallow fetch errors** — show an `EmptyState`/`Alert` and log;
-   `.catch(() => {})` turns failures into permanent skeletons.
-
-## Strong defaults
-
-- **Pick the surface first.** Chat product → `TimbalChatShell` /
- `TimbalStudioShell` (`Home.tsx`, mounted at `/chat`). Screens with content
- (data, settings, admin, catalog) → `RoutedAppShell` (from `blocks/`) +
- `PageHeader` + blocks, and drop `<AssistantPill />` (from
- `blocks/assistant`) on operational screens so the AI is one tap away.
- App with a chat/copilot entry in the sidebar nav → `EmbeddedChat`
- (`blocks/embedded-chat`) as that route. Don't force a data app into a
- chat box.
-- **Pages are ROUTES (hard rule).** Every page/screen gets its own
-  react-router route — never a `useState`-switched view inside one giant
-  component (deep links, back/forward, and refresh must work). Mount
-  `RoutedAppShell` (`blocks/routed-app-shell`) once as a layout route: nav
-  item ids ARE route paths, the active row derives from the URL, and pages
-  render through the router's `<Outlet />`. Register one `<Route>` per page
-  in `App.tsx` (the `/gallery` tree is the living reference).
-- **Page inset (hard rule).** AppShell/RoutedAppShell apply lateral +
-  top/bottom breathing room automatically — page templates use `PageBody`
-  (gap/scroll only, no extra px-/py- on the root). Standalone pages outside
-  a shell use `PageBody inset`. Never run `PageHeader`, stats, or tables flush
-  to the card/viewport edge; never put `p-0` on a `Card` that holds forms
-  or headings. (Lint-enforced: `page-missing-inset`, `card-flush-content`.)
-- **Chat shell mount convention (hard rule).** The chat shell owns the whole
- viewport: give it its own route and render it as that route's ONLY child.
- NEVER nest `TimbalChatShell`/`TimbalStudioShell` inside `AppShell`, a
- `Card`, a `Sheet`, a grid cell, or any padded/height-constrained wrapper —
- it manages its own layout, scrolling, and composer, and does not scale
- inside another shell. A chat/copilot/assistant PAGE inside an app's
- sidebar nav is `EmbeddedChat` (`blocks/embedded-chat`) mounted as its own
- route with nothing else on the page: it renders the streaming thread
- native to the shell's white content card — full-bleed, NO `PageHeader`,
- NO title/subtitle above it, NO card or border around the thread (a chat
- framed like a widget inside the page is the named mistake). In-page AI on
- an app screen is `AssistantPill`, never an embedded chat shell. If the
- design truly needs a bespoke chat layout beyond that (custom rail, split
- view), build it on `ChatScreen` (`blocks/chat-screen`) — never hand-roll
- the message/composer scroll layout.
-- **House visual rules** (already encoded in the components — keep them):
-  titles are never bold (`font-medium` max, tight tracking; `PageHeader`
-  owns the spacing rhythm — eyebrow, 1.6rem title, relaxed description);
-  search bars, selects, and inputs are white (`bg-card`), never gray;
-  inputs and white buttons cast the SAME shadow (`SURFACE_SHADOW` from
-  `@/lib/control-surface` — never `shadow-xs` on a control); tables render
-  directly on the surface (`DataTable` `bordered` stays off — never wrap a
-  table in a card) and the header row is a ROUNDED muted band (cells carry
-  `bg-muted`, first/last corners rounded, NO vertical dividers between
-  header cells, sort buttons hover as rounded pills; `DataTable` columns
-  are drag-to-reorder and edge-resizable by default — don't rebuild
-  either); toolbar filter triggers read at full label strength
-  (`text-foreground`, same as the Filters button); badges are vibrant
-  (solid-tone text, tinted fill, darker outline of the same tone; DNA
-  `color.status: "vivid"`); checkboxes/radios check in the DNA selection
-  blue (`bg-selection` from `dna.json` `color.selection`), with a
-  deliberately small tick; sheets float (inset + fully rounded, `size` up
-  to `full`); KPI tiles are the two-layer reference card (gray outer tile,
-  white inner value card with soft shadow — `app/stat`); charts are
-  edge-less, legend-free (tooltips only), gradient-filled, on the cool
-  DNA palette (`--chart-1..8`); buttons are compressed (h-8) with the
-  gradient top sheen; state changes animate (tabs, overlays, page mounts,
-  the bulk bubble); brand rows use `TimbalMark` (chrome liquid-metal, from
-  `@timbal-ai/timbal-react/studio`) + a `text-base font-medium` name that
-  matches page-title weight.
-- **Overlay discipline:** one overlay at a time — never nest a Select (or a
-  second popover) inside a Popover; use checkbox rows like `FilteredTable`'s
-  `moreFilters`.
-- **Mistakes we keep seeing — NEVER do these:**
-  - **Unnecessary topbars.** Inset pages own their header (`PageHeader`).
-    Do not add a topbar that only holds a brand chip and one button — the
-    brand lives in the sidebar, the primary action lives in `PageHeader`
-    `actions` (or the table's `toolbarEnd`). Use `AppShell`'s `topbar` slot
-    only when the product genuinely needs persistent global chrome
-    (workspace switcher, global search).
-  - **Single-route apps.** All "pages" crammed into one component behind a
-    `useState` switcher. Every page is a route (see "Pages are ROUTES"
-    above) — use `RoutedAppShell` as the layout route and one `<Route>` per
-    page. State-switched views break deep links, back/forward, and refresh.
-  - **Flush page content** (titles/tables/forms hugging the shell or card
-    edge — no lateral/top/bottom breathing room). AppShell applies inset;
-    page templates wrap in `PageBody` (no duplicate px-/py- on the root).
-    Standalone pages use `PageBody inset`. Never `Card className="p-0"` for
-    forms/headings — use CardHeader/CardContent.
-  - **Custom-painted buttons.** Never put a `bg-*` fill on a `Button`
-    (`bg-success`, `bg-primary`, gradients, arbitrary values) — the label
-    color is no longer contrast-gated and you get the classic unreadable
-    green button. Buttons come from the variant system ONLY: `default`
-    (dark), `secondary` (white), `outline`, `ghost`, `destructive`, `link`.
-    Status color belongs in a Badge or icon, not the button fill.
-    (Lint-enforced: `button-custom-fill` in `timbal-ui-lint` ≥ 4.2.1;
-    state-scoped tints like `hover:bg-destructive/10` stay allowed.)
-  - **Chat page framed as a widget.** A chat route inside an app shell
- rendered as `PageHeader` (title + subtitle) + a bordered/rounded card
- with the thread inside — it reads as an embedded third-party system,
- not a native page. The chat page is `EmbeddedChat` and nothing else:
- the conversation IS the page, full-bleed on the content card. The
- sidebar nav entry already names the page; no in-page title needed.
- - **Tinted chat composer.** The chat input and the band around it stay
-    on the plain surface — never give the composer row a colored/tinted
-    background. The chat shells already style the composer; don't wrap them.
-    Since timbal-react 4.2.1 the runtime composer band paints
-    `var(--thread-canvas, var(--card))` — white by default. If a chat sits
-    on a non-white canvas, set `--thread-canvas` on an ancestor instead of
-    wrapping the composer.
-  - **Displaced chat composer.** The chat input must NEVER be pushed below
-    the fold as the conversation grows — the page never scrolls to reach
-    it. The layout is a viewport-owning flex column where the MESSAGE
-    LIST is the only scroll container (`flex-1 min-h-0 overflow-y-auto`)
-    and the composer is a pinned flex sibling below it. Never put
-    messages + input in normal document flow. If you are hand-building a
-    chat surface, use `ChatScreen` (`blocks/chat-screen`) — it encodes
-    this contract (including the load-bearing `min-h-0`) and auto-follows
-    streaming output. Since timbal-react 4.2.1 the runtime thread also
-    self-caps at `max-h-dvh` as a guard rail, but that does not excuse a
-    broken host layout — mount shells per the convention above.
-  - **Chart clutter.** No legends, no Y-axis numbers (they collide with
-    edge-less plots), no bordered chart wrappers inside cards — tooltip
-    carries the detail.
-  - **Bulk actions in the toolbar.** Selection actions live in the floating
-    `BulkActionBar`, not as disabled toolbar buttons.
-  - **Squared hovers.** Row and column hovers are rounded (built into
-    `TableRow`/`DataTableColumnHeader`) — don't override with square
-    full-bleed highlights.
-  - **Hand-rolled gauges.** Any semicircle/ring score visual is
-    `ScoreGauge` (`@/components/app/score-gauge`) — never draw SVG arcs by
-    hand (broken geometry, raw colors, misaligned caps every time).
-  - **Native browser pickers.** `<input type="date">` (and time/month/
-    color) and native `<select>` are lint-banned — use `ui/date-picker`
-    (DatePicker + DatePickerButton + DatePickerCalendar) and `ui/select`.
-  - **Hand-rolled chart tooltips.** Chart tooltips are ALWAYS
-    `ChartTooltipContent` — a custom tooltip div is how you get an
-    illegible colored box with duplicated rows.
-  - **Tinted info cards.** Summary/value cards inside sheets and pages
-    stay `bg-card` (white) — never wash them with a blue/colored tint.
-    Color belongs to badges, gauges, and charts, not card backgrounds.
-  - **Unreadable labels on solid fills.** A solid status fill without its
-    foreground pair (`bg-success` with default text) renders near-black
-    text on saturated green — invisible. Lint-enforced
-    (`status-fill-foreground`): solid chips use the Badge `*-solid`
-    variants (`success-solid`, `warning-solid`, `destructive-solid`,
-    `info-solid` — fills paired with compiler contrast-gated
-    foregrounds), tinted chips use `bg-<tone>/15 text-<tone>`.
-  - **Gray mobile canvas.** On mobile the content surface is plain WHITE
-    (`SidebarInset` handles it) — the gray canvas / gradient backdrop is
-    desktop-only chrome. Never give a mobile page a gray or tinted
-    background unless the user explicitly asks for one.
-  - **Blue-washed surfaces.** Canvases, dropdown/menu hovers, sidebar
-    active items, and mobile sheets are neutral white/gray/dark — never
-    brand-tinted. The DNA compiler (v1.3.0+) enforces this: neutrals
-    default to pure gray (`chroma: 0`) and `color.accent` never tints
-    hover surfaces. Do not "fix" it back with overrides or utility
-    classes; tinted neutrals require an explicit
-    `color.neutrals.chroma` opt-in.
-- **Blocks first, primitives second, raw HTML last.** Read
-  `src/components/blocks/catalog.ts` and compose the screen from blocks:
-  `AppShell` over a hand-rolled rail/topbar, `FilteredTable` over a
-  hand-rolled toolbar+table, `ListDetailLayout` over ad-hoc split panes,
-  `FormSheet`/`FormField` over bare forms, `SettingsSection`/`SettingsRow`
-  over toggle lists, `StatOverview`/`ChartCard` over KPI div grids. Drop to
-  `src/components/ui` primitives for the gaps between blocks; hand-roll only
-  when neither fits, in the same style. The `/gallery` showcase
-  (VITE_GALLERY) shows the intended composition — `/gallery` itself renders
-  the forkable `invoices-page` template inside the inset `AppShell`.
-- **Fork, don't fight.** If a block is 80% right, fork the file and adjust —
-  don't rebuild the pattern from primitives.
-- **Empty/loading/error states are part of every screen** — `EmptyState`,
- `Skeleton`, `Alert`, `Spinner` exist for this. **Loading = skeletons by
- default (hard rule).** While page or section data loads, render the
- skeleton of what's coming: `PageSkeleton` (or `PageHeaderSkeleton`/
- `StatGridSkeleton`/`TableSkeleton`/`CardSkeleton`) from
- `blocks/page-skeleton`, or `FilteredTable`'s `loading` prop for a mounted
- table. NEVER "…"/"Loading…" text placeholders, and never a bare `Spinner`
- for page/section content — `Spinner` is only for chat runtime bootstrap
- and inline button-level actions. `RoutedAppShell`'s Suspense fallback is
- already `PageSkeleton`.
-- **Responsive by default:** 375 px must work. The sidebar collapses to a
-  sheet, `DataTable` scrolls in its container, `StatGrid` stacks.
-
-## Scaffold layout
-
-```
-src/
-├── design/            # dna.json (edit) · tokens.css (generated) · DESIGN.md (update)
-├── components/
-│   ├── discovery.ts   # intent index — agents read FIRST (INTENT_INDEX, DO_NOT_BUILD)
-│   ├── ui/            # project-owned primitives (fork freely)
-│   ├── base/          # BoardUI primitives (button, select, dropdown, date-picker, avatar, chip…)
-│   ├── application/   # BoardUI Pro cards — dashboard/ medical/ calendar/ ai-profile/ ai-chat/
-│   ├── foundations/   # BoardUI foundations (brand logo, chevron icons)
-│   ├── blocks/        # block kit + catalog.ts — compose screens from these first
-│   ├── pages/         # page templates + catalog.ts (invoices-page — fork for index screens)
-│   ├── app/           # page scaffold, sections, stats, score-gauge
-│   └── chat/          # chat chrome slots (welcome, user bubble)
-├── pages/             # Home (chat shell) · Placeholder (replace!) · gallery/ showcase (dev/CI) · NotFound
-├── lib/               # cn(), studio-chat-chrome (chat slot registration), thread layout classes
-├── hooks/             # use-mobile, use-title, use-count-up
-├── utils/             # cx(), use-dismiss-on-outside-press (popover dismiss + trigger toggle)
-├── App.tsx            # providers + router
-├── config.ts          # env flags
-└── index.css          # import order — see non-negotiables
-scripts/               # screenshot-smoke.mjs (gallery CI) · build-registry.mjs (shadcn registry — covers ui/base/application/blocks/pages)
-```
-
-`ls src/` before assuming a file exists — the scaffold evolves.
-
-## Env flags (`config.ts`)
-
-| Flag | Effect |
-|---|---|
-| `VITE_TIMBAL_PROJECT_ID` | enables auth (`SessionProvider` / `AuthGuard`) |
-| `VITE_STUDIO_SIDEBAR` | `Home.tsx` uses `TimbalStudioShell` instead of `TimbalChatShell` |
-| `VITE_GALLERY` | mounts the `/gallery` showcase — invoices reference page (index), `/gallery/blocks`, `/gallery/pages/{customer,workspace,media,home,medical,ai-profile,calendar,invoice-review}`, `/gallery/chat` (EmbeddedChat), `/gallery/templates/ai-chat` (Pro chat visual reference), `/gallery/primitives/{forms,overlays,data,feedback,navigation,pickers}`, `/gallery/charts` (Recharts recipes, ScoreGauge, HeroMetricCard, MetricLegendList); see `src/pages/gallery/catalog.ts` (`GALLERY_CATALOG`); key routes are shot by the screenshot smoke CI |
-| `VITE_APP_TITLE` | document title |
-
-There is **no theme preset flag** — theming has exactly one source of truth:
-`src/design/dna.json` → `bun run dna:compile`. Do not reintroduce
-`TimbalThemeStyle`/`VITE_THEME_PRESET`; a runtime preset silently overrides
-the DNA tokens.
-
-## Thread layout gotcha
-
-If you override `components.AssistantMessage` / `UserMessage` on a chat shell,
-you replace the column layout — re-apply the classes from
-`@/lib/thread-message-layout` or content sticks to the left edge. Register
-overrides in `src/lib/studio-chat-chrome.tsx`. Hide CTAs while streaming with
-`useThread((s) => s.isRunning)`.
+1. **Direction first.** Before code, write in `DESIGN.md`: shell, accent, density,
+   template-or-compose, tone, references. Set the accent in `src/styles/brand.css`.
+   Do not reuse the previous project's direction; variety is a decision.
+2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
+   apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
+   layout route and render pages through `<Outlet />`. Never switch pages with state.
+3. **Use what exists, in this order:** template (`registry/templates.md`) → block or
+   card (`registry/components.md`, `props.md`) → `base/` primitive →
+   `timbal/overlays` → write your own. Never rebuild something the registry has.
+4. **Color and type only through tokens.** BoardUI semantic tokens
+   (`text-text-primary`, `bg-background-primary-default`, `border-border-button-default`)
+   and composite type utilities (`text-body-regular`, `text-title-2-medium`). No
+   palette classes, no hex, no `dark:` color overrides (`.dark` flips tokens).
+   Merge classes with `cx()` from `@/utils/cx`. Icons from `@remixicon/react`.
+5. **Chat is the runtime.** `TimbalChat` + `boardChatComponents` (Home pattern),
+   `EmbeddedChat` for a chat page in an app, `AssistantPill` for in-page AI. Never
+   hand-roll a message list, composer, upload or streaming.
+6. **Auth is the runtime.** `SessionProvider` + `AuthGuard renderLogin={<Login />}`.
+   API calls go through `/api` with `authFetch`. Never swallow fetch errors.
+7. **States are part of the screen.** Loading (skeleton, not spinner), empty, error.
+   375 px must work: shells collapse to a drawer, tables scroll in their container.
+8. **Forms and menus on react-aria-components** (what BoardUI uses). No Radix, no
+   native `<select>` / `<input type="date">` — use `base/select`, `base/date-picker`.
 
 ## Verify before finishing
 
 ```
-bun run dna:check     # tokens.css matches dna.json
-bun run build         # tsc -b + vite build
-bun run lint
+bun run lint && bun run build      # tsc + vite; the platform gate runs the same
+bun run screenshots                # every route at 1280/375, light/dark → screenshots/
 ```
 
-Then look at it: screenshot the preview at 1280 and 375 (the pipeline's
-`browser_screenshot` tool when available) and self-review against the skill's
-critique rubric before calling it done.
+Look at the screenshots. Fix overflow, unreadable dark-mode tokens, a composer that
+isn't pinned, or a screen that looks like the last one you built.

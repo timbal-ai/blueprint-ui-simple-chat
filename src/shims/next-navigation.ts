@@ -22,7 +22,7 @@ export function useRouter() {
     back: () => navigate(-1),
     forward: () => navigate(1),
     refresh: () => {},
-    prefetch: (_href: string) => {},
+    prefetch: () => {},
   };
 }
 

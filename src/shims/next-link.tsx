@@ -23,16 +23,13 @@ const isExternal = (href: string) =>
 
 export default function Link({
   href,
-  prefetch: _prefetch,
   replace,
-  scroll: _scroll,
-  shallow: _shallow,
-  locale: _locale,
-  legacyBehavior: _legacy,
-  passHref: _passHref,
   children,
-  ...rest
+  ...props
 }: NextLinkProps) {
+  // Drop Next-only props so they never reach the DOM.
+  const rest = { ...props } as Record<string, unknown>;
+  for (const key of ["prefetch", "scroll", "shallow", "locale", "legacyBehavior", "passHref"]) delete rest[key];
   const to =
     typeof href === "string"
       ? href
