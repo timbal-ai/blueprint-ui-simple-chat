@@ -135,6 +135,14 @@ and `pages/`; the registry is regenerated after every sync.
 
 ### 4.1 Skill `src/composer/skills/timbal-ui/` (mirror to `leviosia/skills/timbal-ui/`, `scripts/sync_skills.sh`)
 
+**A ready draft is in this repo: `docs/skill-draft/timbal-ui/SKILL.md` (95 lines) +
+`references/critique.md`.** Copy it over, keep today's text as
+`references/legacy-v2.md` / `legacy-kit.md` behind the detection below, and vendor
+BoardUI's references (`components.md`, `patterns.md`, `theming.md`, `motion.md` —
+same files as `ui/registry/`) under `references/boardui/` if you want them
+available before the scaffold exists; otherwise the skill reads them from
+`ui/registry/` at run time (preferred: one source of truth).
+
 Detection at the top of `SKILL.md`:
 
 ```
@@ -243,12 +251,19 @@ Effort: phase 1 ≈ 4–5 FE days; phase 2 ≈ 1.5 BE days; phase 3 ≈ 2 days.
 
 ```
 cd ui && bun install
+bun run design:check                   # FAILS on a pristine scaffold by design (direction not decided yet)
 bun run build && bun run lint          # gate parity
-bun run dev                            # / (chat), /login, /templates/* (DEV only)
-bun run screenshots                    # screenshots/<route>-{1280,375}.png
-bun run registry:build                 # after any boardui:sync
+bun run dev                            # / (chat), /login, /templates/* and /examples/* (DEV only)
+bun run screenshots                    # screenshots/<route>-{1280,375}[-dark].png, exits 1 on page errors
+bun run registry:build                 # after any boardui:sync; `--check` = CI drift check
 bun run boardui:sync                   # pulls upstream (needs `npx boardui login` on the machine)
 ```
+
+Compose-turn smoke (what the hook should see): 1) a turn that edits `ui/src/pages`
+without filling `DESIGN.md` → `design:check` exit 1, turn bounced with the list of
+undecided axes; 2) after `DESIGN.md` is filled → `tsc` + lint run; 3) the composer
+picks a template by slug from `registry/templates.md` or composes from
+`registry/components.md`, never from a house kit (there is none).
 
 Expected: `/` renders the BoardUI chat chrome on the Timbal runtime (sending
 without a backend shows the runtime error state, not a crash); `/login`
