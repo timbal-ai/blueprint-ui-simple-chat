@@ -45,7 +45,9 @@ did not create it this turn, commit the pristine scaffold first
    closest template shell into `ui/src/pages/`, swap its data file and nav, delete
    what the brief doesn't need. No template fits (wizard, editor, kiosk, feed) →
    compose from blocks under a shell. Every page is a route in `ui/src/App.tsx`;
-   multi-page apps mount `SidebarShell`/`TopbarShell` once as a layout route.
+   multi-page apps mount `SidebarShell`/`TopbarShell` once as a layout route. `/`
+   ships as `Placeholder.tsx` — replace it with the product's entry screen and
+   delete the file; chat stays at `/chat` unless the product IS a chat.
 4. **Verify:** `cd ui && bun run design:check && bun run lint && bun run build`,
    then screenshot the changed routes at 1280 and 375 px, light and dark
    (`bun run screenshots -- --routes /,/orders` or

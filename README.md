@@ -12,7 +12,7 @@ Contains BoardUI Pro source under an author-granted permission (see `LICENSE-BOA
 ```
 bun install
 bun run dev:fake            # vite + a fake Timbal API (:5301): chat streams tools/artifacts, login shows providers
-bun run dev                 # vite only — "/" chat, "/login", "/templates/*", "/examples/*" (dev only)
+bun run dev                 # vite only — "/" placeholder, "/chat", "/login", "/templates/*", "/examples/*" (dev only)
 bun run build && bun run lint
 bun run design:check        # fails until DESIGN.md's direction table is filled (by design)
 bun run screenshots         # every route at 1280/375, light/dark → screenshots/ (exits 1 on page errors)
@@ -23,7 +23,12 @@ Environment: copy `.env.example` to `.env`. `bun run dev:fake` needs no backend
 and error states). Point `VITE_API_PROXY_TARGET` at a real API (or run
 `timbal start`) to stream for real.
 
-Routes to look at: `/` (chat), `/login`, `/templates/{dashboard,finance,hr,
+`/` is a **placeholder** on a fresh scaffold (Timbal mark + "your app will live
+here") — replace it in `App.tsx` with the real surface and delete
+`src/pages/Placeholder.tsx`. Never ship a build that opens on the placeholder,
+and never leave a chat mounted at `/` unless the product is a chat.
+
+Routes to look at: `/` (placeholder), `/chat`, `/login`, `/templates/{dashboard,finance,hr,
 marketing,medical,calendar,ai-profile,ai-chat,ai-image-generation}`,
 `/examples/shell-sidebar/{,settings,chat}`, `/examples/shell-topbar/{,chat}`.
 
@@ -36,7 +41,7 @@ src/components/base/      BoardUI primitives           ┐
 src/components/application/  BoardUI blocks, charts, agent UI, template subtrees  │ vendored, never hand-edited
 src/components/foundations/  brand mark, chevrons      ┘   (bun run boardui:sync)
 src/components/timbal/    the seam: chat/ slots · login.tsx · shells/ · overlays/ · embedded-chat · assistant-pill
-src/pages/                routes: Home (chat) · Login · NotFound · templates/* · examples/*
+src/pages/                routes: Placeholder ("/" — replace it) · Home (chat) · Login · NotFound · templates/* · examples/*
 src/styles/               theme.css typography.css globals.css (BoardUI) · brand.css (yours) · timbal-bridge.css
 src/shims/                next/image, next/link, next/navigation → Vite/react-router
 scripts/                  boardui-sync.mjs · registry-build.mjs · screenshots.mjs

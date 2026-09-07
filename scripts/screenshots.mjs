@@ -31,6 +31,7 @@ const ROUTES = (
     "--routes",
     [
       "/",
+      "/chat",
       "/login",
       "/templates/dashboard",
       "/templates/finance",

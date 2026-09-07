@@ -17,6 +17,9 @@ primitive and their props, plus the direction menu.
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.
+   `/` ships as `Placeholder.tsx` (Timbal mark, "your app will live here"): replace it
+   with the product's real entry screen and delete the file. Chat lives at `/chat`
+   unless the product IS a chat — never leave a chat at `/` by default.
 3. **Use what exists, in this order:** template (`registry/templates.md`) → block or
    card (`registry/components.md`, `props.md`) → `base/` primitive →
    `timbal/overlays` → write your own. Never rebuild something the registry has.

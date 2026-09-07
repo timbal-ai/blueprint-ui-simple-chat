@@ -8,6 +8,7 @@ import { Login } from "@/components/timbal/login";
 import Home from "@/pages/Home";
 import LoginPage from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import Placeholder from "@/pages/Placeholder";
 
 // Every page is a ROUTE. Add one <Route> per screen; for multi-page apps mount
 // a shell from components/timbal/shells as a layout route and render pages
@@ -40,8 +41,21 @@ function App() {
     <SessionProvider enabled={isAuthEnabled}>
       <BrowserRouter>
         <Routes>
+          {/* The index route is a neutral placeholder on a fresh scaffold — a
+              build should never open on a chat the user didn't ask for. Replace
+              it with the real surface (<Home /> for a chat product, a template
+              shell, or your own page) and delete Placeholder.tsx. */}
           <Route
             index
+            element={
+              <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
+                <Placeholder />
+              </AuthGuard>
+            }
+          />
+          {/* The wired chat surface: Timbal runtime + BoardUI chrome. */}
+          <Route
+            path="/chat"
             element={
               <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
                 <Home />

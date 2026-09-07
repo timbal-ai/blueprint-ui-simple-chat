@@ -9,7 +9,7 @@ project-authored component code. Do not re-implement any of it.
 
 | The product needs… | Use | Where |
 |---|---|---|
-| A chat product (the conversation IS the app) | `src/pages/Home.tsx` pattern: page owns the frame, `TimbalChat` is the engine, `boardChatComponents` is the chrome | own route (`/`) |
+| A chat product (the conversation IS the app) | `src/pages/Home.tsx` pattern: page owns the frame, `TimbalChat` is the engine, `boardChatComponents` is the chrome | own route (`/chat`; move it to `/` only when chat is the whole product) |
 | A chat page inside an app with a sidebar/topbar | `EmbeddedChat` as its own route under the shell — full-bleed, no title, no card around it | `components/timbal/embedded-chat.tsx` |
 | An assistant one tap away on data screens | `AssistantPill` docked once per shell (`dock` prop) | `components/timbal/assistant-pill.tsx` |
 | A bespoke chat layout (rail, split view) | Compose `TimbalChat` yourself: it must be the only scroll container (`min-h-0 flex-1`) inside a viewport-high flex column; never put messages + input in document flow | — |
