@@ -13,6 +13,7 @@ import {
   SHELL_DESKTOP_QUERY,
   SHELL_FRAME_INSET_CLASS,
   SHELL_INSET_CLASS,
+  resolveHomeNavItem,
   useActiveNavItem,
   useMediaQuery,
   useShellUser,
@@ -73,7 +74,8 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);
   const active = useActiveNavItem(nav);
   const resolvedUser = useShellUser(user);
-  const homePath = nav[0]?.path ?? "/";
+  const home = resolveHomeNavItem(nav);
+  const homePath = home?.path ?? "/";
   const closeMenu = () => setMenuOpen(false);
   // A `bare` route (EmbeddedChat, canvases) owns its chrome: no header, no dock.
   const bare = active?.bare === true;
@@ -90,10 +92,10 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
         />
         <Link
           to={homePath}
-          className="flex min-w-0 items-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2"
+          className="flex min-w-0 items-center gap-2 overflow-visible rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2"
         >
-          <ShellBrandMark brand={brand} />
-          <span className="truncate text-body-medium text-text-primary">{brand.name}</span>
+          <ShellBrandMark brand={brand} className="shrink-0" />
+          <span className="min-w-0 truncate text-body-medium text-text-primary">{brand.name}</span>
         </Link>
 
         <nav aria-label="Primary" className="ml-4 hidden min-w-0 items-center gap-1 overflow-x-auto md:flex">

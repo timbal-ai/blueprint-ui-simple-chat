@@ -83,7 +83,6 @@ export function SidebarShell({
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);
   const active = useActiveNavItem(nav, secondaryNav);
   const resolvedUser = useShellUser(user);
-  const homePath = nav[0]?.path ?? "/";
   const closeDrawer = () => setDrawerOpen(false);
   // A `bare` route (EmbeddedChat, canvases) owns its chrome: no header, no dock.
   const bare = active?.bare === true;
@@ -103,10 +102,10 @@ export function SidebarShell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Phone brand bar with the drawer opener */}
-        <div className="flex h-14 shrink-0 items-center gap-2 px-3 md:hidden">
-          <IconButton icon={RiMenuLine} size="small" aria-label="Open navigation" onClick={() => setDrawerOpen(true)} />
-          <ShellBrandMark brand={brand} />
-          <span className="truncate text-body-medium text-text-primary">{brand.name}</span>
+        <div className="flex h-14 shrink-0 items-center gap-2.5 overflow-visible px-3 md:hidden">
+          <IconButton icon={RiMenuLine} size="small" aria-label="Open navigation" onClick={() => setDrawerOpen(true)} className="shrink-0" />
+          <ShellBrandMark brand={brand} className="shrink-0" />
+          <span className="min-w-0 truncate text-body-medium text-text-primary">{brand.name}</span>
         </div>
 
         {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
@@ -119,7 +118,7 @@ export function SidebarShell({
           >
             {header === false || bare
               ? null
-              : (header ?? <ShellHeader brand={brand} homePath={homePath} active={active} actions={actions} />)}
+              : (header ?? <ShellHeader brand={brand} nav={nav} secondaryNav={secondaryNav} actions={actions} />)}
             <div className="flex min-h-0 flex-1 flex-col">{children ?? <Outlet />}</div>
           </div>
         </main>

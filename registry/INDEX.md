@@ -23,10 +23,10 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
                                 web-search/, agent-progress/, questionnaire/, calendar/, settings/,
                                 notification-center/, auth/, data-table/, and one folder per template
                                 (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/, ai-chat/)  BoardUI, verbatim
-src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ ·
+src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
                                 embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
-src/styles/brand.css            accent ramp + fonts — the ONE file that restyles the product
+src/styles/brand.css            accent ramp + fonts + radius — the ONE file that restyles the product
 ```
 
 Import through `@/`: `import { Button } from "@/components/base/buttons/button"`.
@@ -56,7 +56,7 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 | Compare categories | `charts/bar-list-card` (ranked bars), `charts/combo-chart-card`, `charts/stage-bars-card` |
 | Share of a whole | `charts/radial-chart-card` (donut), `charts/funnel-chart-card` |
 | Density / matrix / relationships | `charts/heatmap-chart-card`, `charts/scatter-chart-card`, `charts/radar-chart-card`, `charts/sankey-chart-card` |
-| Rows of records (sort, filter, paginate, select) | `application/data-table` — or `dashboard/customers-table` for the styled preset. Never a hand-built `<table>` grid |
+| Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
 | A simple list with actions | `base/table` + `base/badges`, `base/avatar`, `base/dropdown` |
 | Forms | `base/input`, `base/select`, `base/date-picker`, `base/checkbox`, `base/radio`, `base/switch`, `base/slider`, `base/file-upload`, `base/input-otp` |
 | Tabs, segmented views, wizards | `base/tabs`, `base/segmented-control`; multi-step → `application/questionnaire` |

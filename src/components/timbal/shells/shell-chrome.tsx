@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { RiCloseLine, RiLogoutBoxRLine, RiSideBarFill } from "@remixicon/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/application/theme/theme-toggle";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Badge } from "@/components/base/badges/badge";
@@ -20,6 +20,9 @@ import { ChevronDownSmall } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
 import {
   initialsOf,
+  normalizeNavPath,
+  resolveHomeNavItem,
+  resolveNavTrail,
   useActiveNavItem,
   type ShellBrand,
   type ShellNavItem,
@@ -209,7 +212,7 @@ export function ShellUserMenu({
     "border-2 border-transparent",
     "transition-[width,background-color,border-color,padding] duration-300 ease-in-out",
     collapsed
-      ? "size-9 justify-start rounded-full bg-transparent p-0"
+      ? "size-9 justify-center rounded-full bg-transparent p-0"
       : "w-full justify-between rounded-xl bg-background-tertiary-default py-2 pr-4 pl-2.5",
     interactive && "cursor-pointer hover:border-border-button-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2",
     className,
@@ -355,10 +358,10 @@ export function ShellSidebar({
         <div
           className={cx(
             "flex w-full transition-[gap] duration-300 ease-in-out",
-            collapsed ? "flex-col-reverse items-start justify-center gap-2.5" : "flex-row items-center justify-between",
+            collapsed ? "flex-col-reverse items-center justify-center gap-2.5" : "flex-row items-center justify-between",
           )}
         >
-          <div className={cx("flex min-w-0 items-center gap-2 overflow-hidden", collapsed && "w-9 justify-center")}>
+          <div className={cx("flex min-w-0 items-center gap-2", collapsed ? "w-9 justify-center" : "overflow-hidden")}>
             <ShellBrandMark brand={brand} />
             <Collapsible collapsed={collapsed}>
               <span className="flex min-w-0 flex-col items-start justify-center">
@@ -441,37 +444,64 @@ export function ShellSidebar({
 /* ----------------------------------------------------------------- header */
 
 /**
- * Default page header — the DashboardHeader grammar: brand › current page
- * breadcrumb, then the title row with the consumer's `actions` on the right.
+ * Default page header — DashboardHeader grammar: a real location trail
+ * (home › section › here), then the title row with `actions` on the right.
+ * The first crumb is the home *nav item*, not the product name (that's already
+ * in the sidebar). `"/"` is never treated as a parent of sibling routes.
  */
 export function ShellHeader({
   brand,
-  homePath,
-  active,
+  nav,
+  secondaryNav,
   actions,
   className,
 }: {
   brand: ShellBrand;
-  homePath: string;
-  active?: ShellNavItem;
+  nav: ShellNavItem[];
+  secondaryNav?: ShellNavItem[];
   actions?: ReactNode;
   className?: string;
 }) {
+  const { pathname } = useLocation();
+  const items = [...nav, ...(secondaryNav ?? [])];
+  const home = resolveHomeNavItem(items);
+  const trail = resolveNavTrail(items, pathname);
+  const current = trail.at(-1);
+  const homePath = home ? normalizeNavPath(home.path) : "/";
+  const onHome = Boolean(home && current && normalizeNavPath(current.path) === homePath);
+  const ancestors = trail
+    .slice(0, -1)
+    .filter((item) => normalizeNavPath(item.path) !== homePath);
+
   return (
     <header className={cx("flex w-full flex-col gap-2", className)}>
       <Breadcrumb>
-        <BreadcrumbItem href={homePath}>
-          <ShellBrandMark brand={brand} size="xs" />
-          {brand.name}
-        </BreadcrumbItem>
-        {active ? (
-          <BreadcrumbItem current icon={active.icon}>
-            {active.label}
+        {home ? (
+          <BreadcrumbItem href={onHome ? undefined : home.path} current={onHome}>
+            <ShellBrandMark brand={brand} size="xs" />
+            {home.label}
+          </BreadcrumbItem>
+        ) : (
+          <BreadcrumbItem current>
+            <ShellBrandMark brand={brand} size="xs" />
+            {brand.name}
+          </BreadcrumbItem>
+        )}
+        {ancestors.map((item) => (
+          <BreadcrumbItem key={item.path} href={item.path} icon={item.icon}>
+            {item.label}
+          </BreadcrumbItem>
+        ))}
+        {current && !onHome ? (
+          <BreadcrumbItem current icon={current.icon}>
+            {current.label}
           </BreadcrumbItem>
         ) : null}
       </Breadcrumb>
       <div className="flex w-full flex-wrap items-end justify-between gap-2">
-        <h1 className="px-1 text-title-2-medium whitespace-nowrap text-text-primary">{active?.label ?? brand.name}</h1>
+        <h1 className="px-1 text-title-2-medium whitespace-nowrap text-text-primary">
+          {current?.label ?? brand.name}
+        </h1>
         {actions ? <div className="flex flex-wrap items-center justify-end gap-2.5">{actions}</div> : null}
       </div>
     </header>

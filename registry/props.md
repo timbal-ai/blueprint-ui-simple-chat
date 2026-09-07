@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 270 components · 17 hooks · generated 2026-09-07
+BoardUI 0.5.3 · 273 components · 17 hooks · generated 2026-09-07
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2379,6 +2379,41 @@ Props: `ThreadWelcomeProps` from `@timbal-ai/timbal-react` (external — members
 **BoardSuggestions** — Suggestion prompts as BoardUI secondary pills.
 Props: `SuggestionsSlotProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `suggestions`, `className`
 
+### data-table — `@/components/timbal/data-table`
+
+**DataTable** — DataTable — the BoardUI data-table grammar (boardui.com/components/data-table) as a reusable block: framed card, toolbar, secondary header, row rules, sort chevrons, optional selection, pagination.
+generic `<TData>`
+| prop | type | default | doc |
+|---|---|---|---|
+| data | `TData[]` |  |  |
+| columns | `ColumnDef<TData, unknown>[]` |  |  |
+| getRowId | `(row: TData) => string` |  |  |
+| aria-label | `string` |  |  |
+| summary? | `ReactNode` |  | Left side of the toolbar. Default: “N rows”. |
+| filters? | `ReactNode` |  | Extra toolbar controls (Selects, Buttons) before search. |
+| search? | `DataTableSearch` |  |  |
+| pageSize? | `number` | `8` |  |
+| size? | `TableSize` | `"md"` |  |
+| selectable? | `boolean` | `false` | Checkbox in the lead column + row selection. |
+| leadColumnId? | `string` |  | Column that hosts the checkbox (default: first column). |
+| empty? | `ReactNode` |  |  |
+| className? | `string` |  |  |
+
+**DataTableRowAction**
+| prop | type | default | doc |
+|---|---|---|---|
+| icon | `RemixiconComponentType` |  |  |
+| label | `string` |  |  |
+
+**DataTableMoreMenu**
+| prop | type | default | doc |
+|---|---|---|---|
+| ariaLabel | `string` |  |  |
+| items | `{ icon: RemixiconComponentType; label: string; onSelect?: () => void }[]` |  |  |
+
+Types: `DataTableSearch` = `{ value: string; onChange: (value: string) => void; placeholder?: string; aria-label?: string }`
+Other exports: `DataTableProps` (props of DataTable)
+
 ### embedded-chat — `@/components/timbal/embedded-chat`
 
 **EmbeddedChat**
@@ -2496,7 +2531,7 @@ Other exports: `ToasterProps` (props of Toaster)
 
 ### shells — `@/components/timbal/shells/index`
 
-Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `resolveActiveNavItem`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
+Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `normalizeNavPath`, `resolveActiveNavItem`, `resolveHomeNavItem`, `resolveNavTrail`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
 
 ### shells — `@/components/timbal/shells/shell-chrome`
 
@@ -2545,12 +2580,12 @@ Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `Si
 | onNavigate? | `() => void` |  | Fired when a nav row is clicked (drawers close on it). |
 | className? | `string` |  |  |
 
-**ShellHeader** — Default page header — the DashboardHeader grammar: brand › current page breadcrumb, then the title row with the consumer's `actions` on the right.
+**ShellHeader** — Default page header — DashboardHeader grammar: a real location trail (home › section › here), then the title row with `actions` on the right.
 | prop | type | default | doc |
 |---|---|---|---|
 | brand | `ShellBrand` |  |  |
-| homePath | `string` |  |  |
-| active? | `ShellNavItem` |  |  |
+| nav | `ShellNavItem[]` |  |  |
+| secondaryNav? | `ShellNavItem[]` |  |  |
 | actions? | `ReactNode` |  |  |
 | className? | `string` |  |  |
 
@@ -2577,7 +2612,7 @@ returns `boolean`
 | query | `string` |  |  |
 
 Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }`
-Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
+Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
 
 ### shells — `@/components/timbal/shells/sidebar-shell`
 

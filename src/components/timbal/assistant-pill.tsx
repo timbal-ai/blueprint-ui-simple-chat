@@ -65,15 +65,14 @@ export function AssistantPill({
         className={cx(
           "fixed z-40 inline-flex h-11 cursor-pointer items-center gap-2 rounded-full pr-4 pl-3",
           "right-[calc(1rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))]",
-          "border border-border-button-default bg-background-primary-default text-text-primary shadow-lg",
-          "transition-[background-color,border-color,opacity,transform,translate,scale,filter] duration-200 ease-out motion-reduce:transition-none",
-          "hover:bg-background-primary-hover hover:border-border-button-hover active:bg-background-primary-active",
+          "bg-button-primary text-text-white shadow-lg",
+          "transition-[opacity,transform,translate,scale,filter] duration-200 ease-out motion-reduce:transition-none",
           "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
           open ? "pointer-events-none scale-90 opacity-0 blur-[2px]" : "scale-100 opacity-100 blur-0",
           className,
         )}
       >
-        <RiSparkling2Fill className="size-5 shrink-0 text-accent-500" aria-hidden />
+        <RiSparkling2Fill className="size-5 shrink-0 text-text-white" aria-hidden />
         <span className="text-body-medium whitespace-nowrap">{label}</span>
       </button>
       <AppCopilot

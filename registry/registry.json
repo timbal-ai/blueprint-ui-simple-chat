@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-07T16:41:57.123Z",
+  "generatedAt": "2026-09-07T20:43:16.368Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -19239,6 +19239,205 @@
       "propsExternal": true
     },
     {
+      "name": "DataTableSearch",
+      "kind": "type",
+      "path": "src/components/timbal/data-table.tsx",
+      "importFrom": "@/components/timbal/data-table",
+      "layer": "timbal",
+      "group": "data-table",
+      "summary": "",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "data-table",
+        "data-table-search"
+      ]
+    },
+    {
+      "name": "DataTableProps",
+      "kind": "type",
+      "path": "src/components/timbal/data-table.tsx",
+      "importFrom": "@/components/timbal/data-table",
+      "layer": "timbal",
+      "group": "data-table",
+      "summary": "Props of `DataTable`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "data-table",
+        "data-table-props"
+      ],
+      "typeParams": [
+        "TData"
+      ],
+      "propsOf": [
+        "DataTable"
+      ]
+    },
+    {
+      "name": "DataTable",
+      "kind": "component",
+      "path": "src/components/timbal/data-table.tsx",
+      "importFrom": "@/components/timbal/data-table",
+      "layer": "timbal",
+      "group": "data-table",
+      "summary": "DataTable — the BoardUI data-table grammar (boardui.com/components/data-table) as a reusable block: framed card, toolbar, secondary header, row rules, sort chevrons, optional selection, pagination.",
+      "props": [
+        {
+          "name": "data",
+          "type": "TData[]",
+          "optional": false
+        },
+        {
+          "name": "columns",
+          "type": "ColumnDef<TData, unknown>[]",
+          "optional": false
+        },
+        {
+          "name": "getRowId",
+          "type": "(row: TData) => string",
+          "optional": false
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "summary",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Left side of the toolbar. Default: “N rows”."
+        },
+        {
+          "name": "filters",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Extra toolbar controls (Selects, Buttons) before search."
+        },
+        {
+          "name": "search",
+          "type": "DataTableSearch",
+          "optional": true
+        },
+        {
+          "name": "pageSize",
+          "type": "number",
+          "optional": true,
+          "default": "8"
+        },
+        {
+          "name": "size",
+          "type": "TableSize",
+          "optional": true,
+          "default": "\"md\""
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Checkbox in the lead column + row selection.",
+          "default": "false"
+        },
+        {
+          "name": "leadColumnId",
+          "type": "string",
+          "optional": true,
+          "doc": "Column that hosts the checkbox (default: first column)."
+        },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "data-table"
+      ],
+      "typeParams": [
+        "TData"
+      ]
+    },
+    {
+      "name": "DataTableRowAction",
+      "kind": "component",
+      "path": "src/components/timbal/data-table.tsx",
+      "importFrom": "@/components/timbal/data-table",
+      "layer": "timbal",
+      "group": "data-table",
+      "summary": "",
+      "props": [
+        {
+          "name": "icon",
+          "type": "RemixiconComponentType",
+          "optional": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "data-table",
+        "data-table-row-action"
+      ]
+    },
+    {
+      "name": "DataTableMoreMenu",
+      "kind": "component",
+      "path": "src/components/timbal/data-table.tsx",
+      "importFrom": "@/components/timbal/data-table",
+      "layer": "timbal",
+      "group": "data-table",
+      "summary": "",
+      "props": [
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "items",
+          "type": "{ icon: RemixiconComponentType; label: string; onSelect?: () => void }[]",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "data-table",
+        "data-table-more-menu"
+      ]
+    },
+    {
       "name": "EmbeddedChatProps",
       "kind": "type",
       "path": "src/components/timbal/embedded-chat.tsx",
@@ -21135,6 +21334,26 @@
       }
     },
     {
+      "name": "normalizeNavPath",
+      "kind": "util",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `normalizeNavPath` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "normalize-nav-path"
+      ],
+      "reexportOf": {
+        "name": "normalizeNavPath",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
       "name": "resolveActiveNavItem",
       "kind": "util",
       "path": "src/components/timbal/shells/index.ts",
@@ -21151,6 +21370,46 @@
       ],
       "reexportOf": {
         "name": "resolveActiveNavItem",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
+      "name": "resolveHomeNavItem",
+      "kind": "util",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `resolveHomeNavItem` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "resolve-home-nav-item"
+      ],
+      "reexportOf": {
+        "name": "resolveHomeNavItem",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
+      "name": "resolveNavTrail",
+      "kind": "util",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `resolveNavTrail` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "resolve-nav-trail"
+      ],
+      "reexportOf": {
+        "name": "resolveNavTrail",
         "from": "@/components/timbal/shells/shell-nav"
       }
     },
@@ -21562,7 +21821,7 @@
       "importFrom": "@/components/timbal/shells/shell-chrome",
       "layer": "timbal",
       "group": "shells",
-      "summary": "Default page header — the DashboardHeader grammar: brand › current page breadcrumb, then the title row with the consumer's `actions` on the right.",
+      "summary": "Default page header — DashboardHeader grammar: a real location trail (home › section › here), then the title row with `actions` on the right.",
       "props": [
         {
           "name": "brand",
@@ -21570,13 +21829,13 @@
           "optional": false
         },
         {
-          "name": "homePath",
-          "type": "string",
+          "name": "nav",
+          "type": "ShellNavItem[]",
           "optional": false
         },
         {
-          "name": "active",
-          "type": "ShellNavItem",
+          "name": "secondaryNav",
+          "type": "ShellNavItem[]",
           "optional": true
         },
         {
@@ -21649,7 +21908,7 @@
           "name": "end",
           "type": "boolean",
           "optional": true,
-          "doc": "Only an exact URL match activates this item (for index/home rows)."
+          "doc": "Only an exact URL match activates this item. Defaults to true for `\"/\"` (so Home doesn't light up on every nested route) and false otherwise (so `/invoices` stays selected on `/invoices/42`)."
         },
         {
           "name": "bare",
@@ -21771,6 +22030,40 @@
       "type": "string"
     },
     {
+      "name": "normalizeNavPath",
+      "kind": "util",
+      "path": "src/components/timbal/shells/shell-nav.ts",
+      "importFrom": "@/components/timbal/shells/shell-nav",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "`contacts` → `/contacts`; trailing slashes dropped except for `/`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "shell-nav",
+        "normalize-nav-path"
+      ],
+      "type": "(path: string) => string"
+    },
+    {
+      "name": "resolveHomeNavItem",
+      "kind": "util",
+      "path": "src/components/timbal/shells/shell-nav.ts",
+      "importFrom": "@/components/timbal/shells/shell-nav",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "The real home row — `end: true`, else `\"/\"`, else the shortest path.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "shell-nav",
+        "resolve-home-nav-item"
+      ],
+      "type": "(items: ShellNavItem[]) => ShellNavItem | undefined"
+    },
+    {
       "name": "resolveActiveNavItem",
       "kind": "util",
       "path": "src/components/timbal/shells/shell-nav.ts",
@@ -21786,6 +22079,23 @@
         "resolve-active-nav-item"
       ],
       "type": "(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined"
+    },
+    {
+      "name": "resolveNavTrail",
+      "kind": "util",
+      "path": "src/components/timbal/shells/shell-nav.ts",
+      "importFrom": "@/components/timbal/shells/shell-nav",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Breadcrumb trail from root to leaf: nav items whose path is a real prefix of the URL (`/invoices` → `/invoices/42`), shortest first.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "shell-nav",
+        "resolve-nav-trail"
+      ],
+      "type": "(items: ShellNavItem[], pathname: string) => ShellNavItem[]"
     },
     {
       "name": "useActiveNavItem",

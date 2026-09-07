@@ -18,7 +18,11 @@ export interface ShellNavItem {
   icon: RemixIcon;
   /** Counter / tag rendered at the row's end. */
   badge?: string | number;
-  /** Only an exact URL match activates this item (for index/home rows). */
+  /**
+   * Only an exact URL match activates this item. Defaults to true for `"/"`
+   * (so Home doesn't light up on every nested route) and false otherwise
+   * (so `/invoices` stays selected on `/invoices/42`).
+   */
   end?: boolean;
   /**
    * The route owns its chrome: the shell renders neither the default header
@@ -54,14 +58,62 @@ export interface ShellUser {
 export const SHELL_INSET_CLASS = "px-3 pt-3 pb-3 sm:px-6 sm:pt-6 sm:pb-6";
 export const SHELL_FRAME_INSET_CLASS = "p-3 md:pl-4";
 
+/** `contacts` → `/contacts`; trailing slashes dropped except for `/`. */
+export function normalizeNavPath(path: string): string {
+  const trimmed = path.trim();
+  if (!trimmed || trimmed === "/") return "/";
+  const withSlash = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return withSlash.length > 1 && withSlash.endsWith("/") ? withSlash.slice(0, -1) : withSlash;
+}
+
+function itemPath(item: ShellNavItem): string {
+  return normalizeNavPath(item.path);
+}
+
+/** Exact-only match for the app home; prefix match for everything else. */
+function itemEnd(item: ShellNavItem): boolean {
+  return item.end ?? itemPath(item) === "/";
+}
+
+/** The real home row — `end: true`, else `"/"`, else the shortest path. Never "whatever is first in the array". */
+export function resolveHomeNavItem(items: ShellNavItem[]): ShellNavItem | undefined {
+  if (items.length === 0) return undefined;
+  return (
+    items.find((item) => item.end === true) ??
+    items.find((item) => itemPath(item) === "/") ??
+    items.reduce((best, item) => (itemPath(item).length < itemPath(best).length ? item : best))
+  );
+}
+
 /** Longest nav path matching the pathname (exact only when `end`). */
 export function resolveActiveNavItem(items: ShellNavItem[], pathname: string): ShellNavItem | undefined {
+  const here = normalizeNavPath(pathname);
   let best: ShellNavItem | undefined;
   for (const item of items) {
-    const match = matchPath({ path: item.path, end: item.end ?? false }, pathname);
-    if (match && (!best || item.path.length > best.path.length)) best = item;
+    const path = itemPath(item);
+    const match = matchPath({ path, end: itemEnd(item) }, here);
+    if (match && (!best || path.length > itemPath(best).length)) best = item;
   }
   return best;
+}
+
+/**
+ * Breadcrumb trail from root to leaf: nav items whose path is a real prefix
+ * of the URL (`/invoices` → `/invoices/42`), shortest first. `"/"` is only
+ * included when you are actually on home — sibling pages are not children of
+ * Overview just because `matchPath("/", …)` is greedy.
+ */
+export function resolveNavTrail(items: ShellNavItem[], pathname: string): ShellNavItem[] {
+  const here = normalizeNavPath(pathname);
+  const seen = new Map<string, ShellNavItem>();
+  for (const item of items) {
+    const path = itemPath(item);
+    const matches = path === "/" ? here === "/" : here === path || here.startsWith(`${path}/`);
+    if (matches) seen.set(path, item);
+  }
+  return [...seen.entries()]
+    .sort(([a], [b]) => a.length - b.length)
+    .map(([, item]) => item);
 }
 
 /** The nav item the current URL lights up (main + secondary groups). */
