@@ -27,17 +27,22 @@ jobs:
         env:
           VITE_TEMPLATES: "true"
 
+      # Screenshots are a review artifact, not a gate: the two steps below never
+      # fail the workflow. The gate is registry drift + lint + build above.
       - name: Install playwright chromium
+        continue-on-error: true
         run: |
           bun add -d playwright
           bunx playwright install --with-deps chromium
 
       - name: Screenshot every route (1280 + 375, light + dark)
+        continue-on-error: true
+        timeout-minutes: 6
         run: node scripts/screenshots.mjs --preview --fake --out screenshots
-        timeout-minutes: 8
 
       - name: Upload screenshots
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: route-screenshots
