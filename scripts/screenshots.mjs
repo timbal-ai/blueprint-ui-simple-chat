@@ -5,6 +5,7 @@
  *
  *   bun run screenshots                    # boots `vite` on :5199, shoots, exits
  *   bun run screenshots -- --fake          # also boots scripts/fake-api.mjs so chat/login have data (CI)
+ *   bun run screenshots -- --preview       # serve the built dist/ (vite preview) instead of the dev server (CI)
  *   bun run screenshots -- --base http://localhost:5173   # against a running server
  *   bun run screenshots -- --routes /,/login             # subset
  *
@@ -109,7 +110,10 @@ if (!base) {
   }
   // `npx vite` rather than `bun run dev --`: no dependency on bun being on the
   // PATH of the spawning process, and no stdout indirection through bun.
-  const vite = start("npx", ["vite", "--port", String(PORT), "--strictPort", "--host", "127.0.0.1"], env, "vite");
+  // `--preview` serves the production build (no dep optimisation, no HMR socket):
+  // deterministic and fast on CI; `server.proxy` still applies to /api.
+  const viteArgs = args.includes("--preview") ? ["vite", "preview"] : ["vite"];
+  const vite = start("npx", [...viteArgs, "--port", String(PORT), "--strictPort", "--host", "127.0.0.1"], env, "vite");
   base = `http://127.0.0.1:${PORT}`;
   await waitFor(`${base}/`, vite, "vite");
 }
@@ -134,9 +138,12 @@ for (const route of ROUTES) {
       });
       if (dark) await page.addInitScript(() => window.localStorage.setItem("boardui-theme", "dark"));
       try {
-        await page.goto(base + route, { waitUntil: "networkidle", timeout: 30000 });
+        // `load` + a settle wait rather than `networkidle`: the dev server's HMR
+        // socket and streaming endpoints can keep the network busy forever.
+        await page.goto(base + route, { waitUntil: "load", timeout: 30000 });
         if (dark) await page.evaluate(() => document.documentElement.classList.add("dark"));
-        await page.waitForTimeout(700);
+        await page.waitForFunction(() => document.fonts.ready.then(() => true), null, { timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(args.includes("--preview") ? 900 : 1500);
         await page.screenshot({ path: `${OUT}/${name}.png` });
         console.log("shot", name);
       } catch (e) {
