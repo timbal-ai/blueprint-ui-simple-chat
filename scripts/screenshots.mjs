@@ -39,6 +39,11 @@ const ROUTES = (
       "/templates/ai-profile",
       "/templates/ai-chat",
       "/templates/ai-image-generation",
+      "/examples/shell-sidebar",
+      "/examples/shell-sidebar/settings",
+      "/examples/shell-sidebar/chat",
+      "/examples/shell-topbar",
+      "/examples/shell-topbar/chat",
     ].join(","),
   )
 ).split(",");

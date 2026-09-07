@@ -27,6 +27,13 @@ const templates = {
   "ai-image-generation": lazy(() => import("@/pages/templates/ai-image-generation")),
 };
 
+// Shell examples (dev): SidebarShell / TopbarShell with overview, settings
+// (modal, sheet, toasts) and an EmbeddedChat route — the two multi-page grammars.
+const examples = {
+  "shell-sidebar": lazy(() => import("@/pages/examples/shell-sidebar")),
+  "shell-topbar": lazy(() => import("@/pages/examples/shell-topbar")),
+};
+
 function App() {
   useTitle(import.meta.env.VITE_APP_TITLE || "");
   return (
@@ -47,6 +54,19 @@ function App() {
                 <Route
                   key={slug}
                   path={`/templates/${slug}`}
+                  element={
+                    <Suspense fallback={null}>
+                      <Page />
+                    </Suspense>
+                  }
+                />
+              ))
+            : null}
+          {areTemplatesEnabled
+            ? Object.entries(examples).map(([slug, Page]) => (
+                <Route
+                  key={slug}
+                  path={`/examples/${slug}/*`}
                   element={
                     <Suspense fallback={null}>
                       <Page />
