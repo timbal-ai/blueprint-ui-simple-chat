@@ -6,7 +6,10 @@
 `evals/ui-quality/*`.
 
 **Status:** decided 2026-09-07 (BoardUI OEM/redistribution OK'd by the
-author). FE build in progress on `blueprint-ui-simple-chat` branch `v3`.
+author). **FE phase 1 is built** on `blueprint-ui-simple-chat` branch `v3`
+(11 commits on top of `main`): lint/tsc/build green, registry `--check` green,
+64 route screenshots (16 routes × 1280/375 × light/dark) with zero page errors
+against the fake API. Not pushed yet — the GitHub remote is still public.
 Nothing in the monolith has been changed; this doc lists what to change.
 
 **Rev 2** — supersedes rev 1 (which assumed free-tier-only + BYOK + MCP).
@@ -253,11 +256,19 @@ Effort: phase 1 ≈ 4–5 FE days; phase 2 ≈ 1.5 BE days; phase 3 ≈ 2 days.
 cd ui && bun install
 bun run design:check                   # FAILS on a pristine scaffold by design (direction not decided yet)
 bun run build && bun run lint          # gate parity
+bun run dev:fake                       # vite + scripts/fake-api.mjs on :5301 — no backend needed:
+                                       #   GET /api/config (providers), GET /api/workforce (3 workforces),
+                                       #   POST /api/workforce/:id/stream (tool → web search → chart → markdown),
+                                       #   POST /api/files/upload, POST /api/auth/magic-link; prompt "fail" → 500, "slow" → 6 s tool
 bun run dev                            # / (chat), /login, /templates/* and /examples/* (DEV only)
 bun run screenshots                    # screenshots/<route>-{1280,375}[-dark].png, exits 1 on page errors
 bun run registry:build                 # after any boardui:sync; `--check` = CI drift check
 bun run boardui:sync                   # pulls upstream (needs `npx boardui login` on the machine)
 ```
+
+Routes: `/`, `/login`, `/templates/{dashboard,finance,hr,marketing,medical,calendar,
+ai-profile,ai-chat,ai-image-generation}`, `/examples/shell-sidebar/{,settings,chat}`,
+`/examples/shell-topbar/{,chat}`.
 
 Compose-turn smoke (what the hook should see): 1) a turn that edits `ui/src/pages`
 without filling `DESIGN.md` → `design:check` exit 1, turn bounced with the list of

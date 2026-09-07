@@ -11,14 +11,21 @@ Private repository: it contains BoardUI Pro source (see `LICENSE-BOARDUI.md`).
 
 ```
 bun install
-bun run dev                 # http://localhost:5173 — "/" chat, "/login", "/templates/*" (dev only)
+bun run dev:fake            # vite + a fake Timbal API (:5301): chat streams tools/artifacts, login shows providers
+bun run dev                 # vite only — "/" chat, "/login", "/templates/*", "/examples/*" (dev only)
 bun run build && bun run lint
-bun run screenshots         # every route at 1280/375, light/dark → screenshots/
+bun run design:check        # fails until DESIGN.md's direction table is filled (by design)
+bun run screenshots         # every route at 1280/375, light/dark → screenshots/ (exits 1 on page errors)
 ```
 
-Environment: copy `.env.example` to `.env`. Without a backend the chat renders and
-shows the runtime's error state on send; point `VITE_API_PROXY_TARGET` at an API
-(or run `timbal start`) to stream for real.
+Environment: copy `.env.example` to `.env`. `bun run dev:fake` needs no backend
+(`scripts/fake-api.mjs`: prompts containing "slow"/"fail" exercise the running
+and error states). Point `VITE_API_PROXY_TARGET` at a real API (or run
+`timbal start`) to stream for real.
+
+Routes to look at: `/` (chat), `/login`, `/templates/{dashboard,finance,hr,
+marketing,medical,calendar,ai-profile,ai-chat,ai-image-generation}`,
+`/examples/shell-sidebar/{,settings,chat}`, `/examples/shell-topbar/{,chat}`.
 
 ## Layout
 
