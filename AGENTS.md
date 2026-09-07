@@ -45,6 +45,7 @@ primitive and their props, plus the direction menu.
 bun run design:check               # DESIGN.md direction filled? (the platform gate runs this too)
 bun run lint && bun run build      # tsc + vite; the platform gate runs the same
 bun run screenshots                # every route at 1280/375, light/dark → screenshots/
+bun run registry:build             # only if you added/renamed a component under components/timbal — CI fails on drift
 ```
 
 Look at the screenshots. Fix overflow, unreadable dark-mode tokens, a composer that
