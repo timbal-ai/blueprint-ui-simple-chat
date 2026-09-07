@@ -19,7 +19,9 @@
     "boardui:sync": "node scripts/boardui-sync.mjs",
     "registry:build": "bun scripts/registry-build.mjs",
     "screenshots": "node scripts/screenshots.mjs",
-    "design:check": "node scripts/design-check.mjs"
+    "design:check": "node scripts/design-check.mjs",
+    "dev:fake": "node scripts/fake-api.mjs & VITE_API_PROXY_TARGET=http://localhost:5301 vite; kill %1",
+    "fake-api": "node scripts/fake-api.mjs"
   },
   "dependencies": {
     "@assistant-ui/react": "^0.12.10",

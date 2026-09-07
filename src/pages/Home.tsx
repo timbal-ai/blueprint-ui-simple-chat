@@ -7,16 +7,19 @@ import {
 
 import { ThemeToggle } from "@/components/application/theme/theme-toggle";
 import { boardChatComponents } from "@/components/timbal/chat/chrome";
+import { BoardChatProvider } from "@/components/timbal/chat/context";
 
 /**
- * Home — the chat page: BoardUI chrome on the Timbal runtime.
+ * Home — the chat page: BoardUI Pro chrome on the Timbal runtime.
  *
  * - The page owns its frame (ground, header row) with BoardUI tokens.
  * - `TimbalChat` is the engine: SSE streaming to `/api/workforce/{id}/stream`,
  *   attachments through the `/api/files/upload` adapter, markdown, tool calls
  *   and artifacts. Auth comes from `SessionProvider`/`AuthGuard` in App.tsx.
- * - `boardChatComponents` swaps the thread chrome (composer, messages,
- *   welcome, suggestions) for BoardUI's — no runtime forks.
+ * - `boardChatComponents` swaps the thread chrome (Pro composer panel,
+ *   messages, agent-log tool calls, welcome, suggestions) for BoardUI's — no
+ *   runtime forks. `BoardChatProvider` hands the workforce selection to the
+ *   composer's picker, so choosing another workforce there re-keys the chat.
  *
  * Layout contract: viewport-high flex column; the thread is the ONLY scroll
  * container (`min-h-0 flex-1`); the composer band is pinned by the runtime and
@@ -28,7 +31,8 @@ import { boardChatComponents } from "@/components/timbal/chat/chrome";
  */
 export default function Home() {
   const session = useOptionalSession();
-  const { selectedId, isLoading, error } = useWorkforces();
+  const workforces = useWorkforces();
+  const { selectedId, isLoading, error } = workforces;
   const workforceId = selectedId || (error ? "default" : undefined);
 
   return (
@@ -52,25 +56,27 @@ export default function Home() {
 
       <main className="flex min-h-0 flex-1 flex-col">
         {workforceId ? (
-          <TimbalChat
-            key={workforceId}
-            workforceId={workforceId}
-            attachments
-            debug={import.meta.env.DEV}
-            welcome={{
-              heading: import.meta.env.VITE_WELCOME_HEADING || "What can I help with?",
-              subheading:
-                import.meta.env.VITE_WELCOME_SUBHEADING ||
-                "Ask anything — files and images are welcome.",
-            }}
-            suggestions={[
-              { title: "Summarize this week" },
-              { title: "Draft a product update" },
-              { title: "Explain what you can do" },
-            ]}
-            components={boardChatComponents}
-            className="min-h-0 flex-1"
-          />
+          <BoardChatProvider value={workforces}>
+            <TimbalChat
+              key={workforceId}
+              workforceId={workforceId}
+              attachments
+              debug={import.meta.env.DEV}
+              welcome={{
+                heading: import.meta.env.VITE_WELCOME_HEADING || "What can I help with?",
+                subheading:
+                  import.meta.env.VITE_WELCOME_SUBHEADING ||
+                  "Ask anything — files and images are welcome.",
+              }}
+              suggestions={[
+                { title: "Summarize this week" },
+                { title: "Draft a product update" },
+                { title: "Explain what you can do" },
+              ]}
+              components={boardChatComponents}
+              className="min-h-0 flex-1"
+            />
+          </BoardChatProvider>
         ) : isLoading ? (
           <div className="flex flex-1 items-center justify-center">
             <span className="h-9 w-40 animate-pulse rounded-full bg-background-primary-default" />

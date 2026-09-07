@@ -1,6 +1,7 @@
 import { RiMailSendLine } from "@remixicon/react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
+  fetchProjectConfig,
   getAuthBaseUrl,
   TimbalMark,
   useOptionalSession,
@@ -57,7 +58,24 @@ export function Login({
 }: LoginProps) {
   const session = useOptionalSession();
   const base = getAuthBaseUrl();
-  const methods = session?.authProviders ?? [];
+  // Without a live session config (SessionProvider absent or disabled — e.g. the
+  // standalone /login preview) read the providers straight from GET {base}/config
+  // so the screen still reflects the project's real sign-in methods.
+  const sessionHasConfig = session?.configStatus === "ok";
+  const [fallbackProviders, setFallbackProviders] = useState<AuthProvider[]>([]);
+  useEffect(() => {
+    if (sessionHasConfig) return;
+    const ctrl = new AbortController();
+    fetchProjectConfig({ baseUrl: base, retries: 0, signal: ctrl.signal })
+      .then((r) => {
+        if (r.status === "ok") setFallbackProviders(r.config.auth.providers);
+      })
+      .catch((err) => {
+        if (!ctrl.signal.aborted) console.warn("[login] config unavailable", err);
+      });
+    return () => ctrl.abort();
+  }, [sessionHasConfig, base]);
+  const methods = sessionHasConfig ? session.authProviders : fallbackProviders;
   const oauth = methods.filter((p): p is Exclude<AuthProvider, "email"> => p !== "email");
   const hasEmail = methods.includes("email");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
