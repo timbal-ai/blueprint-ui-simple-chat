@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { RiAddFill, RiEqualizer3Line } from "@remixicon/react";
 import {
   Button as AriaButton,
@@ -110,7 +110,19 @@ export function AccountMenuContent({ onSelect }: { onSelect: () => void }) {
   );
 }
 
-export function DashboardUserMenu({ collapsed = false }: { collapsed?: boolean }) {
+export function DashboardUserMenu({
+  collapsed = false,
+  suppressHover = false,
+  onHoverSuppressionEnd,
+  avatarClassName,
+}: {
+  collapsed?: boolean;
+  /** Prevents expansion from creating a hover state under a stationary pointer. */
+  suppressHover?: boolean;
+  /** Re-arms hover after the pointer fully leaves the trigger. */
+  onHoverSuppressionEnd?: () => void;
+  avatarClassName?: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   // "right" placement assumes room to the sidebar's right (true in-flow on
   // desktop) — on mobile the sidebar can span the full viewport, so the
@@ -129,16 +141,29 @@ export function DashboardUserMenu({ collapsed = false }: { collapsed?: boolean }
     <AriaDialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
       <AriaButton
         aria-label="Mertcan Esmergul"
+        onPointerLeave={() => {
+          if (suppressHover) onHoverSuppressionEnd?.();
+        }}
         className={cx(
           "relative flex min-w-0 cursor-pointer items-center gap-2 rounded-full outline-none",
           "focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2",
           // Hover pill (Figma node 3829:4063): a fully-rounded 2px border/button/hover
           // outline drawn via a pseudo-element so it never shifts the layout.
-          "before:pointer-events-none before:absolute before:-inset-x-1.5 before:-inset-y-[5px] before:rounded-full before:border-2 before:border-transparent before:transition-colors before:duration-150 hover:before:border-border-button-hover",
-          collapsed && "pl-0.5",
+          "before:pointer-events-none before:absolute before:-inset-x-1.5 before:-inset-y-[5px] before:rounded-full before:border-2 before:border-transparent before:transition-colors before:duration-150",
+          !suppressHover && "hover:before:border-border-sidebar-profile-hover",
+          // Collapsed, the trigger takes the rail's own 36px column and centres
+          // the 32px avatar in it, instead of sizing to the avatar plus a gap
+          // held open for a label that's shrunk to nothing. That gap made the
+          // button 42px wide in a 36px rail, which pushed its hover pill
+          // off-centre and into the rail's clip.
+          //
+          // The pill's insets go square too: 36×32 plus the expanded 6/5 reach
+          // is a 48×42 stadium, not the circle the avatar wants. 3/5 lands it
+          // on 42×42.
+          collapsed && "w-9 justify-center gap-0 before:-inset-x-[3px]",
         )}
       >
-        <Avatar size="md" color="neutral" initials="M" />
+        <Avatar size="md" color="neutral" initials="M" className={avatarClassName} />
         <Collapsible collapsed={collapsed}>
           <span className="flex items-center gap-0.5">
             <span className="text-body-medium whitespace-nowrap text-text-primary">Mertcan Esmergul</span>

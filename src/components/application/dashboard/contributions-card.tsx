@@ -10,7 +10,7 @@ import { cx } from "@/utils/cx";
 /**
  * Figma source: Board UI → "Contributions this year" (node 3842:4786).
  *
- *   header    "Contributions this year" (Body 1/Medium) + "$7,462"
+ *   header    "Contributions this year" (Body 1/Medium) + a plain count
  *             (Title 1/Medium) + Chip bold/lime "+14.8%"
  *   stats     4 white cards (radius/2lg, shadow/card — same recipe as the
  *             hire cards on RecentHiresCard), value (Body 1/Medium) over
@@ -20,14 +20,14 @@ import { cx } from "@/utils/cx";
  *   activity  "Activity" label + Weekly/Monthly/Yearly SegmentedControl
  *   grid      37 columns × 7 rows, 13px cells, 4px gap (`gap-1`), radius/md.
  *             neutral/300 = no activity that day. Colored cells use the
- *             `accent` family, darker = more activity: 200 (least) → 400 →
- *             500 → 600 → 700 (most). No axis labels — the Figma frame
- *             doesn't have any.
+ *             `accent` family. Light mode deepens from 200 to 700; dark mode
+ *             starts at the opposite, dark end of the ramp and brightens from
+ *             950 to 500 as activity increases. No axis labels — the Figma
+ *             frame doesn't have any.
  *
  * `accent` exists so /dev/contributions-colors can preview other color
- * families on the *real* component — every option's classes are spelled out
- * literally in TIER_CLASSES so Tailwind includes them in the build regardless
- * of which one is picked at runtime.
+ * families on the *real* component. The shared stylesheet maps each accent's
+ * light and dark ramps so every consumer gets the same intensity direction.
  */
 
 const STATS = [
@@ -44,19 +44,6 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 export const ACCENTS = ["emerald", "green", "teal", "cyan", "blue", "indigo", "violet", "rose", "amber"] as const;
 export type Accent = (typeof ACCENTS)[number];
-
-/** Tiers 200 → 700 (least → most activity) per accent, spelled out so Tailwind keeps them all. */
-const TIER_CLASSES: Record<Accent, string[]> = {
-  emerald: ["bg-emerald-200", "bg-emerald-400", "bg-emerald-500", "bg-emerald-600", "bg-emerald-700"],
-  green: ["bg-green-200", "bg-green-400", "bg-green-500", "bg-green-600", "bg-green-700"],
-  teal: ["bg-teal-200", "bg-teal-400", "bg-teal-500", "bg-teal-600", "bg-teal-700"],
-  cyan: ["bg-cyan-200", "bg-cyan-400", "bg-cyan-500", "bg-cyan-600", "bg-cyan-700"],
-  blue: ["bg-blue-200", "bg-blue-400", "bg-blue-500", "bg-blue-600", "bg-blue-700"],
-  indigo: ["bg-indigo-200", "bg-indigo-400", "bg-indigo-500", "bg-indigo-600", "bg-indigo-700"],
-  violet: ["bg-violet-200", "bg-violet-400", "bg-violet-500", "bg-violet-600", "bg-violet-700"],
-  rose: ["bg-rose-200", "bg-rose-400", "bg-rose-500", "bg-rose-600", "bg-rose-700"],
-  amber: ["bg-amber-200", "bg-amber-400", "bg-amber-500", "bg-amber-600", "bg-amber-700"],
-};
 
 /**
  * Deterministic per-cell hash (SSR-safe — no Math.random/Date.now, so server
@@ -125,90 +112,48 @@ const COLUMN_CLASSES: Record<number, string> = {
   38: "grid-cols-[repeat(38,13px)] sm:grid-cols-[repeat(38,minmax(0,1fr))]",
 };
 
-export interface ContributionDatum {
-  count: number;
-  /** Tooltip line — "3 hiring events on Apr 2". Defaults to a count line. */
-  label?: string;
-}
-
-/** Map a real count onto the 5-tier color ramp (0 = the grey track). */
-function tierForCount(count: number, max: number) {
-  if (count <= 0) return 0;
-  return 1 + Math.min(4, Math.floor((count / Math.max(max, 1)) * 5));
-}
-
 /**
- * The bare heatmap grid — accent color ramp + a tooltip per cell.
- * Extracted so other cards (the AI profile template, dashboards) render
- * the exact same pattern instead of hardcoding cells.
- *
- * Two modes: with no `data` it renders the Figma demo (hash-scattered
- * tiers over `columns` weeks); pass `data` (sequential days, chunked
- * top-to-bottom into 7-row columns) to drive it from real counts.
+ * The bare heatmap grid — hash-scattered tiers, accent color ramp, and a
+ * tooltip per cell. Extracted so other cards (e.g. the AI profile template)
+ * render the exact same pattern instead of hardcoding cells.
  */
 export function ContributionsGrid({
-  data,
-  max,
-  columns,
+  columns = GRID_COLUMNS,
   accent = "violet",
   animateIn = false,
   className,
 }: {
-  /** Sequential days, column-major (7 rows per week column). */
-  data?: ContributionDatum[];
-  /** Intensity ceiling for `data` mode. Defaults to the max count. */
-  max?: number;
-  /** Week columns. Defaults to data length / 7, or the 37-column demo. */
+  /** 37 (dashboard card) or 38 (AI profile) — must exist in COLUMN_CLASSES. */
   columns?: number;
   accent?: Accent;
   /** Pop the colored cells in softly on mount, in scattered (hashed) order. */
   animateIn?: boolean;
   className?: string;
 }) {
-  const tiers = ["bg-chart-track", ...TIER_CLASSES[accent]];
-  const cols = columns ?? (data ? Math.ceil(data.length / GRID_ROWS) : GRID_COLUMNS);
-  const ceiling = data ? (max ?? Math.max(...data.map((d) => d.count), 1)) : 0;
-
-  const cellFor = (row: number, col: number) => {
-    if (!data) return { label: tooltipLabel(row, col, cols), tier: tierFor(row, col) };
-    const d = data[col * GRID_ROWS + row];
-    if (!d) return null;
-    return {
-      label: d.label ?? `${d.count} contribution${d.count === 1 ? "" : "s"}`,
-      tier: tierForCount(d.count, ceiling),
-    };
-  };
-
   return (
     <div
-      className={cx("grid gap-1", COLUMN_CLASSES[cols], className)}
-      // Arbitrary widths fall back to flexible tracks (the literal class map
-      // only covers the Figma 37/38-column variants).
-      style={
-        COLUMN_CLASSES[cols]
-          ? undefined
-          : { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }
-      }
+      data-accent={accent}
+      className={cx("contributions-grid grid gap-1", COLUMN_CLASSES[columns] ?? COLUMN_CLASSES[GRID_COLUMNS], className)}
     >
       {Array.from({ length: GRID_ROWS }, (_, row) =>
-        Array.from({ length: cols }, (_, col) => {
-          const cell = cellFor(row, col);
-          if (!cell) return <span key={`${row}-${col}`} aria-hidden />;
+        Array.from({ length: columns }, (_, col) => {
+          const label = tooltipLabel(row, col, columns);
+          const tier = tierFor(row, col);
           // Reuse the cell hash (different bits) for a scattered 0–800ms delay
-          const pop = animateIn && cell.tier > 0;
+          const pop = animateIn && tier > 0;
           return (
             <TooltipTrigger key={`${row}-${col}`} delay={0} closeDelay={0}>
               <AriaButton
-                aria-label={cell.label}
+                aria-label={label}
                 excludeFromTabOrder
+                data-tier={tier}
                 className={cx(
-                  "aspect-square w-full cursor-default rounded-[3px] outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring",
-                  tiers[cell.tier],
+                  "contribution-cell aspect-square w-full cursor-default rounded-[3px] outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring",
                   pop && "animate-cell-pop",
                 )}
                 style={pop ? { animationDelay: `${(hashCell(row, col) >>> 7) % 800}ms` } : undefined}
               />
-              <Tooltip>{cell.label}</Tooltip>
+              <Tooltip>{label}</Tooltip>
             </TooltipTrigger>
           );
         }),
@@ -231,7 +176,7 @@ export function ContributionsCard({ accent = "violet", className }: { accent?: A
       <div className="flex w-full flex-col gap-0.5">
         <p className="w-full text-body-medium text-text-secondary">Contributions this year</p>
         <div className="flex w-full items-center gap-2">
-          <p className="text-title-1-medium whitespace-nowrap text-text-primary">$7,462</p>
+          <p className="text-title-1-medium whitespace-nowrap text-text-primary">958</p>
           <Chip variant="bold" color="lime">
             +14.8%
           </Chip>
@@ -244,7 +189,7 @@ export function ContributionsCard({ accent = "violet", className }: { accent?: A
         {STATS.map((stat) => (
           <div
             key={stat.label}
-            className="flex min-w-0 flex-col items-start rounded-2lg bg-background-primary-default p-2.5 shadow-card sm:flex-1"
+            className="flex min-w-0 flex-col items-start rounded-2lg bg-background-inner-default p-2.5 shadow-card sm:flex-1"
           >
             <p className="w-full truncate text-body-medium text-text-primary">{stat.value}</p>
             <p className="w-full truncate text-body-medium text-text-secondary">{stat.label}</p>

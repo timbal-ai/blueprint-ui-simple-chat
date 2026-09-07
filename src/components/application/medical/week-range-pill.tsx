@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SECONDARY_SURFACE } from "@/components/base/buttons/secondary-chrome";
 import { ChevronLeft16, ChevronRight16 } from "@/components/base/date-picker/shared";
 import { cx } from "@/utils/cx";
 
@@ -87,8 +86,7 @@ export function WeekRangePill({
   return (
     <div
       className={cx(
-        "flex h-8 w-[151px] shrink-0 items-center justify-between gap-1 rounded-2lg px-1 py-1",
-        SECONDARY_SURFACE,
+        "flex h-8 w-[151px] shrink-0 items-center justify-between gap-1 rounded-2lg border border-border-button-default bg-background-primary-default px-1 py-1 shadow-xs",
         className,
       )}
     >

@@ -21,7 +21,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
  * Single-select segmented control.
  *   track    bg background/tertiary/default, p 4, radius 10 (radius/2lg), gap 2
  *   segment  px 10, py 4, radius/md (6px)
- *     selected    bg foreground/full (white), shadow/2xs, Body 1/Medium,
+ *     selected    bg segmented-control/selected (white in light), shadow/2xs, Body 1/Medium,
  *                 text/primary
  *     unselected  transparent, Body 1/Regular, text/secondary
  *
@@ -90,7 +90,7 @@ export function SegmentedControl({ className, children, variant = "solid", ref, 
       className={(state) =>
         cx(
           "relative inline-flex items-start gap-0.5 rounded-2lg",
-          variant === "solid" && "bg-background-secondary-default p-1",
+          variant === "solid" && "bg-segmented-control-background p-1",
           typeof className === "function" ? className(state) : className,
         )
       }
@@ -98,7 +98,7 @@ export function SegmentedControl({ className, children, variant = "solid", ref, 
       {variant === "solid" && thumb && (
         <span
           aria-hidden
-          className="pointer-events-none absolute left-0 top-0 rounded-md bg-foreground-full shadow-2xs transition-[transform,width,height] duration-200 ease"
+          className="pointer-events-none absolute left-0 top-0 rounded-md bg-segmented-control-selected-background shadow-2xs transition-[transform,width,height] duration-200 ease"
           style={{
             transform: `translate(${thumb.left}px, ${thumb.top}px)`,
             width: thumb.width,

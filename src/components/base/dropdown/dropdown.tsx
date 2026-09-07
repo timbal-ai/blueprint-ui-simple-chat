@@ -7,6 +7,13 @@ import {
   DialogTrigger as AriaDialogTrigger,
   Popover as AriaPopover,
 } from "react-aria-components";
+import {
+  MENU_ITEM,
+  MENU_ITEM_ACTIVE,
+  MENU_ITEM_INTERACTIVE,
+  MENU_POPOVER_SURFACE,
+  MENU_POPOVER_WIDTH,
+} from "@/components/base/dropdown/menu-styles";
 import { cx } from "@/utils/cx";
 import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-on-outside-press";
 
@@ -21,8 +28,9 @@ import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-
  *
  * - Panel: white, 1px border/button/default, radius 16, p 10, shadow/dropdown.
  * - Appear animation: 150ms fade + scale-95 + 2px blur in and out.
- * - Rows: rounded-2lg, background/primary/hover on hover and on the selected
- *   row, body-medium labels.
+ * - Rows: rounded-2lg, background/secondary/hover on hover and on the selected
+ *   row, body-medium labels, 4px apart (the panel's flex column carries a
+ *   gap-1, the same rhythm as the Select listbox).
  *
  * Composition:
  *
@@ -122,7 +130,7 @@ export interface DropdownPopoverProps
 export function DropdownPopover({
   "aria-label": ariaLabel,
   placement = "bottom start",
-  offset = 8,
+  offset = 4,
   crossOffset,
   className,
   dialogClassName,
@@ -137,23 +145,14 @@ export function DropdownPopover({
       offset={offset}
       crossOffset={crossOffset}
       className={cx(
-        // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none` on
-        // <body>; this popover portals under <body>, so it must restore its
-        // own pointer events or the menu is dead inside a modal.
-        "pointer-events-auto",
-        "w-[266px] max-w-[calc(100vw-32px)] overflow-y-auto",
-        "rounded-2xl border border-border-button-default bg-background-primary-default p-2.5 shadow-dropdown",
-        "transition duration-150 ease-out",
-        "data-[entering]:opacity-0 data-[entering]:scale-95 data-[entering]:blur-[2px]",
-        "data-[exiting]:opacity-0 data-[exiting]:scale-95 data-[exiting]:blur-[2px]",
-        // Scale from the trigger's corner: popovers opening downward grow from
-        // the top, opening upward grow from the bottom.
-        "data-[placement=bottom]:origin-top-left data-[placement=top]:origin-bottom-left",
-        "data-[placement=left]:origin-right data-[placement=right]:origin-left",
+        MENU_POPOVER_WIDTH,
+        MENU_POPOVER_SURFACE,
         className,
       )}
     >
-      <AriaDialog aria-label={ariaLabel} className={cx("flex flex-col outline-none", dialogClassName)}>
+      {/* gap-1 keeps bare DropdownItems 4px apart, the same rhythm as the
+          Select listbox; DropdownDivider's margins are sized to absorb it. */}
+      <AriaDialog aria-label={ariaLabel} className={cx("flex flex-col gap-1 outline-none", dialogClassName)}>
         {children}
       </AriaDialog>
     </AriaPopover>
@@ -171,7 +170,10 @@ export interface DropdownGroupProps {
 
 export function DropdownGroup({ label, className, children }: DropdownGroupProps) {
   return (
-    <div className={cx("flex w-full flex-col gap-1.5 pt-1", className)}>
+    // pt-1 is spacing for the group LABEL — a label-less group must not
+    // carry it, or its first row floats 4px lower than the panel padding
+    // implies (visible as extra space above the first item's hover pill).
+    <div className={cx("flex w-full flex-col gap-1.5", label && "pt-1", className)}>
       {label && <span className="pl-2 text-body-medium text-text-secondary">{label}</span>}
       <div className="flex w-full flex-col gap-1">{children}</div>
     </div>
@@ -198,10 +200,8 @@ export function DropdownItem({ selected, onSelect, className, children }: Dropdo
       aria-pressed={selected}
       onClick={onSelect}
       className={cx(
-        "flex w-full cursor-pointer items-center gap-2 rounded-2lg p-2 text-left outline-none transition-colors",
-        selected
-          ? "bg-background-primary-hover"
-          : "hover:bg-background-primary-hover focus-visible:bg-background-primary-hover",
+        MENU_ITEM,
+        selected ? MENU_ITEM_ACTIVE : MENU_ITEM_INTERACTIVE,
         className,
       )}
     >
@@ -210,7 +210,8 @@ export function DropdownItem({ selected, onSelect, className, children }: Dropdo
   );
 }
 
-/** Full-bleed 1px divider between groups (bleeds through the panel's p-2.5). */
+/** Full-bleed 1px divider between groups (bleeds through the panel's p-2.5).
+ *  my-1.5 + the dialog's gap-1 on both sides = the original 10px breathing room. */
 export function DropdownDivider({ className }: { className?: string }) {
-  return <div className={cx("-mx-2.5 my-2.5 h-px shrink-0 bg-border-button-default", className)} />;
+  return <div className={cx("-mx-2.5 my-1.5 h-px shrink-0 bg-border-button-default", className)} />;
 }

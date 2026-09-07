@@ -1,15 +1,33 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RiDeleteBin6Line, RiEditLine, RiMore2Fill, RiSearchLine } from "@remixicon/react";
+import {
+  RiArchiveLine,
+  RiDeleteBin6Line,
+  RiDownload2Line,
+  RiEditLine,
+  RiFileCopyLine,
+  RiMore2Fill,
+  RiSearchLine,
+  RiUserLine,
+} from "@remixicon/react";
+import { Focusable } from "react-aria-components";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Chip } from "@/components/base/badges/chip";
 import { StatusDot } from "@/components/base/badges/status-dot";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Checkbox } from "@/components/base/checkbox/checkbox";
+import {
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import { InputBase } from "@/components/base/input/input";
 import { Pagination } from "@/components/base/pagination/pagination";
 import { Select, SelectItem } from "@/components/base/select/select";
+import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip";
 import { ChevronSortDown } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
 
@@ -54,7 +72,7 @@ type Customer = {
   name: string;
   avatar?: string;
   initialsColor?: "neutral" | "blue";
-  purchase: "completed" | "waiting";
+  purchase: "completed" | "waiting" | "processing";
   status: Status;
   product: string;
   region: string;
@@ -64,14 +82,14 @@ type Customer = {
 };
 
 const PHOTO_PEOPLE: { name: string; avatar: string }[] = [
-  { name: "John Clarkson", avatar: "https://i.pravatar.cc/80?img=68" },
-  { name: "Aspen Lubin", avatar: "https://i.pravatar.cc/80?img=16" },
-  { name: "Michael Ekstrom", avatar: "https://i.pravatar.cc/80?img=53" },
-  { name: "Kianna Vaccaro", avatar: "https://i.pravatar.cc/80?img=9" },
-  { name: "Livia Saris", avatar: "https://i.pravatar.cc/80?img=47" },
-  { name: "Jaydon Aminoff", avatar: "https://i.pravatar.cc/80?img=12" },
-  { name: "Maria Lubin", avatar: "https://i.pravatar.cc/80?img=32" },
-  { name: "Ann Press", avatar: "https://i.pravatar.cc/80?img=25" },
+  { name: "John Clarkson", avatar: "/avatars/john-clarkson.webp" },
+  { name: "Aspen Lubin", avatar: "/avatars/aspen-lubin.webp" },
+  { name: "Michael Ekstrom", avatar: "/avatars/michael-ekstrom.webp" },
+  { name: "Kianna Vaccaro", avatar: "/avatars/kianna-vaccaro.webp" },
+  { name: "Livia Saris", avatar: "/avatars/livia-saris.webp" },
+  { name: "Jaydon Aminoff", avatar: "/avatars/jaydon-aminoff.webp" },
+  { name: "Maria Lubin", avatar: "/avatars/maria-lubin.webp" },
+  { name: "Ann Press", avatar: "/avatars/ann-press.webp" },
 ];
 
 const FIRST_NAMES = ["Marcus", "Cheyenne", "Alfredo", "Talan", "Roger", "Cristofer", "Emery", "Kadin", "Nolan", "Ruben", "Skylar", "Hanna", "Corey", "Miracle", "Zaire", "Cooper", "Leilani", "Alena", "Terry", "Jaxson", "Kaiya", "Omar", "Phoenix", "Adison", "Gretchen", "Marcus", "Nova", "Ellis", "Dulce", "Wilson"];
@@ -112,7 +130,11 @@ const CUSTOMERS: Customer[] = (() => {
   return Array.from({ length: total }, (_, i) => {
     const status = pick(STATUSES);
     const purchase: Customer["purchase"] =
-      status.label === "Shipped" || status.label === "Confirmed" ? "completed" : "waiting";
+      rng() < 0.24
+        ? "processing"
+        : status.label === "Shipped" || status.label === "Confirmed"
+          ? "completed"
+          : "waiting";
     const price = 20 + Math.floor(rng() * 3980);
     const month = pick(MONTHS);
     const day = 1 + Math.floor(rng() * 28);
@@ -152,6 +174,10 @@ function PurchaseSelect({ defaultValue, name }: { defaultValue: Customer["purcha
       <SelectItem id="waiting" textValue="Waiting">
         <StatusDot color="yellow" />
         Waiting
+      </SelectItem>
+      <SelectItem id="processing" textValue="Processing">
+        <StatusDot color="indigo" />
+        Processing
       </SelectItem>
     </Select>
   );
@@ -212,6 +238,69 @@ function SortableHeader({
   );
 }
 
+/** Icon-only row action with a tooltip label — `IconButton` (a plain
+ *  `<button>`) is wrapped in `Focusable` so react-aria's `TooltipTrigger`
+ *  can attach hover/focus behavior, same pattern as the patients table. */
+function RowActionButton({
+  icon,
+  label,
+}: {
+  icon: typeof RiEditLine;
+  label: string;
+}) {
+  return (
+    <TooltipTrigger delay={200}>
+      <Focusable>
+        <IconButton icon={icon} size="small" aria-label={label} />
+      </Focusable>
+      <Tooltip size="md">{label}</Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+const MORE_MENU_ACTIONS = [
+  { icon: RiUserLine, label: "View profile" },
+  { icon: RiFileCopyLine, label: "Duplicate row" },
+  { icon: RiDownload2Line, label: "Download invoice" },
+  { icon: RiArchiveLine, label: "Archive customer" },
+] as const;
+
+/** The "⋮" action: tooltip on hover, contextual dropdown menu on click. The
+ *  trigger is styled to match `IconButton`'s small secondary recipe (nesting
+ *  the real IconButton inside DropdownTrigger would nest <button>s). */
+function RowMoreMenu({ name }: { name: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
+      <TooltipTrigger delay={200}>
+        <DropdownTrigger
+          aria-label={`More actions for ${name}`}
+          className={cx(
+            "relative inline-flex size-8 shrink-0 items-center justify-center rounded-2lg",
+            "border border-border-button-default bg-background-primary-default text-foreground-icon-primary shadow-xs",
+            "transition-[background-color,border-color,box-shadow,color] duration-150 ease",
+            "hover:border-border-button-hover hover:bg-background-primary-hover",
+            isOpen && "border-border-button-active bg-background-primary-active",
+          )}
+        >
+          <RiMore2Fill className="size-4 shrink-0" aria-hidden />
+        </DropdownTrigger>
+        <Tooltip size="md">More actions</Tooltip>
+      </TooltipTrigger>
+      <DropdownPopover aria-label={`More actions for ${name}`} placement="bottom end" className="w-[220px] p-2">
+        <DropdownGroup>
+          {MORE_MENU_ACTIONS.map(({ icon: Icon, label }) => (
+            <DropdownItem key={label} onSelect={() => setIsOpen(false)} className="px-2 py-1.5">
+              <Icon className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+              <span className="truncate text-body-medium whitespace-nowrap text-text-primary">{label}</span>
+            </DropdownItem>
+          ))}
+        </DropdownGroup>
+      </DropdownPopover>
+    </Dropdown>
+  );
+}
+
 function CustomerRow({
   customer,
   isSelected,
@@ -224,7 +313,7 @@ function CustomerRow({
   showBorder?: boolean;
 }) {
   return (
-    <div className={cx("flex w-full items-center", showBorder && "border-b border-border-button-default")}>
+    <div className={cx("flex w-full items-center", showBorder && "border-b border-separator-border")}>
       <div className="flex min-w-0 flex-1 items-center gap-2 py-2.5">
         <Checkbox
           isSelected={isSelected}
@@ -261,9 +350,9 @@ function CustomerRow({
         </Chip>
       </div>
       <div className="flex w-[140px] shrink-0 items-center justify-end gap-2.5 px-3 py-2.5">
-        <IconButton icon={RiDeleteBin6Line} size="small" aria-label={`Delete ${customer.name}`} />
-        <IconButton icon={RiEditLine} size="small" aria-label={`Edit ${customer.name}`} />
-        <IconButton icon={RiMore2Fill} size="small" aria-label={`More actions for ${customer.name}`} />
+        <RowActionButton icon={RiDeleteBin6Line} label="Delete" />
+        <RowActionButton icon={RiEditLine} label="Edit" />
+        <RowMoreMenu name={customer.name} />
       </div>
     </div>
   );
@@ -349,7 +438,7 @@ export function CustomersTable() {
   return (
     <section
       className={cx(
-        "flex w-full flex-col rounded-2xl border border-border-button-default pt-2",
+        "flex w-full flex-col rounded-2xl border border-border-table pt-2",
         hasPagination ? "pb-3" : "pb-0",
       )}
     >
@@ -435,7 +524,7 @@ export function CustomersTable() {
       <div className="mt-2 w-full overflow-x-auto">
         <div className="flex min-w-[860px] flex-col">
         {/* Column headers */}
-        <div className="flex w-full items-center border-y border-border-button-default bg-background-secondary-default pl-3">
+        <div className="flex w-full items-center border-y border-separator-border bg-background-secondary-default pl-3">
           <div className="flex min-w-0 flex-1 items-center gap-2 py-2.5">
             <Checkbox
               isSelected={allOnPageSelected}

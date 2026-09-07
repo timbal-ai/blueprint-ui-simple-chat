@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Children, Fragment, isValidElement } from "react";
 import type { ComponentType, ReactNode, Ref } from "react";
 import { ChevronRightSmall } from "@/components/foundations/icons/chevrons";
@@ -93,7 +93,7 @@ export function BreadcrumbItem({
       <li
         aria-current="page"
         className={cx(
-          "flex items-center gap-1.5 text-caption-1-medium whitespace-nowrap text-text-primary",
+          "flex items-center gap-1.5 text-caption-1-medium whitespace-nowrap text-text-secondary",
           className,
         )}
       >
@@ -113,7 +113,7 @@ export function BreadcrumbItem({
   return (
     <li className="flex items-center">
       {href ? (
-        <Link to={href} className={interactiveClass}>
+        <Link href={href} className={interactiveClass}>
           {content}
         </Link>
       ) : (

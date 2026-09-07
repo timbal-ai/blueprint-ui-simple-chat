@@ -139,7 +139,7 @@ export function TokensChartCard({ className }: { className?: string }) {
             >
               {display.toFixed(1)}M tokens
             </p>
-            <Chip variant="bold" color="purple" className="text-purple-700">
+            <Chip variant="bold" color="purple">
               +9.4%
             </Chip>
           </div>

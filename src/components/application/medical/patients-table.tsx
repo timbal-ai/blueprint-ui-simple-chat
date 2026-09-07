@@ -3,15 +3,26 @@
 import { useMemo, useState } from "react";
 import {
   RiAlarmWarningLine,
+  RiArrowLeftRightLine,
   RiEditLine,
   RiFileTextLine,
   RiHomeHeartLine,
   RiHotelBedLine,
+  RiLogoutBoxRLine,
   RiMore2Fill,
+  RiPrinterLine,
   RiSearchLine,
+  RiUserHeartLine,
   RiWalkLine,
 } from "@remixicon/react";
 import { Focusable } from "react-aria-components";
+import {
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Chip } from "@/components/base/badges/chip";
 import { IconButton } from "@/components/base/buttons/icon-button";
@@ -74,14 +85,14 @@ type Patient = {
 };
 
 const PHOTO_PEOPLE: { name: string; avatar: string }[] = [
-  { name: "John Clarkson", avatar: "https://i.pravatar.cc/80?img=68" },
-  { name: "Aspen Lubin", avatar: "https://i.pravatar.cc/80?img=16" },
-  { name: "Michael Ekstrom", avatar: "https://i.pravatar.cc/80?img=53" },
-  { name: "Kianna Vaccaro", avatar: "https://i.pravatar.cc/80?img=9" },
-  { name: "Livia Saris", avatar: "https://i.pravatar.cc/80?img=47" },
-  { name: "Jaydon Aminoff", avatar: "https://i.pravatar.cc/80?img=12" },
-  { name: "Maria Lubin", avatar: "https://i.pravatar.cc/80?img=32" },
-  { name: "Ann Press", avatar: "https://i.pravatar.cc/80?img=25" },
+  { name: "John Clarkson", avatar: "/avatars/john-clarkson.webp" },
+  { name: "Aspen Lubin", avatar: "/avatars/aspen-lubin.webp" },
+  { name: "Michael Ekstrom", avatar: "/avatars/michael-ekstrom.webp" },
+  { name: "Kianna Vaccaro", avatar: "/avatars/kianna-vaccaro.webp" },
+  { name: "Livia Saris", avatar: "/avatars/livia-saris.webp" },
+  { name: "Jaydon Aminoff", avatar: "/avatars/jaydon-aminoff.webp" },
+  { name: "Maria Lubin", avatar: "/avatars/maria-lubin.webp" },
+  { name: "Ann Press", avatar: "/avatars/ann-press.webp" },
 ];
 
 const FIRST_NAMES = ["Marcus", "Cheyenne", "Alfredo", "Talan", "Roger", "Cristofer", "Emery", "Kadin", "Nolan", "Ruben", "Skylar", "Hanna", "Corey", "Miracle", "Zaire", "Cooper", "Leilani", "Alena", "Terry", "Jaxson", "Kaiya", "Omar", "Phoenix", "Adison", "Gretchen", "Nova", "Ellis", "Dulce", "Wilson"];
@@ -203,6 +214,49 @@ function RowActionButton({
   );
 }
 
+const MORE_MENU_ACTIONS = [
+  { icon: RiUserHeartLine, label: "Assign care team" },
+  { icon: RiPrinterLine, label: "Print summary" },
+  { icon: RiArrowLeftRightLine, label: "Transfer ward" },
+  { icon: RiLogoutBoxRLine, label: "Discharge patient" },
+] as const;
+
+/** The "⋮" action: tooltip on hover, contextual dropdown menu on click. The
+ *  trigger is styled to match `IconButton`'s small secondary recipe (nesting
+ *  the real IconButton inside DropdownTrigger would nest <button>s). */
+function RowMoreMenu({ name }: { name: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
+      <TooltipTrigger delay={200}>
+        <DropdownTrigger
+          aria-label={`More actions for ${name}`}
+          className={cx(
+            "relative inline-flex size-8 shrink-0 items-center justify-center rounded-2lg",
+            "border border-border-button-default bg-background-primary-default text-foreground-icon-primary shadow-xs",
+            "transition-[background-color,border-color,box-shadow,color] duration-150 ease",
+            "hover:border-border-button-hover hover:bg-background-primary-hover",
+            isOpen && "border-border-button-active bg-background-primary-active",
+          )}
+        >
+          <RiMore2Fill className="size-4 shrink-0" aria-hidden />
+        </DropdownTrigger>
+        <Tooltip size="md">More actions</Tooltip>
+      </TooltipTrigger>
+      <DropdownPopover aria-label={`More actions for ${name}`} placement="bottom end" className="w-[220px] p-2">
+        <DropdownGroup>
+          {MORE_MENU_ACTIONS.map(({ icon: Icon, label }) => (
+            <DropdownItem key={label} onSelect={() => setIsOpen(false)} className="px-2 py-1.5">
+              <Icon className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+              <span className="truncate text-body-medium whitespace-nowrap text-text-primary">{label}</span>
+            </DropdownItem>
+          ))}
+        </DropdownGroup>
+      </DropdownPopover>
+    </Dropdown>
+  );
+}
+
 type SortKey = "name" | "nextAppointment";
 type SortState = { key: SortKey; dir: "asc" | "desc" } | null;
 
@@ -265,7 +319,7 @@ function PatientRow({
   showBorder?: boolean;
 }) {
   return (
-    <div className={cx("flex w-full items-center", showBorder && "border-b border-border-button-default")}>
+    <div className={cx("flex w-full items-center", showBorder && "border-b border-separator-border")}>
       <div className="flex min-w-0 flex-1 items-center gap-2 py-2.5">
         <Checkbox
           isSelected={isSelected}
@@ -302,7 +356,7 @@ function PatientRow({
       <div className="flex w-[140px] shrink-0 items-center justify-end gap-2.5 px-3 py-2.5">
         <RowActionButton icon={RiFileTextLine} label="View chart" />
         <RowActionButton icon={RiEditLine} label="Edit patient" />
-        <RowActionButton icon={RiMore2Fill} label="More actions" />
+        <RowMoreMenu name={patient.name} />
       </div>
     </div>
   );
@@ -384,7 +438,7 @@ export function PatientsTable() {
   return (
     <section
       className={cx(
-        "flex w-full flex-col rounded-2xl border border-border-button-default pt-2",
+        "flex w-full flex-col rounded-2xl border border-border-table pt-2",
         hasPagination ? "pb-3" : "pb-0",
       )}
     >
@@ -452,7 +506,7 @@ export function PatientsTable() {
       <div className="mt-2 w-full overflow-x-auto">
         <div className="flex min-w-[960px] flex-col">
           {/* Column headers */}
-          <div className="flex w-full items-center border-y border-border-button-default bg-background-secondary-default pl-3">
+          <div className="flex w-full items-center border-y border-separator-border bg-background-secondary-default pl-3">
             <div className="flex min-w-0 flex-1 items-center gap-2 py-2.5">
               <Checkbox
                 isSelected={allOnPageSelected}

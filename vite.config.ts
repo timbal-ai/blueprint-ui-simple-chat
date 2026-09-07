@@ -46,28 +46,39 @@ export default defineConfig(({ mode }) => {
     resolve: {
       // `file:../timbal-react` installs nested copies — force one React.
       dedupe: ["react", "react-dom", "react/jsx-runtime", "@assistant-ui/react"],
-      alias: {
-        "@": path.join(root, "src"),
-        react: reactRoot,
-        "react-dom": reactDomRoot,
-        "react/jsx-runtime": path.join(reactRoot, "jsx-runtime.js"),
-        "react/jsx-dev-runtime": path.join(reactRoot, "jsx-dev-runtime.js"),
-        "@assistant-ui/react": assistantUiRoot,
-      },
+      alias: [
+        { find: "@", replacement: path.join(root, "src") },
+        // BoardUI is authored for Next.js. Vendored files keep their `next/*`
+        // imports and resolve to these shims so upstream stays byte-identical
+        // (scripts/boardui-sync.mjs can always --overwrite).
+        { find: /^next\/image$/, replacement: path.join(root, "src/shims/next-image.tsx") },
+        { find: /^next\/link$/, replacement: path.join(root, "src/shims/next-link.tsx") },
+        { find: /^next\/navigation$/, replacement: path.join(root, "src/shims/next-navigation.ts") },
+        { find: /^react$/, replacement: reactRoot },
+        { find: /^react-dom$/, replacement: reactDomRoot },
+        { find: "react/jsx-runtime", replacement: path.join(reactRoot, "jsx-runtime.js") },
+        { find: "react/jsx-dev-runtime", replacement: path.join(reactRoot, "jsx-dev-runtime.js") },
+        { find: "@assistant-ui/react", replacement: assistantUiRoot },
+      ],
     },
     optimizeDeps: {
-      // Pre-bundle the CJS-only `use-sync-external-store/shim` chain (reached via
-      // `radix-ui` -> `@radix-ui/react-use-is-hydrated`) so it never leaks to the
-      // browser as a raw ESM named import in previews (`bun run dev`).
-      include: [
-        "react",
-        "react-dom",
-        "@assistant-ui/react",
-        "radix-ui",
-        "@radix-ui/react-use-is-hydrated",
-        "use-sync-external-store/shim",
-        "use-sync-external-store/shim/with-selector",
-      ],
+      include: ["react", "react-dom", "@assistant-ui/react"],
+    },
+    build: {
+      chunkSizeWarningLimit: 1500,
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // BoardUI files carry Next's "use client" directive; harmless in Vite.
+          if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
+          warn(warning);
+        },
+        output: {
+          manualChunks: {
+            runtime: ["@timbal-ai/timbal-react"],
+            charts: ["recharts"],
+          },
+        },
+      },
     },
   };
 });

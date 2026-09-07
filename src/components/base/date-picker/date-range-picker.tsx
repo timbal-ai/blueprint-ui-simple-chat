@@ -52,7 +52,8 @@ import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-
  *    per-cell layered background driven by react-aria's `isSelectionStart` /
  *    `isSelectionEnd` state, so any range length/position renders correctly.
  *
- * Colors/radii/spacing (blue-100/300/500/600, radius/2lg/xl/2xl/3xl,
+ * Colors/radii/spacing (semantic range-selection blues, blue-500/600,
+ * radius/2lg/xl/2xl/3xl,
  * shadow-xs, background/secondary/default, background/tertiary/default,
  * border/button/default) are Tailwind v4 defaults or existing semantic
  * tokens — see styles/theme.css.

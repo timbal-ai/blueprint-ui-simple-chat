@@ -5,13 +5,6 @@ import type {
   Ref,
 } from "react";
 import { cx, sortCx } from "@/utils/cx";
-import {
-  SECONDARY_ACTIVE,
-  SECONDARY_BORDER,
-  SECONDARY_GRADIENT,
-  SECONDARY_HOVER,
-  SECONDARY_SHADOW,
-} from "@/components/base/buttons/secondary-chrome";
 
 /**
  * Button group — a row of secondary-style buttons fused into one control:
@@ -38,27 +31,21 @@ type IconComponent = ComponentType<{
 }>;
 
 const styles = sortCx({
-  // Container carries the shared secondary border + shadow; each item paints
-  // its own slice of the shared gradient so the group reads as ONE secondary
-  // button divided by hairlines.
-  group: cx(
+  group: [
     "inline-flex items-stretch isolate",
-    "rounded-2lg overflow-hidden",
-    SECONDARY_BORDER,
-    SECONDARY_SHADOW,
-    "divide-x divide-border-button-default",
-  ),
+    "rounded-2lg border border-border-button-group bg-background-primary-default shadow-xs",
+    // Hairlines between items, outer corners rounded on the first/last item
+    "divide-x divide-border-button-default overflow-hidden",
+  ].join(" "),
 
-  item: cx(
+  item: [
     "inline-flex items-center justify-center gap-1 whitespace-nowrap",
-    "text-text-primary font-sans select-none cursor-pointer",
-    SECONDARY_GRADIENT,
-    SECONDARY_HOVER,
-    SECONDARY_ACTIVE,
+    "bg-background-primary-default text-text-primary font-sans select-none cursor-pointer",
     "transition-[background-color,color] duration-150 ease",
     "outline-none focus-visible:relative focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus-ring",
-    "disabled:cursor-not-allowed disabled:bg-none disabled:bg-background-primary-disabled disabled:text-text-tertiary",
-  ),
+    "hover:bg-background-primary-hover active:bg-background-primary-active",
+    "disabled:cursor-not-allowed disabled:bg-background-primary-disabled disabled:text-text-tertiary",
+  ].join(" "),
 
   size: {
     medium: "h-[34px] px-3 text-body-medium",
@@ -75,9 +62,7 @@ const styles = sortCx({
     small: "size-[18px] shrink-0",
   },
 
-  // Selected pins the hover STOPS (a bg-color would hide under the gradient).
-  selected:
-    "from-background-primary-hover to-[color-mix(in_srgb,var(--color-background-primary-hover)_97%,black)]",
+  selected: "bg-background-primary-hover",
 });
 
 /* ------------------------------------------------------------------- group */

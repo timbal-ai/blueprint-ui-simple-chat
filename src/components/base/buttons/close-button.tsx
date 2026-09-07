@@ -15,6 +15,7 @@ import { cx, sortCx } from "@/utils/cx";
  * literal CSS pixel value, at every size (not a scaled approximation).
  *
  * Sizes (px):
+ *   2xs = 16 container, 6.8px glyph, 1.6px stroke   (compact floating surfaces)
  *   xs = 20 container, 10.8px glyph, 2px stroke     (Announcement dismiss corner)
  *   sm = 24 container, 12.6px glyph, 2px stroke
  *   md = 32 container, 16.2px glyph, 2.5px stroke   (modal header close — a touch
@@ -26,7 +27,7 @@ import { cx, sortCx } from "@/utils/cx";
  * inside its circle.
  */
 
-type CloseButtonSize = "xs" | "sm" | "md";
+type CloseButtonSize = "2xs" | "xs" | "sm" | "md";
 
 export interface CloseButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
@@ -37,18 +38,27 @@ export interface CloseButtonProps
 }
 
 const GLYPH_SIZE: Record<CloseButtonSize, number> = {
+  "2xs": 6.8,
   xs: 10.8,
   sm: 12.6,
   md: 16.2,
 };
 
 const STROKE_WIDTH: Record<CloseButtonSize, number> = {
+  "2xs": 1.6,
   xs: 2,
   sm: 2,
   md: 2.5,
 };
 
-const INSET = 2;
+const GLYPH_INSET: Record<CloseButtonSize, number> = {
+  // Figma's 8px bars rotate inside a 6.8px square, leaving ~0.57px at
+  // each corner once projected onto the diagonal.
+  "2xs": 0.57,
+  xs: 2,
+  sm: 2,
+  md: 2,
+};
 
 const styles = sortCx({
   base: [
@@ -60,6 +70,7 @@ const styles = sortCx({
     "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
   ].join(" "),
   container: {
+    "2xs": "size-4",
     xs: "size-5",
     sm: "size-6",
     md: "size-8",
@@ -75,6 +86,7 @@ export function CloseButton({
 }: CloseButtonProps) {
   const glyph = GLYPH_SIZE[size];
   const strokeWidth = STROKE_WIDTH[size];
+  const inset = GLYPH_INSET[size];
 
   return (
     <button
@@ -85,13 +97,13 @@ export function CloseButton({
     >
       <svg width={glyph} height={glyph} viewBox={`0 0 ${glyph} ${glyph}`} fill="none" aria-hidden>
         <path
-          d={`M${INSET} ${INSET}L${glyph - INSET} ${glyph - INSET}`}
+          d={`M${inset} ${inset}L${glyph - inset} ${glyph - inset}`}
           stroke="currentColor"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
         <path
-          d={`M${glyph - INSET} ${INSET}L${INSET} ${glyph - INSET}`}
+          d={`M${glyph - inset} ${inset}L${inset} ${glyph - inset}`}
           stroke="currentColor"
           strokeWidth={strokeWidth}
           strokeLinecap="round"

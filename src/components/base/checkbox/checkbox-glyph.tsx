@@ -44,11 +44,11 @@ export function CheckboxGlyph({
         isMarked
           ? cx(
               "bg-linear-to-b shadow-checkbox-selected",
-              hover ? "from-blue-400 to-blue-500" : "from-blue-500 to-blue-600",
+              hover ? "from-accent-400 to-accent-500" : "from-accent-500 to-accent-600",
             )
           : cx(
               "border bg-background-primary-default shadow-xs",
-              hover ? "border-neutral-400" : "border-border-checkbox-default",
+              hover ? "border-border-checkbox-hover" : "border-border-checkbox-default",
             ),
         isDisabled && "opacity-50",
         isFocusVisible && "ring-2 ring-border-focus-ring ring-offset-2",

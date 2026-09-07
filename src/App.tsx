@@ -1,214 +1,64 @@
-import { lazy, Suspense, type ComponentType } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthGuard, SessionProvider } from "@timbal-ai/timbal-react";
+
+import { areTemplatesEnabled, isAuthEnabled } from "@/config";
 import { useTitle } from "@/hooks/use-title";
-import { ThemeProvider } from "next-themes";
-import { Toaster } from "@/components/ui/sonner";
-import {
-  TooltipProvider,
-  SessionProvider,
-  AuthGuard,
-} from "@timbal-ai/timbal-react";
-
-import { isAuthEnabled, isGalleryEnabled } from "@/config";
-// COMPOSER: `Home` is the ready-made chat shell (streaming, attachments,
-// artifacts — all wired). It stays mounted at /chat so the full conversation
-// surface is always reachable; the index route renders a neutral
-// `<Placeholder />` so a fresh build doesn't mislead users with a chat they
-// didn't ask for. When you build the UI, replace `<Placeholder />` on the
-// index route with the real surface (`<Home />` for chat-first apps, or your
-// own page) and delete `Placeholder.tsx` once it's unused.
-//
-// COMPOSER — multi-page apps (hard rule): every page is a ROUTE, never a
-// useState-switched view inside one component (deep links, back/forward and
-// refresh must work). Mount `RoutedAppShell` (blocks/routed-app-shell) once
-// as a layout route — nav ids ARE route paths — and register one <Route> per
-// page under it:
-//
-//   <Route element={<RoutedAppShell brand={…} nav={NAV} dock={<AssistantPill />} />}>
-//     <Route index element={<DashboardPage />} />
-//     <Route path="/invoices" element={<InvoicesPage />} />
-//   </Route>
-//
-// The /gallery tree below is the living reference for this exact pattern.
+import { Login } from "@/components/timbal/login";
 import Home from "@/pages/Home";
-import Placeholder from "@/pages/Placeholder";
+import LoginPage from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
-// SPIKE (v3 direction): BoardUI-designed chat page on the Timbal runtime.
-const BoardChat = lazy(() => import("@/pages/BoardChat"));
-import { BoardLogin } from "@/components/chat/board/board-login";
 
-// Gallery showcase (dev/CI surface): routed pages/blocks/primitives/charts
-// inside the inset AppShell. Gated behind VITE_GALLERY.
-const GalleryShell = isGalleryEnabled
-  ? lazy(() => import("@/pages/gallery/shell"))
-  : null;
-const GalleryInvoices = lazy(() => import("@/pages/gallery/invoices"));
-const GalleryChat = lazy(() => import("@/pages/gallery/chat"));
-const GalleryBlocks = lazy(() => import("@/pages/gallery/blocks"));
-const GalleryCustomerDetail = lazy(() => import("@/pages/gallery/customer-detail"));
-const GalleryWorkspaceDetail = lazy(() => import("@/pages/gallery/workspace-detail"));
-const GalleryMedia = lazy(() => import("@/pages/gallery/media"));
-const GalleryInvoiceReview = lazy(() => import("@/pages/gallery/invoice-review"));
-const GalleryHomeDashboard = lazy(() => import("@/pages/gallery/home-dashboard"));
-const GalleryMedical = lazy(() => import("@/pages/gallery/medical"));
-const GalleryAiProfile = lazy(() => import("@/pages/gallery/ai-profile"));
-const GalleryCalendar = lazy(() => import("@/pages/gallery/calendar"));
-// Full-viewport BoardUI Pro chat template — mounts OUTSIDE the gallery shell.
-const GalleryAiChatTemplate = lazy(() => import("@/pages/gallery/ai-chat-template"));
-const GalleryForms = lazy(() => import("@/pages/gallery/primitives-forms"));
-const GalleryOverlays = lazy(() => import("@/pages/gallery/primitives-overlays"));
-const GalleryData = lazy(() => import("@/pages/gallery/primitives-data"));
-const GalleryFeedback = lazy(() => import("@/pages/gallery/primitives-feedback"));
-const GalleryNavigation = lazy(
-  () => import("@/pages/gallery/primitives-navigation"),
-);
-const GalleryPickers = lazy(() => import("@/pages/gallery/primitives-pickers"));
-const GalleryCharts = lazy(() => import("@/pages/gallery/charts"));
-
-// Local-only dev hub: src/pages/dev/ is git-ignored, so this glob resolves to
-// nothing on fresh scaffolds/CI and the /dev route simply doesn't mount.
-const devPages = import.meta.glob("./pages/dev/DevHub.tsx") as Record<
-  string,
-  () => Promise<{ default: ComponentType }>
->;
-const devHubLoader = devPages["./pages/dev/DevHub.tsx"];
-const DevHub = devHubLoader ? lazy(devHubLoader) : null;
-const devProbes = import.meta.glob("./pages/dev/ChatScreenProbe.tsx") as Record<
-  string,
-  () => Promise<{ default: ComponentType }>
->;
-const chatProbeLoader = devProbes["./pages/dev/ChatScreenProbe.tsx"];
-const ChatScreenProbe = chatProbeLoader ? lazy(chatProbeLoader) : null;
+// Every page is a ROUTE. Add one <Route> per screen; for multi-page apps mount
+// a shell from components/timbal/shells as a layout route and render pages
+// through its <Outlet />. Never switch "pages" with useState.
+//
+// BoardUI Pro templates, mounted so they can be seen running (dev / VITE_TEMPLATES).
+// Fork the shell you start from into src/pages/<yours>.tsx, then delete these.
+const templates = {
+  dashboard: lazy(() => import("@/pages/templates/dashboard")),
+  finance: lazy(() => import("@/pages/templates/finance")),
+  hr: lazy(() => import("@/pages/templates/hr")),
+  marketing: lazy(() => import("@/pages/templates/marketing")),
+  medical: lazy(() => import("@/pages/templates/medical")),
+  calendar: lazy(() => import("@/pages/templates/calendar")),
+  "ai-profile": lazy(() => import("@/pages/templates/ai-profile")),
+  "ai-chat": lazy(() => import("@/pages/templates/ai-chat")),
+  "ai-image-generation": lazy(() => import("@/pages/templates/ai-image-generation")),
+};
 
 function App() {
-  const appTitle = import.meta.env.VITE_APP_TITLE;
-  useTitle(appTitle || "");
+  useTitle(import.meta.env.VITE_APP_TITLE || "");
   return (
-    <ThemeProvider
-      defaultTheme="light"
-      enableSystem={false}
-      storageKey="timbal-theme"
-      attribute="class"
-    >
-      <SessionProvider enabled={isAuthEnabled}>
-        <TooltipProvider>
-          <Toaster position="top-right" duration={3000} />
-          <BrowserRouter>
-            <Routes>
-              <Route
-                index
-                element={
-                  <AuthGuard requireAuth enabled={isAuthEnabled}>
-                    <Placeholder />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/chat"
-                element={
-                  <AuthGuard requireAuth enabled={isAuthEnabled}>
-                    <Home />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/board"
-                element={
-                  <AuthGuard
-                    requireAuth
-                    enabled={isAuthEnabled}
-                    renderLogin={<BoardLogin />}
-                  >
-                    <Suspense fallback={null}>
-                      <BoardChat />
-                    </Suspense>
-                  </AuthGuard>
-                }
-              />
-              {/* SPIKE: login screen preview without a backend (dev only). */}
-              {import.meta.env.DEV ? (
-                <Route path="/board/login" element={<BoardLogin />} />
-              ) : null}
-              {GalleryShell ? (
+    <SessionProvider enabled={isAuthEnabled}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            index
+            element={
+              <AuthGuard requireAuth enabled={isAuthEnabled} renderLogin={<Login />}>
+                <Home />
+              </AuthGuard>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          {areTemplatesEnabled
+            ? Object.entries(templates).map(([slug, Page]) => (
                 <Route
-                  path="/gallery"
+                  key={slug}
+                  path={`/templates/${slug}`}
                   element={
                     <Suspense fallback={null}>
-                      <GalleryShell />
-                    </Suspense>
-                  }
-                >
-                  <Route index element={<GalleryInvoices />} />
-                  <Route path="chat" element={<GalleryChat />} />
-                  <Route path="blocks" element={<GalleryBlocks />} />
-                  <Route path="pages/customer" element={<GalleryCustomerDetail />} />
-                  <Route path="pages/workspace" element={<GalleryWorkspaceDetail />} />
-                  <Route path="pages/media" element={<GalleryMedia />} />
-                  <Route path="pages/invoice-review" element={<GalleryInvoiceReview />} />
-                  <Route path="pages/home" element={<GalleryHomeDashboard />} />
-                  <Route path="pages/medical" element={<GalleryMedical />} />
-                  <Route path="pages/ai-profile" element={<GalleryAiProfile />} />
-                  <Route path="pages/calendar" element={<GalleryCalendar />} />
-                  <Route path="primitives/forms" element={<GalleryForms />} />
-                  <Route
-                    path="primitives/overlays"
-                    element={<GalleryOverlays />}
-                  />
-                  <Route path="primitives/data" element={<GalleryData />} />
-                  <Route
-                    path="primitives/feedback"
-                    element={<GalleryFeedback />}
-                  />
-                  <Route
-                    path="primitives/navigation"
-                    element={<GalleryNavigation />}
-                  />
-                  <Route
-                    path="primitives/pickers"
-                    element={<GalleryPickers />}
-                  />
-                  <Route path="charts" element={<GalleryCharts />} />
-                </Route>
-              ) : null}
-              {GalleryShell ? (
-                // The AI chat TEMPLATE owns its own viewport (sidebar +
-                // resizable code panel) — never nested inside the gallery
-                // shell. Visual reference only; real chat = Timbal shells.
-                <Route
-                  path="/gallery/templates/ai-chat"
-                  element={
-                    <Suspense fallback={null}>
-                      <GalleryAiChatTemplate />
+                      <Page />
                     </Suspense>
                   }
                 />
-              ) : null}
-              {DevHub ? (
-                <Route
-                  path="/dev"
-                  element={
-                    <Suspense fallback={null}>
-                      <DevHub />
-                    </Suspense>
-                  }
-                />
-              ) : null}
-              {ChatScreenProbe ? (
-                <Route
-                  path="/dev/chat-screen"
-                  element={
-                    <Suspense fallback={null}>
-                      <ChatScreenProbe />
-                    </Suspense>
-                  }
-                />
-              ) : null}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </SessionProvider>
-    </ThemeProvider>
+              ))
+            : null}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </SessionProvider>
   );
 }
 

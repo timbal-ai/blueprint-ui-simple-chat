@@ -19,12 +19,13 @@ import { cx, sortCx } from "@/utils/cx";
  *                 ring + top highlight that scales with size. lg is exactly
  *                 the shared `--shadow-checkbox-selected` token; md/sm scale
  *                 the ring (0.75px / 0.5px) and highlight (1.5px / 1px).
- *   thumb   white gradient (primary/default → primary/hover) + contact shadow,
+ *   thumb   theme-stable white gradient + contact shadow,
  *           slides by (w − thumb − 2·pad) between states.
  *   chip    small embossed inset in the thumb centre:
- *           off → white→#f4f4f4, 50% neutral-200 border;
- *           on  → blue #2473fe→#0450e2, blue/600 border.
- *           #f4f4f4 / #2473fe / #0450e2 are raw Figma fills (no token yet).
+ *           off → white→neutral-100 in light mode; in dark mode it matches
+ *                 the track so the mark reads like a hole through the thumb;
+ *           on  → switch-on-chip-start→end (accent mixes matching Figma's
+ *                 raw #2473fe→#0450e2 for blue), accent/600 border.
  *
  * The track visual lives in `SwitchTrack` so `Switch` and `SwitchCard` share it
  * (mirrors how Checkbox / CheckboxCard share `CheckboxGlyph`). Built on
@@ -39,7 +40,7 @@ export const switchSizes = sortCx({
   sm: {
     track: "h-4 w-7",
     trackRadius: { pill: "rounded-full", rectangle: "rounded-[3px]" },
-    onShadow: "shadow-[inset_0_1px_0_0_rgb(255_255_255/0.25),inset_0_0_0_0.5px_var(--color-blue-500)]",
+    onShadow: "shadow-[inset_0_1px_0_0_rgb(255_255_255/0.25),inset_0_0_0_0.5px_var(--color-accent-500)]",
     thumb: "size-3",
     thumbRadius: { pill: "rounded-full", rectangle: "rounded-[1px]" },
     offset: "left-0.5 top-0.5",
@@ -50,7 +51,7 @@ export const switchSizes = sortCx({
   md: {
     track: "h-6 w-[42px]",
     trackRadius: { pill: "rounded-full", rectangle: "rounded-[4.5px]" },
-    onShadow: "shadow-[inset_0_1.5px_0_0_rgb(255_255_255/0.25),inset_0_0_0_0.75px_var(--color-blue-500)]",
+    onShadow: "shadow-[inset_0_1.5px_0_0_rgb(255_255_255/0.25),inset_0_0_0_0.75px_var(--color-accent-500)]",
     thumb: "size-[18px]",
     thumbRadius: { pill: "rounded-full", rectangle: "rounded-[1.5px]" },
     offset: "left-[3px] top-[3px]",
@@ -100,7 +101,7 @@ export function SwitchTrack({
         s.track,
         s.trackRadius[shape],
         state.isSelected
-          ? cx("bg-linear-to-b from-blue-500 to-blue-600", s.onShadow)
+          ? cx("bg-linear-to-b from-accent-500 to-accent-600", s.onShadow)
           : "bg-background-tertiary-default",
         state.isDisabled && "opacity-50",
         state.isFocusVisible && "ring-2 ring-border-focus-ring ring-offset-2",
@@ -110,7 +111,7 @@ export function SwitchTrack({
       <span
         className={cx(
           "absolute flex items-center justify-center",
-          "bg-linear-to-b from-background-primary-default from-[43.837%] to-background-primary-hover",
+          "bg-linear-to-b from-control-indicator-background from-[43.837%] to-control-indicator-background-subtle",
           "shadow-[0_3px_3px_0_rgb(0_0_0/0.03),0_0.75px_0_0_rgb(0_0_0/0.05)]",
           "transition-transform duration-200 ease",
           s.thumb,
@@ -129,8 +130,8 @@ export function SwitchTrack({
             s.chip,
             s.chipRadius[shape],
             state.isSelected
-              ? "border-blue-600 from-[#2473fe] to-[#0450e2]"
-              : "border-border-button-default/50 from-background-primary-default to-[#f4f4f4]",
+              ? "border-accent-600 from-switch-on-chip-start to-switch-on-chip-end"
+              : "border-border-button-default/50 from-switch-off-chip-start to-switch-off-chip-end",
           )}
         />
       </span>

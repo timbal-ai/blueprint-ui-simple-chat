@@ -1,7 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RiDeleteBin6Line, RiEditLine, RiMore2Fill, RiSearchLine } from "@remixicon/react";
+import {
+  RiArchiveLine,
+  RiDeleteBin6Line,
+  RiDownload2Line,
+  RiEditLine,
+  RiFileCopyLine,
+  RiMore2Fill,
+  RiSearchLine,
+  RiUserLine,
+} from "@remixicon/react";
+import { Focusable } from "react-aria-components";
 import {
   flexRender,
   getCoreRowModel,
@@ -15,6 +25,13 @@ import { Chip } from "@/components/base/badges/chip";
 import { StatusDot } from "@/components/base/badges/status-dot";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Checkbox } from "@/components/base/checkbox/checkbox";
+import {
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownPopover,
+  DropdownTrigger,
+} from "@/components/base/dropdown/dropdown";
 import { InputBase } from "@/components/base/input/input";
 import { Pagination } from "@/components/base/pagination/pagination";
 import {
@@ -32,11 +49,12 @@ import {
   TableRow,
 } from "@/components/base/table/table";
 import type { TableSize } from "@/components/base/table/table";
+import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip";
 import { ChevronSortDown } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
 
 /**
- * Advanced Data Table — the react-aria `Table` primitive rendered from a
+ * Advanced Data Table - the react-aria `Table` primitive rendered from a
  * @tanstack/react-table instance, styled to match the dashboard template's
  * customers table (node 3731:3201). TanStack owns sorting / pagination / row
  * selection; the price/product/region/search filters pre-filter the rows.
@@ -69,7 +87,7 @@ type Customer = {
   name: string;
   avatar?: string;
   initialsColor: "neutral" | "blue";
-  purchase: "completed" | "waiting";
+  purchase: "completed" | "waiting" | "processing";
   status: Status;
   product: string;
   region: string;
@@ -79,14 +97,14 @@ type Customer = {
 };
 
 const PHOTO_PEOPLE: { name: string; avatar: string }[] = [
-  { name: "John Clarkson", avatar: "https://i.pravatar.cc/80?img=68" },
-  { name: "Aspen Lubin", avatar: "https://i.pravatar.cc/80?img=16" },
-  { name: "Michael Ekstrom", avatar: "https://i.pravatar.cc/80?img=53" },
-  { name: "Kianna Vaccaro", avatar: "https://i.pravatar.cc/80?img=9" },
-  { name: "Livia Saris", avatar: "https://i.pravatar.cc/80?img=47" },
-  { name: "Jaydon Aminoff", avatar: "https://i.pravatar.cc/80?img=12" },
-  { name: "Maria Lubin", avatar: "https://i.pravatar.cc/80?img=32" },
-  { name: "Ann Press", avatar: "https://i.pravatar.cc/80?img=25" },
+  { name: "John Clarkson", avatar: "/avatars/john-clarkson.webp" },
+  { name: "Aspen Lubin", avatar: "/avatars/aspen-lubin.webp" },
+  { name: "Michael Ekstrom", avatar: "/avatars/michael-ekstrom.webp" },
+  { name: "Kianna Vaccaro", avatar: "/avatars/kianna-vaccaro.webp" },
+  { name: "Livia Saris", avatar: "/avatars/livia-saris.webp" },
+  { name: "Jaydon Aminoff", avatar: "/avatars/jaydon-aminoff.webp" },
+  { name: "Maria Lubin", avatar: "/avatars/maria-lubin.webp" },
+  { name: "Ann Press", avatar: "/avatars/ann-press.webp" },
 ];
 
 const FIRST_NAMES = ["Marcus", "Cheyenne", "Alfredo", "Talan", "Roger", "Cristofer", "Emery", "Kadin", "Nolan", "Ruben", "Skylar", "Hanna", "Corey", "Miracle", "Zaire", "Cooper", "Leilani", "Alena", "Terry", "Jaxson"];
@@ -122,7 +140,11 @@ const CUSTOMERS: Customer[] = (() => {
   return Array.from({ length: 48 }, (_, i) => {
     const status = pick(STATUSES);
     const purchase: Customer["purchase"] =
-      status.label === "Shipped" || status.label === "Confirmed" ? "completed" : "waiting";
+      rng() < 0.24
+        ? "processing"
+        : status.label === "Shipped" || status.label === "Confirmed"
+          ? "completed"
+          : "waiting";
     const price = 20 + Math.floor(rng() * 3980);
     const monthIdx = Math.floor(rng() * 12);
     const day = 1 + Math.floor(rng() * 28);
@@ -172,6 +194,10 @@ function PurchaseSelect({
         <StatusDot color="yellow" />
         Waiting
       </SelectItem>
+      <SelectItem id="processing" textValue="Processing">
+        <StatusDot color="indigo" />
+        Processing
+      </SelectItem>
     </Select>
   );
 }
@@ -188,15 +214,81 @@ function SortChevron({ dir }: { dir: false | "asc" | "desc" }) {
   );
 }
 
+/** Icon-only row action with a tooltip label - `IconButton` (a plain
+ *  `<button>`) is wrapped in `Focusable` so react-aria's `TooltipTrigger`
+ *  can attach hover/focus behavior. */
+function RowActionButton({
+  icon,
+  label,
+}: {
+  icon: typeof RiEditLine;
+  label: string;
+}) {
+  return (
+    <TooltipTrigger delay={200}>
+      <Focusable>
+        <IconButton icon={icon} size="small" aria-label={label} />
+      </Focusable>
+      <Tooltip size="md">{label}</Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+const MORE_MENU_ACTIONS = [
+  { icon: RiUserLine, label: "View profile" },
+  { icon: RiFileCopyLine, label: "Duplicate row" },
+  { icon: RiDownload2Line, label: "Download invoice" },
+  { icon: RiArchiveLine, label: "Archive customer" },
+] as const;
+
+/** The "⋮" action: tooltip on hover, contextual dropdown menu on click. The
+ *  trigger is styled to match `IconButton`'s small secondary recipe (nesting
+ *  the real IconButton inside DropdownTrigger would nest <button>s). */
+function RowMoreMenu({ name }: { name: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
+      <TooltipTrigger delay={200}>
+        <DropdownTrigger
+          aria-label={`More actions for ${name}`}
+          className={cx(
+            "relative inline-flex size-8 shrink-0 items-center justify-center rounded-2lg",
+            "border border-border-button-default bg-background-primary-default text-foreground-icon-primary shadow-xs",
+            "transition-[background-color,border-color,box-shadow,color] duration-150 ease",
+            "hover:border-border-button-hover hover:bg-background-primary-hover",
+            isOpen && "border-border-button-active bg-background-primary-active",
+          )}
+        >
+          <RiMore2Fill className="size-4 shrink-0" aria-hidden />
+        </DropdownTrigger>
+        <Tooltip size="md">More actions</Tooltip>
+      </TooltipTrigger>
+      <DropdownPopover aria-label={`More actions for ${name}`} placement="bottom end" className="w-[220px] p-2">
+        <DropdownGroup>
+          {MORE_MENU_ACTIONS.map(({ icon: Icon, label }) => (
+            <DropdownItem key={label} onSelect={() => setIsOpen(false)} className="px-2 py-1.5">
+              <Icon className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+              <span className="truncate text-body-medium whitespace-nowrap text-text-primary">{label}</span>
+            </DropdownItem>
+          ))}
+        </DropdownGroup>
+      </DropdownPopover>
+    </Dropdown>
+  );
+}
+
 export function DataTableExample({
   showSizeToggle = true,
+  pageSize = PER_PAGE,
 }: {
   /** Show the Normal / Compact density control below the table. */
   showSizeToggle?: boolean;
+  /** Rows per page - the landing collage shows the 5-row crop from Figma. */
+  pageSize?: number;
 } = {}) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({ "1": true, "2": true });
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: PER_PAGE });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize });
   const [priceFilter, setPriceFilter] = useState("all");
   const [productFilter, setProductFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
@@ -281,9 +373,9 @@ export function DataTableExample({
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex items-center justify-end gap-2.5">
-            <IconButton icon={RiDeleteBin6Line} size="small" aria-label={`Delete ${row.original.name}`} />
-            <IconButton icon={RiEditLine} size="small" aria-label={`Edit ${row.original.name}`} />
-            <IconButton icon={RiMore2Fill} size="small" aria-label={`More actions for ${row.original.name}`} />
+            <RowActionButton icon={RiDeleteBin6Line} label="Delete" />
+            <RowActionButton icon={RiEditLine} label="Edit" />
+            <RowMoreMenu name={row.original.name} />
           </div>
         ),
       },
@@ -321,9 +413,8 @@ export function DataTableExample({
   return (
     <div className="flex w-full flex-col items-center gap-5">
     <section
-      data-slot="data-table"
       className={cx(
-        "flex w-full flex-col rounded-2xl border border-border-button-default pt-2",
+        "flex w-full flex-col rounded-2xl border border-border-table pt-2",
         totalPages > 1 ? "pb-3" : "pb-0",
       )}
     >
@@ -482,7 +573,7 @@ export function DataTableExample({
 
       {/* Pagination footer */}
       {totalPages > 1 && (
-        <div data-slot="table-pagination" className="px-3 pt-3">
+        <div className="px-3 pt-3">
           <Pagination
             page={pagination.pageIndex + 1}
             totalPages={totalPages}

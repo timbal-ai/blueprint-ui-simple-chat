@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 import {
   RiArrowRightLine,
   RiCornerDownLeftLine,
@@ -23,33 +25,21 @@ import { useDismissOnOutsidePress } from "@/utils/use-dismiss-on-outside-press";
 
 /**
  * Figma source: Board UI → "calendar_view" → "Event details modal" (node
- * 3920:10954), opened by tapping any event chip in the month grid. Anchored
- * to the clicked day cell as a `Popover` (`isNonModal`, no backdrop — only
- * the panel's own shadow, same overlay pattern as `CalendarInboxMenu`) so
- * it floats to the right of the cell instead of centering over the whole
- * page. Dismisses via outside click or Escape.
+ * 3920:10954), opened by tapping any event chip in the month grid.
+ *
+ * A `Popover` (`isNonModal`, no backdrop — only the panel's own shadow, same
+ * overlay pattern as `CalendarInboxMenu`) anchored to the right of the day it
+ * belongs to, so the event stays visible beside its own details; react-aria
+ * flips it left on its own for the last column. Below `sm` there's no room to
+ * sit beside anything — the panel is nearly the width of the screen — so it
+ * becomes a bottom sheet instead: full-bleed, rounded across the top only,
+ * rising from the bottom edge. Dismisses via outside click or Escape.
  *
  * All-day events (no `time`) render just the title/date row — Figma's
  * example is a timed event and there's no all-day variant of this design
  * to match, so meeting/time/timezone/participants/reminder are skipped
  * rather than invented.
  */
-
-/** Inline Google Meet mark — the original template shipped a PNG
- *  (public/brand/google_meet.png) that isn't bundled here. */
-function GoogleMeetMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-5 shrink-0" aria-hidden>
-      <path fill="#00832d" d="M13.5 12l2.6 2.97 3.5 2.24.6-5.19-.6-5.08-3.57 1.97z" />
-      <path fill="#0066da" d="M2 16.5V21a1.5 1.5 0 0 0 1.5 1.5H8l.94-3.43L8 16.5l-3.11-.94z" />
-      <path fill="#e94235" d="M8 1.5L2 7.5l3.07.94L8 7.5l.92-2.96z" />
-      <path fill="#2684fc" d="M2 7.5h6v9H2z" />
-      <path fill="#00ac47" d="M21.6 3.67l-3.5 2.87v10.67l3.52 2.88c.53.41 1.3.04 1.3-.63V4.3c0-.68-.79-1.05-1.32-.62z" />
-      <path fill="#00ac47" d="M13.5 12v4.5H8v6h9.1a1.5 1.5 0 0 0 1.5-1.5v-3.79z" />
-      <path fill="#ffba00" d="M17.1 1.5H8v6h5.5V12l5.1-4.22V3a1.5 1.5 0 0 0-1.5-1.5z" />
-    </svg>
-  );
-}
 
 function InfoChip({ children }: { children: React.ReactNode }) {
   return (
@@ -104,140 +94,174 @@ export function EventDetailsModal({
   const tzLabel = `GMT${tzOffset >= 0 ? "+" : ""}${tzOffset}`;
 
   return (
-    <Popover
-      ref={popoverRef}
-      triggerRef={triggerRef}
-      isOpen={isOpen}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-      placement="right top"
-      offset={6}
-      isNonModal
-      className={cx(
-        "w-[302px] max-w-[calc(100vw-32px)] rounded-[20px] border border-border-button-default bg-background-primary-default p-2.5 outline-none",
-        // Raw shadow — Figma's exact spread (0/1/2 + 0/7/8) doesn't match
-        // any existing shadow token (shadow-dropdown is 0/1/1 + 0/4/4). No
-        // backdrop behind this popover — the shadow alone separates it from
-        // the page, per Figma.
-        "shadow-[0px_1px_2px_0px_rgba(0,0,0,0.04),0px_7px_8px_0px_rgba(0,0,0,0.04)]",
-        "transition duration-150 ease-out",
-        "data-[entering]:scale-90 data-[entering]:opacity-0 data-[entering]:blur-[4px]",
-        "data-[exiting]:scale-90 data-[exiting]:opacity-0 data-[exiting]:blur-[4px]",
-      )}
-    >
-      <Dialog aria-label="Event details" className="flex w-full flex-col gap-2.5 outline-none">
-        {event && details && (
-          <>
-            {/* Title + date */}
-            <div className="flex w-full flex-col gap-px rounded-2lg bg-background-secondary-default px-2.5 py-2">
-              <p className="text-headline-medium whitespace-nowrap text-text-primary">{event.title}</p>
-              <p className="text-body-medium text-text-secondary">{dateLabel}</p>
-            </div>
-
-            {event.image && (
-              <div className="relative h-[99px] w-full shrink-0 overflow-hidden rounded-[10px]">
-                <img src={event.image} alt="" className="absolute inset-0 size-full object-cover" />
-              </div>
+    <>
+      {/* Scrim behind the sheet, light mode only — dark mode already reads as
+          layered without one. react-aria gives the popover no underlay of its
+          own and pins it at z-index 100000, so this portals to the body just
+          beneath that. It stays mounted (transparent, inert) once opened so it
+          can fade out with the sheet instead of vanishing on close — `event`
+          outlives `isOpen` for exactly that reason. */}
+      {event &&
+        createPortal(
+          <div
+            aria-hidden
+            className={cx(
+              "fixed inset-0 z-[99999] bg-black/10 transition-opacity duration-300 ease-out sm:hidden dark:bg-transparent",
+              isOpen ? "opacity-100" : "pointer-events-none opacity-0",
             )}
+          />,
+          document.body,
+        )}
+      <Popover
+        ref={popoverRef}
+        triggerRef={triggerRef}
+        isOpen={isOpen}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+        placement="right top"
+        offset={6}
+        isNonModal
+        className={cx(
+          "w-[302px] max-w-[calc(100vw-32px)] rounded-[20px] border border-border-button-default bg-background-primary-default p-2.5 outline-none",
+          // Phones only: a bottom sheet, flush to both screen edges with 24px
+          // top corners. react-aria writes the anchored placement (and a
+          // computed max-height) inline, so overriding it takes !important.
+          // Anywhere wider, the anchoring above is what positions it.
+          "max-sm:!fixed max-sm:!inset-x-0 max-sm:!top-auto max-sm:!bottom-0 max-sm:!m-0 max-sm:!max-h-[85dvh] max-sm:w-full max-sm:max-w-none max-sm:overflow-y-auto",
+          "max-sm:rounded-[24px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0",
+          // The sheet's bottom edge meets the screen's, so its padding has to
+          // clear the home indicator rather than sit under it.
+          "max-sm:pb-[calc(10px+env(safe-area-inset-bottom))]",
+          // Raw shadow — Figma's exact spread (0/1/2 + 0/7/8) doesn't match
+          // any existing shadow token (shadow-dropdown is 0/1/1 + 0/4/4).
+          // Anchored, the shadow alone separates it from the page, per Figma;
+          // only the light-mode sheet gets the scrim above.
+          "shadow-[0px_1px_2px_0px_rgba(0,0,0,0.04),0px_7px_8px_0px_rgba(0,0,0,0.04)]",
+          "transition duration-150 ease-out",
+          // Anchored to a day, it scales out of that corner; as a sheet it
+          // travels the only direction a sheet can — off its own bottom edge.
+          "sm:data-[entering]:scale-90 sm:data-[entering]:opacity-0 sm:data-[entering]:blur-[4px]",
+          "sm:data-[exiting]:scale-90 sm:data-[exiting]:opacity-0 sm:data-[exiting]:blur-[4px]",
+          "max-sm:duration-300 max-sm:data-[entering]:translate-y-full max-sm:data-[exiting]:translate-y-full",
+        )}
+      >
+        <Dialog aria-label="Event details" className="flex w-full flex-col gap-2.5 outline-none">
+          {event && details && (
+            <>
+              {/* Title + date */}
+              <div className="flex w-full flex-col gap-px rounded-2lg bg-background-secondary-default px-2.5 py-2">
+                <p className="text-headline-medium whitespace-nowrap text-text-primary">{event.title}</p>
+                <p className="text-body-medium text-text-secondary">{dateLabel}</p>
+              </div>
 
-            {event.time && (
-              <>
-                {/* Google Meet */}
-                <DetailRow>
-                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                    <GoogleMeetMark />
-                    <span className="text-body-2-medium whitespace-nowrap text-text-primary">Google Meet</span>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
-                    <InfoChip>{details.meetingCode}</InfoChip>
-                    <Button variant="primary" size="xs">
-                      Join
-                    </Button>
-                  </div>
-                </DetailRow>
+              {event.image && (
+                <div className="relative h-[99px] w-full shrink-0 overflow-hidden rounded-[10px]">
+                  <Image src={event.image} alt="" fill sizes="302px" className="object-cover" />
+                </div>
+              )}
 
-                {/* Time range + duration */}
-                <DetailRow>
-                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                    <RiTimeLine className="size-[18px] shrink-0 text-foreground-icon-primary" aria-hidden />
-                    <span className="flex items-center gap-1.5 text-body-2-medium whitespace-nowrap text-text-primary">
-                      {event.time}
-                      <RiArrowRightLine className="size-5 shrink-0 text-foreground-icon-primary" aria-hidden />
-                      {details.endTime}
-                    </span>
-                  </div>
-                  <InfoChip>{durationLabel(event.time, details.endTime ?? event.time)}</InfoChip>
-                </DetailRow>
-
-                {/* Timezone */}
-                <DetailRow>
-                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                    <RiGlobalLine className="size-[18px] shrink-0 text-foreground-icon-primary" aria-hidden />
-                    <span className="flex items-center gap-1 text-body-2-medium whitespace-nowrap">
-                      <span className="text-text-secondary">{tzLabel}</span>
-                      <span className="text-text-primary">Amsterdam</span>
-                    </span>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="xs"
-                    iconOnly
-                    leadingIcon={RiCornerDownLeftLine}
-                    aria-label="Edit timezone"
-                  />
-                </DetailRow>
-
-                {/* Participants */}
-                <div className="flex w-full flex-col gap-0.5 rounded-2lg bg-background-secondary-default py-2 pr-1.5 pl-2">
-                  <div className="flex w-full items-center gap-2.5">
+              {event.time && (
+                <>
+                  {/* Google Meet */}
+                  <DetailRow>
                     <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                      <RiGlobalLine className="size-[18px] shrink-0 text-foreground-icon-primary" aria-hidden />
-                      <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
-                        Participants
+                      <Image src="/brand/google_meet.png" alt="" width={20} height={20} className="size-5 shrink-0" />
+                      <span className="text-body-2-medium whitespace-nowrap text-text-primary">Google Meet</span>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <InfoChip>{details.meetingCode}</InfoChip>
+                      <Button variant="primary" size="xs">
+                        Join
+                      </Button>
+                    </div>
+                  </DetailRow>
+
+                  {/* Time range + duration */}
+                  <DetailRow>
+                    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <RiTimeLine className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+                      <span className="flex items-center gap-1.5 text-body-2-medium whitespace-nowrap text-text-primary">
+                        {event.time}
+                        <RiArrowRightLine className="size-5 shrink-0 text-foreground-icon-secondary" aria-hidden />
+                        {details.endTime}
+                      </span>
+                    </div>
+                    <InfoChip>{durationLabel(event.time, details.endTime ?? event.time)}</InfoChip>
+                  </DetailRow>
+
+                  {/* Timezone */}
+                  <DetailRow>
+                    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <RiGlobalLine className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+                      <span className="flex items-center gap-1 text-body-2-medium whitespace-nowrap">
+                        <span className="text-text-secondary">{tzLabel}</span>
+                        <span className="text-text-primary">Amsterdam</span>
                       </span>
                     </div>
                     <Button
                       variant="secondary"
                       size="xs"
                       iconOnly
-                      leadingIcon={RiGroupLine}
-                      aria-label="Edit participants"
+                      leadingIcon={RiCornerDownLeftLine}
+                      className="text-foreground-icon-secondary"
+                      aria-label="Edit timezone"
                     />
-                  </div>
-                  <div className="flex w-full flex-col">
-                    {details.participants.map((participant) => (
-                      <div key={participant.email} className="flex w-full items-center gap-2 rounded-2lg py-1.5">
-                        <Avatar size="xs" color={participant.color} initials={participant.initials} />
-                        <span className="truncate text-body-2-medium text-text-primary">{participant.email}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  </DetailRow>
 
-                {/* Reminders */}
-                <DetailRow>
-                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                    <RiNotification2Line className="size-[18px] shrink-0 text-foreground-icon-primary" aria-hidden />
-                    <span className="flex items-center gap-1 text-body-2-medium whitespace-nowrap">
-                      <span className="text-text-secondary">Reminders</span>
-                      <span className="text-text-primary">{details.reminder}</span>
-                    </span>
+                  {/* Participants */}
+                  <div className="flex w-full flex-col gap-0.5 rounded-2lg bg-background-secondary-default py-2 pr-1.5 pl-2">
+                    <div className="flex w-full items-center gap-2.5">
+                      <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                        <RiGlobalLine className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+                        <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
+                          Participants
+                        </span>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        iconOnly
+                        leadingIcon={RiGroupLine}
+                        className="text-foreground-icon-secondary"
+                        aria-label="Edit participants"
+                      />
+                    </div>
+                    <div className="flex w-full flex-col">
+                      {details.participants.map((participant) => (
+                        <div key={participant.email} className="flex w-full items-center gap-2 rounded-2lg py-1.5">
+                          <Avatar size="xs" color={participant.color} initials={participant.initials} />
+                          <span className="truncate text-body-2-medium text-text-primary">{participant.email}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <Button
-                    variant="secondary"
-                    size="xs"
-                    iconOnly
-                    leadingIcon={RiCornerDownLeftLine}
-                    aria-label="Edit reminders"
-                  />
-                </DetailRow>
-              </>
-            )}
-          </>
-        )}
-      </Dialog>
-    </Popover>
+
+                  {/* Reminders */}
+                  <DetailRow>
+                    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <RiNotification2Line className="size-[18px] shrink-0 text-foreground-icon-secondary" aria-hidden />
+                      <span className="flex items-center gap-1 text-body-2-medium whitespace-nowrap">
+                        <span className="text-text-secondary">Reminders</span>
+                        <span className="text-text-primary">{details.reminder}</span>
+                      </span>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      size="xs"
+                      iconOnly
+                      leadingIcon={RiCornerDownLeftLine}
+                      className="text-foreground-icon-secondary"
+                      aria-label="Edit reminders"
+                    />
+                  </DetailRow>
+                </>
+              )}
+            </>
+          )}
+        </Dialog>
+      </Popover>
+    </>
   );
 }
 

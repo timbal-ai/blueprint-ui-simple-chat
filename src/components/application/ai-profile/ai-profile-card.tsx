@@ -55,12 +55,13 @@ export function AiProfileCard({ className }: { className?: string }) {
   return (
     <section
       className={cx(
-        "relative w-full overflow-hidden rounded-3xl border border-border-button-default",
+        "relative w-full overflow-hidden rounded-3xl border border-border-ai-profile-card",
         className,
       )}
     >
       {/* Cover photo — overlays the top of the card, clipped by its radius */}
       <div className="absolute inset-x-0 top-0 h-[165px] overflow-hidden rounded-t-[23px] bg-background-tertiary-default">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/templates/ai-profile-cover.png"
           alt=""

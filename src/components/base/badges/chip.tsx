@@ -13,16 +13,14 @@ import { cx, sortCx } from "@/utils/cx";
  *   subtle  py 4, Body 1/Medium   (14/20/500) — price chips
  *   caption py 4, Caption 1/Medium (12/16/500, tracking .15) — role tags
  *
- * Color pairs straight from Figma variables:
- *   lime    bg color/lime/200    text color/lime/800
- *   rose    bg color/rose/200    text color/rose/800
- *   yellow  bg color/yellow/200  text color/yellow/800
- *   cyan    bg color/cyan/200    text color/cyan/800
- *   blue    bg color/blue/200    text color/blue/800   (same 200/800 recipe;
+ * Status pairs are semantic so the same component follows both Figma modes:
+ *   lime    light 200/800 · dark 950 @ 60% / 500
+ *   rose    light 200/800 · dark 950 @ 60% / 500
+ *   yellow  light 200/800 · dark 950 @ 60% / 500
+ *   cyan    light 200/800 · dark 950 @ 60% / 400
+ *   blue    light 200/800 · dark 950 @ 60% / 300 (same dark status recipe;
  *           first needed by the medical template's "In treatment" status)
- *   purple  bg color/purple/100  text color/purple/600 (AI profile delta
- *           chips — node 4065:8286 uses purple/600, the tokens chart chip
- *           overrides to purple/700 via className)
+ *   purple  light 100/600 · dark 900/300 (AI profile delta chips)
  *   neutral bg color/neutral/200 text color/neutral/500
  *   gray    bg color/neutral/100 text color/neutral/800
  *   soft    bg background/secondary/default text text/secondary
@@ -45,12 +43,12 @@ const styles = sortCx({
     caption: "py-1 text-caption-1-medium",
   },
   color: {
-    lime: "bg-lime-200 text-lime-800",
-    rose: "bg-rose-200 text-rose-800",
-    yellow: "bg-yellow-200 text-yellow-800",
-    cyan: "bg-cyan-200 text-cyan-800",
-    blue: "bg-blue-200 text-blue-800",
-    purple: "bg-purple-100 text-purple-600",
+    lime: "bg-status-lime-background text-status-lime-text",
+    rose: "bg-status-rose-background text-status-rose-text",
+    yellow: "bg-status-yellow-background text-status-yellow-text",
+    cyan: "bg-status-cyan-background text-status-cyan-text",
+    blue: "bg-status-blue-background text-status-blue-text",
+    purple: "bg-status-purple-background text-status-purple-text",
     neutral: "bg-background-tertiary-default text-text-secondary",
     gray: "bg-background-secondary-default text-text-primary",
     soft: "bg-background-secondary-default text-text-secondary",

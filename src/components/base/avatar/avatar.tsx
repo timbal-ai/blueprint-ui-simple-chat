@@ -1,4 +1,4 @@
-import { useState } from "react";
+/* eslint-disable @next/next/no-img-element */
 import type { HTMLAttributes, Ref } from "react";
 import { cx, sortCx } from "@/utils/cx";
 
@@ -14,7 +14,7 @@ import { cx, sortCx } from "@/utils/cx";
  *
  * Renders a photo when `src` is given, otherwise centered initials on a
  * tinted disc. Initial tints from Figma:
- *   neutral → bg color/neutral/300, text text/secondary
+ *   neutral → bg avatar/neutral/background, text text/secondary
  *   blue    → bg color/blue/300,    text color/blue/900
  *   lime    → bg color/lime/200,    text color/lime/700
  *   pink    → bg color/pink/200,    text color/pink/500
@@ -43,7 +43,7 @@ const styles = sortCx({
     lg: "size-9 text-[18px] leading-6 font-semibold",
   },
   color: {
-    neutral: "bg-neutral-300 text-text-secondary",
+    neutral: "bg-avatar-neutral-background text-text-secondary",
     blue: "bg-blue-300 text-blue-900",
     lime: "bg-lime-200 text-lime-700",
     pink: "bg-pink-200 text-pink-500",
@@ -60,25 +60,22 @@ export function Avatar({
   ref,
   ...props
 }: AvatarProps) {
-  // Broken/missing photo URLs degrade to the initials disc instead of an
-  // empty broken-image circle (project addition — house media rule).
-  const [failed, setFailed] = useState(false);
-  const showImage = src && !failed;
   return (
     <span
       ref={ref}
       className={cx(styles.base, styles.size[size], styles.color[color], className)}
       {...props}
     >
-      {showImage ? (
+      {src ? (
         <img
           src={src}
           alt={alt ?? ""}
-          onError={() => setFailed(true)}
+          loading="lazy"
+          decoding="async"
           className="size-full object-cover"
         />
       ) : (
-        (initials ?? (alt ? alt.trim().charAt(0).toUpperCase() : undefined))
+        initials
       )}
     </span>
   );

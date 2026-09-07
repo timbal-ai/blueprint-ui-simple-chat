@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import {
   OverlayArrow as AriaOverlayArrow,
   Tooltip as AriaTooltip,
@@ -17,7 +17,7 @@ import { cx, sortCx } from "@/utils/cx";
  *            md → px 12 py 8, Body 1/Medium   (14px)
  *   arrow    filled caret (background/primary/default); a distinct path per
  *            side (not one path rotated with CSS) faces the trigger via
- *            OverlayArrow's `placement` render prop — see `CARETS` below.
+ *            OverlayArrow's `placement` render prop — see `TOOLTIP_CARETS` below.
  *
  * Behaviour comes from react-aria's TooltipTrigger / Tooltip — hover + focus
  * open, Escape closes, positioning + collision flipping, and the
@@ -30,13 +30,16 @@ import { cx, sortCx } from "@/utils/cx";
  *
  * The trigger's single child must be focusable (react-aria `Button`, or any
  * component built on `useFocusable`).
+ * BoardUI opens and begins closing immediately. The tooltip surface itself is
+ * non-interactive, so moving off the trigger never keeps it open and tooltip
+ * copy cannot be selected accidentally.
  */
 
 export type TooltipSize = "sm" | "md";
 
 const sizes = sortCx({
   sm: "px-2.5 py-1.5 text-caption-1-medium",
-  md: "px-3 py-2 text-body-medium",
+  md: "px-3 py-2 text-body-medium rounded-2lg",
 });
 
 /**
@@ -54,11 +57,14 @@ const sizes = sortCx({
  * the direction the tip already points — past the tip, never back toward the
  * body — matching the one spot that already looked right by default.
  */
-const CARETS = sortCx({
+export const TOOLTIP_CARETS = sortCx({
   top: { width: 12, height: 7, path: "M0 0 L6 6 L12 0", shadow: "0 1.5px 1px" },
   bottom: { width: 12, height: 7, path: "M0 7 L6 1 L12 7", shadow: "0 -1.5px 1px" },
-  left: { width: 7, height: 12, path: "M0 0 L6 6 L0 12", shadow: "1.5px 0 1px" },
-  right: { width: 7, height: 12, path: "M7 0 L1 6 L7 12", shadow: "-1.5px 0 1px" },
+  // left/right carets stick out sideways from the body; their shadow should
+  // still fall *downward* (light-from-top, matching the body's shadow-dropdown)
+  // rather than horizontally, which read as floating.
+  left: { width: 7, height: 12, path: "M0 0 L6 6 L0 12", shadow: "0 1.5px 1px" },
+  right: { width: 7, height: 12, path: "M7 0 L1 6 L7 12", shadow: "0 1.5px 1px" },
 });
 
 export interface TooltipProps extends Omit<AriaTooltipProps, "children"> {
@@ -76,7 +82,7 @@ export function Tooltip({ children, className, size = "sm", showArrow = true, of
       {...props}
       className={(state) =>
         cx(
-          "z-50 max-w-[240px] rounded-lg border border-border-button-default bg-background-primary-default text-text-primary shadow-dropdown",
+          "pointer-events-none z-50 max-w-[240px] select-none rounded-lg border border-border-button-default bg-background-primary-default text-text-primary shadow-dropdown",
           sizes[size],
           // Blur + scale in/out. react-aria stamps `data-entering` on mount then
           // removes it (transition to base), and holds the element mounted while
@@ -94,7 +100,7 @@ export function Tooltip({ children, className, size = "sm", showArrow = true, of
           {({ placement }) => {
             // `placement` includes react-aria's `"center"` (for other overlay
             // types); this tooltip only ever resolves to one of our 4 sides.
-            const caret = CARETS[placement as keyof typeof CARETS] ?? CARETS.top;
+            const caret = TOOLTIP_CARETS[placement as keyof typeof TOOLTIP_CARETS] ?? TOOLTIP_CARETS.top;
             return (
               <svg
                 width={caret.width}
@@ -114,4 +120,8 @@ export function Tooltip({ children, className, size = "sm", showArrow = true, of
   );
 }
 
-export { AriaTooltipTrigger as TooltipTrigger };
+export type TooltipTriggerProps = ComponentProps<typeof AriaTooltipTrigger>;
+
+export function TooltipTrigger({ delay = 0, closeDelay = 0, ...props }: TooltipTriggerProps) {
+  return <AriaTooltipTrigger delay={delay} closeDelay={closeDelay} {...props} />;
+}

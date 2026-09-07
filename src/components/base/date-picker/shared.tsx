@@ -114,7 +114,7 @@ export function DayCell(props: CalendarCellRenderProps & { isRange: boolean }) {
       <span
         aria-hidden
         className={cx(
-          "absolute inset-y-0 bg-blue-100 transition-[opacity,border-radius] duration-100 ease-out",
+          "absolute inset-y-0 bg-date-range-background transition-[opacity,border-radius] duration-100 ease-out",
           isSelectionStart ? "left-1/2" : extendLeft ? "-left-1.5" : "left-0",
           isSelectionEnd ? "right-1/2" : extendRight ? "-right-1.5" : "right-0",
           !isSelectionStart && dayOfWeek === 0 && "rounded-l-lg",
@@ -133,14 +133,14 @@ export function DayCell(props: CalendarCellRenderProps & { isRange: boolean }) {
         <span
           aria-hidden
           className={cx(
-            "absolute inset-0 bg-blue-300 transition-[opacity,border-radius] duration-100 ease-out",
+            "absolute inset-0 bg-date-range-edge-background transition-[opacity,border-radius] duration-100 ease-out",
             isSingleDay && "rounded-lg",
             isSelectionStart && !isSingleDay && "rounded-l-lg",
             isSelectionEnd && !isSingleDay && "rounded-r-lg",
             isEdge ? "opacity-100" : "opacity-0",
           )}
         />
-        <span className={cx("relative text-body-medium text-black", isDisabled && "text-text-tertiary")}>
+        <span className={cx("relative text-body-medium text-text-primary", isDisabled && "text-text-tertiary")}>
           {formattedDate}
         </span>
       </div>
@@ -195,7 +195,7 @@ export function MonthPanel({
             ) : (
               <span className="size-4" aria-hidden />
             )}
-            <span className="flex-1 text-center text-body-medium text-black">{title}</span>
+            <span className="flex-1 text-center text-body-medium text-text-primary">{title}</span>
             {showNext ? (
               <RACButton
                 slot="next"
@@ -292,10 +292,6 @@ export const triggerButtonClassName = cx(
 /** Shared popover chrome (Figma's rounded/3xl, background/secondary/default
  *  "Calendar component" surface) for both pickers. */
 export const popoverClassName = cx(
-  // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none` on <body>;
-  // popovers portal under <body>, so they must restore their own pointer
-  // events or the calendar is dead inside a modal.
-  "pointer-events-auto",
   "origin-top rounded-3xl bg-background-secondary-default shadow-dropdown",
   "transition duration-150 ease-out",
   "data-[entering]:opacity-0 data-[entering]:scale-95 data-[entering]:blur-[2px]",

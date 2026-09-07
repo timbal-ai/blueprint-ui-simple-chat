@@ -15,6 +15,13 @@ import type {
   SelectProps as AriaSelectProps,
   SelectValueRenderProps as AriaSelectValueRenderProps,
 } from "react-aria-components";
+import {
+  MENU_ITEM,
+  MENU_ITEM_ACTIVE,
+  MENU_ITEMS_CONTAINER,
+  MENU_POPOVER_SURFACE,
+  MENU_POPOVER_WIDTH,
+} from "@/components/base/dropdown/menu-styles";
 import { ChevronDownSmall } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
 import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-on-outside-press";
@@ -29,9 +36,9 @@ import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-
  *            Body 1/Medium text color/neutral/950,
  *            16px chevron (custom stroke glyph) in text/secondary
  *
- * The open popover/listbox is not designed in Figma yet — it borrows the
- * trigger surface tokens (white, border/button/default, radius/2lg,
- * shadow/lg). Flag for a design pass.
+ * The open popover/listbox shares the BoardUI menu recipe with Dropdown:
+ * radius/2xl panel, p 10, shadow/dropdown, 150ms fade/scale/blur motion,
+ * and radius/2lg rows with the same hover/selected surface.
  *
  * Item content is free-form: pass a `StatusDot` + text for status selects.
  */
@@ -42,7 +49,7 @@ const SelectSizeContext = createContext<SelectSize>("md");
 
 export interface SelectProps<T extends object>
   extends Omit<AriaSelectProps<T>, "children"> {
-  /** Trigger + listbox width. Defaults to hug content. */
+  /** Trigger width. Defaults to hug content; the menu uses the shared 266px width. */
   className?: string;
   triggerClassName?: string;
   /** Classes for the open popover (e.g. constrain its width). */
@@ -128,22 +135,20 @@ export function Select<T extends object>({
           <AriaPopover
             ref={popoverRef}
             isNonModal
-            offset={2}
+            offset={4}
             className={cx(
-              // Radix modals (Dialog/Sheet/Drawer) set `pointer-events: none`
-              // on <body> while open; this popover portals under <body>, so
-              // it must restore its own pointer events or every option is
-              // dead inside a modal.
-              "pointer-events-auto",
-              "min-w-(--trigger-width) origin-top overflow-auto rounded-2lg",
-              "border border-border-button-default bg-background-primary-default p-1 shadow-sidebar",
-              "transition duration-150 ease-out",
-              "data-[entering]:opacity-0 data-[entering]:scale-90 data-[entering]:blur-[2px]",
-              "data-[exiting]:opacity-0 data-[exiting]:scale-90 data-[exiting]:blur-[2px]",
+              MENU_POPOVER_WIDTH,
+              MENU_POPOVER_SURFACE,
+              // Listbox rows already space themselves 4px apart, so the
+              // surface sits a touch tighter than the action-menu Dropdown.
+              "p-2",
               popoverClassName,
             )}
           >
-            <AriaListBox items={items} className="flex max-h-[200px] flex-col gap-0.5 overflow-auto outline-none">
+            <AriaListBox
+              items={items}
+              className={cx(MENU_ITEMS_CONTAINER, "max-h-[240px] overflow-auto")}
+            >
               <SelectSizeContext.Provider value={size}>{children}</SelectSizeContext.Provider>
             </AriaListBox>
           </AriaPopover>
@@ -164,10 +169,9 @@ export function SelectItem({ className, children, ...props }: SelectItemProps) {
       {...props}
       className={(state) =>
         cx(
-          "flex cursor-pointer items-center rounded-md text-text-primary outline-none",
-          size === "sm" ? "gap-1 px-2 py-1.5 text-body-2-medium" : "gap-[5px] px-2.5 py-2 text-body-medium",
-          state.isFocused && "bg-background-primary-hover",
-          state.isSelected && "bg-background-secondary-default",
+          MENU_ITEM,
+          size === "sm" ? "px-2 py-1.5 text-body-2-medium" : "text-body-medium",
+          (state.isFocused || state.isSelected) && MENU_ITEM_ACTIVE,
           state.isDisabled && "cursor-not-allowed text-text-disabled",
           typeof className === "function" ? className(state) : className,
         )

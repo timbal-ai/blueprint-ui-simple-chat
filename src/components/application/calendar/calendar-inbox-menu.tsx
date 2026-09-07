@@ -99,7 +99,7 @@ function FeedAccountGroup({ account, onSelect }: { account: FeedAccount; onSelec
  * — anchored to the icon via the same external `triggerRef`/`isOpen`
  * pattern used by the other calendar header pieces.
  */
-export function CalendarInboxMenu() {
+export function CalendarInboxMenu({ triggerClassName }: { triggerClassName?: string } = {}) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -115,6 +115,7 @@ export function CalendarInboxMenu() {
         size="medium"
         aria-label="Inbox"
         onClick={() => setIsOpen((open) => !open)}
+        className={triggerClassName}
       />
       <Popover
         ref={popoverRef}

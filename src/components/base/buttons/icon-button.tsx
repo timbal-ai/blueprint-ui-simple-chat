@@ -1,9 +1,10 @@
-import type { ButtonHTMLAttributes, ComponentType, Ref } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ComponentType,
+  Ref,
+} from "react";
 import { cx, sortCx } from "@/utils/cx";
-import {
-  SECONDARY_CHROME,
-  SECONDARY_DISABLED,
-} from "@/components/base/buttons/secondary-chrome";
 
 /**
  * Figma source: Board UI → dashboard 1 icon-only buttons (notification button
@@ -36,19 +37,27 @@ export interface IconButtonProps
   ref?: Ref<HTMLButtonElement>;
 }
 
+export interface IconLinkButtonProps
+  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children"> {
+  icon: IconComponent;
+  size?: IconButtonSize;
+  /** Accessible name — required since there is no visible label. */
+  "aria-label": string;
+  ref?: Ref<HTMLAnchorElement>;
+}
+
 const styles = sortCx({
-  base: cx(
+  base: [
     "relative inline-flex shrink-0 items-center justify-center overflow-visible rounded-2lg",
-    // House finish (2026-07-14): the shared secondary chrome (top-lit
-    // gradient + inset highlight + soft drop) from `secondary-chrome.ts`.
-    "text-foreground-icon-primary",
-    SECONDARY_CHROME,
-    SECONDARY_DISABLED,
+    "bg-background-primary-default text-foreground-icon-primary",
+    "border border-border-button-default shadow-xs",
     "select-none cursor-pointer",
     "transition-[background-color,border-color,box-shadow,color] duration-150 ease",
     "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
-    "disabled:cursor-not-allowed disabled:text-foreground-icon-disabled",
-  ),
+    "hover:bg-background-primary-hover hover:border-border-button-hover",
+    "active:bg-background-primary-active active:border-border-button-active",
+    "disabled:cursor-not-allowed disabled:bg-background-primary-disabled disabled:border-border-button-default disabled:text-icon-button-disabled-foreground disabled:opacity-60 disabled:shadow-none",
+  ].join(" "),
   size: {
     medium: "size-9",
     small: "size-8",
@@ -76,5 +85,24 @@ export function IconButton({
     >
       <Icon className={styles.icon[size]} aria-hidden />
     </button>
+  );
+}
+
+/** Anchor counterpart to IconButton for external and navigational actions. */
+export function IconLinkButton({
+  icon: Icon,
+  size = "medium",
+  className,
+  ref,
+  ...props
+}: IconLinkButtonProps) {
+  return (
+    <a
+      ref={ref}
+      className={cx(styles.base, styles.size[size], className)}
+      {...props}
+    >
+      <Icon className={styles.icon[size]} aria-hidden />
+    </a>
   );
 }

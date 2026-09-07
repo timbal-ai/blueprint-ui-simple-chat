@@ -116,7 +116,7 @@ export function ImportantAlertsCard({ className }: { className?: string } = {}) 
           {ALERTS.map((alert, index) => (
             <div
               key={`${alert.title}-${index}`}
-              className="relative flex w-full shrink-0 flex-col gap-2 rounded-2lg bg-background-primary-default p-2.5"
+              className="relative flex w-full shrink-0 flex-col gap-2 rounded-2lg bg-background-inner-default p-2.5"
             >
               <span className={cx("flex size-8 shrink-0 items-center justify-center rounded-full", alert.iconBg)}>
                 <alert.icon className="size-[18px] text-white" aria-hidden />

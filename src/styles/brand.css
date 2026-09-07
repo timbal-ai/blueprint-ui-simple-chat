@@ -1,0 +1,43 @@
+/* ---------------------------------------------------------------------------
+ * brand.css — the ONE file to restyle this app. Loaded after BoardUI's
+ * theme.css, so anything set here wins.
+ *
+ * BoardUI's interactive surfaces (primary button gradient, ghost/link buttons,
+ * checkbox, radio, switch, slider, tabs, sidebar selection, focus ring, date
+ * range) all read the `--color-accent-*` ramp. Re-tint the whole product by
+ * pointing the eleven stops at another Tailwind hue (or literal OKLCH values).
+ * Content/data colors (charts, status chips) deliberately stay on their own
+ * tokens — change those in theme.css semantics only if the brand demands it.
+ *
+ * Agents: pick the accent during the direction step and write the choice in
+ * DESIGN.md. Do not leave the default blue unless the brand is blue.
+ *
+ * Examples:
+ *   Violet   → var(--color-violet-500) …   Emerald → var(--color-emerald-600) …
+ *   Rose     → var(--color-rose-500) …     Amber   → var(--color-amber-500) …
+ *   Neutral  → var(--color-neutral-900) for 600/700, lighter stops for 50–300
+ * --------------------------------------------------------------------------- */
+@theme {
+  /* Accent ramp (default: BoardUI blue). Uncomment + edit all eleven stops. */
+  /*
+  --color-accent-50:  var(--color-violet-50);
+  --color-accent-100: var(--color-violet-100);
+  --color-accent-200: var(--color-violet-200);
+  --color-accent-300: var(--color-violet-300);
+  --color-accent-400: var(--color-violet-400);
+  --color-accent-500: var(--color-violet-500);
+  --color-accent-600: var(--color-violet-600);
+  --color-accent-700: var(--color-violet-700);
+  --color-accent-800: var(--color-violet-800);
+  --color-accent-900: var(--color-violet-900);
+  --color-accent-950: var(--color-violet-950);
+  */
+}
+
+:root {
+  /* Fonts. BoardUI's theme.css builds --font-sans/--font-mono from these two
+     hooks (Next loads them via next/font upstream). index.html loads Inter +
+     JetBrains Mono from Google Fonts; swap the family here AND in index.html. */
+  --font-inter: "Inter";
+  --font-mono-source: "JetBrains Mono";
+}

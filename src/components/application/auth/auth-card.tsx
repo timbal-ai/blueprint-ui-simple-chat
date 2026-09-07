@@ -92,14 +92,6 @@ export interface AuthCardProps {
   confirmPassword?: boolean;
   /** Small print under the card, outside its border. */
   footnote?: ReactNode;
-  /**
-   * Timbal adaptation: passwordless sign-in (magic link). Drops the password
-   * field and the remember/forgot row; the CTA reads `cta` (default "Send
-   * sign-in link"). `providers` still render below as OAuth buttons.
-   */
-  passwordless?: boolean;
-  /** Override the primary button label. */
-  cta?: ReactNode;
   /** Fires with the form's own FormData; wire it to your auth library. */
   onSubmit?: (data: FormData) => void;
   onProvider?: (provider: SocialProvider) => void;
@@ -146,8 +138,6 @@ export function AuthCard({
   logo,
   centered = false,
   confirmPassword = false,
-  passwordless = false,
-  cta,
   footnote,
   onSubmit,
   onProvider,
@@ -263,7 +253,7 @@ export function AuthCard({
         />
         )}
 
-        {verify || passwordless ? null : signup && confirmPassword ? (
+        {verify ? null : signup && confirmPassword ? (
           // Stacked, full width: a password field pair is easier to fill at
           // full width than in two half-width columns, and it keeps the whole
           // form on one rhythm.
@@ -296,7 +286,7 @@ export function AuthCard({
           />
         )}
 
-        {signup || verify || passwordless ? null : (
+        {signup || verify ? null : (
           <div className="flex items-center justify-between">
             <Checkbox size="sm" isSelected={remember} onChange={setRemember}>
               Remember me
@@ -306,7 +296,7 @@ export function AuthCard({
         )}
 
         <Button type="submit" className="w-full">
-          {cta ?? (passwordless && !verify ? "Send sign-in link" : copy.cta)}
+          {copy.cta}
         </Button>
 
         {/* The split layout carries its terms line under the card instead,
@@ -338,7 +328,7 @@ export function AuthCard({
           {copy.switchLead}{" "}
           <LinkButton onClick={onResend}>{copy.switchAction}</LinkButton>
         </p>
-      ) : passwordless ? null : (
+      ) : (
         <p className="mt-6 text-center text-body-regular text-text-secondary">
           {copy.switchLead} <LinkButton href={switchHref}>{copy.switchAction}</LinkButton>
         </p>

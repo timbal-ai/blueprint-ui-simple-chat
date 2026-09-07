@@ -149,6 +149,7 @@ export function AuthMediaCarousel({
         return (
           // Deliberate: this file installs into other projects and should not
           // require next/image. Swap it for your own loader if you have one.
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             key={slide.src}
             src={slide.src}

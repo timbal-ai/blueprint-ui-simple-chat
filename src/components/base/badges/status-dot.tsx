@@ -8,9 +8,11 @@ import { cx, sortCx } from "@/utils/cx";
  * Color pairs from Figma variables:
  *   green  → halo color/green/100,  dot color/green/500
  *   yellow → halo color/yellow/200, dot color/yellow/500
+ *   indigo → halo color/indigo/100, dot color/indigo/500
+ * In dark mode only the halo drops to 40% opacity; the center dot stays solid.
  */
 
-type StatusDotColor = "green" | "yellow";
+type StatusDotColor = "green" | "yellow" | "indigo";
 
 export interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {
   color?: StatusDotColor;
@@ -20,12 +22,14 @@ export interface StatusDotProps extends HTMLAttributes<HTMLSpanElement> {
 const styles = sortCx({
   base: "inline-flex size-3 shrink-0 items-center justify-center rounded-full",
   halo: {
-    green: "bg-green-100",
-    yellow: "bg-yellow-200",
+    green: "bg-status-dot-green-halo",
+    yellow: "bg-status-dot-yellow-halo",
+    indigo: "bg-status-dot-indigo-halo",
   },
   dot: {
     green: "bg-green-500",
     yellow: "bg-yellow-500",
+    indigo: "bg-indigo-500",
   },
 });
 

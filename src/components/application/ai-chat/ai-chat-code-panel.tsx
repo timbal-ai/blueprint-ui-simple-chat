@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   RiCornerUpLeftLine,
   RiExpandDiagonalSLine,
@@ -11,6 +11,7 @@ import {
   RiTerminalFill,
 } from "@remixicon/react";
 import { Highlight, type PrismTheme } from "prism-react-renderer";
+import { PillTab, PillTabList } from "@/components/base/tabs/pill-tab";
 import { cx } from "@/utils/cx";
 
 /**
@@ -28,45 +29,6 @@ type IconComponent = ComponentType<{
   className?: string;
   "aria-hidden"?: boolean | "true" | "false";
 }>;
-
-/* -------------------------------------------------------------------- tabs */
-
-function PanelTab({
-  icon: Icon,
-  label,
-  isSelected,
-  onSelect,
-}: {
-  icon: IconComponent;
-  label: string;
-  isSelected: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={isSelected}
-      onClick={onSelect}
-      className={cx(
-        "flex cursor-pointer items-center gap-1 rounded-[40px] px-2 py-[5px] transition-colors duration-150 ease",
-        isSelected ? "bg-blue-50" : "hover:bg-background-primary-hover",
-      )}
-    >
-      <Icon
-        className={cx("size-5 shrink-0", isSelected ? "text-blue-500" : "text-foreground-icon-secondary")}
-        aria-hidden
-      />
-      <span
-        className={cx(
-          "text-body-medium whitespace-nowrap",
-          isSelected ? "text-blue-500" : "text-text-secondary",
-        )}
-      >
-        {label}
-      </span>
-    </button>
-  );
-}
 
 /* ----------------------------------------------------------------- changes */
 
@@ -169,7 +131,7 @@ export default function HomeDashboardDetail() {
 /** Same headless-Prism palette as the docs code blocks
  *  (component-detail.tsx CODE_THEME) so the panel highlights like the rest
  *  of the site — real TSX tokenizer, BoardUI accents. */
-const CODE_THEME: PrismTheme = {
+export const AI_CHAT_CODE_THEME: PrismTheme = {
   plain: { color: "var(--color-text-secondary)" },
   styles: [
     { types: ["comment", "prolog", "doctype", "cdata"], style: { color: "var(--color-neutral-500)" } },
@@ -197,12 +159,12 @@ const CODE_THEME: PrismTheme = {
 function CodeView() {
   return (
     <div className="min-h-0 w-full flex-1 overflow-y-auto pl-1.5 font-mono text-[13px] leading-[23px] [scrollbar-width:thin]">
-      <Highlight code={CODE} language="tsx" theme={CODE_THEME}>
+      <Highlight code={CODE} language="tsx" theme={AI_CHAT_CODE_THEME}>
         {({ tokens, getLineProps, getTokenProps }) => (
           <code className="block">
             {tokens.map((line, i) => (
               <span key={i} {...getLineProps({ line, className: "flex min-h-[23px] items-start gap-[13px]" })}>
-                <span className="w-5 shrink-0 select-none text-text-tertiary">{i + 1}</span>
+                <span className="w-5 shrink-0 select-none text-right text-text-tertiary">{i + 1}</span>
                 <span className="min-w-0 flex-1 break-words whitespace-pre-wrap">
                   {line.map((token, key) => (
                     <span key={key} {...getTokenProps({ token })} />
@@ -221,8 +183,11 @@ function CodeView() {
 
 function PanelAction({ icon: Icon, label }: { icon: IconComponent; label: string }) {
   return (
-    <button type="button" aria-label={label} className="cursor-pointer">
-      <Icon className="size-4 text-foreground-icon-secondary" aria-hidden />
+    <button type="button" aria-label={label} className="group cursor-pointer outline-none">
+      <Icon
+        className="size-4 text-foreground-icon-secondary transition-colors duration-150 group-hover:text-foreground-icon-hover group-focus-visible:text-foreground-icon-hover"
+        aria-hidden
+      />
     </button>
   );
 }
@@ -238,30 +203,24 @@ function BrowserPlaceholder() {
 export function AiChatCodePanel({
   className,
   width = 410,
-}: { className?: string; width?: number } = {}) {
+}: { className?: string; width?: CSSProperties["width"] } = {}) {
   const [tab, setTab] = useState<"changes" | "browser">("changes");
 
   return (
     <aside
-      style={{ width }}
+      style={{ width, minWidth: width, maxWidth: width, flexBasis: width }}
       className={cx("flex h-full shrink-0 flex-col gap-2.5 overflow-hidden pt-2", className)}
     >
       {/* Tab switcher + panel actions */}
       <div className="flex h-[30px] w-full items-center justify-between">
-        <div className="flex items-center gap-1">
-          <PanelTab
-            icon={RiInfinityLine}
-            label="Changes"
-            isSelected={tab === "changes"}
-            onSelect={() => setTab("changes")}
-          />
-          <PanelTab
-            icon={RiGlobalLine}
-            label="Browser"
-            isSelected={tab === "browser"}
-            onSelect={() => setTab("browser")}
-          />
-        </div>
+        <PillTabList aria-label="Panel view">
+          <PillTab icon={RiInfinityLine} isSelected={tab === "changes"} onSelect={() => setTab("changes")}>
+            Changes
+          </PillTab>
+          <PillTab icon={RiGlobalLine} isSelected={tab === "browser"} onSelect={() => setTab("browser")}>
+            Browser
+          </PillTab>
+        </PillTabList>
         <div className="flex items-center gap-2 pr-px">
           <PanelAction icon={RiTerminalFill} label="Open terminal" />
           <PanelAction icon={RiExpandDiagonalSLine} label="Expand panel" />

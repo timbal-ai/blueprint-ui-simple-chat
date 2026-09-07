@@ -115,12 +115,25 @@ function TeamMenuItem({ icon: Icon, label, badge, isSelected, onSelect }: MenuRo
         <Icon className="size-5 shrink-0 text-foreground-icon-secondary" aria-hidden />
         <span className="truncate text-body-medium text-text-primary">{label}</span>
       </span>
-      {badge && <Badge color="neutral">{badge}</Badge>}
+      {badge && (
+        <Badge
+          color="neutral"
+          className="bg-team-menu-count-background text-team-menu-count-foreground"
+        >
+          {badge}
+        </Badge>
+      )}
     </a>
   );
 }
 
-export function DashboardTeamMenu({ collapsed = false }: { collapsed?: boolean }) {
+export function DashboardTeamMenu({
+  collapsed = false,
+  className,
+}: {
+  collapsed?: boolean;
+  className?: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   // "right" placement assumes room to the sidebar's right (true in-flow on
   // desktop) — on mobile the sidebar can span the full viewport, so the
@@ -147,10 +160,11 @@ export function DashboardTeamMenu({ collapsed = false }: { collapsed?: boolean }
           collapsed
             ? "size-9 justify-start rounded-full bg-transparent p-0"
             : "w-full justify-between rounded-xl bg-background-tertiary-default py-2 pr-4 pl-2.5",
+          className,
         )}
       >
         <span className="flex min-w-0 items-center gap-2">
-          <Avatar size="md" color="blue" initials="B" alt="Board team" />
+          <Avatar size="md" color="blue" src="/brand/boardui_logo_circle.webp" alt="Board team" />
           <Collapsible collapsed={collapsed}>
             <span className="flex min-w-0 flex-col items-start justify-center">
               <span className="text-body-medium whitespace-nowrap text-text-primary">Board team</span>
@@ -181,7 +195,7 @@ export function DashboardTeamMenu({ collapsed = false }: { collapsed?: boolean }
         <AriaDialog aria-label="Board team menu" className="flex flex-col gap-[7px] outline-none">
           {/* Header */}
           <div className="flex w-full items-center gap-2 px-2 pt-1">
-            <Avatar size="md" color="blue" initials="B" alt="Board team" />
+            <Avatar size="md" color="blue" src="/brand/boardui_logo_circle.webp" alt="Board team" />
             <div className="flex min-w-0 flex-col items-start justify-center">
               <span className="text-body-medium whitespace-nowrap text-text-primary">Board team</span>
               <span className="text-body-regular whitespace-nowrap text-text-secondary">hi@boardui.com</span>

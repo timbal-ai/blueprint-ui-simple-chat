@@ -81,12 +81,14 @@ const styles = sortCx({
   },
 
   variant: {
+    // Hover keeps the resting color — the underline is the hover cue; only
+    // the press darkens.
     primary: [
-      "text-blue-600 hover:text-blue-700 active:text-blue-800",
+      "text-accent-600 active:text-accent-800",
       "disabled:text-text-tertiary aria-disabled:text-text-tertiary",
     ].join(" "),
     secondary: [
-      "text-text-secondary hover:text-text-primary active:text-text-primary",
+      "text-text-secondary active:text-text-primary",
       "disabled:text-text-tertiary aria-disabled:text-text-tertiary",
     ].join(" "),
   },
@@ -133,3 +135,6 @@ export function LinkButton({
     </button>
   );
 }
+
+/** Style maps, exported for advanced composition and the dev Design Tuner. */
+export const linkButtonStyles = styles;

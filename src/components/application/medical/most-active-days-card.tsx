@@ -164,12 +164,12 @@ export function MostActiveDaysCard({
         />
       </div>
 
-      {/* White panel behind the grid — Figma's "Month 2" frame (node
-          3950:6241): background/primary/default, radius/2lg, 10px horizontal
+      {/* Inner panel behind the grid — Figma's "Month 2" frame (node
+          3950:6241): background/inner/default, radius/2lg, 10px horizontal
           padding only. The scroll viewport has no vertical padding of its
           own (the content carries it), so months scroll clean to the panel's
           top/bottom edges instead of clipping against a band. */}
-      <div className="min-h-0 w-full flex-1 overflow-hidden rounded-2lg bg-background-primary-default px-2.5">
+      <div className="min-h-0 w-full flex-1 overflow-hidden rounded-2lg bg-background-inner-default px-2.5">
         <div ref={scrollRef} className="h-full w-full overflow-y-auto overscroll-contain">
           {/* py-2.5 lives on the scroll CONTENT (not the viewport), so the
               first/last rows' hover pills keep 10px of air from the panel

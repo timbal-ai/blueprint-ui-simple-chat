@@ -148,7 +148,7 @@ const inputStyles = sortCx({
     "font-sans text-body-regular text-text-primary pl-1",
     "placeholder:text-text-tertiary",
     "focus:placeholder:text-text-primary",
-    "disabled:text-text-disabled disabled:placeholder:text-text-disabled",
+    "disabled:text-input-disabled-text disabled:placeholder:text-input-disabled-text",
     "disabled:cursor-not-allowed",
     "aria-invalid:placeholder:text-text-error-placeholder",
   ].join(" "),
@@ -193,7 +193,7 @@ export function InputBase({
             "ring-border-button-active",
           // Disabled
           isDisabled &&
-            "bg-background-primary-disabled text-foreground-icon-disabled",
+            "bg-input-disabled-background text-input-disabled-foreground",
           // Invalid
           isInvalid && "bg-background-tertiary-error text-foreground-icon-error",
           ctx.fieldClassName,
@@ -264,7 +264,12 @@ export function Input({
     <TextField
       {...textFieldProps}
       className={className}
-      aria-label={!label && typeof placeholder === "string" ? placeholder : undefined}
+      // Don't clobber an explicit aria-label; fall back to the placeholder
+      // only for unlabelled fields that don't provide one.
+      aria-label={
+        textFieldProps["aria-label"] ??
+        (!label && typeof placeholder === "string" ? placeholder : undefined)
+      }
     >
       {({ isRequired, isInvalid }) => (
         <>

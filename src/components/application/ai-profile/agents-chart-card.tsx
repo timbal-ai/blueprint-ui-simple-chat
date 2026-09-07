@@ -19,8 +19,8 @@ import { cx } from "@/utils/cx";
  *   header  "Agents" (Body 1/Medium secondary) over "32 agents"
  *           (Title 2/Medium), month switcher pill pinned top-right
  *   bars    30 bars — one per day — in a 206px track, 7px gap, radius/sm.
- *           Active days are purple/300; zero-agent days collapse to a 4px
- *           neutral/300 stub (nodes 4065:8629 etc.)
+ *           Active days use the semantic agents-bar color; zero-agent days
+ *           collapse to a 4px neutral stub (nodes 4065:8629 etc.)
  *   x axis  "Jun 14" … "Today" (11px medium, text/tertiary, +0.2 tracking)
  *
  * Hovering a bar rolls the headline to that day's agent count (via
@@ -91,8 +91,8 @@ export function AgentsChartCard({ className }: { className?: string }) {
                     ? "bg-chart-cursor"
                     : "bg-chart-track"
                   : day === activeIndex
-                    ? "bg-purple-400"
-                    : "bg-purple-300",
+                    ? "bg-chart-agents-bar-active"
+                    : "bg-chart-agents-bar",
               )}
               style={{
                 height: height === 0 ? AGENTS_ZERO_BAR : height,

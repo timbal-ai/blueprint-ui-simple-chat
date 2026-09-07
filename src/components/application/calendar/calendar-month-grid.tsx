@@ -33,11 +33,31 @@ const MAX_VISIBLE_EVENTS = 3;
 const OVERFLOW_VISIBLE_EVENTS = 4;
 
 const CHIP_STYLES: Record<CalendarEventColor, { bg: string; title: string; time: string }> = {
-  blue: { bg: "bg-blue-100", title: "text-blue-700", time: "text-blue-700" },
-  pink: { bg: "bg-pink-100", title: "text-pink-700", time: "text-pink-700" },
-  purple: { bg: "bg-purple-100", title: "text-purple-700", time: "text-purple-700" },
-  lime: { bg: "bg-lime-100", title: "text-lime-800", time: "text-lime-700" },
-  emerald: { bg: "bg-emerald-100", title: "text-emerald-800", time: "text-emerald-700" },
+  blue: {
+    bg: "bg-calendar-event-blue-background",
+    title: "text-calendar-event-blue-title",
+    time: "text-calendar-event-blue-time",
+  },
+  pink: {
+    bg: "bg-calendar-event-pink-background",
+    title: "text-calendar-event-pink-title",
+    time: "text-calendar-event-pink-time",
+  },
+  purple: {
+    bg: "bg-calendar-event-purple-background",
+    title: "text-calendar-event-purple-title",
+    time: "text-calendar-event-purple-time",
+  },
+  lime: {
+    bg: "bg-calendar-event-lime-background",
+    title: "text-calendar-event-lime-title",
+    time: "text-calendar-event-lime-time",
+  },
+  emerald: {
+    bg: "bg-calendar-event-emerald-background",
+    title: "text-calendar-event-emerald-title",
+    time: "text-calendar-event-emerald-time",
+  },
 };
 
 function EventChip({ event, onSelect }: { event: CalendarEvent; onSelect: () => void }) {
@@ -47,14 +67,23 @@ function EventChip({ event, onSelect }: { event: CalendarEvent; onSelect: () => 
       type="button"
       onClick={onSelect}
       className={cx(
-        "flex min-w-0 cursor-pointer items-center justify-between gap-1 rounded-md px-1.5 py-0.5 outline-none",
+        "flex min-w-0 cursor-pointer items-center justify-between gap-0.5 rounded-sm px-1 py-0.5 outline-none sm:gap-1 sm:rounded-md sm:px-1.5",
         "transition-[filter] duration-150 ease hover:brightness-95 focus-visible:ring-2 focus-visible:ring-border-focus-ring",
         c.bg,
       )}
     >
-      <span className={cx("truncate text-body-2-medium", c.title)}>{event.title}</span>
+      <span className={cx("truncate text-[10px] leading-3 sm:text-body-2-medium", c.title)}>
+        {event.title}
+      </span>
       {event.time && (
-        <span className={cx("shrink-0 text-caption-1-medium opacity-70", c.time)}>{event.time}</span>
+        <span
+          className={cx(
+            "hidden shrink-0 opacity-70 sm:inline sm:text-caption-1-medium",
+            c.time,
+          )}
+        >
+          {event.time}
+        </span>
       )}
     </button>
   );
@@ -64,12 +93,14 @@ function DayCell({
   date,
   isCurrentMonth,
   isHighlighted,
+  compact,
   onHighlightEnd,
   onSelectEvent,
 }: {
   date: CalendarDate;
   isCurrentMonth: boolean;
   isHighlighted: boolean;
+  compact: boolean;
   onHighlightEnd: () => void;
   onSelectEvent: (event: CalendarEvent, cardRef: React.RefObject<HTMLDivElement | null>) => void;
 }) {
@@ -80,14 +111,14 @@ function DayCell({
   const cardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full border-r border-b border-separator-border-strong dark:border-separator-border last:border-b-0 nth-[7n]:border-r-0 nth-[n+36]:border-b-0 sm:border-0">
       {/* Sibling of the card, not a child, so it's never clipped by the
           card's own overflow-hidden (needed for its rounded corners + event
           chips). */}
       {isHighlighted && (
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-20 rounded-xl ring-2 ring-inset ring-blue-500"
+          className="pointer-events-none absolute inset-0 z-20 ring-2 ring-inset ring-accent-500 sm:rounded-xl"
           initial={{ opacity: 0, scale: 1 }}
           animate={{ opacity: [0, 1, 0.35, 1, 0.35, 1, 0], scale: [1, 1.015, 1, 1.015, 1, 1, 1] }}
           transition={{ duration: 3, times: [0, 0.08, 0.28, 0.4, 0.6, 0.72, 1], ease: "easeInOut" }}
@@ -97,22 +128,33 @@ function DayCell({
       <div
         ref={cardRef}
         className={cx(
-          "relative flex h-full min-h-[82px] flex-col overflow-hidden rounded-xl sm:min-h-[94px] lg:min-h-[105px] xl:min-h-[128px] 2xl:min-h-[164px]",
-          isCurrentMonth ? "bg-background-primary-default shadow-card" : "bg-background-tertiary-default",
+          "relative flex h-full flex-col overflow-hidden sm:rounded-xl",
+          compact
+            ? "min-h-[76px]"
+            : "min-h-[72px] sm:min-h-[94px] lg:min-h-[105px] xl:min-h-[128px] 2xl:min-h-[164px]",
+          // In the dense (mobile) grid, dark mode holds every cell on the same
+          // surface as the out-of-month ones: the lighter background/primary
+          // fill read as a greyed-out state next to the near-black card, so
+          // the current month looked like the disabled one.
+          isCurrentMonth
+            ? "bg-background-primary-default max-sm:dark:bg-background-secondary-default sm:shadow-card"
+            : "bg-background-secondary-default sm:bg-background-tertiary-default",
         )}
       >
         <span
           className={cx(
-            "pt-2 pl-2.5 text-body-2-medium",
+            "pt-1.5 pl-1.5 text-[11px] leading-4 font-medium sm:pt-2 sm:pl-2.5 sm:text-body-2-medium",
             isCurrentMonth ? "text-text-primary" : "text-text-secondary",
           )}
         >
           {date.day}
         </span>
         {events.length > 0 && (
-          <div className="mt-auto flex flex-col gap-[5px] px-2 pb-2">
+          <div className="mt-auto flex flex-col gap-0.5 px-1 pb-1 sm:gap-[5px] sm:px-2 sm:pb-2">
             {hiddenCount > 0 && (
-              <span className="text-body-2-medium text-text-secondary">+{hiddenCount} more</span>
+              <span className="text-[10px] leading-3 font-medium text-text-secondary sm:text-body-2-medium">
+                +{hiddenCount} more
+              </span>
             )}
             {visible.map((event) => (
               <EventChip key={event.id} event={event} onSelect={() => onSelectEvent(event, cardRef)} />
@@ -127,12 +169,15 @@ function DayCell({
 export function CalendarMonthGrid({
   month,
   highlightedDate = null,
+  compact = false,
   onHighlightEnd,
 }: {
   month: CalendarDate;
   /** Pulses this day's ring for ~3s then fades it out (not a persistent
    *  selection state — see `DayCell`). */
   highlightedDate?: CalendarDate | null;
+  /** Uses short, fixed day rows for embedded previews instead of viewport-responsive rows. */
+  compact?: boolean;
   onHighlightEnd?: () => void;
 }) {
   const days = monthGrid(month);
@@ -148,25 +193,29 @@ export function CalendarMonthGrid({
   const [isOpen, setIsOpen] = useState(false);
   const fallbackTriggerRef = useRef<HTMLDivElement>(null);
 
+  // The dense (mobile) grid rules use separator/border-strong, not
+  // border/button/default: in dark mode the button border (neutral/700) drew
+  // a bright lattice over the neutral/800 day cells.
   return (
-    <div className="flex w-full flex-col gap-2">
-      <div className="grid grid-cols-7 gap-2">
+    <div className="flex h-full min-h-0 w-full flex-col gap-0 overflow-hidden border-y border-separator-border-strong dark:border-separator-border sm:h-auto sm:gap-2 sm:overflow-visible sm:rounded-none sm:border-0">
+      <div className="grid grid-cols-7 gap-0 border-b border-separator-border-strong dark:border-separator-border sm:gap-2 sm:border-0">
         {WEEKDAY_LABELS.map((label) => (
           <div
             key={label}
-            className="flex items-center justify-center rounded-xl bg-background-tertiary-default px-2.5 py-[5px] text-center text-body-2-regular text-text-secondary"
+            className="flex items-center justify-center border-r border-separator-border-strong dark:border-separator-border bg-background-secondary-default px-0.5 py-1 text-center text-[11px] leading-4 text-text-secondary last:border-r-0 sm:rounded-xl sm:border-0 sm:px-2.5 sm:py-[5px] sm:text-body-2-regular"
           >
             {label}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 grid-rows-[repeat(auto-fill,minmax(0,1fr))] gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-[repeat(6,minmax(0,1fr))] gap-0 sm:flex-none sm:grid-rows-[repeat(6,minmax(0,auto))] sm:gap-2">
         {days.map((date) => (
           <DayCell
             key={date.toString()}
             date={date}
             isCurrentMonth={isSameMonth(date, month)}
             isHighlighted={highlightedDate !== null && isSameDay(date, highlightedDate)}
+            compact={compact}
             onHighlightEnd={() => onHighlightEnd?.()}
             onSelectEvent={(event, triggerRef) => {
               setSelected({ event, date, triggerRef });

@@ -235,7 +235,6 @@ export const CALENDAR_EVENTS: Record<string, CalendarEvent[]> = {
   // August 2026 (2, 11, 20, 24 are the original Figma cells)
   "2026-08-01": [{ id: "aug-01-brunch", title: "Brunch", time: "11:00", color: "lime" }],
   "2026-08-02": [
-    { id: "breakfast", title: "Breakfast", time: "08:00", color: "blue" },
     { id: "standup-2", title: "Stand-up", time: "11:30", color: "pink" },
     { id: "sync-2", title: "1:1 sync", time: "16:30", color: "lime" },
   ],
@@ -256,7 +255,7 @@ export const CALENDAR_EVENTS: Record<string, CalendarEvent[]> = {
       reminder: "2h before",
       // "image_area" (node 3920:11026) — the venue photo Figma's example
       // shows above the Google Meet row.
-      image: "https://picsum.photos/seed/birthday/604/198",
+      image: "/calendar/birthday-event.png",
       // Figma's own event-details modal example (node 3920:10954) pins this
       // exact 4-person roster — kept explicit so it doesn't drift when
       // `generatedParticipants` changes.

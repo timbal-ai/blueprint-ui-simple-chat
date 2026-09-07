@@ -15,7 +15,7 @@ import {
   triggerButtonClassName,
 } from "@/components/base/date-picker/shared";
 import { cx } from "@/utils/cx";
-import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-on-outside-press";
+import { useDismissOnOutsidePress } from "@/utils/use-dismiss-on-outside-press";
 
 /**
  * Figma source: Board UI → "Calendar_single" (node 3879:6708).
@@ -108,15 +108,11 @@ export function DatePicker({
     setIsOpen(false);
   };
 
-  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
-  // Pressing the trigger while open closes the popover instead of reopening
-  // (upstream BoardUI fix — same guard as base/select and base/dropdown).
-  const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
-
   const openChange = (open: boolean) => {
-    if (!allowOpenChange(open)) return;
     setIsOpen(open);
   };
+
+  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
 
   return (
     <>

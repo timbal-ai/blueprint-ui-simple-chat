@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Calendar } from "react-aria-components";
 import type { CalendarDate } from "@internationalized/date";
 import { AnimatePresence, motion } from "motion/react";
@@ -40,22 +40,38 @@ export function CalendarMonthSwitcher({
   onPrevMonth,
   onNextMonth,
   onSelectDate,
+  width = PANEL_WIDTH,
+  className,
 }: {
   month: CalendarDate;
   monthLabel: string;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onSelectDate: (date: CalendarDate) => void;
+  /** Optional compact width for embedded previews. */
+  width?: number;
+  /** Optional layout override for compact embedded previews. */
+  className?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const shortMonthLabel = new Intl.DateTimeFormat(undefined, { month: "short" }).format(
+    month.toDate("UTC"),
+  );
+  const widthStyle = { "--month-switcher-width": `${width}px` } as CSSProperties;
 
   return (
-    <div className="relative h-9 shrink-0" style={{ width: PANEL_WIDTH }}>
+    <div
+      className={cx(
+        "relative h-9 min-w-0 flex-1 sm:w-[var(--month-switcher-width)] sm:flex-none",
+        className,
+      )}
+      style={widthStyle}
+    >
       <div
         className={cx(
-          "absolute top-0 left-0 z-10 flex flex-col overflow-hidden rounded-2lg border border-border-button-default bg-background-primary-default shadow-dropdown",
+          "absolute top-0 right-0 left-0 z-10 flex w-full flex-col overflow-hidden rounded-2lg border border-border-button-default bg-background-primary-default shadow-dropdown transition-[width] duration-300 ease-in-out sm:right-auto sm:w-[var(--month-switcher-width)]",
+          isOpen && "!w-[min(320px,calc(100vw-24px))]",
         )}
-        style={{ width: PANEL_WIDTH }}
       >
         <div className="flex w-full shrink-0 items-center justify-between p-2">
           <button
@@ -71,10 +87,14 @@ export function CalendarMonthSwitcher({
           </button>
           <button
             type="button"
-            onClick={() => setIsOpen((open) => !open)}
-            className="flex-1 cursor-pointer truncate text-center text-body-medium text-text-primary outline-none"
+            onClick={() => {
+              if (window.matchMedia("(max-width: 639px)").matches) return;
+              setIsOpen((open) => !open);
+            }}
+            className="flex-1 cursor-default truncate text-center text-body-medium text-text-primary outline-none sm:cursor-pointer"
           >
-            {monthLabel}
+            <span className="sm:hidden">{shortMonthLabel}</span>
+            <span className="hidden sm:inline">{monthLabel}</span>
           </button>
           <button
             type="button"

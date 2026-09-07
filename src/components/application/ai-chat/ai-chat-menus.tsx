@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import {
   RiAddLine,
   RiArrowDownSLine,
   RiArrowDropDownLine,
   RiAttachment2,
-  RiCodeBlock,
-  RiFileTextLine,
   RiFocus3Line,
   RiFolder2Line,
   RiListCheck3,
-  RiSlideshow3Line,
-  RiTableLine,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -26,6 +23,7 @@ import {
 } from "react-aria-components";
 import { RadioDot } from "@/components/base/radio/radio";
 import { cx } from "@/utils/cx";
+import { useDismissOnOutsidePress, useTriggerToggle } from "@/utils/use-dismiss-on-outside-press";
 
 /**
  * Figma source: Board UI → "ai_chat" dropdowns (nodes 4035:6313 and
@@ -45,6 +43,16 @@ import { cx } from "@/utils/cx";
  *   and a "Plugins" group of rows with 24px illustrated document icons.
  */
 
+/*
+ * Every composer menu is non-modal. React Aria's popovers lock page scroll by
+ * default, and removing the scrollbar reflows the page under them: on the docs
+ * pages that shunted the sticky component sidebar upwards the moment a menu
+ * opened. These are menus hanging off a control, not modals, so nothing about
+ * them should freeze the page behind. Non-modal also switches off React
+ * Aria's outside-press dismissal, so each menu restores it with
+ * useDismissOnOutsidePress and the trigger toggle, the same fix as Select
+ * and Dropdown.
+ */
 const POPOVER_CLASSES = cx(
   "w-[266px] max-w-[calc(100vw-32px)] origin-bottom-left",
   "rounded-2xl border border-border-button-default bg-background-primary-default p-2.5 shadow-dropdown",
@@ -70,11 +78,21 @@ const LOCAL_FOLDERS: LocalFolder[] = [
 /** Status-bar trigger + "Local Folders" popover (Figma node 4035:6313). */
 export function ProjectFolderMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLElement>(null);
+  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
+  const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
   const [selected, setSelected] = useState(LOCAL_FOLDERS[0]);
 
   return (
-    <AriaDialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-      <AriaButton className="flex cursor-pointer items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+    <AriaDialogTrigger
+      isOpen={isOpen}
+      onOpenChange={(next) => allowOpenChange(next) && setIsOpen(next)}
+    >
+      <AriaButton
+        ref={triggerRef}
+        className="flex cursor-pointer items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+      >
         <RiFolder2Line className="size-4 shrink-0 text-foreground-icon-secondary" aria-hidden />
         <span className="flex items-center">
           <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
@@ -90,7 +108,13 @@ export function ProjectFolderMenu() {
         </span>
       </AriaButton>
 
-      <AriaPopover placement="top start" offset={8} className={POPOVER_CLASSES}>
+      <AriaPopover
+        ref={popoverRef}
+        isNonModal
+        placement="top start"
+        offset={8}
+        className={POPOVER_CLASSES}
+      >
         <AriaDialog aria-label="Local folders" className="outline-none">
           <div className="flex w-full flex-col gap-1.5 pt-1">
             <span className="pl-2 text-body-medium text-text-secondary">Local Folders</span>
@@ -135,7 +159,7 @@ const MODELS = ["Composer 2.5", "GPT-5.6 Sol", "Fable 5", "Sonnet 5"];
 
 /** Six effort stops between "Faster" and "Smarter"; index 1 ("Medium") is the
  *  Figma default. */
-const EFFORT_LEVELS = ["Low", "Medium", "Balanced", "High", "Very High", "Max"];
+export const EFFORT_LEVELS = ["Low", "Medium", "Balanced", "High", "Very High", "Max"];
 
 /**
  * Shader-style "pixelation" overlay shown when the slider hits max: a canvas
@@ -500,7 +524,7 @@ const MAX_EFFORT_EFFECT: "flame" | "pixelation" = "flame";
  * the ticks are laid out to match. At max, a pixel-noise overlay flickers
  * across the track.
  */
-function EffortSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+export function EffortSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const isMax = value === EFFORT_LEVELS.length - 1;
   // Fresh random impulse per tick each time the engine ignites: blown left by
   // the exhaust with random lift, tumble and stagger, like debris in the blast.
@@ -579,15 +603,105 @@ function EffortSlider({ value, onChange }: { value: number; onChange: (v: number
   );
 }
 
+/**
+ * The Models + Effort panel itself, extracted from the popover so other
+ * surfaces (the landing collage) can render the exact same component as a
+ * standalone card. Controlled: the caller owns model and effort state.
+ */
+export function ModelSettingsPanel({
+  model,
+  onModelChange,
+  effort,
+  onEffortChange,
+}: {
+  model: string;
+  onModelChange: (model: string) => void;
+  effort: number;
+  onEffortChange: (effort: number) => void;
+}) {
+  return (
+    <div className="flex flex-col">
+      {/* Models */}
+      <div className="flex w-full flex-col gap-1.5 pt-1">
+        <span className="pl-2 text-body-medium text-text-secondary">Models</span>
+        <div className="flex w-full flex-col gap-1" role="radiogroup" aria-label="Model">
+          {MODELS.map((name) => (
+            <button
+              key={name}
+              type="button"
+              role="radio"
+              aria-checked={name === model}
+              onClick={() => onModelChange(name)}
+              className={cx(
+                "flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-2lg p-2 outline-none transition-colors",
+                name === model
+                  ? "bg-background-primary-hover"
+                  : "hover:bg-background-primary-hover focus-visible:bg-background-primary-hover",
+              )}
+            >
+              <span className="truncate text-body-medium whitespace-nowrap text-text-primary">
+                {name}
+              </span>
+              <RadioDot selected={name === model} />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Divider (full bleed, like the team menu) */}
+      <div className="-mx-2.5 mt-[7px] mb-3 h-px bg-border-button-default" />
+
+      {/* Effort */}
+      <div className="flex w-full flex-col">
+        <span className="pl-2 text-body-medium text-text-secondary">
+          Effort{" "}
+          {/* Keyed on the value so each change remounts and blurs in */}
+          <motion.span
+            key={EFFORT_LEVELS[effort]}
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="inline-block text-text-primary"
+          >
+            {EFFORT_LEVELS[effort]}
+          </motion.span>
+        </span>
+        <div className="flex w-full flex-col gap-1">
+          <div className="flex w-full items-center justify-between px-2 pt-2 pb-[3px]">
+            <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
+              Faster
+            </span>
+            <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
+              Smarter
+            </span>
+          </div>
+          <div className="w-full px-2 pb-2">
+            <EffortSlider value={effort} onChange={onEffortChange} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Composer trigger + "Models / Effort" popover (Figma node 4035:6925). */
 export function ModelMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLElement>(null);
+  useDismissOnOutsidePress(isOpen, () => setIsOpen(false), [triggerRef, popoverRef]);
+  const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
   const [model, setModel] = useState("Fable 5");
   const [effort, setEffort] = useState(1);
 
   return (
-    <AriaDialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-      <AriaButton className="flex h-8 shrink-0 cursor-pointer items-center justify-center gap-0.5 rounded-xl bg-background-primary-default py-1.5 pr-1 pl-2 outline-none transition-colors duration-150 ease hover:bg-background-primary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+    <AriaDialogTrigger
+      isOpen={isOpen}
+      onOpenChange={(next) => allowOpenChange(next) && setIsOpen(next)}
+    >
+      <AriaButton
+        ref={triggerRef}
+        className="flex h-8 shrink-0 cursor-pointer items-center justify-center gap-0.5 rounded-xl bg-background-primary-default py-1.5 pr-1 pl-2 outline-none transition-colors duration-150 ease hover:bg-background-primary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring">
         <span className="px-0.5 text-body-medium whitespace-nowrap text-text-secondary">
           {model}
         </span>
@@ -600,67 +714,26 @@ export function ModelMenu() {
         />
       </AriaButton>
 
-      <AriaPopover placement="top start" offset={8} className={POPOVER_CLASSES}>
+      <AriaPopover
+        ref={popoverRef}
+        isNonModal
+        placement="top start"
+        offset={8}
+        className={POPOVER_CLASSES}
+      >
         <AriaDialog aria-label="Model settings" className="flex flex-col outline-none">
-          {/* Models */}
-          <div className="flex w-full flex-col gap-1.5 pt-1">
-            <span className="pl-2 text-body-medium text-text-secondary">Models</span>
-            <div className="flex w-full flex-col gap-1" role="radiogroup" aria-label="Model">
-              {MODELS.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  role="radio"
-                  aria-checked={name === model}
-                  onClick={() => setModel(name)}
-                  className={cx(
-                    "flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-2lg p-2 outline-none transition-colors",
-                    name === model
-                      ? "bg-background-primary-hover"
-                      : "hover:bg-background-primary-hover focus-visible:bg-background-primary-hover",
-                  )}
-                >
-                  <span className="truncate text-body-medium whitespace-nowrap text-text-primary">
-                    {name}
-                  </span>
-                  <RadioDot selected={name === model} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider (full bleed, like the team menu) */}
-          <div className="-mx-2.5 mt-[7px] mb-3 h-px bg-border-button-default" />
-
-          {/* Effort */}
-          <div className="flex w-full flex-col">
-            <span className="pl-2 text-body-medium text-text-secondary">
-              Effort{" "}
-              {/* Keyed on the value so each change remounts and blurs in */}
-              <motion.span
-                key={EFFORT_LEVELS[effort]}
-                initial={{ opacity: 0, filter: "blur(4px)" }}
-                animate={{ opacity: 1, filter: "blur(0px)" }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                className="inline-block text-text-primary"
-              >
-                {EFFORT_LEVELS[effort]}
-              </motion.span>
-            </span>
-            <div className="flex w-full flex-col gap-1">
-              <div className="flex w-full items-center justify-between px-2 pt-2 pb-[3px]">
-                <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
-                  Faster
-                </span>
-                <span className="text-body-2-medium whitespace-nowrap text-text-secondary">
-                  Smarter
-                </span>
-              </div>
-              <div className="w-full px-2 pb-2">
-                <EffortSlider value={effort} onChange={setEffort} />
-              </div>
-            </div>
-          </div>
+          <ModelSettingsPanel
+            model={model}
+            // Picking a model is the decision the menu exists for, so it
+            // dismisses itself. Effort is a dial you may want to nudge more
+            // than once, so it deliberately leaves the menu open.
+            onModelChange={(next) => {
+              setModel(next);
+              setIsOpen(false);
+            }}
+            effort={effort}
+            onEffortChange={setEffort}
+          />
         </AriaDialog>
       </AriaPopover>
     </AriaDialogTrigger>
@@ -675,9 +748,10 @@ interface AddMenuRow {
   description?: string;
   /** 20px remixicon rows ("Add" group). */
   icon?: typeof RiAttachment2;
-  /** 24px icon rows ("Plugins" group — the original template shipped
-   *  illustrated SVGs under public/ai-chat/, swapped for remixicons here). */
-  pluginIcon?: typeof RiAttachment2;
+  /** 24px illustrated icon rows ("Plugins" group). */
+  image?: string;
+  /** Optional manual-dark-theme variant of the illustrated icon. */
+  darkImage?: string;
 }
 
 const ADD_ROWS: AddMenuRow[] = [
@@ -687,13 +761,18 @@ const ADD_ROWS: AddMenuRow[] = [
 ];
 
 const PLUGIN_ROWS: AddMenuRow[] = [
-  { pluginIcon: RiFileTextLine, label: "Documents", description: "Create and edit documents" },
-  { pluginIcon: RiTableLine, label: "Spreadsheets", description: "Generate spreadsheets" },
-  { pluginIcon: RiSlideshow3Line, label: "Presentations", description: "Create marketing assets" },
-  { pluginIcon: RiCodeBlock, label: "Code blocks", description: "Write and edit existing code" },
+  {
+    image: "/ai-chat/plugin-documents.svg",
+    darkImage: "/ai-chat/plugin-documents-dark.svg",
+    label: "Documents",
+    description: "Create and edit documents",
+  },
+  { image: "/ai-chat/plugin-spreadsheets.svg", label: "Spreadsheets", description: "Generate spreadsheets" },
+  { image: "/ai-chat/plugin-presentations.svg", label: "Presentations", description: "Create marketing assets" },
+  { image: "/ai-chat/plugin-codeblocks.svg", label: "Code blocks", description: "Write and edit existing code" },
 ];
 
-function AddMenuItem({ icon: Icon, pluginIcon: PluginIcon, label, description, onSelect }: AddMenuRow & { onSelect: () => void }) {
+function AddMenuItem({ icon: Icon, image, darkImage, label, description, onSelect }: AddMenuRow & { onSelect: () => void }) {
   return (
     <button
       type="button"
@@ -701,7 +780,30 @@ function AddMenuItem({ icon: Icon, pluginIcon: PluginIcon, label, description, o
       className="flex w-full cursor-pointer items-center gap-2 rounded-2lg px-2 py-1.5 outline-none transition-colors hover:bg-background-primary-hover focus-visible:bg-background-primary-hover"
     >
       {Icon && <Icon className="size-5 shrink-0 text-foreground-icon-secondary" aria-hidden />}
-      {PluginIcon && <PluginIcon className="size-6 shrink-0 text-foreground-icon-secondary" aria-hidden />}
+      {image && (
+        <>
+          <Image
+            src={image}
+            alt=""
+            width={24}
+            height={24}
+            unoptimized
+            className={cx("size-6 shrink-0", darkImage && "theme-asset-light")}
+            aria-hidden
+          />
+          {darkImage && (
+            <Image
+              src={darkImage}
+              alt=""
+              width={24}
+              height={24}
+              unoptimized
+              className="theme-asset-dark size-6 shrink-0"
+              aria-hidden
+            />
+          )}
+        </>
+      )}
       <span className="truncate text-body-medium whitespace-nowrap">
         <span className="text-text-primary">{label}</span>
         {description && <span className="ml-1.5 text-text-secondary">{description}</span>}
@@ -735,22 +837,42 @@ function AddMenuGroup({
  * Composer plus-button + "Add / Plugins" popover (Figma node 4040:5414).
  * A custom, more detailed dropdown than the other menus: wider (361px),
  * tighter 8px panel padding, and rows with inline muted descriptions —
- * the "Plugins" group uses 24px remixicons (the upstream template shipped
- * illustrated Figma SVG exports that aren't bundled here).
+ * the "Plugins" group uses the illustrated 24px document icons exported
+ * from Figma (public/ai-chat/plugin-*.svg).
  */
-export function AddMenu() {
+export function AddMenu({
+  triggerSurface = "bg-ai-chat-composer-add-background hover:bg-ai-chat-composer-add-hover-background",
+}: {
+  /**
+   * Background + hover classes of the plus button. The pill composer paints
+   * it a step lighter than the Composer Panel does, so each surface passes
+   * its own pair instead of merging over a default.
+   */
+  triggerSurface?: string;
+} = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLElement>(null);
+  useDismissOnOutsidePress(isOpen, close, [triggerRef, popoverRef]);
+  const allowOpenChange = useTriggerToggle(isOpen, triggerRef);
 
   return (
-    <AriaDialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
+    <AriaDialogTrigger
+      isOpen={isOpen}
+      onOpenChange={(next) => allowOpenChange(next) && setIsOpen(next)}
+    >
       <AriaButton
+        ref={triggerRef}
         aria-label="Add attachment"
-        className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-background-secondary-default p-2 outline-none transition-colors duration-150 ease hover:bg-background-secondary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+        className={cx(
+          "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full p-2 outline-none transition-colors duration-150 ease focus-visible:ring-2 focus-visible:ring-border-focus-ring",
+          triggerSurface,
+        )}
       >
         <RiAddLine
           className={cx(
-            "size-5 text-foreground-icon-secondary transition-transform duration-200 ease",
+            "size-5 text-foreground-icon-primary transition-transform duration-200 ease",
             isOpen && "rotate-45",
           )}
           aria-hidden
@@ -758,6 +880,8 @@ export function AddMenu() {
       </AriaButton>
 
       <AriaPopover
+        ref={popoverRef}
+        isNonModal
         placement="top start"
         offset={8}
         className={cx(

@@ -1,4 +1,5 @@
 import type {
+  AnchorHTMLAttributes,
   ButtonHTMLAttributes,
   ComponentType,
   ReactNode,
@@ -10,7 +11,7 @@ import { cx, sortCx } from "@/utils/cx";
  * Figma source: Board UI → Buttons (node 3656:13819).
  *
  * Variant matrix from Figma:
- *   Type     = Primary | Secondary | Danger
+ *   Type     = Primary | Secondary | Ghost | Danger
  *   Size     = Medium  | Small | Xs
  *   State    = Default | Hover | Active | Disabled        (CSS pseudo)
  *   OnlyIcon = false   | true
@@ -42,13 +43,7 @@ import { cx, sortCx } from "@/utils/cx";
  * `variant` to avoid the clash.
  */
 
-/**
- * Project extension (2026-07-14, re-applied after the 2026-07-15 upstream
- * overwrite): `ghost` (borderless toolbar/quiet action) and `link` (inline
- * text action) tiers — BoardUI ships neither, this app needs both
- * everywhere. Styled strictly with BoardUI semantic tokens.
- */
-type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "link";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "medium" | "small" | "xs";
 
 type IconComponent = ComponentType<{
@@ -67,11 +62,22 @@ export interface ButtonProps
   ref?: Ref<HTMLButtonElement>;
 }
 
+export interface ButtonLinkProps
+  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children"> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  iconOnly?: boolean;
+  leadingIcon?: IconComponent;
+  trailingIcon?: IconComponent;
+  children?: ReactNode;
+  ref?: Ref<HTMLAnchorElement>;
+}
+
 const styles = sortCx({
   base: [
     "inline-flex items-center justify-center gap-0.5 whitespace-nowrap overflow-hidden",
     "font-sans select-none cursor-pointer",
-    "transition-[background-color,border-color,box-shadow,color] duration-150 ease",
+    "button-press-motion",
     "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
     "disabled:cursor-not-allowed aria-disabled:cursor-not-allowed",
   ].join(" "),
@@ -109,12 +115,12 @@ const styles = sortCx({
 
   variant: {
     primary: [
-      "bg-button-primary text-foreground-full shadow-xs",
-      "disabled:text-foreground-disabled disabled:shadow-none",
-      "aria-disabled:text-foreground-disabled aria-disabled:shadow-none",
+      "bg-button-primary text-text-white shadow-xs",
+      "disabled:text-button-primary-disabled-foreground disabled:shadow-none",
+      "aria-disabled:text-button-primary-disabled-foreground aria-disabled:shadow-none",
     ].join(" "),
     danger: [
-      "bg-button-danger text-foreground-full shadow-xs",
+      "bg-button-danger text-text-white shadow-xs",
       "disabled:text-foreground-disabled-danger disabled:shadow-none",
       "aria-disabled:text-foreground-disabled-danger aria-disabled:shadow-none",
     ].join(" "),
@@ -127,15 +133,10 @@ const styles = sortCx({
       "aria-disabled:bg-background-primary-disabled aria-disabled:border-border-button-default aria-disabled:text-text-tertiary aria-disabled:shadow-none",
     ].join(" "),
     ghost: [
-      "bg-transparent text-text-secondary",
-      "hover:bg-background-primary-hover hover:text-text-primary",
-      "active:bg-background-primary-active",
-      "disabled:text-text-disabled aria-disabled:text-text-disabled",
-    ].join(" "),
-    link: [
-      "h-auto rounded-none border-0 bg-transparent p-0 text-text-primary underline-offset-4",
-      "hover:underline",
-      "disabled:text-text-disabled aria-disabled:text-text-disabled",
+      "bg-button-ghost-background text-button-ghost-foreground",
+      "hover:bg-button-ghost-hover active:bg-button-ghost-active",
+      "disabled:bg-button-ghost-disabled disabled:text-button-ghost-disabled-foreground disabled:shadow-none",
+      "aria-disabled:bg-button-ghost-disabled aria-disabled:text-button-ghost-disabled-foreground aria-disabled:shadow-none",
     ].join(" "),
   },
 });
@@ -175,3 +176,41 @@ export function Button({
     </button>
   );
 }
+
+/** Anchor counterpart to Button for navigational actions. */
+export function ButtonLink({
+  variant = "primary",
+  size = "medium",
+  iconOnly = false,
+  leadingIcon: Leading,
+  trailingIcon: Trailing,
+  children,
+  className,
+  ref,
+  ...props
+}: ButtonLinkProps) {
+  return (
+    <a
+      ref={ref}
+      className={cx(
+        styles.base,
+        styles.size[size],
+        styles.variant[variant],
+        iconOnly && styles.iconOnlySize[size],
+        className,
+      )}
+      {...props}
+    >
+      {Leading ? <Leading className={styles.icon[size]} aria-hidden /> : null}
+      {!iconOnly && children !== undefined && children !== null && (
+        <span className={styles.label[size]}>{children}</span>
+      )}
+      {!iconOnly && Trailing ? (
+        <Trailing className={styles.icon[size]} aria-hidden />
+      ) : null}
+    </a>
+  );
+}
+
+/** Style maps, exported for advanced composition and the dev Design Tuner. */
+export const buttonStyles = styles;

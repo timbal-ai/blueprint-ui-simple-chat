@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Cell, PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer, Sector } from "recharts";
 import { MONTHS, YEAR, dayActivity, type SelectedDay } from "@/components/application/medical/medical-data";
 import { cx } from "@/utils/cx";
 
@@ -9,15 +8,11 @@ import { cx } from "@/utils/cx";
  * Figma source: Board UI → medical profile dashboard → Frame 127 (node
  * 3950:5906). Three concentric goal rings, Apple Watch-style.
  *
- * Ring colors decoded from the Figma SVG assets themselves (each ring is a
- * track + progress ellipse pair): outer Move = pink-400 over a pink-400
- * track, middle Exercise = lime-400 over a purple-400 track, inner Running
- * = sky-400 over an emerald-400 track — every track at 0.12 opacity. The
- * mismatched track hues are Figma's own, reproduced as-is. No ring is ever
- * fully closed, matching the design.
+ * Each ring uses its progress color again at 16% opacity for the empty track,
+ * matching the mini rings in MostActiveDaysCard. Keeping the track and arc in
+ * one SVG avoids Recharts' hard-coded #eee background sectors, which stayed
+ * light in dark mode. No ring is ever fully closed, matching the design.
  *
- * recharts renders the FIRST data entry as the innermost band, so the
- * chart data runs Running → Exercise → Move (reverse of the tiles).
  * Hovering a ring darkens it one tone (400 → 500, same recipe as the
  * Steps bars) and highlights its stat tile by dropping the other tiles to
  * 50% opacity.
@@ -35,26 +30,18 @@ type Ring = {
   goalPct: number;
   color: string;
   hoverColor: string;
-  trackColor: string;
 };
 
 /** Tile order (Move / Exercise / Running), matching Figma's stat row.
  *  Values here are the no-selection defaults straight from Figma. */
 const DEFAULT_RINGS: Ring[] = [
-  { label: "Move", value: "1,592 kcal", goalPct: 82, color: "var(--color-chart-3)", hoverColor: "var(--color-chart-3-active)", trackColor: "var(--color-chart-3)" },
-  { label: "Exercise", value: "1h 45m", goalPct: 60, color: "var(--color-chart-2)", hoverColor: "var(--color-chart-2-active)", trackColor: "var(--color-chart-5)" },
-  { label: "Running", value: "5.2 km", goalPct: 75, color: "var(--color-chart-4)", hoverColor: "var(--color-chart-4-active)", trackColor: "var(--color-chart-7)" },
+  { label: "Move", value: "1,592 kcal", goalPct: 82, color: "var(--color-chart-3)", hoverColor: "var(--color-chart-3-active)" },
+  { label: "Exercise", value: "1h 45m", goalPct: 60, color: "var(--color-chart-2)", hoverColor: "var(--color-chart-2-active)" },
+  { label: "Running", value: "5.2 km", goalPct: 75, color: "var(--color-chart-4)", hoverColor: "var(--color-chart-4-active)" },
 ];
 
-type SectorProps = {
-  cx?: number;
-  cy?: number;
-  innerRadius?: number;
-  outerRadius?: number;
-  startAngle?: number;
-  endAngle?: number;
-  index?: number;
-};
+const RING_RADII = [82, 58, 34];
+const RING_STROKE_WIDTH = 18;
 
 export function ActivityRingsCard({
   selectedDay = null,
@@ -73,13 +60,6 @@ export function ActivityRingsCard({
         { ...DEFAULT_RINGS[2], value: activity.running.value, goalPct: Math.round(activity.running.pct * 100) },
       ]
     : DEFAULT_RINGS;
-
-  /** Chart order — reversed so Move lands on the outermost band. */
-  const chartData = [...rings].reverse().map((ring) => ({
-    label: ring.label,
-    value: ring.goalPct,
-    trackColor: ring.trackColor,
-  }));
 
   return (
     <section
@@ -101,7 +81,7 @@ export function ActivityRingsCard({
             <div
               key={ring.label}
               className={cx(
-                "flex flex-1 flex-col items-start justify-end gap-px rounded-2lg bg-background-primary-default px-2.5 py-2",
+                "flex flex-1 flex-col items-start justify-end gap-px rounded-2lg bg-background-inner-default px-2.5 py-2",
                 "transition-opacity duration-200 ease-out",
                 activeLabel !== null && activeLabel !== ring.label && "opacity-50",
               )}
@@ -116,57 +96,50 @@ export function ActivityRingsCard({
         </div>
       </div>
 
-      <div className="min-h-0 w-full flex-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadialBarChart
-            data={chartData}
-            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-            innerRadius="16%"
-            outerRadius="100%"
-            startAngle={90}
-            endAngle={-270}
-            barCategoryGap="20%"
-          >
-            {/* Pins the angular scale to 0–100 so goalPct maps to real
-                percentages — without this recharts stretches the largest
-                value to a full 360° circle. */}
-            <PolarAngleAxis type="number" domain={[0, 100]} tick={false} axisLine={false} />
-            <RadialBar
-              dataKey="value"
-              cornerRadius={99}
-              background={(props: SectorProps) => {
-                const { index, ...rest } = props;
-                const ring = chartData[index ?? 0];
-                const dimmed = activeLabel !== null && activeLabel !== ring.label;
-                return (
-                  <Sector
-                    {...rest}
-                    fill={ring.trackColor}
-                    opacity={dimmed ? 0.06 : 0.12}
-                    className="transition-opacity duration-200 ease-out"
-                  />
-                );
-              }}
-              onMouseEnter={(_, index) => setActiveLabel(chartData[index]?.label ?? null)}
-              onMouseLeave={() => setActiveLabel(null)}
-              isAnimationActive
-              animationDuration={450}
-            >
-              {chartData.map((entry) => {
-                const ring = rings.find((r) => r.label === entry.label) ?? rings[0];
-                const dimmed = activeLabel !== null && activeLabel !== entry.label;
-                return (
-                  <Cell
-                    key={entry.label}
-                    fill={activeLabel === entry.label ? ring.hoverColor : ring.color}
-                    opacity={dimmed ? 0.5 : 1}
-                    className="transition-[fill,opacity] duration-200 ease-out"
-                  />
-                );
-              })}
-            </RadialBar>
-          </RadialBarChart>
-        </ResponsiveContainer>
+      <div className="flex min-h-0 w-full flex-1 items-center justify-center">
+        <svg
+          viewBox="0 0 200 200"
+          className="h-full max-h-[210px] w-full overflow-visible"
+          role="img"
+          aria-label="Move, exercise, and running activity progress"
+          onMouseLeave={() => setActiveLabel(null)}
+        >
+          {rings.map((ring, index) => {
+            const dimmed = activeLabel !== null && activeLabel !== ring.label;
+            return (
+              <g
+                key={ring.label}
+                className="cursor-pointer"
+                transform="rotate(-90 100 100)"
+                onMouseEnter={() => setActiveLabel(ring.label)}
+              >
+                <circle
+                  cx={100}
+                  cy={100}
+                  r={RING_RADII[index]}
+                  fill="none"
+                  stroke={ring.color}
+                  strokeWidth={RING_STROKE_WIDTH}
+                  opacity={dimmed ? 0.06 : 0.16}
+                  className="transition-opacity duration-200 ease-out"
+                />
+                <circle
+                  cx={100}
+                  cy={100}
+                  r={RING_RADII[index]}
+                  pathLength={100}
+                  fill="none"
+                  stroke={activeLabel === ring.label ? ring.hoverColor : ring.color}
+                  strokeWidth={RING_STROKE_WIDTH}
+                  strokeLinecap="round"
+                  strokeDasharray={`${ring.goalPct} ${100 - ring.goalPct}`}
+                  opacity={dimmed ? 0.5 : 1}
+                  className="transition-[stroke,stroke-dasharray,opacity] duration-200 ease-out"
+                />
+              </g>
+            );
+          })}
+        </svg>
       </div>
     </section>
   );

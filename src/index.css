@@ -1,153 +1,26 @@
+/* Cascade order matters — see registry/theming.md and styles/README in AGENTS.md.
+ *
+ * 1. Tailwind v4 (once).
+ * 2. @timbal-ai/timbal-react/styles.css — chat/runtime polish (.aui-*), its
+ *    default token set and the `dark` custom variant.
+ * 3. BoardUI: styles/globals.css → theme.css + typography.css + component
+ *    animations (vendored by scripts/boardui-sync.mjs; never hand-edited).
+ * 4. styles/brand.css — the accent ramp + fonts for THIS product (edit this).
+ * 5. styles/timbal-bridge.css — runtime tokens → BoardUI tokens (translation only).
+ */
 @import "tailwindcss";
-@import "tw-animate-css";
-
-/* Web fonts (Inter, JetBrains Mono) load from index.html — not tokens.css —
-   PostCSS requires @import to precede all other CSS, and tokens.css is pulled
-   in after Tailwind expands. */
-
-/* The library ships the chat/studio polish (.aui-*) and its own token set.
-   It loads FIRST so the project-owned design system below wins the cascade. */
 @import "@timbal-ai/timbal-react/styles.css";
-
-/* BoardUI design system (boardui.com) — theme primitives + semantic tokens,
-   the composite typography ramp, base resets, component animations, and the
-   .bui-table styles. Loads after the library and before the DNA tokens so
-   shared names (e.g. --font-sans, --color-chart-*) resolve from tokens.css. */
 @import "./styles/globals.css";
+@import "./styles/brand.css";
+@import "./styles/timbal-bridge.css";
 
-/* Design DNA — the project-owned design system. GENERATED from
-   src/design/dna.json by `bun run dna:compile`; never hand-edit tokens.css.
-   To change any color, font, radius, shadow, density, or motion value:
-   edit dna.json and recompile. This import must come after the library's
-   styles.css so DNA tokens override the shipped defaults. */
-@import "./design/tokens.css";
-
-/* Tailwind needs to scan the library's pre-built dist/ for the utility
-   classes its components use at runtime. */
+/* Tailwind must scan the runtime's pre-built dist for the classes it uses. */
 @source "../node_modules/@timbal-ai/timbal-react/dist";
 
-/* The `dark` custom variant ships from the library styles.css import above. */
-
-/* BoardUI's theme.css builds --font-sans/--font-mono from these two hooks
-   (loaded via next/font upstream). This blueprint runs on GEIST (not Inter) —
-   the faces come from the Google Fonts link in index.html, and the DNA
-   pairing ("geist") re-declares --font-sans in tokens.css, which loads after
-   theme.css and wins the cascade. */
-:root {
-  --font-inter: "Geist";
-  --font-mono-source: "JetBrains Mono";
-}
-
-/* ---------------------------------------------------------------------------
-   Motion craft layer — strong custom easing curves (built-in CSS easings are
-   too weak for deliberate UI motion). Derived from Emil Kowalski's design
-   engineering standards (animations.dev):
-   - ease-out-strong    entrances/exits — starts fast, feels responsive
-   - ease-in-out-strong on-screen movement/morphs
-   - ease-drawer        iOS-like sheet/drawer curve (Ionic)
-   Registered in @theme so `ease-out-strong` etc. exist as utilities AND as
-   CSS vars. These complement the DNA's --ease-standard; they never replace
-   tokens.css (generated). */
-@theme {
-  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-/* Utility mapping for the DNA `--icon-muted` role (dna.json overrides —
-   the #BABABA-equivalent chrome gray for icons + placeholder text inside
-   controls and the sidebar). The VALUE lives in tokens.css; this only
-   registers `text-icon-muted` etc. */
-@theme inline {
-  --color-icon-muted: var(--icon-muted);
-}
-
-/* Cascading group entrance: direct children rise in one after another
-   (40ms steps, capped at 200ms so long lists never feel slow). Decorative —
-   never blocks interaction. Apply to PageBody, card grids, stat rows. */
-@utility stagger-children {
-  & > * {
-    animation: stagger-rise 260ms var(--ease-out-strong) backwards;
-  }
-  & > :nth-child(2) {
-    animation-delay: 40ms;
-  }
-  & > :nth-child(3) {
-    animation-delay: 80ms;
-  }
-  & > :nth-child(4) {
-    animation-delay: 120ms;
-  }
-  & > :nth-child(5) {
-    animation-delay: 160ms;
-  }
-  & > :nth-child(n + 6) {
-    animation-delay: 200ms;
-  }
-}
-
-@keyframes stagger-rise {
-  from {
-    opacity: 0;
-    transform: translateY(var(--stagger-rise-distance, 4px));
-  }
-}
-
-/* Reduced motion = gentler, not zero: keep the opacity fades that aid
-   comprehension, strip movement and scale. tw-animate-css keyframes read
-   these vars, so neutralizing them turns every enter/exit into a pure fade. */
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --stagger-rise-distance: 0px;
-  }
-  *,
-  ::before,
-  ::after {
-    --tw-enter-scale: 1 !important;
-    --tw-enter-rotate: 0 !important;
-    --tw-enter-translate-x: 0 !important;
-    --tw-enter-translate-y: 0 !important;
-    --tw-exit-scale: 1 !important;
-    --tw-exit-rotate: 0 !important;
-    --tw-exit-translate-x: 0 !important;
-    --tw-exit-translate-y: 0 !important;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-sans);
-    /* BoardUI's Inter ramp runs at zero tracking (letter-spacing: 0 across
-       the type scale) — no body-level tightening. */
-  }
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-display);
-    font-weight: var(--display-weight);
-    letter-spacing: var(--tracking-display);
-  }
-}
-
-button {
-  cursor: pointer;
-}
-
-/* Chat readability overrides — the library hardcodes `text-sm` on the
-   composer textarea and welcome subtitle, which reads tiny. The composer is
-   the primary input of a chat product: hold it at the base size (16px also
-   stops iOS Safari from zooming the page on focus). */
+/* Chat readability: the runtime hardcodes text-sm on the composer textarea;
+   hold it at 16px (also stops iOS Safari zooming the page on focus). */
 .aui-composer-input,
 .aui-edit-composer-input {
   font-size: var(--text-base);
   line-height: var(--text-base--line-height);
-}
-
-.aui-thread-welcome-message-inner,
-.aui-thread-suggestion-text-1 {
-  font-size: var(--text-base);
 }
