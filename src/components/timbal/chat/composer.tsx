@@ -150,7 +150,7 @@ function BoardComposerInput({
       aria-label="Message input"
       onKeyDown={onKeyDown}
     >
-      <textarea className="my-2 max-h-40 min-h-5 min-w-0 flex-1 resize-none self-center bg-transparent text-body-regular text-text-primary caret-text-primary outline-none field-sizing-content placeholder:text-text-tertiary" />
+      <textarea className="my-2 max-h-40 min-h-5 min-w-0 flex-1 resize-none self-center bg-transparent text-body-regular text-text-primary caret-text-primary outline-none field-sizing-content placeholder:text-text-secondary" />
     </ComposerPrimitive.Input>
   );
 }

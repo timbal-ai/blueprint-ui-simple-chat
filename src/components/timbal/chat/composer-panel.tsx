@@ -53,6 +53,8 @@ const HIDE_VENDORED_CONTROLS = cx(
   "[&_button[aria-label^=Add]]:hidden",
   "[&_button[aria-label^=Permission]]:hidden",
   "[&_button[aria-label^=Voice]]:hidden",
+  "[&_textarea]:placeholder:text-text-secondary",
+  "[&_button.rounded-xl_span]:text-text-primary",
 );
 
 /* The vendored card is white with a 2% shadow — designed for the template's
@@ -243,19 +245,25 @@ function BoardStatusTab({
   isRunning: boolean;
 }) {
   return (
-    <div className="mx-7 flex h-[34px] items-center justify-between gap-3 rounded-t-2xl bg-composer-panel-tab-background px-2 py-1">
+    <div className="mx-7 flex h-[34px] items-center justify-between gap-3 rounded-t-2xl bg-composer-panel-tab-background px-2 py-1 text-text-primary">
       {isRunning ? (
-        <AgentThinking variant="stars" label="Thinking" className="min-w-0 px-1" />
+        <AgentThinking
+          variant="stars"
+          tone="primary"
+          shimmer={false}
+          label="Thinking"
+          className="min-w-0 px-1"
+        />
       ) : (
         <span className="flex min-w-0 items-center gap-1">
           <RiSparklingLine
             className="size-4 shrink-0 text-foreground-icon-secondary"
             aria-hidden
           />
-          <span className="truncate text-body-2-medium text-text-secondary">{workforceName}</span>
+          <span className="truncate text-body-2-medium">{workforceName}</span>
         </span>
       )}
-      <span className="shrink-0 text-body-2-medium whitespace-nowrap text-text-secondary tabular-nums">
+      <span className="shrink-0 text-body-2-medium whitespace-nowrap tabular-nums">
         {messageCount === 0 ? "New chat" : `${messageCount} messages`}
       </span>
     </div>

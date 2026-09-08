@@ -57,3 +57,23 @@
   --font-inter: "Inter";
   --font-mono-source: "JetBrains Mono";
 }
+
+/* BoardUI's dark tertiary is neutral-600 on 800/900 surfaces (~2:1). The
+   composer status tab is worse: 50% of 700, transparent, on glass. Secondary
+   never remaps in dark (stays 500). Bump muted ink so the copilot tab,
+   placeholder, and workforce picker stay readable. */
+.dark {
+  --color-text-secondary: var(--color-neutral-300);
+  --color-text-tertiary: var(--color-neutral-400);
+  --color-text-placeholder: var(--color-neutral-400);
+  --color-foreground-icon-secondary: var(--color-neutral-400);
+  --color-foreground-icon-tertiary: var(--color-neutral-500);
+  --color-composer-panel-tab-background: var(--color-neutral-700);
+}
+
+/* Runtime stock composer uses `placeholder:text-muted-foreground/70`, which
+   compounds with already-muted tokens. Keep placeholder ink fully opaque. */
+.aui-composer-input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}

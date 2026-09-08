@@ -56,5 +56,6 @@ Light is `:root`; dark activates when `.dark` is on `<html>` (declared via `@cus
 - **Neutrals and semantics**: adjust the semantic layer, not component code. Example: to soften every card border, change `--color-border-button-default`, and both modes stay consistent if you update the `.dark` binding too.
 - **Charts**: re-map `--color-chart-1` through `--color-chart-5` (and `-active`) to restyle every chart card at once.
 - **Radius**: override `--radius-*` in `styles/brand.css` `@theme`. This blueprint is a step tighter than BoardUI/Tailwind (3xl 24→20, 2xl 16→14, 2lg 10→8). Leave `rounded-full` for pills and avatars.
+- **Dark muted text**: BoardUI leaves `--color-text-secondary` at 500 and sets tertiary to 600, which disappears on 800/900 surfaces and on the composer status tab. `brand.css` remaps secondary→300, tertiary/placeholder→400, and solidifies `--color-composer-panel-tab-background`.
 
 For the full current token values, read `styles/theme.css` in the project, or ask the BoardUI MCP server's `get_theme` tool for the live stylesheet contents.
