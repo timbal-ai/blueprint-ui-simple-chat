@@ -26,26 +26,34 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
 src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
                                 embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
-src/styles/brand.css            accent ramp + fonts + radius — the ONE file that restyles the product
+src/styles/brand.css            the ONE file that restyles the product: surfaces, density (--spacing),
+                                radius ladder, type ramp, monochrome primary button, dark default (theming.md → House style)
 ```
 
 Import through `@/`: `import { Button } from "@/components/base/buttons/button"`.
 
 ## How to pick (in this order)
 
-1. **Decide the direction and write it in `DESIGN.md` first** — shell, accent, density,
-   template-or-compose, tone, references. Variety is a decision: the previous
-   project's choices are not a default. See the direction menu below.
-2. **Whole screen?** Start from the closest **template** (`templates.md`) → copy its
+1. **Decide the direction and write it in `DESIGN.md` first** — shell, entry screen,
+   accent, density, template-or-compose, tone, references. Variety is a decision: the
+   previous project's choices are not a default. See the direction menu below.
+2. **Entry screen = the product's primary object.** What does the user come to
+   work on — tickets, invoices, bookings, documents, a conversation? `/` opens on
+   that (a list with a detail sheet, a board, a record, an editor, a schedule). The
+   KPI dashboard (stat tiles + trend chart + table) is a screen for briefs that ask
+   for metrics, not the default; `design:check` asks for a reason when it is chosen.
+   `/examples/shell-sidebar` (ticket queue) and `/examples/shell-topbar` (schedule)
+   show the two shells hosting non-dashboard entry screens.
+3. **Whole screen?** Start from the closest **template** (`templates.md`) → copy its
    shell into `src/pages/`, swap data + nav, delete what the brief doesn't need. If
    no template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
-3. **Block or card?** `components.md` → `props.md`. Chart cards (`application/charts`),
+4. **Block or card?** `components.md` → `props.md`. Chart cards (`application/charts`),
    agent UI (`task-list`, `web-search`, `agent-progress`, `questionnaire`,
    `agent-limits`), `data-table`, `stat-cards`, `settings-modal`,
    `notification-center`, `calendar`, `auth-card` exist — never rebuild them.
-4. **Primitive?** `src/components/base/*`. Gaps BoardUI doesn't cover (modal,
+5. **Primitive?** `src/components/base/*`. Gaps BoardUI doesn't cover (modal,
    sheet, popover, toast) are in `src/components/timbal/overlays`.
-5. **Chat / AI / auth?** `timbal.md`. The runtime is the engine; BoardUI is the chrome.
+6. **Chat / AI / auth?** `timbal.md`. The runtime is the engine; BoardUI is the chrome.
 
 ## Intent → component (look here before writing JSX)
 
@@ -81,19 +89,23 @@ thing you compose yourself — from `base/` primitives, inside the same card gra
 | Axis | Options |
 |---|---|
 | Shell | `SidebarShell` (workhorse SaaS, 4+ destinations) · `TopbarShell` (consumer/browse-first, ≤5 destinations) · focused single page (one job: form, editor, kiosk) · full-page chat (`Home` pattern) · split list/detail |
+| Entry | what `/` opens on — **list + detail** (`DataTable` + `Sheet`) · **board** · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
 | Accent | **BoardUI blue, unchanged, unless the brief names a brand colour** (then set the eleven `--color-accent-*` stops in `styles/brand.css`). Never change the hue for variety. |
 | Density | airy (marketing, consumer) · regular · dense (ops, finance, dispatch) |
 | Start from | a template by slug, or "compose" |
 | Tone | two adjectives from the brief ("warm, calm" / "sharp, technical" / "playful") |
 
 **Anti-repetition rule:** if the last project you built used the same shell +
-template, change one of them (or the density) and say why in `DESIGN.md`. The
-accent is not a variety knob.
+entry screen + template, change one of them (or the density) and say why in
+`DESIGN.md`. The accent is not a variety knob. Two products that both open on
+stat tiles over a revenue chart over a customers table are the same product.
 
 ## Don'ts (short list)
 
 - No raw palette classes or hex (`bg-white`, `text-gray-500`, `#fff`) — semantic tokens only.
 - No hand-stacked type (`text-sm font-medium`) — composite utilities (`text-body-medium`).
+- No per-component "softening" (`rounded-2xl` on a control, `p-6`, `shadow-lg`) — radius and density are set once in `brand.css`; use the step the ladder gives the element.
+- No default KPI dashboard as the entry screen — see "How to pick" step 2.
 - No lookalikes of anything in `components.md`.
 - No editing under `base/`, `application/`, `foundations/`, `styles/theme.css|typography.css|globals.css` — they are overwritten by `bun run boardui:sync`. Wrap, don't fork.
 - No `useState` page switching — every page is a route.

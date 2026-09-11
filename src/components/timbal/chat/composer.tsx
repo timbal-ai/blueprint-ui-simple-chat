@@ -21,7 +21,8 @@ import { cx } from "@/utils/cx";
 /**
  * BoardUI composer pill mounted as the `Composer` slot of `TimbalChat`.
  *
- * Chrome = BoardUI's free `agent-composer` (52px pill, 36px circular controls,
+ * Chrome = BoardUI's free `agent-composer` grammar on the console radius
+ * ladder (48px `2xl` field wrapping `lg` controls — concentric at `p-1.5`;
  * `ComposerLoader` light while the agent works, `AgentThinking` above it).
  * Engine = the Timbal runtime through assistant-ui primitives — the input,
  * send/cancel, attachments and dropzone all bind to the thread runtime, so
@@ -50,7 +51,7 @@ export function BoardComposer({
       <ComposerLoader active={isRunning}>
         <div
           className={cx(
-            "flex min-h-[52px] w-full items-end gap-2.5 rounded-full border p-2",
+            "flex min-h-[48px] w-full items-end gap-2 rounded-2xl border p-1.5",
             isRunning
               ? "border-transparent bg-transparent"
               : "border-border-button-default bg-background-primary-default shadow-xs",
@@ -61,7 +62,7 @@ export function BoardComposer({
               <button
                 type="button"
                 aria-label="Add attachment"
-                className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-ai-chat-composer-add-background text-foreground-icon-primary transition-colors duration-150 hover:bg-ai-chat-composer-add-hover-background disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-ai-chat-composer-add-background text-foreground-icon-primary transition-colors duration-150 hover:bg-ai-chat-composer-add-hover-background disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <RiAttachment2 className="size-5" aria-hidden />
               </button>
@@ -77,7 +78,7 @@ export function BoardComposer({
                 <button
                   type="button"
                   aria-label="Stop generating"
-                  className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-background-secondary-default text-foreground-icon-secondary transition-colors hover:bg-background-secondary-hover"
+                  className="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-background-secondary-default text-foreground-icon-secondary transition-colors hover:bg-background-secondary-hover"
                 >
                   <RiStopFill className="size-5" aria-hidden />
                 </button>
@@ -88,7 +89,7 @@ export function BoardComposer({
                 <button
                   type="submit"
                   aria-label="Send message"
-                  className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-button-primary text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-button-primary text-text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <RiArrowUpLine className="size-5" aria-hidden />
                 </button>
@@ -117,7 +118,7 @@ export function BoardComposer({
       className={cx("relative flex w-full flex-col", className)}
     >
       {attachUi ? (
-        <ComposerPrimitive.AttachmentDropzone className="rounded-[34px] data-[dragging=true]:outline-2 data-[dragging=true]:outline-dashed data-[dragging=true]:outline-accent-400">
+        <ComposerPrimitive.AttachmentDropzone className="rounded-2xl data-[dragging=true]:outline-2 data-[dragging=true]:outline-dashed data-[dragging=true]:outline-accent-400">
           {pill}
         </ComposerPrimitive.AttachmentDropzone>
       ) : (

@@ -1,9 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/timbal.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <!-- Theme before first paint. Dark is the default; the choice is stored under
+         `boardui:theme` (what ThemeToggle reads). A missing preference is written
+         as "dark" so the toggle's own mount-time lookup agrees with the page. -->
+    <script>
+      (function () {
+        var mode = "dark";
+        try {
+          var stored = window.localStorage.getItem("boardui:theme");
+          if (stored === "light" || stored === "dark") mode = stored;
+          else window.localStorage.setItem("boardui:theme", mode);
+        } catch (e) {}
+        document.documentElement.classList.toggle("dark", mode === "dark");
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -28,15 +28,15 @@ import {
  *
  * ```tsx
  * <Route element={<SidebarShell brand={{ name: "Acme" }} nav={NAV} dock={<AssistantPill />} />}>
- *   <Route index element={<OverviewPage />} />
- *   <Route path="/invoices" element={<InvoicesPage />} />
+ *   <Route index element={<InvoicesPage />} />           // "/" = the primary object, not a KPI dashboard
+ *   <Route path="/invoices/:id" element={<InvoicePage />} />
  *   <Route path="/chat" element={<EmbeddedChat />} />
  * </Route>
  * ```
  *
  * - Active row = longest nav path matching the URL (`end` = exact only).
  * - A `bare` nav item (EmbeddedChat, canvases) gets no header and no dock.
- * - `md+`: in-flow sidebar with the built-in collapse to a 60px icon rail.
+ * - `md+`: in-flow sidebar with the built-in collapse to an icon rail (one `w-9` column).
  * - `< md`: a brand bar with an opener; the sidebar becomes a floating left
  *   drawer (`Sheet`: focus-trapped, Escape/outside-press) that closes on
  *   navigation.

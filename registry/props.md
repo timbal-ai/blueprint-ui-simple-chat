@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 273 components · 17 hooks · generated 2026-09-07
+BoardUI 0.5.3 · 273 components · 17 hooks · generated 2026-09-11
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2376,7 +2376,7 @@ Other exports: `humanizeToolName(name: string)` · `summarizeArgs(args: unknown,
 **BoardWelcome** — BoardUI welcome (empty state) for the Timbal thread — the `Welcome` slot.
 Props: `ThreadWelcomeProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `config`, `suggestions`, `showWelcomeSuggestions` = `true`, `Suggestions` = `BoardSuggestions`
 
-**BoardSuggestions** — Suggestion prompts as BoardUI secondary pills.
+**BoardSuggestions** — Suggestion prompts as BoardUI secondary buttons (small, squared).
 Props: `SuggestionsSlotProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `suggestions`, `className`
 
 ### data-table — `@/components/timbal/data-table`
@@ -2404,6 +2404,7 @@ generic `<TData>`
 |---|---|---|---|
 | icon | `RemixiconComponentType` |  |  |
 | label | `string` |  |  |
+| onClick? | `() => void` |  |  |
 
 **DataTableMoreMenu**
 | prop | type | default | doc |
@@ -2561,7 +2562,7 @@ Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `Si
 | prop | type | default | doc |
 |---|---|---|---|
 | user | `ShellUser` |  |  |
-| variant? | `"sidebar" \| "topbar"` | `"sidebar"` | `sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = avatar + name pill. |
+| variant? | `"sidebar" \| "topbar"` | `"sidebar"` | `sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = name + chevron, no avatar. |
 | collapsed? | `boolean` | `false` |  |
 | placement? | `DropdownPopoverProps["placement"]` | `"right bottom"` | Where the menu opens relative to the trigger. |
 | className? | `string` |  |  |
@@ -2573,7 +2574,7 @@ Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `Si
 | nav | `ShellNavItem[]` |  |  |
 | secondaryNav? | `ShellNavItem[]` |  |  |
 | user? | `ShellUser` |  |  |
-| collapsed? | `boolean` | `false` | Collapsed 60px icon rail (desktop only). |
+| collapsed? | `boolean` | `false` | Collapsed icon rail — one `w-9` column plus `px-3` (desktop only). |
 | onToggleCollapsed? | `() => void` |  |  |
 | mobile? | `boolean` | `false` | Rendered inside the phone drawer: always expanded, close control instead of collapse. |
 | onClose? | `() => void` |  |  |
@@ -2633,7 +2634,7 @@ Other exports: `SidebarShellProps` (props of SidebarShell)
 
 ### shells — `@/components/timbal/shells/topbar-shell`
 
-**TopbarShell** — TopbarShell — the frame for consumer / marketing-style products that shouldn't all get a left rail: a sticky 56px bar (brand, inline nav pills, `actions`, theme toggle, account menu) over a centred `…
+**TopbarShell** — TopbarShell — the frame for consumer / marketing-style products that shouldn't all get a left rail: a sticky bar (brand, inline nav tabs, `actions`, theme toggle, account menu) over a centred `max-w-…
 | prop | type | default | doc |
 |---|---|---|---|
 | brand | `ShellBrand` |  |  |

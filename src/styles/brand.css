@@ -1,24 +1,19 @@
 /* ---------------------------------------------------------------------------
  * brand.css — the ONE file to restyle this app. Loaded after BoardUI's
- * theme.css, so anything set here wins. Accent, fonts, and the radius
- * scale live here.
+ * theme.css + typography.css, so anything set here wins.
  *
- * BoardUI's interactive surfaces (primary button gradient, ghost/link buttons,
- * checkbox, radio, switch, slider, tabs, sidebar selection, focus ring, date
- * range) all read the `--color-accent-*` ramp. Re-tint the whole product by
- * pointing the eleven stops at another Tailwind hue (or literal OKLCH values).
- * Content/data colors (charts, status chips) deliberately stay on their own
- * tokens — change those in theme.css semantics only if the brand demands it.
+ * Direction: "console". Dark by default (near-black surfaces, hairline
+ * borders), dense (3.5px spacing unit), a one-step smaller type ramp with
+ * tabular numerals, and a radius ladder that steps by the padding it wraps
+ * (16 → 12 → 8 → 6px) so nested corners stay concentric. Colour is BoardUI's
+ * own: the accent ramp, the status chips (lime/rose/yellow/cyan), the chart
+ * palette and the elevated button gradients are untouched — the one change is
+ * that the primary button is monochrome (charcoal on the white page, white on
+ * the dark one — the Timbal runtime's own primary), so blue is reserved for
+ * selection, links and focus.
  *
- * Agents: BoardUI blue is the default and stays unless the brief names a
- * brand colour or the user asks for another hue. Do not change the accent for
- * variety — variety comes from shell, template, density and content, not from
- * a random colour. When you do change it, write the choice in DESIGN.md.
- *
- * Examples:
- *   Violet   → var(--color-violet-500) …   Emerald → var(--color-emerald-600) …
- *   Rose     → var(--color-rose-500) …     Amber   → var(--color-amber-500) …
- *   Neutral  → var(--color-neutral-900) for 600/700, lighter stops for 50–300
+ * Nothing in here targets a component class: every rule is a token that
+ * BoardUI already reads, so `bun run boardui:sync` cannot undo it.
  * --------------------------------------------------------------------------- */
 @theme {
   /* Accent ramp (default: BoardUI blue — keep it). To re-tint for a brand,
@@ -37,38 +32,222 @@
   --color-accent-950: var(--color-violet-950);
   */
 
-  /* Slightly tighter corners than Tailwind/BoardUI defaults. Every
-     `rounded-*` utility follows these. Pills and avatars stay `rounded-full`. */
-  --radius-sm: 0.1875rem; /* 3px  was 4 */
-  --radius-md: 0.3125rem; /* 5px  was 6 */
-  --radius-lg: 0.375rem;  /* 6px  was 8 */
-  --radius-xl: 0.625rem;  /* 10px was 12 */
-  --radius-2xl: 0.875rem; /* 14px was 16 */
-  --radius-3xl: 1.25rem;  /* 20px was 24 */
-  --radius-4xl: 1.75rem;  /* 28px was 32 */
-  --radius-2lg: 8px;      /* was 10 — BoardUI step between lg and xl */
-  --radius-notification-card: 8px;
+  /* ----- Density -------------------------------------------------------------
+   * Every spacing utility (p-*, gap-*, size-*, h-*, w-*, inset-*) is a multiple
+   * of `--spacing`. 3.5px instead of Tailwind's 4px shrinks padding, control
+   * heights and icon boxes by 12.5% everywhere at once — the 36px button
+   * becomes 31.5px, `p-4` becomes 14px — while the 1px borders and the type
+   * ramp stay exactly where they are. */
+  --spacing: 0.21875rem;
+
+  /* ----- Radii ---------------------------------------------------------------
+   * Concentric ladder: each step down is roughly the padding that separates
+   * the two shapes at 3.5px/unit, so a `rounded-3xl` card (16) with `p-2`
+   * (7px) wraps `rounded-xl` tiles (8), a `rounded-2xl` tile (12) wraps
+   * `rounded-lg` controls (6), and a `rounded-2lg` button (6) wraps
+   * `rounded-md` chips (4). `rounded-full` stays for avatars and dots. */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
+  --radius-2lg: 6px; /* BoardUI's step between lg and xl: medium buttons, nav rows, inputs */
+  --radius-notification-card: 10px;
+
+  /* ----- Type ramp -----------------------------------------------------------
+   * One step smaller than BoardUI (body 14→13, captions 12/11→11/10, titles
+   * 24/20/18→22/18/16). Line-heights stay generous for the size, titles get a
+   * touch of negative tracking, the two captions a touch of positive. */
+  --text-large-title-regular: 3.5rem;   --text-large-title-regular--line-height: 4rem;   --text-large-title-regular--letter-spacing: -0.02em;
+  --text-large-title-medium: 3.5rem;    --text-large-title-medium--line-height: 4rem;    --text-large-title-medium--letter-spacing: -0.02em;
+  --text-large-title-semibold: 3.5rem;  --text-large-title-semibold--line-height: 4rem;  --text-large-title-semibold--letter-spacing: -0.02em;
+  --text-large-title-bold: 3.5rem;      --text-large-title-bold--line-height: 4rem;      --text-large-title-bold--letter-spacing: -0.02em;
+
+  --text-display-1-regular: 2.75rem;    --text-display-1-regular--line-height: 3.25rem;  --text-display-1-regular--letter-spacing: -0.02em;
+  --text-display-1-medium: 2.75rem;     --text-display-1-medium--line-height: 3.25rem;   --text-display-1-medium--letter-spacing: -0.02em;
+  --text-display-1-semibold: 2.75rem;   --text-display-1-semibold--line-height: 3.25rem; --text-display-1-semibold--letter-spacing: -0.02em;
+  --text-display-1-bold: 2.75rem;       --text-display-1-bold--line-height: 3.25rem;     --text-display-1-bold--letter-spacing: -0.02em;
+
+  --text-display-2-regular: 2.25rem;    --text-display-2-regular--line-height: 2.75rem;  --text-display-2-regular--letter-spacing: -0.02em;
+  --text-display-2-medium: 2.25rem;     --text-display-2-medium--line-height: 2.75rem;   --text-display-2-medium--letter-spacing: -0.02em;
+  --text-display-2-semibold: 2.25rem;   --text-display-2-semibold--line-height: 2.75rem; --text-display-2-semibold--letter-spacing: -0.02em;
+  --text-display-2-bold: 2.25rem;       --text-display-2-bold--line-height: 2.75rem;     --text-display-2-bold--letter-spacing: -0.02em;
+
+  --text-display-3-regular: 1.875rem;   --text-display-3-regular--line-height: 2.375rem;  --text-display-3-regular--letter-spacing: -0.015em;
+  --text-display-3-medium: 1.875rem;    --text-display-3-medium--line-height: 2.375rem;   --text-display-3-medium--letter-spacing: -0.015em;
+  --text-display-3-semibold: 1.875rem;  --text-display-3-semibold--line-height: 2.375rem; --text-display-3-semibold--letter-spacing: -0.015em;
+  --text-display-3-bold: 1.875rem;      --text-display-3-bold--line-height: 2.375rem;     --text-display-3-bold--letter-spacing: -0.015em;
+
+  --text-display-4-regular: 1.625rem;   --text-display-4-regular--line-height: 2rem;  --text-display-4-regular--letter-spacing: -0.015em;
+  --text-display-4-medium: 1.625rem;    --text-display-4-medium--line-height: 2rem;   --text-display-4-medium--letter-spacing: -0.015em;
+  --text-display-4-semibold: 1.625rem;  --text-display-4-semibold--line-height: 2rem; --text-display-4-semibold--letter-spacing: -0.015em;
+  --text-display-4-bold: 1.625rem;      --text-display-4-bold--line-height: 2rem;     --text-display-4-bold--letter-spacing: -0.015em;
+
+  --text-title-1-regular: 1.375rem;     --text-title-1-regular--line-height: 1.75rem;  --text-title-1-regular--letter-spacing: -0.01em;
+  --text-title-1-medium: 1.375rem;      --text-title-1-medium--line-height: 1.75rem;   --text-title-1-medium--letter-spacing: -0.01em;
+  --text-title-1-semibold: 1.375rem;    --text-title-1-semibold--line-height: 1.75rem; --text-title-1-semibold--letter-spacing: -0.01em;
+  --text-title-1-bold: 1.375rem;        --text-title-1-bold--line-height: 1.75rem;     --text-title-1-bold--letter-spacing: -0.01em;
+
+  --text-title-2-regular: 1.125rem;     --text-title-2-regular--line-height: 1.5rem;  --text-title-2-regular--letter-spacing: -0.01em;
+  --text-title-2-medium: 1.125rem;      --text-title-2-medium--line-height: 1.5rem;   --text-title-2-medium--letter-spacing: -0.01em;
+  --text-title-2-semibold: 1.125rem;    --text-title-2-semibold--line-height: 1.5rem; --text-title-2-semibold--letter-spacing: -0.01em;
+  --text-title-2-bold: 1.125rem;        --text-title-2-bold--line-height: 1.5rem;     --text-title-2-bold--letter-spacing: -0.01em;
+
+  --text-title-3-regular: 1rem;         --text-title-3-regular--line-height: 1.375rem;  --text-title-3-regular--letter-spacing: -0.005em;
+  --text-title-3-medium: 1rem;          --text-title-3-medium--line-height: 1.375rem;   --text-title-3-medium--letter-spacing: -0.005em;
+  --text-title-3-semibold: 1rem;        --text-title-3-semibold--line-height: 1.375rem; --text-title-3-semibold--letter-spacing: -0.005em;
+  --text-title-3-bold: 1rem;            --text-title-3-bold--line-height: 1.375rem;     --text-title-3-bold--letter-spacing: -0.005em;
+
+  --text-headline-regular: 0.9375rem;   --text-headline-regular--line-height: 1.25rem;
+  --text-headline-medium: 0.9375rem;    --text-headline-medium--line-height: 1.25rem;
+  --text-headline-semibold: 0.9375rem;  --text-headline-semibold--line-height: 1.25rem;
+  --text-headline-bold: 0.9375rem;      --text-headline-bold--line-height: 1.25rem;
+
+  --text-body-regular: 0.8125rem;       --text-body-regular--line-height: 1.125rem;
+  --text-body-medium: 0.8125rem;        --text-body-medium--line-height: 1.125rem;
+  --text-body-semibold: 0.8125rem;      --text-body-semibold--line-height: 1.125rem;
+  --text-body-bold: 0.8125rem;          --text-body-bold--line-height: 1.125rem;
+
+  --text-body-2-regular: 0.75rem;       --text-body-2-regular--line-height: 1rem;
+  --text-body-2-medium: 0.75rem;        --text-body-2-medium--line-height: 1rem;
+  --text-body-2-semibold: 0.75rem;      --text-body-2-semibold--line-height: 1rem;
+  --text-body-2-bold: 0.75rem;          --text-body-2-bold--line-height: 1rem;
+
+  --text-caption-1-regular: 0.6875rem;  --text-caption-1-regular--line-height: 0.9375rem;  --text-caption-1-regular--letter-spacing: 0.2px;
+  --text-caption-1-medium: 0.6875rem;   --text-caption-1-medium--line-height: 0.9375rem;   --text-caption-1-medium--letter-spacing: 0.2px;
+  --text-caption-1-semibold: 0.6875rem; --text-caption-1-semibold--line-height: 0.9375rem; --text-caption-1-semibold--letter-spacing: 0.2px;
+  --text-caption-1-bold: 0.6875rem;     --text-caption-1-bold--line-height: 0.9375rem;     --text-caption-1-bold--letter-spacing: 0.2px;
+
+  --text-caption-2-regular: 0.625rem;   --text-caption-2-regular--line-height: 0.875rem;  --text-caption-2-regular--letter-spacing: 0.25px;
+  --text-caption-2-medium: 0.625rem;    --text-caption-2-medium--line-height: 0.875rem;   --text-caption-2-medium--letter-spacing: 0.25px;
+  --text-caption-2-semibold: 0.625rem;  --text-caption-2-semibold--line-height: 0.875rem; --text-caption-2-semibold--letter-spacing: 0.25px;
+  --text-caption-2-bold: 0.625rem;      --text-caption-2-bold--line-height: 0.875rem;     --text-caption-2-bold--letter-spacing: 0.25px;
 }
 
+/* ---------------------------------------------------------------------------
+ * Light mode (`:root`) — grey page, white cards, grey primary button.
+ * --------------------------------------------------------------------------- */
 :root {
   /* Fonts. BoardUI's theme.css builds --font-sans/--font-mono from these two
      hooks (Next loads them via next/font upstream). index.html loads Inter +
      JetBrains Mono from Google Fonts; swap the family here AND in index.html. */
   --font-inter: "Inter";
   --font-mono-source: "JetBrains Mono";
+
+  /* Grey page so white cards read as panels (BoardUI ships white on white). */
+  --color-background-full: var(--color-neutral-50);
+
+  /* Primary button: BoardUI's elevated two-stop gradient (highlight on hover,
+     darker on press, `shadow-xs` from the component), in charcoal instead of
+     the accent. On a white page the blue slab was the loudest thing on
+     screen; grey keeps the hierarchy and leaves blue for selection, links and
+     focus. Danger stays red. `.dark` below inverts it to a white button. */
+  --gradient-button-primary-default: linear-gradient(180deg, var(--color-neutral-700) 0%, var(--color-neutral-800) 100%);
+  --gradient-button-primary-hover:   linear-gradient(180deg, var(--color-neutral-600) 0%, var(--color-neutral-700) 100%);
+  --gradient-button-primary-active:  linear-gradient(180deg, var(--color-neutral-800) 0%, var(--color-neutral-900) 100%);
 }
 
-/* BoardUI's dark tertiary is neutral-600 on 800/900 surfaces (~2:1). The
-   composer status tab is worse: 50% of 700, transparent, on glass. Secondary
-   never remaps in dark (stays 500). Bump muted ink so the copilot tab,
-   placeholder, and workforce picker stay readable. */
+/* ---------------------------------------------------------------------------
+ * Dark — the default. Near-black page (neutral-950), neutral-900 cards,
+ * neutral-925 trays, neutral-800 hairlines; ink steps 50 / 400 / 500.
+ * Status chips, charts and the accent gradient are BoardUI's own dark values.
+ * --------------------------------------------------------------------------- */
 .dark {
-  --color-text-secondary: var(--color-neutral-300);
-  --color-text-tertiary: var(--color-neutral-400);
-  --color-text-placeholder: var(--color-neutral-400);
+  /* Surfaces */
+  --color-background-full:              var(--color-neutral-950);
+  --color-background-primary-default:   var(--color-neutral-900);
+  --color-background-inner-default:     color-mix(in srgb, var(--color-neutral-800) 55%, transparent);
+  --color-background-primary-hover:     color-mix(in srgb, var(--color-neutral-800) 70%, transparent);
+  --color-background-primary-active:    var(--color-neutral-800);
+  --color-background-primary-disabled:  var(--color-neutral-900);
+  --color-input-disabled-background:    color-mix(in srgb, var(--color-neutral-800) 40%, transparent);
+  --color-background-secondary-default: var(--color-neutral-925);
+  --color-background-secondary-hover:   var(--color-neutral-800);
+  --color-background-tertiary-default:  var(--color-neutral-800);
+  --color-background-tertiary-hover:    var(--color-neutral-700);
+  --color-background-quaternary-default: var(--color-neutral-700);
+  --color-background-quaternary-hover:   var(--color-neutral-600);
+  --color-background-recent-hire-role:  color-mix(in srgb, var(--color-neutral-800) 60%, transparent);
+  --color-avatar-neutral-background:    var(--color-neutral-800);
+  --color-stat-card-icon-background:    var(--color-neutral-800);
+  --color-segmented-control-background:          var(--color-neutral-950);
+  --color-segmented-control-selected-background: var(--color-neutral-800);
+  --color-theme-toggle-sidebar-background:          var(--color-neutral-900);
+  --color-theme-toggle-sidebar-selected-background: var(--color-neutral-800);
+  --color-ai-chat-composer-add-background:       var(--color-neutral-800);
+  --color-ai-chat-composer-add-hover-background: var(--color-neutral-700);
+  --color-composer-panel-tab-background:         var(--color-neutral-800);
+  --color-composer-panel-add-background:         var(--color-neutral-800);
+  --color-composer-panel-add-hover-background:   var(--color-neutral-700);
+  --color-composer-panel-tile-border:            var(--color-neutral-700);
+  --color-composer-panel-rail-background:        color-mix(in srgb, var(--color-neutral-950) 60%, transparent);
+  --color-questionnaire-key-background:          var(--color-neutral-800);
+  --color-questionnaire-key-hover-background:    var(--color-neutral-700);
+  --color-dropdown-item-hover-background:        color-mix(in srgb, var(--color-neutral-800) 80%, transparent);
+  --color-kbd-background:                        var(--color-neutral-800);
+  --color-kbd-foreground:                        var(--color-neutral-400);
+  --color-badge-neutral-background:              var(--color-neutral-800);
+  --color-team-menu-count-background:            var(--color-neutral-800);
+  --color-team-menu-count-foreground:            var(--color-neutral-400);
+  --color-notification-center-background:        var(--color-neutral-900);
+  --color-file-upload-icon-background:           var(--color-neutral-700);
+
+  /* Borders: one hairline step above the surface they sit on. */
+  --color-border-button-default:   var(--color-neutral-800);
+  --color-border-button-hover:     var(--color-neutral-600);
+  --color-border-button-active:    var(--color-neutral-500);
+  --color-border-button-white:     var(--color-neutral-800);
+  --color-border-checkbox-default: var(--color-neutral-700);
+  --color-border-checkbox-hover:   var(--color-neutral-500);
+  --color-border-checkbox-active:  var(--color-neutral-500);
+  --color-border-component-detail-container: var(--color-neutral-800);
+  --color-border-ai-profile-card:  var(--color-neutral-800);
+  --color-border-table:            var(--color-neutral-800);
+  --color-border-button-group:     var(--color-neutral-800);
+  --color-border-sidebar-profile-hover: var(--color-neutral-600);
+  --color-separator-border:        var(--color-neutral-800);
+  --color-separator-border-strong: var(--color-neutral-700);
+
+  /* Ink. BoardUI's dark tertiary is neutral-600 (~2:1 on its cards); the
+     console steps are 50 / 400 / 500 — muted but always legible. */
+  --color-text-secondary:            var(--color-neutral-400);
+  --color-text-tertiary:             var(--color-neutral-500);
+  --color-text-placeholder:          var(--color-neutral-500);
   --color-foreground-icon-secondary: var(--color-neutral-400);
-  --color-foreground-icon-tertiary: var(--color-neutral-500);
-  --color-composer-panel-tab-background: var(--color-neutral-700);
+  --color-foreground-icon-tertiary:  var(--color-neutral-500);
+  --color-foreground-icon-quaternary: var(--color-neutral-600);
+
+  /* Primary button: the light-mode charcoal inverted — white to neutral-200,
+     brighter on hover, darker on press (the same stops the Timbal runtime
+     uses for its own dark primary). Its ink flips to neutral-900 in the
+     scoped rule at the end of this file. Disabled keeps BoardUI's dark
+     low-emphasis fill. */
+  --gradient-button-primary-default: linear-gradient(180deg, var(--color-white) 0%, var(--color-neutral-200) 100%);
+  --gradient-button-primary-hover:   linear-gradient(180deg, var(--color-white) 0%, var(--color-neutral-100) 100%);
+  --gradient-button-primary-active:  linear-gradient(180deg, var(--color-neutral-200) 0%, var(--color-neutral-300) 100%);
+}
+
+/* ---------------------------------------------------------------------------
+ * Global behaviour (not tokens; BoardUI has no hook for these).
+ * --------------------------------------------------------------------------- */
+
+/* Tabular figures everywhere: KPI values, tables, timestamps and deltas line
+   up column by column, the way data tools expect. */
+body {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dark mode's primary surface is white, so its ink is dark. BoardUI paints
+   that ink with `text-text-white`, a token the red danger button shares, so
+   the flip is scoped to the primary surface utility (`bg-button-primary`,
+   used by Button, AssistantPill and the composer send controls) instead of
+   the token. Disabled primaries keep BoardUI's muted ink on the dark fill. */
+.dark .bg-button-primary:not(:disabled):not([aria-disabled="true"]),
+.dark .bg-button-primary:not(:disabled):not([aria-disabled="true"]) svg {
+  color: var(--color-neutral-900);
 }
 
 /* Runtime stock composer uses `placeholder:text-muted-foreground/70`, which

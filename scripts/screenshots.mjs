@@ -152,12 +152,14 @@ for (const route of ROUTES) {
           failures.push(`${name}: console ${t.slice(0, 160)}`);
         }
       });
-      if (dark) await page.addInitScript(() => window.localStorage.setItem("boardui-theme", "dark"));
+      // The theme is a stored preference (`boardui:theme`, read by ThemeToggle
+      // and the pre-paint script in index.html). Pin it explicitly for both
+      // shots: the app defaults to dark, so "light" must be set, not assumed.
+      await page.addInitScript((mode) => window.localStorage.setItem("boardui:theme", mode), dark ? "dark" : "light");
       try {
         // `load` + a settle wait rather than `networkidle`: the dev server's HMR
         // socket and streaming endpoints can keep the network busy forever.
         await page.goto(base + route, { waitUntil: "load", timeout: 30000 });
-        if (dark) await page.evaluate(() => document.documentElement.classList.add("dark"));
         await page.waitForFunction(() => document.fonts.ready.then(() => true), null, { timeout: 5000 }).catch(() => {});
         await page.waitForTimeout(args.includes("--preview") ? 900 : 1500);
         await page.screenshot({ path: `${OUT}/${name}.png` });

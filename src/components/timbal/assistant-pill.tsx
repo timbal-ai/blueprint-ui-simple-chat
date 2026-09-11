@@ -10,8 +10,8 @@ import { cx } from "@/utils/cx";
 /**
  * AssistantPill — the floating in-page AI for operational screens.
  *
- * Drop `<AssistantPill />` once (a shell's `dock` slot): a BoardUI pill docked
- * bottom-right opens the Timbal copilot panel (`AppCopilot` — glass panel,
+ * Drop `<AssistantPill />` once (a shell's `dock` slot): a primary button
+ * docked bottom-right opens the Timbal copilot panel (`AppCopilot` — glass panel,
  * streaming, attachments, artifacts; portaled to `document.body`). The
  * runtime's own SiriWave trigger is hidden in favour of the house pill; the
  * thread chrome is `boardChatComponents`.
@@ -63,16 +63,16 @@ export function AssistantPill({
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
         className={cx(
-          "fixed z-40 inline-flex h-11 cursor-pointer items-center gap-2 rounded-full pr-4 pl-3",
+          "fixed z-40 inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg pr-3 pl-2.5",
           "right-[calc(1rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))]",
-          "bg-button-primary text-text-white shadow-lg",
+          "bg-button-primary text-text-white shadow-md",
           "transition-[opacity,transform,translate,scale,filter] duration-200 ease-out motion-reduce:transition-none",
           "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus-ring",
           open ? "pointer-events-none scale-90 opacity-0 blur-[2px]" : "scale-100 opacity-100 blur-0",
           className,
         )}
       >
-        <RiSparkling2Fill className="size-5 shrink-0 text-text-white" aria-hidden />
+        <RiSparkling2Fill className="size-4 shrink-0" aria-hidden />
         <span className="text-body-medium whitespace-nowrap">{label}</span>
       </button>
       <AppCopilot

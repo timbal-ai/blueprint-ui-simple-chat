@@ -18,8 +18,18 @@
   --popover: var(--color-background-primary-default);
   --popover-foreground: var(--color-text-primary);
 
-  --primary: var(--color-accent-600);
-  --primary-foreground: var(--color-text-white);
+  /* The runtime's `primary` is monochrome by design (near-black / near-white,
+     used for its buttons, checked controls, calendar selection, list markers
+     and markdown links). Point it at the same neutrals as BoardUI's primary
+     button (brand.css): charcoal here, white under `.dark` below. */
+  --primary: var(--color-neutral-800);
+  --primary-foreground: var(--color-white);
+  --primary-fill-from: var(--color-neutral-700);
+  --primary-fill-to: var(--color-neutral-800);
+  --primary-fill-hover-from: var(--color-neutral-600);
+  --primary-fill-hover-to: var(--color-neutral-700);
+  --primary-fill-active-from: var(--color-neutral-800);
+  --primary-fill-active-to: var(--color-neutral-900);
   --secondary: var(--color-background-secondary-default);
   --secondary-foreground: var(--color-text-primary);
   --muted: var(--color-background-secondary-default);
@@ -27,7 +37,7 @@
   --accent: var(--color-background-secondary-hover);
   --accent-foreground: var(--color-text-primary);
   --destructive: var(--color-text-error-primary);
-  --destructive-foreground: var(--color-text-white);
+  --destructive-foreground: var(--color-white);
 
   --border: var(--color-border-button-default);
   --input: var(--color-border-button-default);
@@ -47,8 +57,8 @@
   /* Studio shell sidebar (only used if TimbalStudioShell is mounted) */
   --sidebar: var(--color-background-secondary-default);
   --sidebar-foreground: var(--color-text-primary);
-  --sidebar-primary: var(--color-accent-600);
-  --sidebar-primary-foreground: var(--color-text-white);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: var(--color-background-secondary-hover);
   --sidebar-accent-foreground: var(--color-text-primary);
   --sidebar-border: var(--color-separator-border);
@@ -61,4 +71,18 @@
   --chart-4: var(--color-chart-4);
   --chart-5: var(--color-chart-5);
   --chart-6: var(--color-chart-6);
+}
+
+/* Dark: the primary inverts to a white surface with dark ink, matching
+   `--gradient-button-primary-*` in brand.css. Everything else above already
+   flips through its BoardUI token. */
+.dark {
+  --primary: var(--color-neutral-100);
+  --primary-foreground: var(--color-neutral-900);
+  --primary-fill-from: var(--color-white);
+  --primary-fill-to: var(--color-neutral-200);
+  --primary-fill-hover-from: var(--color-white);
+  --primary-fill-hover-to: var(--color-neutral-100);
+  --primary-fill-active-from: var(--color-neutral-200);
+  --primary-fill-active-to: var(--color-neutral-300);
 }

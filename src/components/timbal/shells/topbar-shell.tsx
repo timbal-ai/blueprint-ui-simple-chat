@@ -24,7 +24,7 @@ import {
 
 /**
  * TopbarShell — the frame for consumer / marketing-style products that
- * shouldn't all get a left rail: a sticky 56px bar (brand, inline nav pills,
+ * shouldn't all get a left rail: a sticky bar (brand, inline nav tabs,
  * `actions`, theme toggle, account menu) over a centred `max-w-6xl` column.
  *
  * Same contract as `SidebarShell` minus `secondaryNav`; mount it as a layout
@@ -55,7 +55,7 @@ function TopbarNavLink({ item, isSelected }: { item: ShellNavItem; isSelected: b
       to={item.path}
       aria-current={isSelected ? "page" : undefined}
       className={cx(
-        "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-body-medium whitespace-nowrap outline-none",
+        "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-body-medium whitespace-nowrap outline-none",
         "transition-colors duration-150 ease focus-visible:ring-2 focus-visible:ring-border-focus-ring",
         isSelected
           ? "bg-background-tertiary-default text-text-primary"

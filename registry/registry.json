@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-07T20:43:16.368Z",
+  "generatedAt": "2026-09-11T14:40:14.717Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -19217,7 +19217,7 @@
       "importFrom": "@/components/timbal/chat/welcome",
       "layer": "timbal",
       "group": "chat",
-      "summary": "Suggestion prompts as BoardUI secondary pills.",
+      "summary": "Suggestion prompts as BoardUI secondary buttons (small, squared).",
       "props": [
         {
           "name": "suggestions",
@@ -19403,6 +19403,11 @@
           "name": "label",
           "type": "string",
           "optional": false
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "optional": true
         }
       ],
       "tags": [
@@ -21694,7 +21699,7 @@
           "name": "variant",
           "type": "\"sidebar\" | \"topbar\"",
           "optional": true,
-          "doc": "`sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = avatar + name pill.",
+          "doc": "`sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = name + chevron, no avatar.",
           "default": "\"sidebar\""
         },
         {
@@ -21775,7 +21780,7 @@
           "name": "collapsed",
           "type": "boolean",
           "optional": true,
-          "doc": "Collapsed 60px icon rail (desktop only).",
+          "doc": "Collapsed icon rail — one `w-9` column plus `px-3` (desktop only).",
           "default": "false"
         },
         {
@@ -22311,7 +22316,7 @@
       "importFrom": "@/components/timbal/shells/topbar-shell",
       "layer": "timbal",
       "group": "shells",
-      "summary": "TopbarShell — the frame for consumer / marketing-style products that shouldn't all get a left rail: a sticky 56px bar (brand, inline nav pills, `actions`, theme toggle, account menu) over a centred `…",
+      "summary": "TopbarShell — the frame for consumer / marketing-style products that shouldn't all get a left rail: a sticky bar (brand, inline nav tabs, `actions`, theme toggle, account menu) over a centred `max-w-…",
       "props": [
         {
           "name": "brand",

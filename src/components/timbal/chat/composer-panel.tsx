@@ -59,14 +59,19 @@ const HIDE_VENDORED_CONTROLS = cx(
 
 /* The vendored card is white with a 2% shadow — designed for the template's
  * grey container, where it reads as a card. Give it a hairline so it also
- * holds its edge when a page puts it on a white ground. */
-const CARD_EDGE = "[&_.rounded-3xl]:border [&_.rounded-3xl]:border-border-button-default";
+ * holds its edge when a page puts it on a white ground. The card's own
+ * circular controls (send, model picker chevron) are squared to the `lg`
+ * radius so they match every other control in the console look. */
+const CARD_EDGE = cx(
+  "[&_.rounded-3xl]:border [&_.rounded-3xl]:border-border-button-default",
+  "[&_button.rounded-full]:rounded-lg",
+);
 
-/* The panel's controls row sits inside the card's 10px padding, so a 36px
- * circle at `inset 10px` lands exactly on the add menu (left) and the send
+/* The panel's controls row sits inside the card's padding, so a `size-9`
+ * square at `inset 2.5` lands exactly on the add menu (left) and the send
  * button (right). */
 const OVERLAY_BUTTON = cx(
-  "absolute bottom-2.5 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full",
+  "absolute bottom-2.5 z-10 flex size-9 cursor-pointer items-center justify-center rounded-lg",
   "transition-colors duration-150 ease outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring",
 );
 

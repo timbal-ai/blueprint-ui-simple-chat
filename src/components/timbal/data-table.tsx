@@ -180,7 +180,7 @@ export function DataTable<TData>({
                 leadingIcon={RiSearchLine}
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
-                fieldClassName="min-w-[153px] flex-1 rounded-full bg-background-secondary-default sm:w-[153px] sm:min-w-0 sm:flex-none"
+                fieldClassName="min-w-[153px] flex-1 rounded-lg bg-background-secondary-default sm:w-[153px] sm:min-w-0 sm:flex-none"
                 className="text-body-medium"
               />
             ) : null}
@@ -294,14 +294,16 @@ export function DataTable<TData>({
 export function DataTableRowAction({
   icon,
   label,
+  onClick,
 }: {
   icon: RemixiconComponentType;
   label: string;
+  onClick?: () => void;
 }) {
   return (
     <TooltipTrigger delay={200}>
       <Focusable>
-        <IconButton icon={icon} size="small" aria-label={label} />
+        <IconButton icon={icon} size="small" aria-label={label} onClick={onClick} />
       </Focusable>
       <Tooltip size="md">{label}</Tooltip>
     </TooltipTrigger>

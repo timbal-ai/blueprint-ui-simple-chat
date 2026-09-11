@@ -17,10 +17,18 @@
 /* Tailwind must scan the runtime's pre-built dist for the classes it uses. */
 @source "../node_modules/@timbal-ai/timbal-react/dist";
 
-/* Chat readability: the runtime hardcodes text-sm on the composer textarea;
-   hold it at 16px (also stops iOS Safari zooming the page on focus). */
+/* Composer type follows the body ramp (13px) so the thread and the input read
+   as one surface. Touch devices keep 16px: iOS Safari zooms the page when a
+   focused field is set smaller. */
 .aui-composer-input,
 .aui-edit-composer-input {
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
+  font-size: var(--text-body-regular);
+  line-height: var(--text-body-regular--line-height);
+}
+@media (pointer: coarse) {
+  .aui-composer-input,
+  .aui-edit-composer-input {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
 }

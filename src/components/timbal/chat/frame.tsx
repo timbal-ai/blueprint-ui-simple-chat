@@ -8,8 +8,8 @@ import { cx } from "@/utils/cx";
  * ChatFrame — the BoardUI Pro `ai-chat` container grammar (Figma "ai_chat" →
  * Chat_container) as the surface every Timbal chat sits on.
  *
- * A radius-3xl `background/secondary` panel with an optional breadcrumb header
- * row; the thread fills the rest and its pinned composer band paints the same
+ * A radius-3xl `background/secondary` panel with a hairline edge and an
+ * optional breadcrumb header row; the thread fills the rest and its pinned composer band paints the same
  * surface (`--thread-canvas`). White cards — the composer, user bubbles — then
  * read as cards, the way they do in the template, instead of dissolving into
  * a white page. Inside a shell the frame sits in the page inset, so it lines
@@ -34,7 +34,9 @@ export function ChatFrame({
     <section
       data-slot="chat-frame"
       className={cx(
-        "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl bg-background-secondary-default",
+        // The hairline keeps the panel's edge where the tray and the page sit
+        // one neutral step apart (near-black on black, grey on grey).
+        "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border-button-white bg-background-secondary-default",
         className,
       )}
       style={{ ["--thread-canvas" as string]: "var(--color-background-secondary-default)" }}

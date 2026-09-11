@@ -34,10 +34,12 @@ import {
  * props. The vendored `DashboardSidebar` hardcodes its identity ("Board team",
  * "Mertcan Esmergul", Support/Settings → the demo SettingsModal) and renders
  * its rows as plain `<a href>` — so the shells rebuild the same recipe here,
- * class for class (floating 24px-radius panel, 260 ↔ 60px morph, accent
- * gradient on the selected row, blur-collapsing labels, sidebar-segmented
- * theme toggle, team-card account trigger) from the BoardUI base primitives,
- * with react-router `Link`s and real brand / user / nav data.
+ * class for class (floating panel on the `3xl` radius token, 260px ↔ icon-rail
+ * morph, blur-collapsing labels, sidebar-segmented theme toggle, team-card
+ * account trigger) from the BoardUI base primitives, with react-router
+ * `Link`s and real brand / user / nav data. One deliberate departure: the
+ * selected row is a quiet tertiary fill rather than the template's accent
+ * gradient, so the accent is reserved for actions.
  */
 
 /* ------------------------------------------------------------ collapsible */
@@ -127,21 +129,26 @@ export function ShellNavRow({
         "transition-[width,background-color] duration-300 ease-in-out",
         "focus-visible:ring-2 focus-visible:ring-border-focus-ring",
         collapsed ? "w-9" : "w-full",
-        isSelected
-          ? "bg-linear-to-b from-accent-500 to-accent-600 shadow-nav-selected"
-          : "hover:bg-background-secondary-hover",
+        // Selected = a quiet tertiary fill with primary ink (no accent slab):
+        // the row reads as "where you are", not as a call to action.
+        isSelected ? "bg-background-tertiary-default" : "hover:bg-background-secondary-hover",
       )}
     >
-      <span className="flex min-w-0 items-center gap-2">
+      {/* No gap while collapsed: the zero-width label slot would otherwise
+          still claim `gap-2` and push the icon off the rail's centre line. */}
+      <span className={cx("flex min-w-0 items-center", !collapsed && "gap-2")}>
         <Icon
-          className={cx("size-5 shrink-0", isSelected ? "text-text-white" : "text-foreground-icon-secondary")}
+          className={cx(
+            "size-5 shrink-0",
+            isSelected ? "text-foreground-icon-primary" : "text-foreground-icon-secondary",
+          )}
           aria-hidden
         />
         <Collapsible collapsed={collapsed}>
           <span
             className={cx(
               "text-body-medium whitespace-nowrap",
-              isSelected ? "text-text-white" : "text-text-secondary",
+              isSelected ? "text-text-primary" : "text-text-secondary",
             )}
           >
             {item.label}
@@ -150,7 +157,7 @@ export function ShellNavRow({
       </span>
       {item.badge !== undefined ? (
         <Collapsible collapsed={collapsed}>
-          <Badge color={isSelected ? "primary" : "neutral"}>{item.badge}</Badge>
+          <Badge color="neutral">{item.badge}</Badge>
         </Collapsible>
       ) : null}
     </Link>
@@ -185,7 +192,7 @@ function UserAvatar({ user, className }: { user: ShellUser; className?: string }
 
 export interface ShellUserMenuProps {
   user: ShellUser;
-  /** `sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = avatar + name pill. */
+  /** `sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = name + chevron, no avatar. */
   variant?: "sidebar" | "topbar";
   collapsed?: boolean;
   /** Where the menu opens relative to the trigger. */
@@ -220,7 +227,7 @@ export function ShellUserMenu({
 
   const sidebarTriggerContent = (
     <>
-      <span className="flex min-w-0 items-center gap-2">
+      <span className={cx("flex min-w-0 items-center", !collapsed && "gap-2")}>
         <UserAvatar user={user} />
         <Collapsible collapsed={collapsed}>
           <UserIdentity user={user} />
@@ -239,6 +246,13 @@ export function ShellUserMenu({
   );
 
   if (!interactive) {
+    if (variant === "topbar") {
+      return (
+        <span className={cx("hidden max-w-32 truncate px-2 text-body-medium text-text-primary sm:inline", className)}>
+          {user.name}
+        </span>
+      );
+    }
     return (
       <div className={sidebarTriggerClass} title={collapsed ? user.name : undefined}>
         {sidebarTriggerContent}
@@ -249,20 +263,22 @@ export function ShellUserMenu({
   return (
     <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
       {variant === "topbar" ? (
+        // Text trigger: the bar carries brand, nav and actions — an avatar
+        // there competes with the brand mark. Below `sm` the drawer's account
+        // card takes over, so the trigger hides rather than shrinking to a dot.
         <DropdownTrigger
           aria-label={`Account: ${user.name}`}
           className={cx(
-            "flex shrink-0 items-center gap-1.5 rounded-full p-0.5 sm:pr-2",
+            "hidden h-8 shrink-0 items-center gap-1 rounded-lg pr-1.5 pl-2 sm:flex",
             "transition-colors duration-150 ease hover:bg-background-primary-hover",
-            "focus-visible:ring-offset-2",
+            isOpen && "bg-background-primary-hover",
             className,
           )}
         >
-          <UserAvatar user={user} />
-          <span className="hidden max-w-32 truncate text-body-medium text-text-primary sm:inline">{user.name}</span>
+          <span className="max-w-32 truncate text-body-medium text-text-primary">{user.name}</span>
           <ChevronDownSmall
             className={cx(
-              "hidden size-4 shrink-0 text-foreground-icon-tertiary transition-transform duration-200 ease sm:block",
+              "size-4 shrink-0 text-foreground-icon-tertiary transition-transform duration-200 ease",
               isOpen && "rotate-180",
             )}
           />
@@ -303,7 +319,7 @@ export interface ShellSidebarProps {
   nav: ShellNavItem[];
   secondaryNav?: ShellNavItem[];
   user?: ShellUser;
-  /** Collapsed 60px icon rail (desktop only). */
+  /** Collapsed icon rail — one `w-9` column plus `px-3` (desktop only). */
   collapsed?: boolean;
   onToggleCollapsed?: () => void;
   /** Rendered inside the phone drawer: always expanded, close control instead of collapse. */
@@ -345,23 +361,24 @@ export function ShellSidebar({
           ? "w-full p-3"
           : cx(
               "rounded-3xl border border-border-button-white bg-background-secondary-default shadow-sidebar",
-              // Collapsed rail keeps the 60px spec: 1px border + 11px padding
-              // per side leaves exactly 36px for the w-9 icon rows.
-              collapsed ? "w-[60px] px-[11px] py-3" : "w-[260px] p-3",
+              // Collapsed rail = 1px border + px-3 + exactly one w-9 row, all
+              // in spacing units, so the rows, the brand mark, the toggle and
+              // the account avatar share one centre line at any `--spacing`.
+              collapsed ? "w-[calc(var(--spacing)*15+2px)] px-3 py-3" : "w-[260px] p-3",
             ),
         className,
       )}
     >
       {/* Padding + matching negative margin give focus rings and the
           selected row's 1px ring room inside the scroller's clip. */}
-      <div className="-m-2 flex min-h-0 w-[calc(100%+16px)] flex-col gap-3 overflow-y-auto p-2 [scrollbar-width:none]">
+      <div className="-m-2 flex min-h-0 w-[calc(100%+var(--spacing)*4)] flex-col gap-3 overflow-y-auto p-2 [scrollbar-width:none]">
         <div
           className={cx(
             "flex w-full transition-[gap] duration-300 ease-in-out",
             collapsed ? "flex-col-reverse items-center justify-center gap-2.5" : "flex-row items-center justify-between",
           )}
         >
-          <div className={cx("flex min-w-0 items-center gap-2", collapsed ? "w-9 justify-center" : "overflow-hidden")}>
+          <div className={cx("flex min-w-0 items-center", collapsed ? "w-9 justify-center" : "gap-2 overflow-hidden")}>
             <ShellBrandMark brand={brand} />
             <Collapsible collapsed={collapsed}>
               <span className="flex min-w-0 flex-col items-start justify-center">

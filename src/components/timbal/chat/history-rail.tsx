@@ -104,16 +104,21 @@ export function ChatHistoryRail({
             className={cx(
               "flex w-full items-center gap-2 rounded-2lg p-2 outline-none transition-colors duration-150 ease",
               "focus-visible:ring-2 focus-visible:ring-border-focus-ring",
-              activeId
-                ? "hover:bg-background-secondary-hover"
-                : "bg-linear-to-b from-accent-500 to-accent-600 shadow-nav-selected",
+              // Same quiet selected state as the shell nav rows: a tertiary
+              // fill with primary ink, no accent slab.
+              activeId ? "hover:bg-background-secondary-hover" : "bg-background-tertiary-default",
             )}
           >
             <RiAddLine
-              className={cx("size-5 shrink-0", activeId ? "text-foreground-icon-secondary" : "text-text-white")}
+              className={cx(
+                "size-5 shrink-0",
+                activeId ? "text-foreground-icon-secondary" : "text-foreground-icon-primary",
+              )}
               aria-hidden
             />
-            <span className={cx("text-body-medium whitespace-nowrap", activeId ? "text-text-secondary" : "text-text-white")}>
+            <span
+              className={cx("text-body-medium whitespace-nowrap", activeId ? "text-text-secondary" : "text-text-primary")}
+            >
               New chat
             </span>
           </Link>
@@ -127,8 +132,8 @@ export function ChatHistoryRail({
             <ul aria-busy className="flex flex-col gap-0.5">
               {Array.from({ length: 4 }, (_, i) => (
                 <li key={i} className="flex h-[30px] items-center gap-2.5 px-2">
-                  <span className="h-3 flex-1 animate-pulse rounded-full bg-background-tertiary-default" />
-                  <span className="h-3 w-6 animate-pulse rounded-full bg-background-tertiary-default" />
+                  <span className="h-3 flex-1 animate-pulse rounded-sm bg-background-tertiary-default" />
+                  <span className="h-3 w-6 animate-pulse rounded-sm bg-background-tertiary-default" />
                 </li>
               ))}
             </ul>

@@ -101,7 +101,7 @@ export function resolveActiveNavItem(items: ShellNavItem[], pathname: string): S
  * Breadcrumb trail from root to leaf: nav items whose path is a real prefix
  * of the URL (`/invoices` → `/invoices/42`), shortest first. `"/"` is only
  * included when you are actually on home — sibling pages are not children of
- * Overview just because `matchPath("/", …)` is greedy.
+ * home just because `matchPath("/", …)` is greedy.
  */
 export function resolveNavTrail(items: ShellNavItem[], pathname: string): ShellNavItem[] {
   const here = normalizeNavPath(pathname);

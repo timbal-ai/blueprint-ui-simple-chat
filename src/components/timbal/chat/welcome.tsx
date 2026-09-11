@@ -11,7 +11,7 @@ import { cx } from "@/utils/cx";
 /**
  * BoardUI welcome (empty state) for the Timbal thread — the `Welcome` slot.
  * Mirrors the chat-starter hero: title-2 heading, secondary subline, and the
- * suggestion prompts as a row of pill chips (BoardUI `Suggestions` slot below).
+ * suggestion prompts as a row of small secondary buttons (`Suggestions` slot below).
  */
 export function BoardWelcome({
   config,
@@ -47,7 +47,7 @@ export function BoardWelcome({
   );
 }
 
-/** Suggestion prompts as BoardUI secondary pills. */
+/** Suggestion prompts as BoardUI secondary buttons (small, squared). */
 export function BoardSuggestions({ suggestions, className }: SuggestionsSlotProps) {
   const items = useResolvedSuggestions(suggestions);
   if (!items || items.length === 0) return null;
@@ -63,7 +63,7 @@ export function BoardSuggestions({ suggestions, className }: SuggestionsSlotProp
         >
           <button
             type="button"
-            className="cursor-pointer rounded-full border border-border-button-default bg-background-primary-default px-3.5 py-2 text-body-2-medium text-text-secondary shadow-xs transition-colors hover:bg-background-secondary-default hover:text-text-primary"
+            className="cursor-pointer rounded-lg border border-border-button-default bg-background-primary-default px-3 py-1.5 text-body-2-medium text-text-secondary shadow-xs transition-colors hover:bg-background-primary-hover hover:text-text-primary"
           >
             {s.title}
           </button>
