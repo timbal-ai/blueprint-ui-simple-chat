@@ -1,16 +1,17 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/timbal.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark light" />
-    <!-- Theme before first paint. Dark is the default; the choice is stored under
+    <meta name="color-scheme" content="light dark" />
+    <!-- Theme before first paint. Light is the default; the choice is stored under
          `boardui:theme` (what ThemeToggle reads). A missing preference is written
-         as "dark" so the toggle's own mount-time lookup agrees with the page. -->
+         so the toggle's own mount-time lookup agrees with the page. To ship a
+         dark-first product, change `mode` here and nothing else. -->
     <script>
       (function () {
-        var mode = "dark";
+        var mode = "light";
         try {
           var stored = window.localStorage.getItem("boardui:theme");
           if (stored === "light" || stored === "dark") mode = stored;

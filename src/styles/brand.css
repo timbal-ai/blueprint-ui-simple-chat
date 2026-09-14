@@ -2,10 +2,11 @@
  * brand.css — the ONE file to restyle this app. Loaded after BoardUI's
  * theme.css + typography.css, so anything set here wins.
  *
- * Direction: "console". Dark by default (near-black page, BoardUI's own
- * surface ladder on top of it), dense (3.5px spacing unit), a one-step smaller
- * type ramp with tabular numerals, and a radius ladder that steps by the
- * padding it wraps (16 → 12 → 8 → 6px) so nested corners stay concentric.
+ * Direction: "console". Light by default (white page, BoardUI's own surface
+ * ladder; dark is one toggle away and every token has both bindings), dense
+ * (3.5px spacing unit), a one-step smaller type ramp with tabular numerals,
+ * and a radius ladder that steps by the padding it wraps (16 → 12 → 8 → 6px)
+ * so nested corners stay concentric.
  *
  * Surfaces follow BoardUI's grammar in both modes — page → tray (`secondary`)
  * → tile (`primary`) — with one change: the page sits a full step away from
@@ -178,7 +179,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Dark — the default. BoardUI's own dark ladder (neutral-900 trays,
+ * Dark (via the toggle). BoardUI's own dark ladder (neutral-900 trays,
  * neutral-800 tiles, neutral-700 control borders, neutral-800 separators) on
  * a neutral-950 page instead of its neutral-925 one: 925 → 900 was a 6-unit
  * step nobody could see, and the previous "everything one shade darker"

@@ -134,10 +134,11 @@ if (existsSync(globalsPath)) {
 }
 
 // ── 4b. theme default: ThemeToggle must not force "light" when storage is empty/blocked ──
-// Upstream `storedTheme()` returns "light" unless localStorage says "dark". index.html
-// paints dark before first paint, then the toggle's mount effect flipped the page back
-// to light whenever storage was empty or blocked (sandboxed preview iframes, Safari
-// cross-site). Fall back to the class already on <html> instead.
+// Upstream `storedTheme()` returns "light" unless localStorage says "dark", ignoring the
+// class index.html already set on <html> before first paint. That silently overrides any
+// product that ships dark-first whenever storage is empty or blocked (sandboxed preview
+// iframes, Safari cross-site). Fall back to the class already on <html> instead, so
+// index.html's `mode` is the single place the default lives.
 const togglePath = join(SRC, "components/application/theme/theme-toggle.tsx");
 if (existsSync(togglePath)) {
   const src = readFileSync(togglePath, "utf8");
@@ -146,8 +147,8 @@ if (existsSync(togglePath)) {
   const patched = `function storedTheme(): ThemeMode {
   // Patched by scripts/boardui-sync.mjs (see "theme default" step): with no
   // stored preference — or when storage is blocked, as in a sandboxed preview
-  // iframe — fall back to the class index.html already set on <html> (dark by
-  // default) instead of upstream's hardcoded "light".
+  // iframe — fall back to the class index.html already set on <html> instead
+  // of upstream's hardcoded "light", so index.html owns the default.
   if (typeof window === "undefined") return "light";
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);

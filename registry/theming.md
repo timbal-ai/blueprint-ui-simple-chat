@@ -56,7 +56,7 @@ Typical pairings: `text-title-2-medium text-text-primary` for a section heading,
 
 Light is `:root`; dark activates when `.dark` is on `<html>` (declared via `@custom-variant dark` in `styles/globals.css`). Because components only use semantic tokens, they need no `dark:` styling. Rule of thumb: if you are typing `dark:` followed by a color, stop and pick a better token.
 
-**Dark is the default in this blueprint.** `index.html` puts `class="dark"` on `<html>` and, before first paint, reads the `boardui:theme` preference — writing `"dark"` when nothing is stored so the vendored `ThemeToggle` (which treats a missing key as light) agrees. Light stays a first-class mode: the toggle persists the choice and every token has both bindings. To ship light-first for a product, change the default string in that one script.
+**Light is the default in this blueprint.** Before first paint, `index.html` reads the `boardui:theme` preference and toggles `class="dark"` on `<html>` only when the user chose dark; a missing preference is written as `"light"`. The vendored `ThemeToggle` is patched (`boardui-sync.mjs`, "theme default" step) to fall back to whatever class `<html>` carries when storage is empty or blocked, so the two never disagree. Dark stays a first-class mode: the toggle persists the choice and every token has both bindings. To ship dark-first for a product, change the `mode` default in that one script.
 
 ## House style — the "console" baseline
 

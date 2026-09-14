@@ -9,8 +9,8 @@ streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source u
 **Read `registry/INDEX.md` before writing UI.** It lists every template, block,
 primitive and their props, plus the direction menu. **Then `registry/screens.md`**:
 what `/` opens on and how a card sits on the page.
-**The baseline look is a console** (`registry/theming.md` → House style): dark by
-default, 3.5 px grid, 4–16 px concentric radii, 13 px body, BoardUI's colours and
+**The baseline look is a console** (`registry/theming.md` → House style): light by
+default (dark one toggle away), 3.5 px grid, 4–16 px concentric radii, 13 px body, BoardUI's colours and
 elevated buttons (monochrome primary: charcoal in light, white in dark) — all tokens in `src/styles/brand.css`.
 Never re-round, re-colour or re-size type by hand to make a screen "feel" different.
 **Surfaces: page → tray → tile.** The shell paints the page (`bg-background-full`); a

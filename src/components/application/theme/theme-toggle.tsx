@@ -87,8 +87,8 @@ function installThemeTransitionStyle(
 function storedTheme(): ThemeMode {
   // Patched by scripts/boardui-sync.mjs (see "theme default" step): with no
   // stored preference — or when storage is blocked, as in a sandboxed preview
-  // iframe — fall back to the class index.html already set on <html> (dark by
-  // default) instead of upstream's hardcoded "light".
+  // iframe — fall back to the class index.html already set on <html> instead
+  // of upstream's hardcoded "light", so index.html owns the default.
   if (typeof window === "undefined") return "light";
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);

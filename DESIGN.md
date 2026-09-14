@@ -3,8 +3,8 @@
 Fill this in **before** building. It is the contract for every later session:
 read it first, update it when a decision changes. Keep it under 40 lines.
 
-Inherited baseline (not a decision to remake): dark-first console — dark default,
-3.5px grid, 4–16px concentric radii, 13px body, BoardUI colours and elevated buttons
+Inherited baseline (not a decision to remake): light-first console — white page, dark one
+toggle away, 3.5px grid, 4–16px concentric radii, 13px body, BoardUI colours and elevated buttons
 (monochrome primary: charcoal in light, white in dark), Remix `Line` icons (`registry/theming.md` → House
 style). The direction below is what varies per product.
 
@@ -42,4 +42,6 @@ Previous project used: _shell / entry / template / density_ → this one differs
   light chips tinted, `design:check` reads the `index` route for `StatCards` · generated screens
   came out "all grey" with `currentColor` borders and a KPI strip on `/` whatever DESIGN.md said.
   Recipes and the surface grammar: `registry/screens.md`.
+- 2026-09-14 — light is the default again (`index.html`); dark stays a full mode behind the toggle ·
+  generated products should open on the white console, not near-black.
 - YYYY-MM-DD — _decision · reason_

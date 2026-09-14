@@ -31,11 +31,11 @@ and never leave a chat mounted at `/` unless the product is a chat.
 Sign-in is the platform's: `AuthGuard` redirects signed-out users to the Timbal
 login page and back. The app has no login screen or route of its own.
 
-The look is a dark-first console: near-black surfaces, a 3.5px spacing grid, a 4–16px
-concentric radius ladder, 13px body type, BoardUI's own colours and elevated buttons
-(monochrome primary: charcoal in light, white in dark), Remix `Line` icons. All of it is tokens in
-`src/styles/brand.css` (`registry/theming.md` → House style); light mode stays
-first-class through the theme toggle.
+The look is a light console: white page, `neutral-100` trays, hairline borders, a 3.5px
+spacing grid, a 4–16px concentric radius ladder, 13px body type, BoardUI's own colours and
+elevated buttons (monochrome primary: charcoal in light, white in dark), Remix `Line` icons.
+All of it is tokens in `src/styles/brand.css` (`registry/theming.md` → House style); dark
+mode is a full second binding behind the theme toggle.
 
 The entry screen is a decision, not a default: `DESIGN.md` has an `Entry` axis and
 `bun run design:check` rejects a KPI dashboard without a written reason — including a
