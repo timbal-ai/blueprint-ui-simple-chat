@@ -37,4 +37,9 @@ Previous project used: _shell / entry / template / density_ → this one differs
   dark — the Timbal runtime's own primary) so blue is reserved for selection, links and focus.
 - 2026-09-11 — `Entry` axis added and the KPI dashboard now needs a written reason · every
   generated app was opening on the same stat-tiles + chart + table screen.
+- 2026-09-14 — surfaces back to BoardUI's ladder (white page / `neutral-100` tray / white tile;
+  dark page `neutral-950` under BoardUI's `900` / `800`), bare `border` defaults to the hairline,
+  light chips tinted, `design:check` reads the `index` route for `StatCards` · generated screens
+  came out "all grey" with `currentColor` borders and a KPI strip on `/` whatever DESIGN.md said.
+  Recipes and the surface grammar: `registry/screens.md`.
 - YYYY-MM-DD — _decision · reason_

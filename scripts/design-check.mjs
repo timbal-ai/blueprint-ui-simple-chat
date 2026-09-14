@@ -8,14 +8,19 @@
  * screens are being built without a recorded decision on shell / entry screen /
  * density / template / tone — or when the entry screen or starting template is
  * the KPI dashboard without a written reason (the one screen every generated
- * app drifts to). Warns (exit 0) only when DESIGN.md names a non-blue accent
- * while src/styles/brand.css still ships the default ramp (blue is the expected
- * default; it needs no justification).
+ * app drifts to). It also reads the code: the page(s) mounted on the `index`
+ * route in src/App.tsx are resolved and scanned for `StatCards` / `stat-cards`
+ * (one level of local imports deep). A stat-tile strip on `/` while DESIGN.md
+ * says the entry is a list / board / record / editor / schedule / conversation
+ * is the same drift with a different label, and fails the same way.
+ * Warns (exit 0) only when DESIGN.md names a non-blue accent while
+ * src/styles/brand.css still ships the default ramp (blue is the expected
+ * default; it needs no justification), or when `/` is still Placeholder.tsx.
  *
  * Run it before you build screens; CI runs it too.
  */
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const design = readFileSync(resolve(ROOT, "DESIGN.md"), "utf8");
@@ -55,13 +60,124 @@ for (const axis of ["Entry", "Start from"]) {
   }
 }
 
-const accentSet = /^\s*--color-accent-500:\s*var\(--color-(?!blue-)/m.test(brand) || /^\s*--color-accent-500:\s*(oklch|#|rgb|hsl)/m.test(brand);
+// ── The code side: what does `/` actually render? ─────────────────────────────
+// DESIGN.md can say "list + detail" while the page opens on four stat tiles.
+// Resolve every `<Route index element={…}>` in src/App.tsx to its page file
+// and look for StatCards there (and in the files it imports from src/pages).
+
+const WRAPPERS = new Set(["AuthGuard", "Suspense", "Fragment", "Navigate", "SessionProvider"]);
+const DASHBOARD_RE = /dashboard|kpi|metric|overview|stat/i;
+
+/** `@/x` → src/x; relative → from the importing file. Tries .tsx/.ts and /index. */
+function resolveImport(spec, fromFile) {
+  let base;
+  if (spec.startsWith("@/")) base = resolve(ROOT, "src", spec.slice(2));
+  else if (spec.startsWith(".")) base = resolve(dirname(fromFile), spec);
+  else return null;
+  for (const candidate of [base, `${base}.tsx`, `${base}.ts`, resolve(base, "index.tsx"), resolve(base, "index.ts")]) {
+    if (/\.tsx?$/.test(candidate) && existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+  }
+  return null;
+}
+
+/** Map local identifier → import specifier for one file (default + named imports). */
+function importsOf(src) {
+  const map = new Map();
+  const re = /import\s+(?:(\w+)\s*,?\s*)?(?:\{([^}]*)\})?\s*from\s*["']([^"']+)["']/g;
+  let m;
+  while ((m = re.exec(src))) {
+    const [, def, named, spec] = m;
+    if (def) map.set(def, spec);
+    if (named) {
+      for (const part of named.split(",")) {
+        const name = part.trim().split(/\s+as\s+/).pop()?.trim();
+        if (name) map.set(name, spec);
+      }
+    }
+  }
+  return map;
+}
+
+/** Components rendered by `<Route index element={…}>` (innermost non-wrapper tag). */
+function indexRouteComponents(appSrc) {
+  const out = [];
+  const re = /<Route\b[^>]*\bindex\b[^>]*\belement=\{/g;
+  let m;
+  while ((m = re.exec(appSrc))) {
+    // Walk the balanced braces of the element prop.
+    let depth = 1;
+    let i = m.index + m[0].length;
+    const start = i;
+    while (i < appSrc.length && depth > 0) {
+      if (appSrc[i] === "{") depth++;
+      else if (appSrc[i] === "}") depth--;
+      i++;
+    }
+    const expr = appSrc.slice(start, i - 1);
+    const tags = [...expr.matchAll(/<([A-Z]\w*)/g)].map((t) => t[1]).filter((t) => !WRAPPERS.has(t));
+    if (tags.length) out.push(tags.at(-1));
+  }
+  return out;
+}
+
+function usesStatCards(src) {
+  return /components\/application\/dashboard\/stat-cards|<StatCards\b/.test(src);
+}
+
+function entryUsesStatTiles() {
+  const appPath = resolve(ROOT, "src/App.tsx");
+  if (!existsSync(appPath)) return null;
+  const appSrc = readFileSync(appPath, "utf8");
+  const appImports = importsOf(appSrc);
+  const hits = [];
+  for (const name of indexRouteComponents(appSrc)) {
+    if (name === "Placeholder") {
+      console.warn("design-check: warning — `/` still renders Placeholder.tsx. Replace it with the entry screen and delete the file.");
+      continue;
+    }
+    const spec = appImports.get(name);
+    const file = spec ? resolveImport(spec, appPath) : null;
+    if (!file) continue;
+    const src = readFileSync(file, "utf8");
+    if (usesStatCards(src)) {
+      hits.push(file);
+      continue;
+    }
+    // One level deeper: the page's own local imports under src/pages.
+    for (const [, childSpec] of importsOf(src)) {
+      const child = resolveImport(childSpec, file);
+      if (child && child.includes("/src/pages/") && usesStatCards(readFileSync(child, "utf8"))) {
+        hits.push(child);
+        break;
+      }
+    }
+  }
+  return hits;
+}
+
+const statTilePages = entryUsesStatTiles() ?? [];
+if (statTilePages.length) {
+  const entry = decisions.Entry ?? { decision: "", why: "" };
+  const declaredDashboard = DASHBOARD_RE.test(entry.decision) && entry.why && !/^_/.test(entry.why);
+  if (!declaredDashboard) {
+    problems.push(
+      `The entry route renders StatCards (${statTilePages.map((p) => p.replace(ROOT + "/", "")).join(", ")}) ` +
+        `but DESIGN.md's "Entry" says "${entry.decision || "?"}". A KPI strip above the primary object is the layout every ` +
+        `generated app converges on. Either remove the stat tiles from "/" (they belong on a metrics screen the brief asked for) ` +
+        `or record "KPI dashboard" as the Entry with the brief's reason in the Why cell.`,
+    );
+  }
+}
+
+// Comments stripped first: brand.css ships the violet re-tint as a commented-out example.
+const brandCode = brand.replace(/\/\*[\s\S]*?\*\//g, "");
+const accentSet = /^\s*--color-accent-500:\s*var\(--color-(?!blue-)/m.test(brandCode) || /^\s*--color-accent-500:\s*(oklch|#|rgb|hsl)/m.test(brandCode);
 const accentRow = design.split("\n").find((l) => l.startsWith("| Accent "));
 const accentDecision = accentRow ? (accentRow.split("|")[2] ?? "").trim().toLowerCase() : "";
 
 if (problems.length) {
   console.error("design-check failed:\n  " + problems.join("\n  "));
-  console.error("\nFill the Direction table in DESIGN.md (shell, entry screen, accent, density, template-or-compose, tone). See registry/INDEX.md → Direction menu.");
+  console.error("\nDESIGN.md is the contract: fill the Direction table (shell, entry screen, accent, density, template-or-compose, tone) and make the code match it. See registry/INDEX.md → Direction menu and registry/screens.md → entry screens.");
   process.exit(1);
 }
 

@@ -38,8 +38,10 @@ concentric radius ladder, 13px body type, BoardUI's own colours and elevated but
 first-class through the theme toggle.
 
 The entry screen is a decision, not a default: `DESIGN.md` has an `Entry` axis and
-`bun run design:check` rejects a KPI dashboard without a written reason. The shell
-examples open on a ticket queue and a schedule for that reason.
+`bun run design:check` rejects a KPI dashboard without a written reason — including a
+stat-tile strip on `/` while `DESIGN.md` says otherwise (it resolves the `index` route and
+looks for `StatCards`). Six entry recipes and the page → tray → tile surface grammar are
+in `registry/screens.md`; the shell examples open on a ticket queue and a schedule.
 
 Routes to look at: `/` (placeholder), `/chat`, `/chat/:id`, `/templates/{dashboard,finance,hr,
 marketing,medical,calendar,ai-profile,ai-chat,ai-image-generation}`,
@@ -49,7 +51,7 @@ marketing,medical,calendar,ai-profile,ai-chat,ai-image-generation}`,
 
 ```
 AGENTS.md                 the rules for agents (≤ 60 lines)   ·   DESIGN.md  the direction of THIS product
-registry/                 what exists: INDEX.md → templates.md · components.md · props.md · patterns.md · timbal.md
+registry/                 what exists: INDEX.md → screens.md · templates.md · components.md · props.md · patterns.md · timbal.md
 src/components/base/      BoardUI primitives           ┐
 src/components/application/  BoardUI blocks, charts, agent UI, template subtrees  │ vendored, never hand-edited
 src/components/foundations/  brand mark, chevrons      ┘   (bun run boardui:sync)

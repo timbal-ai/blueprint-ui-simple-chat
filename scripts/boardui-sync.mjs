@@ -133,6 +133,37 @@ if (existsSync(globalsPath)) {
   writeFileSync(globalsPath, header + stripped);
 }
 
+// ── 4b. theme default: ThemeToggle must not force "light" when storage is empty/blocked ──
+// Upstream `storedTheme()` returns "light" unless localStorage says "dark". index.html
+// paints dark before first paint, then the toggle's mount effect flipped the page back
+// to light whenever storage was empty or blocked (sandboxed preview iframes, Safari
+// cross-site). Fall back to the class already on <html> instead.
+const togglePath = join(SRC, "components/application/theme/theme-toggle.tsx");
+if (existsSync(togglePath)) {
+  const src = readFileSync(togglePath, "utf8");
+  const upstream =
+    /function storedTheme\(\): ThemeMode \{\n  if \(typeof window === "undefined"\) return "light";\n  try \{\n    return window\.localStorage\.getItem\(THEME_STORAGE_KEY\) === "dark" \? "dark" : "light";\n  \} catch \{\n    return "light";\n  \}\n\}/;
+  const patched = `function storedTheme(): ThemeMode {
+  // Patched by scripts/boardui-sync.mjs (see "theme default" step): with no
+  // stored preference — or when storage is blocked, as in a sandboxed preview
+  // iframe — fall back to the class index.html already set on <html> (dark by
+  // default) instead of upstream's hardcoded "light".
+  if (typeof window === "undefined") return "light";
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "dark" || stored === "light") return stored;
+  } catch {
+    // Storage blocked: the class on <html> is the only source of truth.
+  }
+  return currentTheme();
+}`;
+  if (upstream.test(src)) {
+    writeFileSync(togglePath, src.replace(upstream, patched));
+  } else if (!src.includes("Patched by scripts/boardui-sync.mjs")) {
+    console.warn("boardui-sync: theme-toggle.tsx storedTheme() changed upstream — re-apply the dark-default patch by hand.");
+  }
+}
+
 // ── 5. refresh the BoardUI agent skill references into registry/ ────────────
 const skillTmp = join(ROOT, "node_modules/.tmp/boardui-skill");
 rmSync(skillTmp, { recursive: true, force: true });

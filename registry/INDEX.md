@@ -7,6 +7,7 @@ be installed; nothing is fetched at build time.
 
 | Read | When |
 |---|---|
+| **`screens.md`** | Before the first page: what `/` opens on (six entry recipes, none of them a KPI strip) and the surface grammar (page → panel → tile, one frame per region, bare `border` is a hairline). |
 | **`templates.md`** | You need a whole screen. 9 finished pages (dashboard, finance, hr, marketing, medical, calendar, ai-profile, ai-chat, ai-image-generation), each with its route, subtree and data file. |
 | **`components.md`** | The BoardUI catalog: every block and primitive with a one-line description and a usage snippet. Names are exact. |
 | **`props.md`** | Props of every component (generated from source). Look here before guessing an API. |
@@ -26,8 +27,9 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
 src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
                                 embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
-src/styles/brand.css            the ONE file that restyles the product: surfaces, density (--spacing),
-                                radius ladder, type ramp, monochrome primary button, dark default (theming.md → House style)
+src/styles/brand.css            the ONE file that restyles the product: page surface, density (--spacing),
+                                radius ladder, type ramp, tinted light chips, monochrome primary button,
+                                the hairline default for bare `border` (theming.md → House style)
 ```
 
 Import through `@/`: `import { Button } from "@/components/base/buttons/button"`.
@@ -41,9 +43,11 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
    work on — tickets, invoices, bookings, documents, a conversation? `/` opens on
    that (a list with a detail sheet, a board, a record, an editor, a schedule). The
    KPI dashboard (stat tiles + trend chart + table) is a screen for briefs that ask
-   for metrics, not the default; `design:check` asks for a reason when it is chosen.
-   `/examples/shell-sidebar` (ticket queue) and `/examples/shell-topbar` (schedule)
-   show the two shells hosting non-dashboard entry screens.
+   for metrics, not the default, and **a row of stat tiles above the primary object
+   is the same screen**: `design:check` reads the `index` route and fails when it
+   renders `StatCards` without a recorded dashboard reason. Recipes for the six
+   entry shapes are in `screens.md`; `/examples/shell-sidebar` (ticket queue) and
+   `/examples/shell-topbar` (schedule) show two of them running.
 3. **Whole screen?** Start from the closest **template** (`templates.md`) → copy its
    shell into `src/pages/`, swap data + nav, delete what the brief doesn't need. If
    no template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
@@ -59,13 +63,16 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 
 | The screen needs… | Use (exact names, all vendored) |
 |---|---|
-| KPI tiles / numbers at a glance | `application/dashboard/stat-cards` |
+| Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
+| A record's detail beside the list | `timbal/overlays` `Sheet` (right side) opened from the row; `Modal` only for confirmations |
+| A simple list with actions | `base/table` + `base/badges`, `base/avatar`, `base/dropdown` |
+| A card region, a section, a sidebar | a **tray**: `rounded-3xl bg-background-secondary-default p-3` — no border. Things inside it are **tiles**: `rounded-2xl bg-background-primary-default`. See `screens.md` → surface grammar |
+| Status, priority, category label | `base/badges/chip` (`lime` ok · `yellow` waiting · `rose` blocked · `cyan`/`blue` info · `neutral`); counts → `base/badges/badge` |
+| KPI tiles (a metrics screen the brief asked for — not `/` by default) | `application/dashboard/stat-cards` |
 | A trend over time | `application/charts/area-chart-card`, `dashboard/line-chart-card`, `dashboard/revenue-chart-card` |
 | Compare categories | `charts/bar-list-card` (ranked bars), `charts/combo-chart-card`, `charts/stage-bars-card` |
 | Share of a whole | `charts/radial-chart-card` (donut), `charts/funnel-chart-card` |
 | Density / matrix / relationships | `charts/heatmap-chart-card`, `charts/scatter-chart-card`, `charts/radar-chart-card`, `charts/sankey-chart-card` |
-| Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
-| A simple list with actions | `base/table` + `base/badges`, `base/avatar`, `base/dropdown` |
 | Forms | `base/input`, `base/select`, `base/date-picker`, `base/checkbox`, `base/radio`, `base/switch`, `base/slider`, `base/file-upload`, `base/input-otp` |
 | Tabs, segmented views, wizards | `base/tabs`, `base/segmented-control`; multi-step → `application/questionnaire` |
 | Settings | `application/settings` (`settings-modal` and its sections) |
@@ -102,10 +109,11 @@ stat tiles over a revenue chart over a customers table are the same product.
 
 ## Don'ts (short list)
 
-- No raw palette classes or hex (`bg-white`, `text-gray-500`, `#fff`) — semantic tokens only.
+- No raw palette classes or hex (`bg-white`, `text-gray-500`, `border-neutral-800`, `#fff`) — semantic tokens only. A bare `border` is fine (it defaults to the hairline token); a coloured one is `border-border-button-default`.
+- No card on the page colour, and no bordered card inside a bordered card — page → tray → tile, one frame per region (`screens.md`).
 - No hand-stacked type (`text-sm font-medium`) — composite utilities (`text-body-medium`).
 - No per-component "softening" (`rounded-2xl` on a control, `p-6`, `shadow-lg`) — radius and density are set once in `brand.css`; use the step the ladder gives the element.
-- No default KPI dashboard as the entry screen — see "How to pick" step 2.
+- No default KPI dashboard as the entry screen, and no stat-tile strip above the primary object on `/` — see "How to pick" step 2.
 - No lookalikes of anything in `components.md`.
 - No editing under `base/`, `application/`, `foundations/`, `styles/theme.css|typography.css|globals.css` — they are overwritten by `bun run boardui:sync`. Wrap, don't fork.
 - No `useState` page switching — every page is a route.

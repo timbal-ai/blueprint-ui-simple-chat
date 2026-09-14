@@ -2,18 +2,25 @@
  * brand.css — the ONE file to restyle this app. Loaded after BoardUI's
  * theme.css + typography.css, so anything set here wins.
  *
- * Direction: "console". Dark by default (near-black surfaces, hairline
- * borders), dense (3.5px spacing unit), a one-step smaller type ramp with
- * tabular numerals, and a radius ladder that steps by the padding it wraps
- * (16 → 12 → 8 → 6px) so nested corners stay concentric. Colour is BoardUI's
- * own: the accent ramp, the status chips (lime/rose/yellow/cyan), the chart
- * palette and the elevated button gradients are untouched — the one change is
- * that the primary button is monochrome (charcoal on the white page, white on
- * the dark one — the Timbal runtime's own primary), so blue is reserved for
- * selection, links and focus.
+ * Direction: "console". Dark by default (near-black page, BoardUI's own
+ * surface ladder on top of it), dense (3.5px spacing unit), a one-step smaller
+ * type ramp with tabular numerals, and a radius ladder that steps by the
+ * padding it wraps (16 → 12 → 8 → 6px) so nested corners stay concentric.
+ *
+ * Surfaces follow BoardUI's grammar in both modes — page → tray (`secondary`)
+ * → tile (`primary`) — with one change: the page sits a full step away from
+ * the tray (white vs neutral-100 in light, neutral-950 vs neutral-900 in
+ * dark) so a card always reads as a card. Colour is BoardUI's own: accent
+ * ramp, chart palette and the elevated button gradients are untouched. Two
+ * deliberate departures: the primary button is monochrome (charcoal on the
+ * white page, white on the dark one — the Timbal runtime's own primary), so
+ * blue is reserved for selection, links and focus; and the light-mode status
+ * chips are tinted (10–14% of the hue) instead of BoardUI's /200 pastel slabs.
  *
  * Nothing in here targets a component class: every rule is a token that
- * BoardUI already reads, so `bun run boardui:sync` cannot undo it.
+ * BoardUI already reads, so `bun run boardui:sync` cannot undo it. The one
+ * exception is the `@layer base` block at the end, which fixes Tailwind v4's
+ * `currentColor` default for borders — also not something sync touches.
  * --------------------------------------------------------------------------- */
 @theme {
   /* Accent ramp (default: BoardUI blue — keep it). To re-tint for a brand,
@@ -128,7 +135,8 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Light mode (`:root`) — grey page, white cards, grey primary button.
+ * Light mode (`:root`) — white page, neutral-100 trays, white tiles (BoardUI's
+ * own ladder), tinted status chips, charcoal primary button.
  * --------------------------------------------------------------------------- */
 :root {
   /* Fonts. BoardUI's theme.css builds --font-sans/--font-mono from these two
@@ -137,8 +145,27 @@
   --font-inter: "Inter";
   --font-mono-source: "JetBrains Mono";
 
-  /* Grey page so white cards read as panels (BoardUI ships white on white). */
-  --color-background-full: var(--color-neutral-50);
+  /* Page stays white (BoardUI). A neutral-50 page was tried and read as "all
+     grey": 250 vs the neutral-100 tray's 245 is not a step, and white cards on
+     it only showed through their borders. White page → grey tray is a step;
+     a white card on the white page gets its edge from the hairline below. */
+
+  /* Status chips: BoardUI's light pairs are /200 fills with /800 ink — solid
+     pastel slabs that shout in a dense table. Keep the hue, drop the fill to a
+     tint (the same recipe the dark mode already uses: translucent /950 fills),
+     and let the ink carry the meaning. Dark keeps BoardUI's values. */
+  --color-status-lime-background:   color-mix(in srgb, var(--color-lime-500) 14%, transparent);
+  --color-status-lime-text:         var(--color-lime-800);
+  --color-status-yellow-background: color-mix(in srgb, var(--color-yellow-500) 16%, transparent);
+  --color-status-yellow-text:       var(--color-yellow-800);
+  --color-status-rose-background:   color-mix(in srgb, var(--color-rose-500) 12%, transparent);
+  --color-status-rose-text:         var(--color-rose-700);
+  --color-status-cyan-background:   color-mix(in srgb, var(--color-cyan-500) 12%, transparent);
+  --color-status-cyan-text:         var(--color-cyan-800);
+  --color-status-blue-background:   color-mix(in srgb, var(--color-blue-500) 12%, transparent);
+  --color-status-blue-text:         var(--color-blue-700);
+  --color-status-purple-background: color-mix(in srgb, var(--color-purple-500) 12%, transparent);
+  --color-status-purple-text:       var(--color-purple-700);
 
   /* Primary button: BoardUI's elevated two-stop gradient (highlight on hover,
      darker on press, `shadow-xs` from the component), in charcoal instead of
@@ -151,65 +178,34 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Dark — the default. Near-black page (neutral-950), neutral-900 cards,
- * neutral-925 trays, neutral-800 hairlines; ink steps 50 / 400 / 500.
- * Status chips, charts and the accent gradient are BoardUI's own dark values.
+ * Dark — the default. BoardUI's own dark ladder (neutral-900 trays,
+ * neutral-800 tiles, neutral-700 control borders, neutral-800 separators) on
+ * a neutral-950 page instead of its neutral-925 one: 925 → 900 was a 6-unit
+ * step nobody could see, and the previous "everything one shade darker"
+ * remap collapsed tray and tile into the same near-black. Ink steps 50 / 400
+ * / 500. Status chips, charts and the accent gradient are BoardUI's dark values.
  * --------------------------------------------------------------------------- */
 .dark {
-  /* Surfaces */
-  --color-background-full:              var(--color-neutral-950);
-  --color-background-primary-default:   var(--color-neutral-900);
-  --color-background-inner-default:     color-mix(in srgb, var(--color-neutral-800) 55%, transparent);
-  --color-background-primary-hover:     color-mix(in srgb, var(--color-neutral-800) 70%, transparent);
-  --color-background-primary-active:    var(--color-neutral-800);
-  --color-background-primary-disabled:  var(--color-neutral-900);
-  --color-input-disabled-background:    color-mix(in srgb, var(--color-neutral-800) 40%, transparent);
-  --color-background-secondary-default: var(--color-neutral-925);
-  --color-background-secondary-hover:   var(--color-neutral-800);
-  --color-background-tertiary-default:  var(--color-neutral-800);
-  --color-background-tertiary-hover:    var(--color-neutral-700);
-  --color-background-quaternary-default: var(--color-neutral-700);
-  --color-background-quaternary-hover:   var(--color-neutral-600);
-  --color-background-recent-hire-role:  color-mix(in srgb, var(--color-neutral-800) 60%, transparent);
-  --color-avatar-neutral-background:    var(--color-neutral-800);
-  --color-stat-card-icon-background:    var(--color-neutral-800);
-  --color-segmented-control-background:          var(--color-neutral-950);
-  --color-segmented-control-selected-background: var(--color-neutral-800);
-  --color-theme-toggle-sidebar-background:          var(--color-neutral-900);
-  --color-theme-toggle-sidebar-selected-background: var(--color-neutral-800);
-  --color-ai-chat-composer-add-background:       var(--color-neutral-800);
-  --color-ai-chat-composer-add-hover-background: var(--color-neutral-700);
-  --color-composer-panel-tab-background:         var(--color-neutral-800);
-  --color-composer-panel-add-background:         var(--color-neutral-800);
-  --color-composer-panel-add-hover-background:   var(--color-neutral-700);
-  --color-composer-panel-tile-border:            var(--color-neutral-700);
-  --color-composer-panel-rail-background:        color-mix(in srgb, var(--color-neutral-950) 60%, transparent);
-  --color-questionnaire-key-background:          var(--color-neutral-800);
-  --color-questionnaire-key-hover-background:    var(--color-neutral-700);
-  --color-dropdown-item-hover-background:        color-mix(in srgb, var(--color-neutral-800) 80%, transparent);
-  --color-kbd-background:                        var(--color-neutral-800);
-  --color-kbd-foreground:                        var(--color-neutral-400);
-  --color-badge-neutral-background:              var(--color-neutral-800);
-  --color-team-menu-count-background:            var(--color-neutral-800);
-  --color-team-menu-count-foreground:            var(--color-neutral-400);
-  --color-notification-center-background:        var(--color-neutral-900);
-  --color-file-upload-icon-background:           var(--color-neutral-700);
+  --color-background-full: var(--color-neutral-950);
 
-  /* Borders: one hairline step above the surface they sit on. */
-  --color-border-button-default:   var(--color-neutral-800);
-  --color-border-button-hover:     var(--color-neutral-600);
-  --color-border-button-active:    var(--color-neutral-500);
-  --color-border-button-white:     var(--color-neutral-800);
-  --color-border-checkbox-default: var(--color-neutral-700);
-  --color-border-checkbox-hover:   var(--color-neutral-500);
-  --color-border-checkbox-active:  var(--color-neutral-500);
-  --color-border-component-detail-container: var(--color-neutral-800);
-  --color-border-ai-profile-card:  var(--color-neutral-800);
-  --color-border-table:            var(--color-neutral-800);
-  --color-border-button-group:     var(--color-neutral-800);
-  --color-border-sidebar-profile-hover: var(--color-neutral-600);
-  --color-separator-border:        var(--color-neutral-800);
-  --color-separator-border-strong: var(--color-neutral-700);
+  /* The two controls that sat on the old 950 page and now sit on 900 trays. */
+  --color-segmented-control-background: var(--color-neutral-950);
+  --color-composer-panel-rail-background: color-mix(in srgb, var(--color-neutral-950) 60%, transparent);
+
+  /* Status chips: BoardUI's dark pairs, restated here because `:root` above
+     (same specificity as `.dark`, declared later) would otherwise win. */
+  --color-status-lime-background:   color-mix(in srgb, var(--color-lime-950) 60%, transparent);
+  --color-status-lime-text:         var(--color-lime-500);
+  --color-status-yellow-background: color-mix(in srgb, var(--color-yellow-950) 60%, transparent);
+  --color-status-yellow-text:       var(--color-yellow-500);
+  --color-status-rose-background:   color-mix(in srgb, var(--color-rose-950) 60%, transparent);
+  --color-status-rose-text:         var(--color-rose-500);
+  --color-status-cyan-background:   color-mix(in srgb, var(--color-cyan-950) 60%, transparent);
+  --color-status-cyan-text:         var(--color-cyan-400);
+  --color-status-blue-background:   color-mix(in srgb, var(--color-blue-950) 60%, transparent);
+  --color-status-blue-text:         var(--color-blue-300);
+  --color-status-purple-background: color-mix(in srgb, var(--color-purple-900) 50%, transparent);
+  --color-status-purple-text:       var(--color-purple-300);
 
   /* Ink. BoardUI's dark tertiary is neutral-600 (~2:1 on its cards); the
      console steps are 50 / 400 / 500 — muted but always legible. */
@@ -255,4 +251,27 @@ body {
 .aui-composer-input::placeholder {
   color: var(--color-text-secondary);
   opacity: 1;
+}
+
+/* Tailwind v4 preflight sets `border-color: currentColor`, so a bare `border`,
+   `border-b` or `divide-y` with no colour class paints a near-black (or, in
+   dark, near-white) line — the "weird heavy borders" on generated screens.
+   Default every border to the hairline separator (neutral-200 light /
+   neutral-800 dark) so an unqualified `border` is always the quiet structural
+   line; `border-border-button-default` and friends still override it. The
+   same goes for `ring` (focus rings default to the focus token) and
+   `outline` (native focus outlines follow the accent, not the text). */
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    border-color: var(--color-separator-border);
+  }
+  * {
+    --tw-ring-color: var(--color-border-focus-ring);
+  }
+  :focus-visible {
+    outline-color: var(--color-border-focus-ring);
+  }
 }

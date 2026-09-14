@@ -85,12 +85,18 @@ function installThemeTransitionStyle(
 }
 
 function storedTheme(): ThemeMode {
+  // Patched by scripts/boardui-sync.mjs (see "theme default" step): with no
+  // stored preference — or when storage is blocked, as in a sandboxed preview
+  // iframe — fall back to the class index.html already set on <html> (dark by
+  // default) instead of upstream's hardcoded "light".
   if (typeof window === "undefined") return "light";
   try {
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "dark" || stored === "light") return stored;
   } catch {
-    return "light";
+    // Storage blocked: the class on <html> is the only source of truth.
   }
+  return currentTheme();
 }
 
 export function applyTheme(theme: ThemeMode, { persist = true }: { persist?: boolean } = {}) {

@@ -7,21 +7,27 @@ streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source u
 (chat slots, shells, overlays) and `src/pages/`.
 
 **Read `registry/INDEX.md` before writing UI.** It lists every template, block,
-primitive and their props, plus the direction menu.
+primitive and their props, plus the direction menu. **Then `registry/screens.md`**:
+what `/` opens on and how a card sits on the page.
 **The baseline look is a console** (`registry/theming.md` → House style): dark by
 default, 3.5 px grid, 4–16 px concentric radii, 13 px body, BoardUI's colours and
 elevated buttons (monochrome primary: charcoal in light, white in dark) — all tokens in `src/styles/brand.css`.
 Never re-round, re-colour or re-size type by hand to make a screen "feel" different.
+**Surfaces: page → tray → tile.** The shell paints the page (`bg-background-full`); a
+card region is a tray (`bg-background-secondary-default`, no border); things inside it
+are tiles (`bg-background-primary-default`). One frame per region — never a bordered
+card inside a bordered card. A bare `border` is always the hairline (set in `brand.css`).
 
 ## Rules
 
 1. **Direction first.** Before code, write in `DESIGN.md`: shell, entry screen,
    density, template-or-compose, tone, references. Accent stays BoardUI blue unless
    the brief names a brand colour. Variety comes from shell, entry screen, template
-   and density — never from a random hue. **The KPI dashboard (stat tiles + trend
-   chart + table) is not the default entry screen**: `/` opens on the product's
-   primary object (list, board, record, editor, schedule, conversation);
-   `design:check` rejects `dashboard` without a reason.
+ and density — never from a random hue. **The KPI dashboard (stat tiles + trend
+ chart + table) is not the default entry screen, and a stat-tile strip above the
+ primary object is the same screen**: `/` opens on the product's primary object
+ (list, board, record, editor, schedule, conversation — recipes in `registry/screens.md`);
+ `design:check` reads the `index` route and rejects `StatCards` there without a reason.
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.
@@ -50,7 +56,7 @@ Never re-round, re-colour or re-size type by hand to make a screen "feel" differ
 ## Verify before finishing
 
 ```
-bun run design:check               # DESIGN.md direction filled? (the platform gate runs this too)
+bun run design:check               # DESIGN.md direction filled, and does `/` match it? (the platform gate runs this too)
 bun run lint && bun run build      # tsc + vite; the platform gate runs the same
 bun run screenshots                # every route at 1280/375, light/dark → screenshots/
 bun run registry:build             # only if you added/renamed a component under components/timbal — CI fails on drift
