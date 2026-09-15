@@ -17,7 +17,7 @@ const BASE = "/examples/shell-topbar";
 const NAV: ShellNavItem[] = [
   { path: BASE, label: "Schedule", icon: RiCalendarLine, end: true },
   { path: `${BASE}/chat`, label: "Chat", icon: RiChatAiLine, badge: "AI", bare: true },
-  { path: `${BASE}/settings`, label: "Settings", icon: RiSettings4Line },
+  { path: `${BASE}/settings`, label: "Settings", icon: RiSettings4Line, description: "Profile, notifications and how Northwind talks to you." },
 ];
 
 export default function ShellTopbarExample() {

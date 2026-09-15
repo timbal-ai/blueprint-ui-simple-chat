@@ -21,6 +21,7 @@ import { Input } from "@/components/base/input/input";
 import { Select, SelectItem } from "@/components/base/select/select";
 import { Switch } from "@/components/base/switch/switch";
 import { DataTable, DataTableMoreMenu, DataTableRowAction } from "@/components/timbal/data-table";
+import { PageHeader } from "@/components/timbal/shells";
 import {
   Modal,
   ModalBody,
@@ -176,6 +177,16 @@ export function TicketsDemo() {
 
   return (
     <>
+      {/* The shell owns the title; the page adds what only it knows: a live
+          count and the action that exists only here. No <h1> in the page. */}
+      <PageHeader
+        description={`${TICKETS.filter((t) => t.status !== "resolved").length} open · oldest first`}
+        actions={
+          <Button leadingIcon={RiAddFill} onClick={() => toast.success("Ticket created")}>
+            New ticket
+          </Button>
+        }
+      />
       <DataTable
         data={data}
         columns={columns}
@@ -291,21 +302,24 @@ export function ScheduleDemo() {
 
   return (
     <div className="flex w-full flex-col gap-2.5">
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <CalendarMonthSwitcher
-          month={month}
-          monthLabel={monthLabel}
-          onPrevMonth={() => setMonth((m) => m.subtract({ months: 1 }))}
-          onNextMonth={() => setMonth((m) => m.add({ months: 1 }))}
-          onSelectDate={(date) => {
-            setMonth(startOfMonth(date));
-            setHighlightedDate(date);
-          }}
-        />
-        <Button leadingIcon={RiAddFill} onClick={() => toast.success("Event created")}>
-          New event
-        </Button>
-      </div>
+      <PageHeader
+        description={monthLabel}
+        actions={
+          <Button leadingIcon={RiAddFill} onClick={() => toast.success("Event created")}>
+            New event
+          </Button>
+        }
+      />
+      <CalendarMonthSwitcher
+        month={month}
+        monthLabel={monthLabel}
+        onPrevMonth={() => setMonth((m) => m.subtract({ months: 1 }))}
+        onNextMonth={() => setMonth((m) => m.add({ months: 1 }))}
+        onSelectDate={(date) => {
+          setMonth(startOfMonth(date));
+          setHighlightedDate(date);
+        }}
+      />
       <div className="-mx-3 overflow-hidden bg-background-secondary-default sm:mx-0 sm:rounded-3xl sm:p-3">
         <CalendarMonthGrid month={month} highlightedDate={highlightedDate} onHighlightEnd={() => setHighlightedDate(null)} />
       </div>

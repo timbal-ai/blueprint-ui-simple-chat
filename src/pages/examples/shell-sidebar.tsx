@@ -1,6 +1,5 @@
-import { RiAddFill, RiChatAiLine, RiSettings4Line, RiTicketLine } from "@remixicon/react";
+import { RiChatAiLine, RiSettings4Line, RiTicketLine } from "@remixicon/react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Button } from "@/components/base/buttons/button";
 import { AssistantPill } from "@/components/timbal/assistant-pill";
 import { EmbeddedChat } from "@/components/timbal/embedded-chat";
 import { Toaster, toast } from "@/components/timbal/overlays";
@@ -17,11 +16,15 @@ const BASE = "/examples/shell-sidebar";
 
 const NAV: ShellNavItem[] = [
   { path: BASE, label: "Tickets", icon: RiTicketLine, end: true, badge: 12 },
+  // `description` is the one-line intro under the header title. Pages never
+  // print their own heading; TicketsDemo overrides this with a live count.
   // `bare`: the chat owns the page — no shell header, no dock over its composer.
   { path: `${BASE}/chat`, label: "Chat", icon: RiChatAiLine, bare: true },
 ];
 
-const SECONDARY_NAV: ShellNavItem[] = [{ path: `${BASE}/settings`, label: "Settings", icon: RiSettings4Line }];
+const SECONDARY_NAV: ShellNavItem[] = [
+  { path: `${BASE}/settings`, label: "Settings", icon: RiSettings4Line, description: "Profile, notifications and how the workspace talks to you." },
+];
 
 export default function ShellSidebarExample() {
   return (
@@ -34,11 +37,8 @@ export default function ShellSidebarExample() {
               nav={NAV}
               secondaryNav={SECONDARY_NAV}
               user={{ name: "Ada Lovelace", email: "ada@acme.com", onSignOut: () => toast.info("Signed out") }}
-              actions={
-                <Button leadingIcon={RiAddFill} onClick={() => toast.success("Ticket created")}>
-                  New ticket
-                </Button>
-              }
+              // No shell-wide `actions`: "New ticket" belongs to the Tickets page
+              // (its <PageHeader actions>), not to Settings.
               dock={<AssistantPill />}
             />
           }

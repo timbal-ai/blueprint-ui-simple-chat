@@ -18,6 +18,7 @@ import {
 } from "@/components/base/dropdown/dropdown";
 import { ChevronDownSmall } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
+import { usePageHeaderState } from "./page-header";
 import {
   initialsOf,
   normalizeNavPath,
@@ -461,10 +462,22 @@ export function ShellSidebar({
 /* ----------------------------------------------------------------- header */
 
 /**
- * Default page header — DashboardHeader grammar: a real location trail
- * (home › section › here), then the title row with `actions` on the right.
- * The first crumb is the home *nav item*, not the product name (that's already
- * in the sidebar). `"/"` is never treated as a parent of sibling routes.
+ * The one header a routed page gets — DashboardHeader grammar, with the noise
+ * removed:
+ *
+ * - **Title** = the active nav item's label, or what the page's `<PageHeader
+ *   title>` says (a record's name). The page itself never prints an `<h1>`.
+ * - **Description** (optional, one line) = `<PageHeader description>` or the
+ *   nav item's `description`. This is where "what this screen is" lives —
+ *   not in a second heading inside the page.
+ * - **Breadcrumb** only when there is somewhere to go back to: a nested
+ *   section (`/settings/billing`) or a URL deeper than its nav item
+ *   (`/invoices/4821`). A top-level page shows no trail: "Home › Markets" over
+ *   a page called Markets says nothing the sidebar doesn't. The home item is
+ *   never a crumb — the brand is already in the sidebar.
+ * - **Actions** = the page's `<PageHeader actions>` (portalled into the slot)
+ *   followed by the shell-wide `actions`, which should be the rare truly
+ *   global control. "New ticket" belongs to the Tickets page, not to Settings.
  */
 export function ShellHeader({
   brand,
@@ -480,46 +493,62 @@ export function ShellHeader({
   className?: string;
 }) {
   const { pathname } = useLocation();
+  const { values, slotRef } = usePageHeaderState();
   const items = [...nav, ...(secondaryNav ?? [])];
   const home = resolveHomeNavItem(items);
+  const homePath = home ? normalizeNavPath(home.path) : "/";
+  const here = normalizeNavPath(pathname);
   const trail = resolveNavTrail(items, pathname);
   const current = trail.at(-1);
-  const homePath = home ? normalizeNavPath(home.path) : "/";
-  const onHome = Boolean(home && current && normalizeNavPath(current.path) === homePath);
-  const ancestors = trail
-    .slice(0, -1)
-    .filter((item) => normalizeNavPath(item.path) !== homePath);
+  const deeper = Boolean(current && here !== normalizeNavPath(current.path));
+
+  const title = values?.title ?? current?.label ?? brand.name;
+  const description = values?.description ?? current?.description;
+  // Home is never an *ancestor* crumb (the brand already says where you are);
+  // it stays when it is the section a record lives in (`/tickets/T-4821`).
+  const ancestors = trail.slice(0, -1).filter((item) => normalizeNavPath(item.path) !== homePath);
+  // A trail is worth a row only when it leads somewhere: a parent section,
+  // or the section this record belongs to.
+  const showTrail = ancestors.length > 0 || deeper;
 
   return (
     <header className={cx("flex w-full flex-col gap-2", className)}>
-      <Breadcrumb>
-        {home ? (
-          <BreadcrumbItem href={onHome ? undefined : home.path} current={onHome}>
-            <ShellBrandMark brand={brand} size="xs" />
-            {home.label}
-          </BreadcrumbItem>
-        ) : (
-          <BreadcrumbItem current>
-            <ShellBrandMark brand={brand} size="xs" />
-            {brand.name}
-          </BreadcrumbItem>
-        )}
-        {ancestors.map((item) => (
-          <BreadcrumbItem key={item.path} href={item.path} icon={item.icon}>
-            {item.label}
-          </BreadcrumbItem>
-        ))}
-        {current && !onHome ? (
-          <BreadcrumbItem current icon={current.icon}>
-            {current.label}
-          </BreadcrumbItem>
-        ) : null}
-      </Breadcrumb>
-      <div className="flex w-full flex-wrap items-end justify-between gap-2">
-        <h1 className="px-1 text-title-2-medium whitespace-nowrap text-text-primary">
-          {current?.label ?? brand.name}
-        </h1>
-        {actions ? <div className="flex flex-wrap items-center justify-end gap-2.5">{actions}</div> : null}
+      {showTrail && current ? (
+        // Breadcrumb counts direct children to place separators: keep them flat.
+        <Breadcrumb>
+          {ancestors.map((item) => (
+            <BreadcrumbItem key={item.path} href={item.path} icon={item.icon}>
+              {item.label}
+            </BreadcrumbItem>
+          ))}
+          {deeper ? (
+            <BreadcrumbItem key="section" href={current.path} icon={current.icon}>
+              {current.label}
+            </BreadcrumbItem>
+          ) : (
+            <BreadcrumbItem key="here" current icon={current.icon}>
+              {current.label}
+            </BreadcrumbItem>
+          )}
+          {deeper && values?.title ? (
+            // The record's own name; without a <PageHeader title> the section
+            // link alone is the trail (no "Invoices › Invoices").
+            <BreadcrumbItem key="leaf" current>
+              {title}
+            </BreadcrumbItem>
+          ) : null}
+        </Breadcrumb>
+      ) : null}
+      <div className="flex w-full flex-wrap items-end justify-between gap-x-4 gap-y-2">
+        <div className="flex min-w-0 flex-col gap-0.5 px-1">
+          <h1 className="truncate text-title-2-medium text-text-primary">{title}</h1>
+          {description ? <p className="text-body-regular text-text-secondary">{description}</p> : null}
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-2.5">
+          {/* Page-owned actions land here (PageHeader portal); shell-wide ones follow. */}
+          <div ref={slotRef} className="contents" />
+          {actions}
+        </div>
       </div>
     </header>
   );

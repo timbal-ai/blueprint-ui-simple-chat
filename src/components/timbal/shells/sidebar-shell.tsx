@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Sheet } from "@/components/timbal/overlays/sheet";
 import { cx } from "@/utils/cx";
+import { PageHeaderProvider } from "./page-header";
 import { ShellBrandMark, ShellHeader, ShellSidebar } from "./shell-chrome";
 import {
   SHELL_DESKTOP_QUERY,
@@ -56,9 +57,17 @@ export interface SidebarShellProps {
   /** Footer group (Support / Settings style), above the account card. */
   secondaryNav?: ShellNavItem[];
   user?: ShellUser;
-  /** Header above the page. Default: breadcrumb + title + `actions`; `false` hides it. */
+  /**
+   * Header above the page. Default: `ShellHeader` — the nav item's label as the
+   * title, its `description` under it, a breadcrumb only for nested routes, and
+   * the page's `<PageHeader actions>` on the right. `false` hides it.
+   */
   header?: ReactNode | false;
-  /** Right side of the default header (buttons). */
+  /**
+   * Shell-wide actions, shown on every page after the page's own. Use for the
+   * rare global control; a page-specific button ("New ticket") goes in that
+   * page's `<PageHeader actions>`, not here.
+   */
   actions?: ReactNode;
   /** Floating chrome rendered once, e.g. `<AssistantPill />`. */
   dock?: ReactNode;
@@ -110,17 +119,19 @@ export function SidebarShell({
 
         {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          <div
-            className={cx(
-              "mx-auto flex w-full flex-1 flex-col gap-2.5",
-              bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-[1300px]", SHELL_INSET_CLASS),
-            )}
-          >
-            {header === false || bare
-              ? null
-              : (header ?? <ShellHeader brand={brand} nav={nav} secondaryNav={secondaryNav} actions={actions} />)}
-            <div className="flex min-h-0 flex-1 flex-col">{children ?? <Outlet />}</div>
-          </div>
+          <PageHeaderProvider>
+            <div
+              className={cx(
+                "mx-auto flex w-full flex-1 flex-col gap-2.5",
+                bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-[1300px]", SHELL_INSET_CLASS),
+              )}
+            >
+              {header === false || bare
+                ? null
+                : (header ?? <ShellHeader brand={brand} nav={nav} secondaryNav={secondaryNav} actions={actions} />)}
+              <div className="flex min-h-0 flex-1 flex-col">{children ?? <Outlet />}</div>
+            </div>
+          </PageHeaderProvider>
         </main>
       </div>
 

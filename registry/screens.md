@@ -56,13 +56,44 @@ Rules that fall out of it:
 - **Radius follows nesting**: `rounded-3xl` panel (16) → `rounded-2xl` tile (12) → `rounded-lg` control (6) → `rounded-md` chip (4). Padding between two layers ≈ the radius difference, so corners stay concentric. Never re-round to "soften".
 - **Density is set once** (`--spacing` in `brand.css`). Panels use `p-3`/`p-4`, rows `py-2`/`py-2.5`, gaps `gap-2`/`gap-3`. Do not add `p-6` to feel airy or `p-1` to feel dense.
 
-## 3. Page header grammar
+## 3. Page header grammar — the shell owns it
 
-Every routed page under a shell has the same first row, provided by `ShellHeader`:
-breadcrumb → title + optional one-line summary (`text-body-regular text-text-secondary`,
-e.g. `Last refresh 08:45 · 24 loaded`) → actions on the right (one primary `Button`,
-the rest secondary / `IconButton`). Filters live in the panel they filter (the
-`DataTable` toolbar), not in a separate bordered "filter bar" above it.
+Every routed page under `SidebarShell` / `TopbarShell` gets exactly one header, rendered
+by the shell: **title** (the nav item's label) · **description** (one line,
+`text-text-secondary`) · **actions** on the right. The page renders **no `<h1>`, no intro
+paragraph, no second "card title" that repeats the page name** — that is how every
+generated screen opened on the same word twice (`design:check` fails on an `<h1>` in a
+page under a shell).
+
+What the page can't know is passed *up*:
+
+```tsx
+// nav item: the static one-liner
+{ path: "/tickets", label: "Tickets", icon: RiTicketLine, description: "Open tickets, oldest first" }
+
+// inside the page: live values and page-only actions (renders nothing in place)
+<PageHeader
+  description={`${open} open · oldest first`}            // overrides the nav item's
+  actions={<Button leadingIcon={RiAddFill}>New ticket</Button>}
+/>
+
+// a record route: the title changes too, and the breadcrumb appears (Invoices › #4821)
+<PageHeader title={`Invoice #${invoice.number}`} description={`Issued ${issued} · due ${due}`} />
+```
+
+Rules:
+
+- **Breadcrumbs only when there is depth.** A top-level page shows none — "Overview ›
+  Markets" over a page called Markets says nothing the sidebar doesn't. The trail appears
+  for nested sections (`/settings/billing`) and for record routes (`/invoices/4821`), and
+  never starts with the home item or the brand.
+- **Actions belong to the page that uses them.** The shell's `actions` prop is for the rare
+  control that is right on every screen (a global "Refresh"); "New ticket" on the Settings
+  page is the smell. Default to `<PageHeader actions>`.
+- **Filters live in the panel they filter** (the `DataTable` toolbar), not in a separate
+  bordered "filter bar" above it. The header is title · description · actions, nothing else.
+- **One header per screen.** A `Sheet` or `Modal` has its own (`SheetHeader`); a card inside
+  the page has a `text-body-medium` label, not a heading that repeats the page title.
 
 ## 4. States are part of the screen
 
@@ -74,6 +105,7 @@ the rest secondary / `IconButton`). Filters live in the panel they filter (the
 ## 5. What a reviewer flags
 
 - `StatCards` (or four hand-made tiles) as the first thing on `/` without a recorded reason.
+- The page title printed twice (shell header + an `<h1>` or card title in the page); a breadcrumb on a top-level page; a page-specific button in the shell's global `actions`.
 - A bordered card inside a bordered card; a "filter bar" card above a table card.
 - Page-coloured cards (`bg-background-full` or nothing on a card) — the "all grey" screen.
 - `border-neutral-*`, `border-black`, `border-gray-*`, hex, `dark:` colour overrides.

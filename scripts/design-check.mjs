@@ -12,14 +12,16 @@
  * route in src/App.tsx are resolved and scanned for `StatCards` / `stat-cards`
  * (one level of local imports deep). A stat-tile strip on `/` while DESIGN.md
  * says the entry is a list / board / record / editor / schedule / conversation
- * is the same drift with a different label, and fails the same way.
+ * is the same drift with a different label, and fails the same way. It also
+ * fails when a page under a shell prints its own <h1>: the shell header already
+ * shows the title, so the screen opens on the same word twice.
  * Warns (exit 0) only when DESIGN.md names a non-blue accent while
  * src/styles/brand.css still ships the default ramp (blue is the expected
  * default; it needs no justification), or when `/` is still Placeholder.tsx.
  *
  * Run it before you build screens; CI runs it too.
  */
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
@@ -153,6 +155,38 @@ function entryUsesStatTiles() {
     }
   }
   return hits;
+}
+
+// ── Duplicate page headers ────────────────────────────────────────────────────
+// Under SidebarShell / TopbarShell the shell prints the title (and the nav
+// item's description). A page that also renders an <h1> shows the title twice.
+// Pages set what the shell can't know through <PageHeader> instead.
+function pagesWithOwnHeading() {
+  const appPath = resolve(ROOT, "src/App.tsx");
+  if (!existsSync(appPath)) return [];
+  const appSrc = readFileSync(appPath, "utf8");
+  if (!/\b(SidebarShell|TopbarShell)\b/.test(appSrc)) return [];
+  const pagesDir = resolve(ROOT, "src/pages");
+  if (!existsSync(pagesDir)) return [];
+  const skip = /\/(templates|examples)\/|\/(Home|Placeholder|NotFound)\.tsx$/;
+  const hits = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (/\.tsx$/.test(entry.name) && !skip.test(full) && /<h1[\s>]/.test(readFileSync(full, "utf8"))) hits.push(full);
+    }
+  };
+  walk(pagesDir);
+  return hits;
+}
+
+for (const file of pagesWithOwnHeading()) {
+  problems.push(
+    `${file.replace(ROOT + "/", "")} renders its own <h1> inside a shell. The shell header already shows the page title ` +
+      `(and the nav item's \`description\`); the page shows it twice. Remove the heading — use <PageHeader title description actions /> ` +
+      `from @/components/timbal/shells for what only the page knows.`,
+  );
 }
 
 const statTilePages = entryUsesStatTiles() ?? [];

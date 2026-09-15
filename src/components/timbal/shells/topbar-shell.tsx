@@ -8,7 +8,8 @@ import { Badge } from "@/components/base/badges/badge";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Sheet } from "@/components/timbal/overlays/sheet";
 import { cx } from "@/utils/cx";
-import { ShellBrandMark, ShellSidebar, ShellUserMenu } from "./shell-chrome";
+import { PageHeaderProvider } from "./page-header";
+import { ShellBrandMark, ShellHeader, ShellSidebar, ShellUserMenu } from "./shell-chrome";
 import {
   SHELL_DESKTOP_QUERY,
   SHELL_FRAME_INSET_CLASS,
@@ -37,9 +38,13 @@ export interface TopbarShellProps {
   brand: ShellBrand;
   nav: ShellNavItem[];
   user?: ShellUser;
-  /** Row above the page. Default: the active page's title; `false` hides it. */
+  /**
+   * Row above the page. Default: `ShellHeader` — the nav item's label, its
+   * `description`, a breadcrumb only for nested routes, the page's
+   * `<PageHeader actions>` on the right. `false` hides it.
+   */
   header?: ReactNode | false;
-  /** Right side of the bar, before the theme toggle and account menu. */
+  /** Right side of the bar, before the theme toggle and account menu (global controls only). */
   actions?: ReactNode;
   /** Floating chrome rendered once, e.g. `<AssistantPill />`. */
   dock?: ReactNode;
@@ -113,17 +118,18 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
 
       {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        <div
-          className={cx(
-            "mx-auto flex w-full flex-1 flex-col gap-4",
-            bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-6xl", SHELL_INSET_CLASS),
-          )}
-        >
-          {header === false || bare
-            ? null
-            : (header ?? (active ? <h1 className="text-title-2-medium text-text-primary">{active.label}</h1> : null))}
-          <div className="flex min-h-0 flex-1 flex-col">{children ?? <Outlet />}</div>
-        </div>
+        <PageHeaderProvider>
+          <div
+            className={cx(
+              "mx-auto flex w-full flex-1 flex-col gap-4",
+              bare ? SHELL_FRAME_INSET_CLASS : cx("max-w-6xl", SHELL_INSET_CLASS),
+            )}
+          >
+            {/* Same header grammar as SidebarShell; the bar's `actions` stay in the bar. */}
+            {header === false || bare ? null : (header ?? <ShellHeader brand={brand} nav={nav} />)}
+            <div className="flex min-h-0 flex-1 flex-col">{children ?? <Outlet />}</div>
+          </div>
+        </PageHeaderProvider>
       </main>
 
       {bare ? null : dock}

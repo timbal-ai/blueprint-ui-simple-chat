@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 273 components · 17 hooks · generated 2026-09-11
+BoardUI 0.5.3 · 277 components · 19 hooks · generated 2026-09-15
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2532,7 +2532,27 @@ Other exports: `ToasterProps` (props of Toaster)
 
 ### shells — `@/components/timbal/shells/index`
 
-Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `normalizeNavPath`, `resolveActiveNavItem`, `resolveHomeNavItem`, `resolveNavTrail`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
+Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/page-header`: `PageHeader`, `PageHeaderProvider`, `usePageHeaderState`, `PageHeaderProps`, `PageHeaderValues` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `normalizeNavPath`, `resolveActiveNavItem`, `resolveHomeNavItem`, `resolveNavTrail`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
+
+### shells — `@/components/timbal/shells/page-header`
+
+**PageHeaderProvider** — Mounted once by each shell around its header + outlet.
+| prop | type | default | doc |
+|---|---|---|---|
+| children | `ReactNode` |  |  |
+
+**usePageHeaderState()** — What the shell header reads: the page's overrides (if any) and the slot ref for actions.
+No parameters.
+
+**PageHeader** — Drive the shell header from inside a page.
+| prop | type | default | doc |
+|---|---|---|---|
+| actions? | `ReactNode` |  | Right side of the header row, rendered into the shell's slot. |
+| title? | `string` |  |  |
+| description? | `string` |  |  |
+
+Types: `PageHeaderValues` = `{ title?: string; description?: string }`
+Other exports: `PageHeaderProps` (props of PageHeader)
 
 ### shells — `@/components/timbal/shells/shell-chrome`
 
@@ -2581,7 +2601,7 @@ Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `Si
 | onNavigate? | `() => void` |  | Fired when a nav row is clicked (drawers close on it). |
 | className? | `string` |  |  |
 
-**ShellHeader** — Default page header — DashboardHeader grammar: a real location trail (home › section › here), then the title row with `actions` on the right.
+**ShellHeader** — The one header a routed page gets — DashboardHeader grammar, with the noise removed: - **Title** = the active nav item's label, or what the page's `<PageHeader title>` says (a record's name).
 | prop | type | default | doc |
 |---|---|---|---|
 | brand | `ShellBrand` |  |  |
@@ -2612,7 +2632,7 @@ returns `boolean`
 |---|---|---|---|
 | query | `string` |  |  |
 
-Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }`
+Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; description?: string; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }`
 Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
 
 ### shells — `@/components/timbal/shells/sidebar-shell`
@@ -2624,8 +2644,8 @@ Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `stri
 | nav | `ShellNavItem[]` |  |  |
 | secondaryNav? | `ShellNavItem[]` |  | Footer group (Support / Settings style), above the account card. |
 | user? | `ShellUser` |  |  |
-| header? | `ReactNode \| false` |  | Header above the page. Default: breadcrumb + title + `actions`; `false` hides it. |
-| actions? | `ReactNode` |  | Right side of the default header (buttons). |
+| header? | `ReactNode \| false` |  | Header above the page. Default: `ShellHeader` — the nav item's label as the title, its `description` under it, a breadcrumb only for nested routes, and the page's `<PageHeader actions>` on the right. `false` hides it. |
+| actions? | `ReactNode` |  | Shell-wide actions, shown on every page after the page's own. Use for the rare global control; a page-specific button ("New ticket") goes in that page's `<PageHeader actions>`, not here. |
 | dock? | `ReactNode` |  | Floating chrome rendered once, e.g. `<AssistantPill />`. |
 | children? | `ReactNode` |  | Defaults to the router `<Outlet />`. |
 | className? | `string` |  |  |
@@ -2640,8 +2660,8 @@ Other exports: `SidebarShellProps` (props of SidebarShell)
 | brand | `ShellBrand` |  |  |
 | nav | `ShellNavItem[]` |  |  |
 | user? | `ShellUser` |  |  |
-| header? | `ReactNode \| false` |  | Row above the page. Default: the active page's title; `false` hides it. |
-| actions? | `ReactNode` |  | Right side of the bar, before the theme toggle and account menu. |
+| header? | `ReactNode \| false` |  | Row above the page. Default: `ShellHeader` — the nav item's label, its `description`, a breadcrumb only for nested routes, the page's `<PageHeader actions>` on the right. `false` hides it. |
+| actions? | `ReactNode` |  | Right side of the bar, before the theme toggle and account menu (global controls only). |
 | dock? | `ReactNode` |  | Floating chrome rendered once, e.g. `<AssistantPill />`. |
 | children? | `ReactNode` |  | Defaults to the router `<Outlet />`. |
 | className? | `string` |  |  |

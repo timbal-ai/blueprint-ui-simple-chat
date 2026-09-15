@@ -44,4 +44,7 @@ Previous project used: _shell / entry / template / density_ → this one differs
   Recipes and the surface grammar: `registry/screens.md`.
 - 2026-09-14 — light is the default again (`index.html`); dark stays a full mode behind the toggle ·
   generated products should open on the white console, not near-black.
+- 2026-09-15 — the shell owns the page header (title · nav `description` · page actions via
+  `<PageHeader>`); breadcrumbs only for nested routes; `design:check` fails on an `<h1>` in a
+  page under a shell · generated screens opened on "Home › Markets / Markets / Markets".
 - YYYY-MM-DD — _decision · reason_

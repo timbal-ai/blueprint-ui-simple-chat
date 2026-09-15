@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-11T14:40:14.717Z",
+  "generatedAt": "2026-09-15T09:06:43.365Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -18093,7 +18093,7 @@
       "importFrom": "@/components/application/theme/theme-toggle",
       "layer": "application",
       "group": "theme",
-      "summary": "",
+      "summary": "Patched by scripts/boardui-sync.mjs: `timbal:theme` instead of upstream's `boardui:theme`, so a default that older builds auto-wrote to storage is not read back as a user preference. index.html reads…",
       "props": [],
       "tags": [
         "application",
@@ -21099,6 +21099,106 @@
       }
     },
     {
+      "name": "PageHeader",
+      "kind": "component",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `PageHeader` from `@/components/timbal/shells/page-header`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "page-header"
+      ],
+      "reexportOf": {
+        "name": "PageHeader",
+        "from": "@/components/timbal/shells/page-header"
+      }
+    },
+    {
+      "name": "PageHeaderProvider",
+      "kind": "component",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `PageHeaderProvider` from `@/components/timbal/shells/page-header`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "page-header-provider"
+      ],
+      "reexportOf": {
+        "name": "PageHeaderProvider",
+        "from": "@/components/timbal/shells/page-header"
+      }
+    },
+    {
+      "name": "usePageHeaderState",
+      "kind": "hook",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `usePageHeaderState` from `@/components/timbal/shells/page-header`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "use-page-header-state"
+      ],
+      "reexportOf": {
+        "name": "usePageHeaderState",
+        "from": "@/components/timbal/shells/page-header"
+      }
+    },
+    {
+      "name": "PageHeaderProps",
+      "kind": "type",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `PageHeaderProps` from `@/components/timbal/shells/page-header`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "page-header-props"
+      ],
+      "reexportOf": {
+        "name": "PageHeaderProps",
+        "from": "@/components/timbal/shells/page-header"
+      }
+    },
+    {
+      "name": "PageHeaderValues",
+      "kind": "type",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `PageHeaderValues` from `@/components/timbal/shells/page-header`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "page-header-values"
+      ],
+      "reexportOf": {
+        "name": "PageHeaderValues",
+        "from": "@/components/timbal/shells/page-header"
+      }
+    },
+    {
       "name": "Collapsible",
       "kind": "component",
       "path": "src/components/timbal/shells/index.ts",
@@ -21559,6 +21659,124 @@
       }
     },
     {
+      "name": "PageHeaderValues",
+      "kind": "type",
+      "path": "src/components/timbal/shells/page-header.tsx",
+      "importFrom": "@/components/timbal/shells/page-header",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "",
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "shells",
+        "page-header",
+        "page-header-values"
+      ]
+    },
+    {
+      "name": "PageHeaderProvider",
+      "kind": "component",
+      "path": "src/components/timbal/shells/page-header.tsx",
+      "importFrom": "@/components/timbal/shells/page-header",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Mounted once by each shell around its header + outlet.",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "shells",
+        "page-header",
+        "page-header-provider"
+      ]
+    },
+    {
+      "name": "usePageHeaderState",
+      "kind": "hook",
+      "path": "src/components/timbal/shells/page-header.tsx",
+      "importFrom": "@/components/timbal/shells/page-header",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "What the shell header reads: the page's overrides (if any) and the slot ref for actions.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "page-header",
+        "use-page-header-state"
+      ]
+    },
+    {
+      "name": "PageHeaderProps",
+      "kind": "type",
+      "path": "src/components/timbal/shells/page-header.tsx",
+      "importFrom": "@/components/timbal/shells/page-header",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Props of `PageHeader`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "page-header",
+        "page-header-props"
+      ],
+      "propsOf": [
+        "PageHeader"
+      ]
+    },
+    {
+      "name": "PageHeader",
+      "kind": "component",
+      "path": "src/components/timbal/shells/page-header.tsx",
+      "importFrom": "@/components/timbal/shells/page-header",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Drive the shell header from inside a page.",
+      "props": [
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Right side of the header row, rendered into the shell's slot."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "from": "PageHeaderValues"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "from": "PageHeaderValues"
+        }
+      ],
+      "tags": [
+        "timbal",
+        "shells",
+        "page-header"
+      ]
+    },
+    {
       "name": "Collapsible",
       "kind": "component",
       "path": "src/components/timbal/shells/shell-chrome.tsx",
@@ -21826,7 +22044,7 @@
       "importFrom": "@/components/timbal/shells/shell-chrome",
       "layer": "timbal",
       "group": "shells",
-      "summary": "Default page header — DashboardHeader grammar: a real location trail (home › section › here), then the title row with `actions` on the right.",
+      "summary": "The one header a routed page gets — DashboardHeader grammar, with the noise removed: - **Title** = the active nav item's label, or what the page's `<PageHeader title>` says (a record's name).",
       "props": [
         {
           "name": "brand",
@@ -21902,6 +22120,12 @@
           "name": "icon",
           "type": "RemixIcon",
           "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "doc": "One line under the page title in the shell header (\"Open tickets, oldest first · updates live\"). The page must not print its own title or intro — the header is the only place for them. `<PageHeader>` overrides it per page."
         },
         {
           "name": "badge",
@@ -22258,13 +22482,13 @@
           "name": "header",
           "type": "ReactNode | false",
           "optional": true,
-          "doc": "Header above the page. Default: breadcrumb + title + `actions`; `false` hides it."
+          "doc": "Header above the page. Default: `ShellHeader` — the nav item's label as the title, its `description` under it, a breadcrumb only for nested routes, and the page's `<PageHeader actions>` on the right. `false` hides it."
         },
         {
           "name": "actions",
           "type": "ReactNode",
           "optional": true,
-          "doc": "Right side of the default header (buttons)."
+          "doc": "Shell-wide actions, shown on every page after the page's own. Use for the rare global control; a page-specific button (\"New ticket\") goes in that page's `<PageHeader actions>`, not here."
         },
         {
           "name": "dock",
@@ -22337,13 +22561,13 @@
           "name": "header",
           "type": "ReactNode | false",
           "optional": true,
-          "doc": "Row above the page. Default: the active page's title; `false` hides it."
+          "doc": "Row above the page. Default: `ShellHeader` — the nav item's label, its `description`, a breadcrumb only for nested routes, the page's `<PageHeader actions>` on the right. `false` hides it."
         },
         {
           "name": "actions",
           "type": "ReactNode",
           "optional": true,
-          "doc": "Right side of the bar, before the theme toggle and account menu."
+          "doc": "Right side of the bar, before the theme toggle and account menu (global controls only)."
         },
         {
           "name": "dock",

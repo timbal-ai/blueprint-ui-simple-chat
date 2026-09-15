@@ -3,9 +3,12 @@
  *
  * - `SidebarShell`: BoardUI floating sidebar + dashboard header (data apps).
  * - `TopbarShell`: sticky top bar + centred column (consumer / marketing).
+ * - `PageHeader`: a page's handle on the shell header (title, description,
+ *   actions). Pages never render their own `<h1>`.
  */
 export { SidebarShell, type SidebarShellProps } from "./sidebar-shell";
 export { TopbarShell, type TopbarShellProps } from "./topbar-shell";
+export { PageHeader, PageHeaderProvider, usePageHeaderState, type PageHeaderProps, type PageHeaderValues } from "./page-header";
 export {
   Collapsible,
   ShellBrandMark,

@@ -31,6 +31,9 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.
+   **The shell owns the page header**: title from the nav item, `description` under it,
+   actions on the right. Pages render no `<h1>`; they pass live values and page-only
+   buttons up with `<PageHeader description actions />` (`design:check` fails on an `<h1>`).
    `/` ships as `Placeholder.tsx`: replace it with the real entry screen and delete the
    file. Chat lives at `/chat` unless the product IS a chat — never a chat at `/` by default.
 3. **Use what exists, in this order:** template (`registry/templates.md`) → block or

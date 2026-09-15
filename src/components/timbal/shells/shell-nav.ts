@@ -16,6 +16,12 @@ export interface ShellNavItem {
   path: string;
   label: string;
   icon: RemixIcon;
+  /**
+   * One line under the page title in the shell header ("Open tickets, oldest
+   * first · updates live"). The page must not print its own title or intro —
+   * the header is the only place for them. `<PageHeader>` overrides it per page.
+   */
+  description?: string;
   /** Counter / tag rendered at the row's end. */
   badge?: string | number;
   /**

@@ -82,6 +82,7 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 | Long-running AI work, tools, sources | `application/task-list`, `agent-progress`, `agent-thinking`, `agent-log`, `web-search`, `agent-limits` — already wired into the chat slots |
 | The chat itself | `timbal/chat/*` (`ChatFrame`, `ChatHistoryRail`, `boardChatComponents`) + the runtime — see `timbal.md` |
 | Page shell | `timbal/shells` (`SidebarShell`, `TopbarShell`); a whole finished screen → `templates.md` |
+| The page title, its one-line description, the page's buttons | the shell header — set `description` on the nav item, or `<PageHeader title description actions />` from `timbal/shells` inside the page. Never an `<h1>` in the page |
 | Modal, sheet, popover, toast | `timbal/overlays` (BoardUI has no free ones) |
 | Marketing / campaign screens | `application/marketing` (template blocks); hero effects → `application/landing/liquid-glass` |
 
@@ -117,4 +118,5 @@ stat tiles over a revenue chart over a customers table are the same product.
 - No lookalikes of anything in `components.md`.
 - No editing under `base/`, `application/`, `foundations/`, `styles/theme.css|typography.css|globals.css` — they are overwritten by `bun run boardui:sync`. Wrap, don't fork.
 - No `useState` page switching — every page is a route.
+- No `<h1>` or intro paragraph inside a page under a shell, no breadcrumb you build yourself, no page-specific button in the shell's global `actions` — the shell header owns title · description · actions (`screens.md` §3).
 - No chat re-implementations — `TimbalChat` + slots (see `timbal.md`).
