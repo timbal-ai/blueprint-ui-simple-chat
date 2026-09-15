@@ -8,6 +8,14 @@
  * 4. styles/brand.css — the accent ramp + fonts for THIS product (edit this).
  * 5. styles/timbal-bridge.css — runtime tokens → BoardUI tokens (translation only).
  */
+/* Fonts ship with the app (self-hosted woff2 via @fontsource, bundled by Vite)
+   so the type never falls back to the system face when a preview sandbox or a
+   customer network blocks Google Fonts. brand.css points --font-inter and
+   --font-mono-source at these families. */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/inter/wght-italic.css";
+@import "@fontsource-variable/jetbrains-mono";
+
 @import "tailwindcss";
 @import "@timbal-ai/timbal-react/styles.css";
 @import "./styles/globals.css";

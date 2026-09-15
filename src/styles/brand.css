@@ -141,10 +141,15 @@
  * --------------------------------------------------------------------------- */
 :root {
   /* Fonts. BoardUI's theme.css builds --font-sans/--font-mono from these two
-     hooks (Next loads them via next/font upstream). index.html loads Inter +
-     JetBrains Mono from Google Fonts; swap the family here AND in index.html. */
-  --font-inter: "Inter";
-  --font-mono-source: "JetBrains Mono";
+     hooks (Next loads them via next/font upstream). Here the faces are
+     self-hosted: src/index.css imports @fontsource-variable/inter and
+     @fontsource-variable/jetbrains-mono (variable weight, subset per script),
+     which register "Inter Variable" / "JetBrains Mono Variable". No network
+     fetch, so the type is Inter everywhere the bundle runs. To change the
+     family: install another @fontsource package, import it in index.css, and
+     point these two hooks at it. */
+  --font-inter: "Inter Variable", "Inter";
+  --font-mono-source: "JetBrains Mono Variable", "JetBrains Mono";
 
   /* Page stays white (BoardUI). A neutral-50 page was tried and read as "all
      grey": 250 vs the neutral-100 tray's 245 is not a step, and white cards on
