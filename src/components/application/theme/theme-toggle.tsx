@@ -9,7 +9,10 @@ import { cx } from "@/utils/cx";
 
 export type ThemeMode = "light" | "dark";
 
-export const THEME_STORAGE_KEY = "boardui:theme";
+// Patched by scripts/boardui-sync.mjs: `timbal:theme` instead of upstream's
+// `boardui:theme`, so a default that older builds auto-wrote to storage is not
+// read back as a user preference. index.html reads the same key.
+export const THEME_STORAGE_KEY = "timbal:theme";
 export const THEME_CHANGE_EVENT = "boardui:theme-change";
 
 const THEME_TRANSITION_DURATION = 820;

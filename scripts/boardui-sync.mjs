@@ -158,11 +158,27 @@ if (existsSync(togglePath)) {
   }
   return currentTheme();
 }`;
-  if (upstream.test(src)) {
-    writeFileSync(togglePath, src.replace(upstream, patched));
-  } else if (!src.includes("Patched by scripts/boardui-sync.mjs")) {
-    console.warn("boardui-sync: theme-toggle.tsx storedTheme() changed upstream — re-apply the dark-default patch by hand.");
+  let next = src;
+  if (upstream.test(next)) {
+    next = next.replace(upstream, patched);
+  } else if (!next.includes("Patched by scripts/boardui-sync.mjs (see")) {
+    console.warn("boardui-sync: theme-toggle.tsx storedTheme() changed upstream — re-apply the theme-default patch by hand.");
   }
+  // Storage key: `timbal:theme`, not upstream's `boardui:theme`. Builds before
+  // 2026-09-14 auto-wrote their default under the old key; on a shared preview
+  // origin that value would be read back as a user preference by every later app.
+  const upstreamKey = 'export const THEME_STORAGE_KEY = "boardui:theme";';
+  const patchedKey =
+    "// Patched by scripts/boardui-sync.mjs: `timbal:theme` instead of upstream's\n" +
+    "// `boardui:theme`, so a default that older builds auto-wrote to storage is not\n" +
+    "// read back as a user preference. index.html reads the same key.\n" +
+    'export const THEME_STORAGE_KEY = "timbal:theme";';
+  if (next.includes(upstreamKey)) {
+    next = next.replace(upstreamKey, patchedKey);
+  } else if (!next.includes(patchedKey)) {
+    console.warn("boardui-sync: theme-toggle.tsx THEME_STORAGE_KEY changed upstream — re-apply the `timbal:theme` patch by hand.");
+  }
+  if (next !== src) writeFileSync(togglePath, next);
 }
 
 // ── 5. refresh the BoardUI agent skill references into registry/ ────────────

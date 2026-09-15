@@ -90,3 +90,10 @@ Never swallow errors — render an empty/error state; log the failure.
 BoardUI's. Change BoardUI (brand.css / theme.css semantics) and the chat follows.
 If a chat sits on a non-default surface, set `--thread-canvas` on an ancestor
 instead of wrapping the composer.
+
+## Markdown in messages
+
+The runtime's `MarkdownText` renders GFM + math (KaTeX). `vite.config.ts` aliases
+`remark-math` to `src/shims/remark-math.ts`, which turns **single-dollar inline math
+off**: `$26,450 … $399/mo` is currency in product copy, not a formula. `$$…$$` blocks
+and `\(…\)` / `\[…\]` still render as TeX. Do not fork `MarkdownText` to change this.

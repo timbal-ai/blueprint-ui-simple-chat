@@ -152,10 +152,10 @@ for (const route of ROUTES) {
           failures.push(`${name}: console ${t.slice(0, 160)}`);
         }
       });
-      // The theme is a stored preference (`boardui:theme`, read by ThemeToggle
+      // The theme is a stored preference (`timbal:theme`, read by ThemeToggle
       // and the pre-paint script in index.html). Pin it explicitly for both
-      // shots: the app defaults to dark, so "light" must be set, not assumed.
-      await page.addInitScript((mode) => window.localStorage.setItem("boardui:theme", mode), dark ? "dark" : "light");
+      // shots rather than relying on the default.
+      await page.addInitScript((mode) => window.localStorage.setItem("timbal:theme", mode), dark ? "dark" : "light");
       try {
         // `load` + a settle wait rather than `networkidle`: the dev server's HMR
         // socket and streaming endpoints can keep the network busy forever.

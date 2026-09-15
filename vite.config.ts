@@ -54,6 +54,10 @@ export default defineConfig(({ mode }) => {
         { find: /^next\/image$/, replacement: path.join(root, "src/shims/next-image.tsx") },
         { find: /^next\/link$/, replacement: path.join(root, "src/shims/next-link.tsx") },
         { find: /^next\/navigation$/, replacement: path.join(root, "src/shims/next-navigation.ts") },
+        // The runtime's MarkdownText enables `$…$` inline TeX by default, which
+        // turns "$26,450 … $399/mo" into a formula. The shim keeps `$$` blocks
+        // and `\(…\)` and switches single-dollar math off.
+        { find: /^remark-math$/, replacement: path.join(root, "src/shims/remark-math.ts") },
         { find: /^react$/, replacement: reactRoot },
         { find: /^react-dom$/, replacement: reactDomRoot },
         { find: "react/jsx-runtime", replacement: path.join(reactRoot, "jsx-runtime.js") },

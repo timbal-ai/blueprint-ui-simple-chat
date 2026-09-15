@@ -5,17 +5,17 @@
     <link rel="icon" type="image/png" href="/timbal.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <!-- Theme before first paint. Light is the default; the choice is stored under
-         `boardui:theme` (what ThemeToggle reads). A missing preference is written
-         so the toggle's own mount-time lookup agrees with the page. To ship a
-         dark-first product, change `mode` here and nothing else. -->
+    <!-- Theme before first paint. Light is the default. Only an explicit click on
+         ThemeToggle is persisted (key `timbal:theme`, same one the toggle reads);
+         nothing is written here, so a default can never leak into storage and
+         come back as a "preference" — on this app or on another one sharing the
+         origin. To ship a dark-first product, change `mode` here and nothing else. -->
     <script>
       (function () {
         var mode = "light";
         try {
-          var stored = window.localStorage.getItem("boardui:theme");
+          var stored = window.localStorage.getItem("timbal:theme");
           if (stored === "light" || stored === "dark") mode = stored;
-          else window.localStorage.setItem("boardui:theme", mode);
         } catch (e) {}
         document.documentElement.classList.toggle("dark", mode === "dark");
       })();
