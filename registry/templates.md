@@ -13,6 +13,7 @@ BoardUI Pro template routes mounted by `src/App.tsx` (dev / `VITE_TEMPLATES`). E
 | hr | `/templates/hr` | hr | BoardUI Pro "HR" — headcount KPIs, recent hires, pipeline, engagement radar, hires vs attrition, employees table. | 43 / 50 | 7 |
 | marketing | `/templates/marketing` | marketing | BoardUI Pro "Marketing" — campaign KPIs, acquisition funnel, spend by channel, ROAS, campaigns table. | 43 / 50 | 7 |
 | medical | `/templates/medical` | medical | BoardUI Pro "Medical profile" — patient overview: steps, sleep score, activity rings, most-active-days, alerts. | 42 / 48 | 6 |
+| project-board | `/templates/project-board` | project-board | BoardUI Pro "Project board" — VISUAL REFERENCE. | 39 / 53 | 1 |
 
 ## ai-chat — `/templates/ai-chat`
 
@@ -619,4 +620,76 @@ _6 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 1. Copy `src/components/application/medical/medical-shell.tsx` into `src/pages/<yours>.tsx` (rename `MedicalShell`), register a `<Route>` for it in `src/App.tsx`.
 2. Replace the exports of `src/components/application/medical/medical-data.ts` with real data (fetch or props) — keep the shapes: `DayActivity`, `SelectedDay`.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="medical"`.
+4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
+
+## project-board — `/templates/project-board`
+
+BoardUI Pro "Project board" — VISUAL REFERENCE.
+
+- Page: `src/pages/templates/project-board.tsx` (default export `ProjectBoardTemplate`)
+- Shell: `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` — `src/components/application/project-board/project-board-shell.tsx`, mounted as `<ProjectBoardShell />`
+- Shell doc: The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…
+- Shell props: `contained?: boolean = false`
+
+### Component subtree (imports walked to depth 3)
+
+**base**
+- `@/components/base/avatar/avatar` → `Avatar`, `AvatarProps` — type/component (depth 2)
+- `@/components/base/badges/badge` → `Badge` — component (depth 2)
+- `@/components/base/badges/chip` → `Chip` — component (depth 2)
+- `@/components/base/breadcrumb/breadcrumb` → `Breadcrumb`, `BreadcrumbItem` — component (depth 2)
+- `@/components/base/buttons/button` → `Button`, `ButtonProps` — type/component (depth 2)
+- `@/components/base/buttons/close-button` → `CloseButton` — component (depth 2)
+- `@/components/base/buttons/icon-button` → `IconButton` — component (depth 2)
+- `@/components/base/checkbox/checkbox` → `Checkbox` — component (depth 3)
+- `@/components/base/dropdown/dropdown` → `Dropdown`, `DropdownGroup`, `DropdownItem`, `DropdownPopover`, `DropdownTrigger` — component (depth 3)
+- `@/components/base/kbd/kbd` → `Kbd` — component (depth 2)
+- `@/components/base/select/select` → `Select`, `SelectItem` — component (depth 3)
+- `@/components/base/switch/switch` → `Switch`, `SwitchTrack` — component (depth 3)
+- `@/components/base/textarea/textarea` → `Textarea` — component (depth 3)
+- `@/components/base/tooltip/tooltip` → `Tooltip`, `TooltipTrigger` — component (depth 3)
+
+**application**
+- `@/components/application/ai-profile/tokens-chart-card` → `TokensChartCard` — component (depth 3)
+- `@/components/application/dashboard/dashboard-sidebar` → `DashboardSidebar` — component
+- `@/components/application/dashboard/dashboard-team-menu` → `DashboardTeamMenu` — component (depth 2)
+- `@/components/application/dashboard/dashboard-user-menu` → `DashboardUserMenu` — component (depth 2)
+- `@/components/application/notification-center/notification-center` → `NotificationCenter`, `NotificationCenterItem` — type/component (depth 3)
+- `@/components/application/notification-center/template-notification-center-menu` → `TemplateNotificationCenterMenu` — component (depth 2)
+- `@/components/application/project-board/create-ticket-modal` → `CreateTicketModal`, `NewProjectTicket` — type/component (depth 2)
+- `@/components/application/project-board/project-board-controls` → `BoardSort`, `ProjectBoardControls` — type/component (depth 2)
+- `@/components/application/project-board/project-board-data` → `PROJECT_COLUMNS`, `PROJECT_MEMBERS`, `ProjectColumn`, `ProjectTicket`, `TicketPriority`, `TicketSubtask` — type/data (depth 2)
+- `@/components/application/project-board/project-board-empty-state` → `ProjectBoardEmptyState` — component (depth 2)
+- `@/components/application/project-board/project-board-icons` → `TicketAssigneeIcon`, `TicketFavoriteIcon`, `TicketStatusIcon`, `TicketUrgencyIcon` — component (depth 3)
+- `@/components/application/project-board/project-board` → `ProjectBoard` — component
+- `@/components/application/project-board/ticket-corner-genie-surface` → `TicketCornerGenieSurface` — component (depth 3)
+- `@/components/application/project-board/ticket-detail-data` → `ticketBrief`, `ticketDemoActivity` — util (depth 3)
+- `@/components/application/project-board/ticket-detail-modal` → `TicketDetailModal` — component (depth 2)
+- `@/components/application/project-board/ticket-genie-surface` → `TicketGenieSurface` — component (depth 3)
+- `@/components/application/settings/settings-general` → `SettingsGeneral` — component (depth 3)
+- `@/components/application/settings/settings-modal` → `SettingsModal` — component (depth 2)
+- `@/components/application/settings/settings-profile` → `SettingsProfile` — component (depth 3)
+- `@/components/application/settings/settings-storage` → `SettingsStorage` — component (depth 3)
+- `@/components/application/settings/settings-tools` → `SettingsTools` — component (depth 3)
+- `@/components/application/theme/theme-toggle` → `ThemeToggle` — component (depth 2)
+
+**foundations**
+- `@/components/foundations/icons/chevrons` → `ChevronDownSmall`, `ChevronRightSmall`, `ChevronSortDown`, `ChevronUpDownSmall` — component (depth 3)
+
+_14 more module(s) below depth 3 — see `registry.json` → templates[].modules._
+
+### Data
+
+- `src/components/application/project-board/project-board-data.ts`
+  - data: `PROJECT_MEMBERS: Record<string, ProjectMember>`, `PROJECT_COLUMNS: ProjectColumn[]`
+  - exported types: `TicketSubtask`, `TicketComment`, `ProjectMember`, `TicketPriority`, `ProjectTicket`, `ProjectColumn`
+  - shapes to keep: `ProjectMember` (`@/components/application/project-board/project-board-data`), `ProjectColumn` (`@/components/application/project-board/project-board-data`), `TicketSubtask` (`@/components/application/project-board/project-board-data`), `TicketComment` (`@/components/application/project-board/project-board-data`), `TicketPriority` (`@/components/application/project-board/project-board-data`), `ProjectTicket` (`@/components/application/project-board/project-board-data`)
+- `src/components/application/project-board/ticket-detail-data.ts` — Demo briefs belong to this template, not the shared component library.
+  - helpers: `ticketBrief(ticket: ProjectTicket) => TicketBrief`, `ticketSubtasks(ticket: ProjectTicket, columnId: string) => TicketSubtask[]`, `ticketDemoActivity(ticket: ProjectTicket)`
+
+### How to adapt
+
+1. Copy `src/components/application/project-board/project-board-shell.tsx` into `src/pages/<yours>.tsx` (rename `ProjectBoardShell`), register a `<Route>` for it in `src/App.tsx`.
+2. Replace the exports of `src/components/application/project-board/project-board-data.ts`, `src/components/application/project-board/ticket-detail-data.ts` with real data (fetch or props) — keep the shapes: `ProjectMember`, `ProjectColumn`, `TicketSubtask`, `TicketComment`, `TicketPriority`, `ProjectTicket`.
+3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="project-board"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.

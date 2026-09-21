@@ -38,6 +38,7 @@ const ROUTES = (
       "/templates/marketing",
       "/templates/medical",
       "/templates/calendar",
+      "/templates/project-board",
       "/templates/ai-profile",
       "/templates/ai-chat",
       "/templates/ai-image-generation",

@@ -1,7 +1,7 @@
 # Timbal Blueprint UI (v3)
 
 The starting point for every UI built on the Timbal platform: **BoardUI** (the
-complete design system — primitives, blocks, 12 chart cards, agent UI, 8 finished
+complete design system — primitives, blocks, 12 chart cards, agent UI, 10 finished
 page templates — vendored as source) on the **Timbal runtime**
 (`@timbal-ai/timbal-react`: chat streaming, uploads, artifacts, auth).
 

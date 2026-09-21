@@ -39,6 +39,8 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
 3. **Use what exists, in this order:** template (`registry/templates.md`) → block or
    card (`registry/components.md`, `props.md`) → `base/` primitive →
    `timbal/overlays` → write your own. Never rebuild something the registry has.
+   A task / ticket / kanban screen is `ProjectBoardShell` (`/templates/project-board`)
+   — never a hand-rolled column board.
 4. **Color and type only through tokens.** BoardUI semantic tokens
    (`text-text-primary`, `bg-background-primary-default`, `border-border-button-default`)
    and composite type utilities (`text-body-regular`, `text-title-2-medium`). No
@@ -60,6 +62,8 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    375 px must work: shells collapse to a drawer, tables scroll in their container.
 8. **Forms and menus on react-aria-components** (what BoardUI uses). No Radix, no
    native `<select>` / `<input type="date">` — use `base/select`, `base/date-picker`.
+   People are `Avatar` initials. Do not commit dummy headshots, gallery stills or
+   cover art into `public/`.
 
 ## Verify before finishing
 

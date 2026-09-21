@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-15T09:38:17.388Z",
+  "generatedAt": "2026-09-21T09:56:58.497Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -131,7 +131,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "avatar",
       "extends": [
@@ -204,7 +205,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "avatar",
       "extends": [
@@ -233,7 +235,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "badge",
       "extends": [
@@ -281,7 +284,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "badge",
       "extends": [
@@ -312,7 +316,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "chip",
       "extends": [
@@ -343,7 +348,7 @@
           "type": "ChipColor",
           "optional": true,
           "default": "\"neutral\"",
-          "typeExpanded": "\"lime\" | \"rose\" | \"yellow\" | \"cyan\" | \"blue\" | \"purple\" | \"neutral\" | \"gray\" | \"soft\""
+          "typeExpanded": "\"orange\" | \"lime\" | \"rose\" | \"yellow\" | \"cyan\" | \"blue\" | \"purple\" | \"neutral\" | \"gray\" | \"soft\""
         },
         {
           "name": "ref",
@@ -369,7 +374,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "chip",
       "extends": [
@@ -467,7 +473,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "breadcrumb",
       "propsOf": [
@@ -517,7 +524,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "breadcrumb"
     },
@@ -543,7 +551,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "breadcrumb",
       "propsOf": [
@@ -607,7 +616,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "breadcrumb"
     },
@@ -796,7 +806,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "button",
       "extends": [
@@ -830,7 +841,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "button",
       "extends": [
@@ -916,7 +928,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "button",
       "extends": [
@@ -994,7 +1007,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "button",
       "extends": [
@@ -1025,7 +1039,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "button",
       "type": "typeof styles"
@@ -1054,7 +1069,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "close-button",
       "extends": [
@@ -1116,7 +1132,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "close-button",
       "extends": [
@@ -1147,7 +1164,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "icon-button",
       "extends": [
@@ -1181,7 +1199,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "icon-button",
       "extends": [
@@ -1249,7 +1268,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "icon-button",
       "extends": [
@@ -1309,7 +1329,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "icon-button",
       "extends": [
@@ -1784,7 +1805,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "\"sm\" | \"md\""
     },
@@ -1812,7 +1834,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "Record<CheckboxSize, { box: string; glyph: string; label: string; gap: string }>"
     },
@@ -1866,7 +1889,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -1905,7 +1929,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -1931,7 +1956,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "checkbox",
       "extends": [
@@ -1984,7 +2010,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "checkbox",
       "extends": [
@@ -2014,7 +2041,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "date-picker",
       "propsOf": [
@@ -2092,7 +2120,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "date-picker"
     },
@@ -2426,7 +2455,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -2459,7 +2489,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -2486,7 +2517,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "(date: CalendarDate)"
     },
@@ -2514,7 +2546,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "(date: CalendarDate)"
     },
@@ -2542,7 +2575,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "(text: string) => CalendarDate | null"
     },
@@ -2576,7 +2610,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "CalendarCellRenderProps"
@@ -2636,7 +2671,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -2679,7 +2715,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -2706,7 +2743,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "cx(…)"
     },
@@ -2734,7 +2772,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "cx(…)"
     },
@@ -2873,7 +2912,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "propsOf": [
@@ -2919,7 +2959,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown"
     },
@@ -2951,7 +2992,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "propsType": "ComponentProps<typeof AriaButton>",
@@ -2981,7 +3023,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "extends": [
@@ -3053,7 +3096,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "extends": [
@@ -3083,7 +3127,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "propsOf": [
@@ -3130,7 +3175,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown"
     },
@@ -3157,7 +3203,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown",
       "propsOf": [
@@ -3210,7 +3257,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown"
     },
@@ -3243,7 +3291,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "dropdown"
     },
@@ -3271,7 +3320,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "[ \"max-w-[calc(100vw-32px)] overflow-y-auto\", \"rounded-2xl border border-border…"
     },
@@ -3299,7 +3349,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "string"
     },
@@ -3327,7 +3378,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "string"
     },
@@ -3355,7 +3407,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "[ \"flex w-full cursor-pointer items-center gap-2 rounded-2lg p-2 text-left\", \"t…"
     },
@@ -3383,7 +3436,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "string"
     },
@@ -3411,7 +3465,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "string"
     },
@@ -3438,7 +3493,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "file-upload",
       "propsOf": [
@@ -3468,7 +3524,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "file-upload",
       "type": "(bytes: number)"
@@ -3527,7 +3584,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "file-upload"
     },
@@ -3654,7 +3712,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "AriaTextProps"
@@ -3707,11 +3766,114 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "AriaTextProps"
       ]
+    },
+    {
+      "name": "InputSize",
+      "kind": "type",
+      "path": "src/components/base/input/input.tsx",
+      "importFrom": "@/components/base/input/input",
+      "layer": "base",
+      "group": "input",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "base",
+        "input",
+        "input-size"
+      ],
+      "templates": [
+        "ai-chat",
+        "ai-image-generation",
+        "ai-profile",
+        "calendar",
+        "dashboard",
+        "finance",
+        "hr",
+        "marketing",
+        "medical",
+        "project-board"
+      ],
+      "catalog": "input",
+      "type": "\"medium\" | \"small\""
+    },
+    {
+      "name": "TextFieldContextValue",
+      "kind": "type",
+      "path": "src/components/base/input/input.tsx",
+      "importFrom": "@/components/base/input/input",
+      "layer": "base",
+      "group": "input",
+      "summary": "",
+      "props": [
+        {
+          "name": "size",
+          "type": "InputSize",
+          "optional": true
+        },
+        {
+          "name": "fieldClassName",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "inputClassName",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "base",
+        "input",
+        "text-field-context-value"
+      ],
+      "templates": [
+        "ai-chat",
+        "ai-image-generation",
+        "ai-profile",
+        "calendar",
+        "dashboard",
+        "finance",
+        "hr",
+        "marketing",
+        "medical",
+        "project-board"
+      ],
+      "catalog": "input"
+    },
+    {
+      "name": "TextFieldContext",
+      "kind": "util",
+      "path": "src/components/base/input/input.tsx",
+      "importFrom": "@/components/base/input/input",
+      "layer": "base",
+      "group": "input",
+      "summary": "Shared by every field that wants Input's shell — `Textarea` reads the same size and class overrides out of it, so a composed form stays consistent.",
+      "props": [],
+      "tags": [
+        "base",
+        "input",
+        "text-field-context"
+      ],
+      "templates": [
+        "ai-chat",
+        "ai-image-generation",
+        "ai-profile",
+        "calendar",
+        "dashboard",
+        "finance",
+        "hr",
+        "marketing",
+        "medical",
+        "project-board"
+      ],
+      "catalog": "input",
+      "type": "createContext<TextFieldContextValue>(…)"
     },
     {
       "name": "TextFieldProps",
@@ -3736,7 +3898,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -3800,7 +3963,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -3830,7 +3994,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -3911,7 +4076,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -3941,7 +4107,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -4024,7 +4191,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "input",
       "extends": [
@@ -4056,7 +4224,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "AriaLabelProps"
@@ -4121,7 +4290,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "AriaLabelProps"
@@ -4150,7 +4320,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "HTMLAttributes<HTMLElement>"
@@ -4191,7 +4362,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "HTMLAttributes<HTMLElement>"
@@ -4507,7 +4679,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "pagination",
       "propsOf": [
@@ -4564,7 +4737,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "pagination"
     },
@@ -4873,7 +5047,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "segmented-control",
       "type": "\"solid\" | \"plain\""
@@ -4899,7 +5074,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "segmented-control",
       "extends": [
@@ -4951,7 +5127,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "segmented-control",
       "extends": [
@@ -4979,7 +5156,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "segmented-control",
       "extends": [
@@ -5025,7 +5203,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "segmented-control",
       "extends": [
@@ -5055,7 +5234,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "select",
       "type": "\"sm\" | \"md\""
@@ -5083,7 +5263,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "select",
       "typeParams": [
@@ -5165,7 +5346,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "select",
       "typeParams": [
@@ -5198,7 +5380,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "select",
       "extends": [
@@ -5241,7 +5424,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "select",
       "extends": [
@@ -5864,7 +6048,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch",
       "type": "\"sm\" | \"md\" | \"lg\""
@@ -5892,7 +6077,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch",
       "type": "\"pill\" | \"rectangle\""
@@ -5920,7 +6106,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch",
       "type": "sortCx(…)"
@@ -5964,7 +6151,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch"
     },
@@ -6011,7 +6199,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch"
     },
@@ -6038,7 +6227,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch",
       "extends": [
@@ -6099,7 +6289,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "switch",
       "extends": [
@@ -6311,7 +6502,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "type": "\"blue\" | \"gray\""
     },
@@ -6339,7 +6531,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "HTMLAttributes<HTMLDivElement>"
@@ -6386,7 +6579,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "HTMLAttributes<HTMLDivElement>"
@@ -6449,7 +6643,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -6712,6 +6907,257 @@
       ]
     },
     {
+      "name": "TextareaResize",
+      "kind": "type",
+      "path": "src/components/base/textarea/textarea.tsx",
+      "importFrom": "@/components/base/textarea/textarea",
+      "layer": "base",
+      "group": "textarea",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "base",
+        "textarea",
+        "textarea-resize"
+      ],
+      "templates": [
+        "project-board"
+      ],
+      "type": "\"none\" | \"vertical\""
+    },
+    {
+      "name": "TextareaBaseProps",
+      "kind": "type",
+      "path": "src/components/base/textarea/textarea.tsx",
+      "importFrom": "@/components/base/textarea/textarea",
+      "layer": "base",
+      "group": "textarea",
+      "summary": "Props of `TextareaBase`.",
+      "props": [],
+      "tags": [
+        "base",
+        "textarea",
+        "textarea-base-props"
+      ],
+      "templates": [
+        "project-board"
+      ],
+      "extends": [
+        "Omit<AriaTextAreaProps, \"size\" | \"className\" | \"rows\">"
+      ],
+      "propsOf": [
+        "TextareaBase"
+      ]
+    },
+    {
+      "name": "TextareaBase",
+      "kind": "component",
+      "path": "src/components/base/textarea/textarea.tsx",
+      "importFrom": "@/components/base/textarea/textarea",
+      "layer": "base",
+      "group": "textarea",
+      "summary": "",
+      "props": [
+        {
+          "name": "size",
+          "type": "TextareaSize",
+          "optional": true,
+          "typeExpanded": "InputSize"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "rows",
+          "type": "number",
+          "optional": true,
+          "doc": "Resting height, in lines. Also the floor when `autoResize` is on.",
+          "default": "3"
+        },
+        {
+          "name": "autoResize",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Grow with the content instead of scrolling at `rows`.",
+          "default": "false"
+        },
+        {
+          "name": "maxRows",
+          "type": "number",
+          "optional": true,
+          "doc": "Ceiling for `autoResize`, in lines. Past it the field scrolls."
+        },
+        {
+          "name": "resize",
+          "type": "TextareaResize",
+          "optional": true,
+          "doc": "Native resize handle. Ignored (forced `none`) while `autoResize` is on.",
+          "default": "\"vertical\"",
+          "typeExpanded": "\"none\" | \"vertical\""
+        },
+        {
+          "name": "fieldClassName",
+          "type": "string",
+          "optional": true,
+          "doc": "Class for the field shell."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLTextAreaElement>",
+          "optional": true,
+          "doc": "Ref to the <textarea> element."
+        },
+        {
+          "name": "groupRef",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "doc": "Ref to the field shell wrapper."
+        },
+        {
+          "name": "onInput",
+          "from": "Omit<AriaTextAreaProps, \"size\" | \"className\" | \"rows\">"
+        }
+      ],
+      "tags": [
+        "base",
+        "textarea",
+        "textarea-base"
+      ],
+      "templates": [
+        "project-board"
+      ],
+      "extends": [
+        "Omit<AriaTextAreaProps, \"size\" | \"className\" | \"rows\">"
+      ]
+    },
+    {
+      "name": "TextareaProps",
+      "kind": "type",
+      "path": "src/components/base/textarea/textarea.tsx",
+      "importFrom": "@/components/base/textarea/textarea",
+      "layer": "base",
+      "group": "textarea",
+      "summary": "Props of `Textarea`.",
+      "props": [],
+      "tags": [
+        "base",
+        "textarea",
+        "textarea-props"
+      ],
+      "templates": [
+        "project-board"
+      ],
+      "extends": [
+        "Omit<TextFieldProps, \"children\">",
+        "Pick<TextareaBaseProps, | \"rows\" | \"autoResize\" | \"maxRows\" | \"resize\" | \"fieldClassName\" | \"groupRef\" | \"ref\">"
+      ],
+      "propsOf": [
+        "Textarea"
+      ]
+    },
+    {
+      "name": "Textarea",
+      "kind": "component",
+      "path": "src/components/base/textarea/textarea.tsx",
+      "importFrom": "@/components/base/textarea/textarea",
+      "layer": "base",
+      "group": "textarea",
+      "summary": "Multiline sibling of `Input` — same React Aria plumbing, same field shell, same tokens.",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | string",
+          "optional": true,
+          "doc": "Show an info icon next to the label. Replace with tooltip when Tooltip lands."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "optional": true,
+          "doc": "Hard character limit, enforced by the browser."
+        },
+        {
+          "name": "showCount",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Show the character counter under the field (`12/280` with `maxLength`).",
+          "default": "false"
+        },
+        {
+          "name": "rows",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "autoResize",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "maxRows",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "resize",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "fieldClassName",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "ref",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "groupRef",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "className",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "value",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "defaultValue",
+          "from": "Omit<TextFieldProps, \"children\">"
+        },
+        {
+          "name": "onChange",
+          "from": "Omit<TextFieldProps, \"children\">"
+        }
+      ],
+      "tags": [
+        "base",
+        "textarea"
+      ],
+      "templates": [
+        "project-board"
+      ],
+      "extends": [
+        "Omit<TextFieldProps, \"children\">",
+        "Pick<TextareaBaseProps, | \"rows\" | \"autoResize\" | \"maxRows\" | \"resize\" | \"fieldClassName\" | \"groupRef\" | \"ref\">"
+      ]
+    },
+    {
       "name": "TooltipSize",
       "kind": "type",
       "path": "src/components/base/tooltip/tooltip.tsx",
@@ -6734,7 +7180,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "type": "\"sm\" | \"md\""
@@ -6762,7 +7209,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "type": "sortCx(…)"
@@ -6790,7 +7238,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "extends": [
@@ -6853,7 +7302,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "extends": [
@@ -6883,7 +7333,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "type": "ComponentProps<typeof AriaTooltipTrigger>",
@@ -6927,7 +7378,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "tooltip",
       "extends": [
@@ -8642,7 +9094,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "array(12)"
     },
@@ -8663,7 +9116,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "number"
     },
@@ -8684,7 +9138,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "number"
     },
@@ -8705,7 +9160,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "number"
     },
@@ -8726,7 +9182,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "(month: number) => number[]"
     },
@@ -8747,7 +9204,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "(month: number) => number"
     },
@@ -8768,7 +9226,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ],
       "type": "[ 34.2, 28.6, 6.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31.4, 4.8, 2.2, 1.1, 5.6, 1.4, 0.…"
     },
@@ -8809,9 +9268,57 @@
       "summary": "The design draws smoothed joins, but the implementation intentionally uses sharp linear segments (per spec). x axis \"Jun 14\" … \"Today\" (11px medium, text/tertiary, +0.2 tracking) Hovering the plot ro…",
       "props": [
         {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "default": "\"Tokens\""
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "series",
+          "type": "{ value: number; label?: string }[]",
+          "optional": true,
+          "default": "TOKENS_SERIES"
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "optional": true,
+          "default": "TOTAL_TOKENS"
+        },
+        {
+          "name": "change",
+          "type": "string",
+          "optional": true,
+          "default": "\"+9.4%\""
+        },
+        {
+          "name": "variant",
+          "type": "\"area\" | \"bar\"",
+          "optional": true,
+          "default": "\"area\""
+        },
+        {
+          "name": "startLabel",
+          "type": "string",
+          "optional": true,
+          "default": "\"Jun 14\""
+        },
+        {
+          "name": "endLabel",
+          "type": "string",
+          "optional": true,
+          "default": "\"Today\""
+        },
+        {
+          "name": "plotHeight",
+          "type": "number",
+          "optional": true,
+          "default": "200"
         }
       ],
       "tags": [
@@ -8821,7 +9328,8 @@
       ],
       "template": "ai-profile",
       "templates": [
-        "ai-profile"
+        "ai-profile",
+        "project-board"
       ]
     },
     {
@@ -13851,7 +14359,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "sidebar"
     },
@@ -13878,7 +14387,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "sidebar",
       "type": "string"
@@ -13906,7 +14416,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "sidebar",
       "type": "DashboardNavItem[]"
@@ -13987,7 +14498,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "sidebar"
     },
@@ -14025,7 +14537,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -14059,7 +14572,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -14111,7 +14625,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -16809,7 +17324,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "type": "\"all\" | \"mentions\" | \"system\""
@@ -16834,7 +17350,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "type": "Exclude<NotificationCenterTab, \"all\"> | \"activity\""
@@ -16859,7 +17376,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "type": "\"neutral\" | \"information\" | \"success\" | \"error\""
@@ -16900,7 +17418,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "type": "{ id: string; label: string; variant?: ButtonProps[\"variant\"] }"
@@ -16981,7 +17500,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "type": "{ id: string; category: NotificationCenterCategory; group: string; title: string; description: string; timestamp: string; unread?: boolean; status?: Notificati…"
@@ -17006,7 +17526,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "extends": [
@@ -17085,7 +17606,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "notification-center",
       "extends": [
@@ -17124,7 +17646,871 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
+      ]
+    },
+    {
+      "name": "NewProjectTicket",
+      "kind": "type",
+      "path": "src/components/application/project-board/create-ticket-modal.tsx",
+      "importFrom": "@/components/application/project-board/create-ticket-modal",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "columnId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "priority",
+          "type": "TicketPriority",
+          "optional": false
+        },
+        {
+          "name": "project",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "assignees",
+          "type": "string[]",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "create-ticket-modal",
+        "new-project-ticket"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ title: string; description: string; columnId: string; priority: TicketPriority; project: string; assignees: string[] }"
+    },
+    {
+      "name": "CreateTicketModal",
+      "kind": "component",
+      "path": "src/components/application/project-board/create-ticket-modal.tsx",
+      "importFrom": "@/components/application/project-board/create-ticket-modal",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Private template dialog.",
+      "props": [
+        {
+          "name": "isOpen",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": false
+        },
+        {
+          "name": "initialColumnId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "columns",
+          "type": "ProjectColumn[]",
+          "optional": false
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "onCreate",
+          "type": "(ticket: NewProjectTicket) => void",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "create-ticket-modal"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "BoardSort",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-controls.tsx",
+      "importFrom": "@/components/application/project-board/project-board-controls",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-controls",
+        "board-sort"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "\"manual\" | \"priority\" | \"title\""
+    },
+    {
+      "name": "ProjectBoardControls",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-controls.tsx",
+      "importFrom": "@/components/application/project-board/project-board-controls",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Private toolbar for the Project Board template.",
+      "props": [
+        {
+          "name": "sort",
+          "type": "BoardSort",
+          "optional": false,
+          "typeExpanded": "\"manual\" | \"priority\" | \"title\""
+        },
+        {
+          "name": "onSort",
+          "type": "(sort: BoardSort) => void",
+          "optional": false
+        },
+        {
+          "name": "priority",
+          "type": "TicketPriority | \"all\"",
+          "optional": false
+        },
+        {
+          "name": "onPriority",
+          "type": "(priority: TicketPriority | \"all\") => void",
+          "optional": false
+        },
+        {
+          "name": "project",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "onProject",
+          "type": "(project: string) => void",
+          "optional": false
+        },
+        {
+          "name": "showDone",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "onShowDone",
+          "type": "(show: boolean) => void",
+          "optional": false
+        },
+        {
+          "name": "fillColumns",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "onFillColumns",
+          "type": "(fill: boolean) => void",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-controls"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketSubtask",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "done",
+          "type": "boolean",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "ticket-subtask"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ id: string; title: string; done: boolean }"
+    },
+    {
+      "name": "TicketComment",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "author",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "time",
+          "type": "string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "ticket-comment"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ id: string; author: string; body: string; time: string }"
+    },
+    {
+      "name": "ProjectMember",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "avatar",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "initials",
+          "type": "string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "project-member"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ id: string; name: string; avatar: string; initials: string }"
+    },
+    {
+      "name": "TicketPriority",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "ticket-priority"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "\"Low\" | \"Medium\" | \"High\" | \"Urgent\""
+    },
+    {
+      "name": "ProjectTicket",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "since",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "subtasks",
+          "type": "TicketSubtask[]",
+          "optional": true
+        },
+        {
+          "name": "comments",
+          "type": "TicketComment[]",
+          "optional": true
+        },
+        {
+          "name": "isFavorite",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "createdBy",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "priority",
+          "type": "TicketPriority",
+          "optional": false
+        },
+        {
+          "name": "project",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "assignees",
+          "type": "string[]",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "project-ticket"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ id: string; code: string; area: string; title: string; since: string; description?: string; subtasks?: TicketSubtask[]; comments?: TicketComment[]; isFavorit…"
+    },
+    {
+      "name": "ProjectColumn",
+      "kind": "type",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "tickets",
+          "type": "ProjectTicket[]",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "project-column"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "{ id: string; title: string; limit: number; tickets: ProjectTicket[] }"
+    },
+    {
+      "name": "PROJECT_MEMBERS",
+      "kind": "data",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Photographic placeholders from the open-source Random User Generator.",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "project-members"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "Record<string, ProjectMember>"
+    },
+    {
+      "name": "PROJECT_COLUMNS",
+      "kind": "data",
+      "path": "src/components/application/project-board/project-board-data.ts",
+      "importFrom": "@/components/application/project-board/project-board-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-data",
+        "project-columns"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "ProjectColumn[]"
+    },
+    {
+      "name": "ProjectBoardEmptyState",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-empty-state.tsx",
+      "importFrom": "@/components/application/project-board/project-board-empty-state",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Private template illustration.",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-empty-state"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketStatusIcon",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-icons.tsx",
+      "importFrom": "@/components/application/project-board/project-board-icons",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Consistent status glyphs across ticket creation and detail menus.",
+      "props": [
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-icons",
+        "ticket-status-icon"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketAssigneeIcon",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-icons.tsx",
+      "importFrom": "@/components/application/project-board/project-board-icons",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-icons",
+        "ticket-assignee-icon"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketUrgencyIcon",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-icons.tsx",
+      "importFrom": "@/components/application/project-board/project-board-icons",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-icons",
+        "ticket-urgency-icon"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketFavoriteIcon",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-icons.tsx",
+      "importFrom": "@/components/application/project-board/project-board-icons",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "17px ticket favorite glyph with true 1px circular corner arcs.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-icons",
+        "ticket-favorite-icon"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "ProjectBoardShell",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board-shell.tsx",
+      "importFrom": "@/components/application/project-board/project-board-shell",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…",
+      "props": [
+        {
+          "name": "contained",
+          "type": "boolean",
+          "optional": true,
+          "default": "false"
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "project-board-shell"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "ProjectBoard",
+      "kind": "component",
+      "path": "src/components/application/project-board/project-board.tsx",
+      "importFrom": "@/components/application/project-board/project-board",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [
+        {
+          "name": "onMenuClick",
+          "type": "() => void",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketCornerGenieSurface",
+      "kind": "component",
+      "path": "src/components/application/project-board/ticket-corner-genie-surface.tsx",
+      "importFrom": "@/components/application/project-board/ticket-corner-genie-surface",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Tall panels use cached bands instead of re-running a full-height SVG displacement + blur pass each frame.",
+      "props": [
+        {
+          "name": "exiting",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-corner-genie-surface"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "ticketBrief",
+      "kind": "util",
+      "path": "src/components/application/project-board/ticket-detail-data.ts",
+      "importFrom": "@/components/application/project-board/ticket-detail-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-detail-data",
+        "ticket-brief"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "(ticket: ProjectTicket) => TicketBrief"
+    },
+    {
+      "name": "ticketSubtasks",
+      "kind": "util",
+      "path": "src/components/application/project-board/ticket-detail-data.ts",
+      "importFrom": "@/components/application/project-board/ticket-detail-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-detail-data",
+        "ticket-subtasks"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "(ticket: ProjectTicket, columnId: string) => TicketSubtask[]"
+    },
+    {
+      "name": "ticketDemoActivity",
+      "kind": "util",
+      "path": "src/components/application/project-board/ticket-detail-data.ts",
+      "importFrom": "@/components/application/project-board/ticket-detail-data",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Stable demo variation: opening or editing a ticket must not reshuffle its history.",
+      "props": [],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-detail-data",
+        "ticket-demo-activity"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ],
+      "type": "(ticket: ProjectTicket)"
+    },
+    {
+      "name": "TicketDetailModal",
+      "kind": "component",
+      "path": "src/components/application/project-board/ticket-detail-modal.tsx",
+      "importFrom": "@/components/application/project-board/ticket-detail-modal",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Figma 4509:12272 — private detail panel bundled with the Project Board.",
+      "props": [
+        {
+          "name": "isOpen",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "ticket",
+          "type": "ProjectTicket",
+          "optional": false
+        },
+        {
+          "name": "column",
+          "type": "ProjectColumn",
+          "optional": false
+        },
+        {
+          "name": "columns",
+          "type": "ProjectColumn[]",
+          "optional": false
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": false
+        },
+        {
+          "name": "onUpdate",
+          "type": "(patch: Partial<ProjectTicket>) => void",
+          "optional": false
+        },
+        {
+          "name": "onMove",
+          "type": "(columnId: string) => void",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-detail-modal"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
+      ]
+    },
+    {
+      "name": "TicketGenieSurface",
+      "kind": "component",
+      "path": "src/components/application/project-board/ticket-genie-surface.tsx",
+      "importFrom": "@/components/application/project-board/ticket-genie-surface",
+      "layer": "application",
+      "group": "project-board",
+      "summary": "Warp the actual dialog pixels, including its content, during entry/exit.",
+      "props": [
+        {
+          "name": "exiting",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "application",
+        "project-board",
+        "ticket-genie-surface"
+      ],
+      "template": "project-board",
+      "templates": [
+        "project-board"
       ]
     },
     {
@@ -17464,7 +18850,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17496,7 +18883,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17523,7 +18911,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "settings-modal",
       "type": "\"general\" | \"profile\" | \"storage\" | \"tools\""
@@ -17552,7 +18941,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "settings-modal",
       "propsOf": [
@@ -17609,7 +18999,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "settings-modal"
     },
@@ -17642,7 +19033,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17680,7 +19072,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17718,7 +19111,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17761,7 +19155,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17812,7 +19207,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17838,7 +19234,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -17864,7 +19261,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ]
     },
     {
@@ -18081,7 +19479,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "type": "\"light\" | \"dark\""
@@ -18110,7 +19509,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "type": "string"
@@ -18139,7 +19539,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "type": "string"
@@ -18168,7 +19569,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "type": "(theme: ThemeMode, { persist = true }: { persist?: boolean } = {})"
@@ -18197,7 +19599,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "type": "(theme: ThemeMode, { origin = null, element = null, duration = THEME_TRANSITION_DURATION, }: { origin?: ThemeTransitionOrigin | null; element?: HTMLElement | n…"
@@ -18226,7 +19629,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "returns": "ThemeMode"
@@ -18255,7 +19659,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle",
       "propsOf": [
@@ -18312,7 +19717,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "catalog": "theme-toggle"
     },
@@ -22739,7 +24145,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "SVGProps<SVGSVGElement>"
@@ -22769,7 +24176,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "SVGProps<SVGSVGElement>"
@@ -22799,7 +24207,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "SVGProps<SVGSVGElement>"
@@ -22829,7 +24238,8 @@
         "finance",
         "hr",
         "marketing",
-        "medical"
+        "medical",
+        "project-board"
       ],
       "extends": [
         "SVGProps<SVGSVGElement>"
@@ -22995,6 +24405,24 @@
         "medical-template"
       ],
       "template": "medical",
+      "isDefault": true
+    },
+    {
+      "name": "ProjectBoardTemplate",
+      "kind": "component",
+      "path": "src/pages/templates/project-board.tsx",
+      "importFrom": "@/pages/templates/project-board",
+      "layer": "pages",
+      "group": "templates",
+      "summary": "BoardUI Pro \"Project board\" — VISUAL REFERENCE.",
+      "props": [],
+      "tags": [
+        "pages",
+        "templates",
+        "project-board",
+        "project-board-template"
+      ],
+      "template": "project-board",
       "isDefault": true
     }
   ],
@@ -28436,6 +29864,698 @@
         "navType": "DashboardNavItem[]",
         "shellAttrs": [
           "selected=\"medical\""
+        ]
+      }
+    },
+    {
+      "slug": "project-board",
+      "route": "/templates/project-board",
+      "domain": "project-board",
+      "summary": "BoardUI Pro \"Project board\" — VISUAL REFERENCE.",
+      "page": {
+        "path": "src/pages/templates/project-board.tsx",
+        "importFrom": "@/pages/templates/project-board",
+        "export": "ProjectBoardTemplate",
+        "isDefault": true
+      },
+      "shell": {
+        "name": "ProjectBoardShell",
+        "path": "src/components/application/project-board/project-board-shell.tsx",
+        "importFrom": "@/components/application/project-board/project-board-shell",
+        "mountedAs": "<ProjectBoardShell />",
+        "summary": "The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…",
+        "props": [
+          {
+            "name": "contained",
+            "type": "boolean",
+            "optional": true,
+            "default": "false"
+          }
+        ]
+      },
+      "modules": [
+        {
+          "importFrom": "@/components/application/ai-profile/ai-profile-data",
+          "path": "src/components/application/ai-profile/ai-profile-data.ts",
+          "layer": "application",
+          "group": "ai-profile",
+          "depth": 4,
+          "names": [
+            "TOKENS_SERIES"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/ai-profile/tokens-chart-card",
+          "path": "src/components/application/ai-profile/tokens-chart-card.tsx",
+          "layer": "application",
+          "group": "ai-profile",
+          "depth": 3,
+          "names": [
+            "TokensChartCard"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/dashboard/dashboard-sidebar",
+          "path": "src/components/application/dashboard/dashboard-sidebar.tsx",
+          "layer": "application",
+          "group": "dashboard",
+          "depth": 1,
+          "names": [
+            "DashboardSidebar"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/dashboard/dashboard-team-menu",
+          "path": "src/components/application/dashboard/dashboard-team-menu.tsx",
+          "layer": "application",
+          "group": "dashboard",
+          "depth": 2,
+          "names": [
+            "DashboardTeamMenu"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/dashboard/dashboard-user-menu",
+          "path": "src/components/application/dashboard/dashboard-user-menu.tsx",
+          "layer": "application",
+          "group": "dashboard",
+          "depth": 2,
+          "names": [
+            "DashboardUserMenu"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/notification-center/notification-center",
+          "path": "src/components/application/notification-center/notification-center.tsx",
+          "layer": "application",
+          "group": "notification-center",
+          "depth": 3,
+          "names": [
+            "NotificationCenter",
+            "NotificationCenterItem"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/notification-center/template-notification-center-menu",
+          "path": "src/components/application/notification-center/template-notification-center-menu.tsx",
+          "layer": "application",
+          "group": "notification-center",
+          "depth": 2,
+          "names": [
+            "TemplateNotificationCenterMenu"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/create-ticket-modal.module",
+          "path": "src/components/application/project-board/create-ticket-modal.module.css",
+          "layer": "other",
+          "group": "",
+          "depth": 3,
+          "names": [
+            "styles"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/create-ticket-modal",
+          "path": "src/components/application/project-board/create-ticket-modal.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 2,
+          "names": [
+            "CreateTicketModal",
+            "NewProjectTicket"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/project-board-controls",
+          "path": "src/components/application/project-board/project-board-controls.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 2,
+          "names": [
+            "BoardSort",
+            "ProjectBoardControls"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/project-board-data",
+          "path": "src/components/application/project-board/project-board-data.ts",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 2,
+          "names": [
+            "PROJECT_COLUMNS",
+            "PROJECT_MEMBERS",
+            "ProjectColumn",
+            "ProjectTicket",
+            "TicketPriority",
+            "TicketSubtask"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/project-board-empty-state",
+          "path": "src/components/application/project-board/project-board-empty-state.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 2,
+          "names": [
+            "ProjectBoardEmptyState"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/project-board-icons",
+          "path": "src/components/application/project-board/project-board-icons.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 3,
+          "names": [
+            "TicketAssigneeIcon",
+            "TicketFavoriteIcon",
+            "TicketStatusIcon",
+            "TicketUrgencyIcon"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/project-board",
+          "path": "src/components/application/project-board/project-board.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 1,
+          "names": [
+            "ProjectBoard"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/ticket-corner-genie-surface",
+          "path": "src/components/application/project-board/ticket-corner-genie-surface.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 3,
+          "names": [
+            "TicketCornerGenieSurface"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/ticket-detail-data",
+          "path": "src/components/application/project-board/ticket-detail-data.ts",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 3,
+          "names": [
+            "ticketBrief",
+            "ticketDemoActivity"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/ticket-detail-modal.module",
+          "path": "src/components/application/project-board/ticket-detail-modal.module.css",
+          "layer": "other",
+          "group": "",
+          "depth": 3,
+          "names": [
+            "styles"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/ticket-detail-modal",
+          "path": "src/components/application/project-board/ticket-detail-modal.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 2,
+          "names": [
+            "TicketDetailModal"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/project-board/ticket-genie-surface",
+          "path": "src/components/application/project-board/ticket-genie-surface.tsx",
+          "layer": "application",
+          "group": "project-board",
+          "depth": 3,
+          "names": [
+            "TicketGenieSurface"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/plan-art-flame",
+          "path": "src/components/application/settings/plan-art-flame.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 4,
+          "names": [
+            "PlanArtFlame"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-general",
+          "path": "src/components/application/settings/settings-general.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 3,
+          "names": [
+            "SettingsGeneral"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-modal",
+          "path": "src/components/application/settings/settings-modal.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 2,
+          "names": [
+            "SettingsModal"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-profile",
+          "path": "src/components/application/settings/settings-profile.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 3,
+          "names": [
+            "SettingsProfile"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-rows",
+          "path": "src/components/application/settings/settings-rows.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 4,
+          "names": [
+            "SettingsCard",
+            "SettingsRow",
+            "SettingsSectionLabel",
+            "SettingsValueField"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-storage",
+          "path": "src/components/application/settings/settings-storage.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 3,
+          "names": [
+            "SettingsStorage"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/settings/settings-tools",
+          "path": "src/components/application/settings/settings-tools.tsx",
+          "layer": "application",
+          "group": "settings",
+          "depth": 3,
+          "names": [
+            "SettingsTools"
+          ]
+        },
+        {
+          "importFrom": "@/components/application/theme/theme-toggle",
+          "path": "src/components/application/theme/theme-toggle.tsx",
+          "layer": "application",
+          "group": "theme",
+          "depth": 2,
+          "names": [
+            "ThemeToggle"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/avatar/avatar",
+          "path": "src/components/base/avatar/avatar.tsx",
+          "layer": "base",
+          "group": "avatar",
+          "depth": 2,
+          "names": [
+            "Avatar",
+            "AvatarProps"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/badges/badge",
+          "path": "src/components/base/badges/badge.tsx",
+          "layer": "base",
+          "group": "badges",
+          "depth": 2,
+          "names": [
+            "Badge"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/badges/chip",
+          "path": "src/components/base/badges/chip.tsx",
+          "layer": "base",
+          "group": "badges",
+          "depth": 2,
+          "names": [
+            "Chip"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/breadcrumb/breadcrumb",
+          "path": "src/components/base/breadcrumb/breadcrumb.tsx",
+          "layer": "base",
+          "group": "breadcrumb",
+          "depth": 2,
+          "names": [
+            "Breadcrumb",
+            "BreadcrumbItem"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/buttons/button",
+          "path": "src/components/base/buttons/button.tsx",
+          "layer": "base",
+          "group": "buttons",
+          "depth": 2,
+          "names": [
+            "Button",
+            "ButtonProps"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/buttons/close-button",
+          "path": "src/components/base/buttons/close-button.tsx",
+          "layer": "base",
+          "group": "buttons",
+          "depth": 2,
+          "names": [
+            "CloseButton"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/buttons/icon-button",
+          "path": "src/components/base/buttons/icon-button.tsx",
+          "layer": "base",
+          "group": "buttons",
+          "depth": 2,
+          "names": [
+            "IconButton"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/checkbox/checkbox-glyph",
+          "path": "src/components/base/checkbox/checkbox-glyph.tsx",
+          "layer": "base",
+          "group": "checkbox",
+          "depth": 4,
+          "names": [
+            "CheckboxGlyph",
+            "CheckboxSize",
+            "checkboxSizes"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/checkbox/checkbox",
+          "path": "src/components/base/checkbox/checkbox.tsx",
+          "layer": "base",
+          "group": "checkbox",
+          "depth": 3,
+          "names": [
+            "Checkbox"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/date-picker/date-picker",
+          "path": "src/components/base/date-picker/date-picker.tsx",
+          "layer": "base",
+          "group": "date-picker",
+          "depth": 4,
+          "names": [
+            "DatePicker"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/date-picker/shared",
+          "path": "src/components/base/date-picker/shared.tsx",
+          "layer": "base",
+          "group": "date-picker",
+          "depth": 5,
+          "names": [
+            "DateChipInput",
+            "MonthPanel",
+            "formatTriggerDate",
+            "popoverClassName",
+            "triggerButtonClassName"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/dropdown/dropdown",
+          "path": "src/components/base/dropdown/dropdown.tsx",
+          "layer": "base",
+          "group": "dropdown",
+          "depth": 3,
+          "names": [
+            "Dropdown",
+            "DropdownGroup",
+            "DropdownItem",
+            "DropdownPopover",
+            "DropdownTrigger"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/dropdown/menu-styles",
+          "path": "src/components/base/dropdown/menu-styles.ts",
+          "layer": "base",
+          "group": "dropdown",
+          "depth": 4,
+          "names": [
+            "MENU_ITEM",
+            "MENU_ITEMS_CONTAINER",
+            "MENU_ITEM_ACTIVE",
+            "MENU_ITEM_INTERACTIVE",
+            "MENU_POPOVER_SURFACE",
+            "MENU_POPOVER_WIDTH"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/file-upload/file-upload",
+          "path": "src/components/base/file-upload/file-upload.tsx",
+          "layer": "base",
+          "group": "file-upload",
+          "depth": 4,
+          "names": [
+            "FileUpload",
+            "formatFileSize"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/input/hint-text",
+          "path": "src/components/base/input/hint-text.tsx",
+          "layer": "base",
+          "group": "input",
+          "depth": 4,
+          "names": [
+            "HintText"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/input/input",
+          "path": "src/components/base/input/input.tsx",
+          "layer": "base",
+          "group": "input",
+          "depth": 4,
+          "names": [
+            "Input",
+            "InputBase",
+            "InputSize",
+            "TextField",
+            "TextFieldContext",
+            "TextFieldProps"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/input/label",
+          "path": "src/components/base/input/label.tsx",
+          "layer": "base",
+          "group": "input",
+          "depth": 4,
+          "names": [
+            "Label"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/kbd/kbd",
+          "path": "src/components/base/kbd/kbd.tsx",
+          "layer": "base",
+          "group": "kbd",
+          "depth": 2,
+          "names": [
+            "Kbd"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/pagination/pagination",
+          "path": "src/components/base/pagination/pagination.tsx",
+          "layer": "base",
+          "group": "pagination",
+          "depth": 4,
+          "names": [
+            "Pagination"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/segmented-control/segmented-control",
+          "path": "src/components/base/segmented-control/segmented-control.tsx",
+          "layer": "base",
+          "group": "segmented-control",
+          "depth": 4,
+          "names": [
+            "SegmentedControl",
+            "SegmentedControlItem"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/select/select",
+          "path": "src/components/base/select/select.tsx",
+          "layer": "base",
+          "group": "select",
+          "depth": 3,
+          "names": [
+            "Select",
+            "SelectItem"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/switch/switch",
+          "path": "src/components/base/switch/switch.tsx",
+          "layer": "base",
+          "group": "switch",
+          "depth": 3,
+          "names": [
+            "Switch",
+            "SwitchTrack"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/tabs/pill-tab",
+          "path": "src/components/base/tabs/pill-tab.tsx",
+          "layer": "base",
+          "group": "tabs",
+          "depth": 4,
+          "names": [
+            "PillTab",
+            "PillTabList"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/textarea/textarea",
+          "path": "src/components/base/textarea/textarea.tsx",
+          "layer": "base",
+          "group": "textarea",
+          "depth": 3,
+          "names": [
+            "Textarea"
+          ]
+        },
+        {
+          "importFrom": "@/components/base/tooltip/tooltip",
+          "path": "src/components/base/tooltip/tooltip.tsx",
+          "layer": "base",
+          "group": "tooltip",
+          "depth": 3,
+          "names": [
+            "Tooltip",
+            "TooltipTrigger"
+          ]
+        },
+        {
+          "importFrom": "@/components/foundations/icons/chevrons",
+          "path": "src/components/foundations/icons/chevrons.tsx",
+          "layer": "foundations",
+          "group": "icons",
+          "depth": 3,
+          "names": [
+            "ChevronDownSmall",
+            "ChevronRightSmall",
+            "ChevronSortDown",
+            "ChevronUpDownSmall"
+          ]
+        }
+      ],
+      "cards": [
+        "@/components/application/ai-profile/tokens-chart-card"
+      ],
+      "dataFiles": [
+        {
+          "path": "src/components/application/project-board/project-board-data.ts",
+          "importFrom": "@/components/application/project-board/project-board-data",
+          "summary": "",
+          "data": [
+            {
+              "name": "PROJECT_MEMBERS",
+              "type": "Record<string, ProjectMember>"
+            },
+            {
+              "name": "PROJECT_COLUMNS",
+              "type": "ProjectColumn[]"
+            }
+          ],
+          "helpers": [],
+          "types": [
+            "TicketSubtask",
+            "TicketComment",
+            "ProjectMember",
+            "TicketPriority",
+            "ProjectTicket",
+            "ProjectColumn"
+          ],
+          "shapes": [
+            {
+              "name": "ProjectMember",
+              "from": "@/components/application/project-board/project-board-data"
+            },
+            {
+              "name": "ProjectColumn",
+              "from": "@/components/application/project-board/project-board-data"
+            },
+            {
+              "name": "TicketSubtask",
+              "from": "@/components/application/project-board/project-board-data"
+            },
+            {
+              "name": "TicketComment",
+              "from": "@/components/application/project-board/project-board-data"
+            },
+            {
+              "name": "TicketPriority",
+              "from": "@/components/application/project-board/project-board-data"
+            },
+            {
+              "name": "ProjectTicket",
+              "from": "@/components/application/project-board/project-board-data"
+            }
+          ]
+        },
+        {
+          "path": "src/components/application/project-board/ticket-detail-data.ts",
+          "importFrom": "@/components/application/project-board/ticket-detail-data",
+          "summary": "Demo briefs belong to this template, not the shared component library.",
+          "data": [],
+          "helpers": [
+            {
+              "name": "ticketBrief",
+              "type": "(ticket: ProjectTicket) => TicketBrief"
+            },
+            {
+              "name": "ticketSubtasks",
+              "type": "(ticket: ProjectTicket, columnId: string) => TicketSubtask[]"
+            },
+            {
+              "name": "ticketDemoActivity",
+              "type": "(ticket: ProjectTicket)"
+            }
+          ],
+          "types": [],
+          "shapes": []
+        }
+      ],
+      "sidebar": {
+        "importFrom": "@/components/application/dashboard/dashboard-sidebar",
+        "path": "src/components/application/dashboard/dashboard-sidebar.tsx",
+        "navConst": "DASHBOARD_NAV",
+        "navType": "DashboardNavItem[]",
+        "shellAttrs": [
+          "selected=\"project-board\""
         ]
       }
     }

@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 278 components · 19 hooks · generated 2026-09-15
+BoardUI 0.5.3 · 293 components · 19 hooks · generated 2026-09-21
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -61,7 +61,7 @@ Extends: `HTMLAttributes<HTMLSpanElement>`
 | prop | type | default | doc |
 |---|---|---|---|
 | variant? | `"bold" \| "subtle" \| "caption"` | `"bold"` |  |
-| color? | `"lime" \| "rose" \| "yellow" \| "cyan" \| "blue" \| "purple" \| "neutral" \| "gray" \| "soft"` | `"neutral"` |  |
+| color? | `"orange" \| "lime" \| "rose" \| "yellow" \| "cyan" \| "blue" \| "purple" \| "neutral" \| "gray" \| "soft"` | `"neutral"` |  |
 | ref? | `Ref<HTMLSpanElement>` |  |  |
 | className | — |  | (inherited) |
 
@@ -484,7 +484,7 @@ Extends: `Omit<AriaTextFieldProps, "className">`
 |---|---|---|---|
 | className? | `string` |  |  |
 | children? | `ReactNode \| ((state: { isRequired: boolean; isInvalid: boolean; isDisabled: boolean; isReadOnly: boolean }) => ReactNode)` |  |  |
-| size? | `"medium" \| "small"` | `"medium"` |  |
+| size? | `InputSize` | `"medium"` |  |
 | fieldClassName? | `string` |  |  |
 | inputClassName? | `string` |  |  |
 
@@ -492,7 +492,7 @@ Extends: `Omit<AriaTextFieldProps, "className">`
 Extends: `Omit<AriaInputProps, "size" | "className">`
 | prop | type | default | doc |
 |---|---|---|---|
-| size? | `"medium" \| "small"` |  |  |
+| size? | `InputSize` |  |  |
 | className? | `string` |  |  |
 | leadingIcon? | `ComponentType<{ className?: string; "aria-hidden"?: boolean \| "true" \| "false" }>` |  |  |
 | trailingIcon? | `ComponentType<{ className?: string; "aria-hidden"?: boolean \| "true" \| "false" }>` |  |  |
@@ -517,7 +517,8 @@ Extends: `Omit<TextFieldProps, "children">`, `Pick<InputBaseProps, | "leadingIco
 | groupRef | — |  | (inherited) |
 | className | — |  | (inherited) |
 
-Other exports: `TextFieldProps` (props of TextField) · `InputBaseProps` (props of InputBase) · `InputProps` (props of Input)
+Types: `InputSize` = `"medium" | "small"` · `TextFieldContextValue` = `{ size?: InputSize; fieldClassName?: string; inputClassName?: string }`
+Other exports: `TextFieldProps` (props of TextField) · `InputBaseProps` (props of InputBase) · `InputProps` (props of Input) · `TextFieldContext`: `createContext<TextFieldContextValue>(…)`
 
 ### input — `@/components/base/input/label`
 
@@ -837,6 +838,48 @@ Extends: `AriaTabPanelProps`
 
 Other exports: `TabsProps` (props of Tabs) · `TabListProps` (props of TabList) · `TabProps` (props of Tab) · `TabPanelProps` (props of TabPanel)
 
+### textarea — `@/components/base/textarea/textarea`
+
+**TextareaBase**
+Extends: `Omit<AriaTextAreaProps, "size" | "className" | "rows">`
+| prop | type | default | doc |
+|---|---|---|---|
+| size? | `InputSize` |  |  |
+| className? | `string` |  |  |
+| rows? | `number` | `3` | Resting height, in lines. Also the floor when `autoResize` is on. |
+| autoResize? | `boolean` | `false` | Grow with the content instead of scrolling at `rows`. |
+| maxRows? | `number` |  | Ceiling for `autoResize`, in lines. Past it the field scrolls. |
+| resize? | `TextareaResize` | `"vertical"` | Native resize handle. Ignored (forced `none`) while `autoResize` is on. |
+| fieldClassName? | `string` |  | Class for the field shell. |
+| ref? | `Ref<HTMLTextAreaElement>` |  | Ref to the <textarea> element. |
+| groupRef? | `Ref<HTMLDivElement>` |  | Ref to the field shell wrapper. |
+| onInput | — |  | (inherited) |
+
+**Textarea** — Multiline sibling of `Input` — same React Aria plumbing, same field shell, same tokens.
+Extends: `Omit<TextFieldProps, "children">`, `Pick<TextareaBaseProps, | "rows" | "autoResize" | "maxRows" | "resize" | "fieldClassName" | "groupRef" | "ref">`
+| prop | type | default | doc |
+|---|---|---|---|
+| label? | `ReactNode` |  |  |
+| hint? | `ReactNode` |  |  |
+| tooltip? | `boolean \| string` |  | Show an info icon next to the label. Replace with tooltip when Tooltip lands. |
+| placeholder? | `string` |  |  |
+| maxLength? | `number` |  | Hard character limit, enforced by the browser. |
+| showCount? | `boolean` | `false` | Show the character counter under the field (`12/280` with `maxLength`). |
+| rows | — |  | (inherited) |
+| autoResize | — |  | (inherited) |
+| maxRows | — |  | (inherited) |
+| resize | — |  | (inherited) |
+| fieldClassName | — |  | (inherited) |
+| ref | — |  | (inherited) |
+| groupRef | — |  | (inherited) |
+| className | — |  | (inherited) |
+| value | — |  | (inherited) |
+| defaultValue | — |  | (inherited) |
+| onChange | — |  | (inherited) |
+
+Types: `TextareaResize` = `"none" | "vertical"`
+Other exports: `TextareaBaseProps` (props of TextareaBase) · `TextareaProps` (props of Textarea)
+
 ### tooltip — `@/components/base/tooltip/tooltip`
 
 **Tooltip** — Light-surface tooltip built on React Aria.
@@ -1153,7 +1196,15 @@ Template: /templates/ai-profile (see templates.md)
 **TokensChartCard** — The design draws smoothed joins, but the implementation intentionally uses sharp linear segments (per spec). x axis "Jun 14" … "Today" (11px medium, text/tertiary, +0.2 tracking) Hovering the plot ro…
 | prop | type | default | doc |
 |---|---|---|---|
+| title? | `string` | `"Tokens"` |  |
 | className? | `string` |  |  |
+| series? | `{ value: number; label?: string }[]` | `TOKENS_SERIES` |  |
+| total? | `number` | `TOTAL_TOKENS` |  |
+| change? | `string` | `"+9.4%"` |  |
+| variant? | `"area" \| "bar"` | `"area"` |  |
+| startLabel? | `string` | `"Jun 14"` |  |
+| endLabel? | `string` | `"Today"` |  |
+| plotHeight? | `number` | `200` |  |
 
 ### auth — `@/components/application/auth/auth-card`
 
@@ -2116,6 +2167,129 @@ Other exports: `NotificationCenterProps` (props of NotificationCenter)
 | notifications? | `NotificationCenterItem[]` | `TEMPLATE_NOTIFICATIONS` |  |
 | unreadCount? | `number` |  |  |
 
+### project-board — `@/components/application/project-board/create-ticket-modal`
+Template: /templates/project-board (see templates.md)
+
+**CreateTicketModal** — Private template dialog.
+| prop | type | default | doc |
+|---|---|---|---|
+| isOpen | `boolean` |  |  |
+| onClose | `() => void` |  |  |
+| initialColumnId? | `string` |  |  |
+| columns | `ProjectColumn[]` |  |  |
+| code | `string` |  |  |
+| onCreate | `(ticket: NewProjectTicket) => void` |  |  |
+
+Types: `NewProjectTicket` = `{ title: string; description: string; columnId: string; priority: TicketPriority; project: string; assignees: string[] }`
+
+### project-board — `@/components/application/project-board/project-board-controls`
+Template: /templates/project-board (see templates.md)
+
+**ProjectBoardControls** — Private toolbar for the Project Board template.
+| prop | type | default | doc |
+|---|---|---|---|
+| sort | `BoardSort` |  |  |
+| onSort | `(sort: BoardSort) => void` |  |  |
+| priority | `TicketPriority \| "all"` |  |  |
+| onPriority | `(priority: TicketPriority \| "all") => void` |  |  |
+| project | `string` |  |  |
+| onProject | `(project: string) => void` |  |  |
+| showDone | `boolean` |  |  |
+| onShowDone | `(show: boolean) => void` |  |  |
+| fillColumns | `boolean` |  |  |
+| onFillColumns | `(fill: boolean) => void` |  |  |
+
+Types: `BoardSort` = `"manual" | "priority" | "title"`
+
+### project-board — `@/components/application/project-board/project-board-data`
+Template: /templates/project-board (see templates.md)
+
+Types: `TicketSubtask` = `{ id: string; title: string; done: boolean }` · `TicketComment` = `{ id: string; author: string; body: string; time: string }` · `ProjectMember` = `{ id: string; name: string; avatar: string; initials: string }` · `TicketPriority` = `"Low" | "Medium" | "High" | "Urgent"` · `ProjectTicket` = `{ id: string; code: string; area: string; title: string; since: string; description?: string; subtasks?: TicketSubtask[]; comments?: TicketComment[]; isFavorite?: boolean; createdBy?: string; priority: TicketPriority; project: string; assi…` · `ProjectColumn` = `{ id: string; title: string; limit: number; tickets: ProjectTicket[] }`
+Data: `PROJECT_MEMBERS`: `Record<string, ProjectMember>` · `PROJECT_COLUMNS`: `ProjectColumn[]`
+
+### project-board — `@/components/application/project-board/project-board-empty-state`
+Template: /templates/project-board (see templates.md)
+
+**ProjectBoardEmptyState** — Private template illustration.
+No props.
+
+### project-board — `@/components/application/project-board/project-board-icons`
+Template: /templates/project-board (see templates.md)
+
+**TicketStatusIcon** — Consistent status glyphs across ticket creation and detail menus.
+| prop | type | default | doc |
+|---|---|---|---|
+| status | `string` |  |  |
+| className? | `string` |  |  |
+
+**TicketAssigneeIcon**
+| prop | type | default | doc |
+|---|---|---|---|
+| className? | `string` |  |  |
+
+**TicketUrgencyIcon**
+| prop | type | default | doc |
+|---|---|---|---|
+| className? | `string` |  |  |
+
+**TicketFavoriteIcon** — 17px ticket favorite glyph with true 1px circular corner arcs.
+| prop | type | default | doc |
+|---|---|---|---|
+| className? | `string` |  |  |
+
+### project-board — `@/components/application/project-board/project-board-shell`
+Template: /templates/project-board (see templates.md)
+
+**ProjectBoardShell** — The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…
+| prop | type | default | doc |
+|---|---|---|---|
+| contained? | `boolean` | `false` |  |
+
+### project-board — `@/components/application/project-board/project-board`
+Template: /templates/project-board (see templates.md)
+
+**ProjectBoard**
+| prop | type | default | doc |
+|---|---|---|---|
+| onMenuClick? | `() => void` |  |  |
+
+### project-board — `@/components/application/project-board/ticket-corner-genie-surface`
+Template: /templates/project-board (see templates.md)
+
+**TicketCornerGenieSurface** — Tall panels use cached bands instead of re-running a full-height SVG displacement + blur pass each frame.
+| prop | type | default | doc |
+|---|---|---|---|
+| exiting | `boolean` |  |  |
+| children | `ReactNode` |  |  |
+
+### project-board — `@/components/application/project-board/ticket-detail-data`
+Template: /templates/project-board (see templates.md)
+
+Other exports: `ticketBrief(ticket: ProjectTicket) => TicketBrief` · `ticketSubtasks(ticket: ProjectTicket, columnId: string) => TicketSubtask[]` · `ticketDemoActivity(ticket: ProjectTicket)`
+
+### project-board — `@/components/application/project-board/ticket-detail-modal`
+Template: /templates/project-board (see templates.md)
+
+**TicketDetailModal** — Figma 4509:12272 — private detail panel bundled with the Project Board.
+| prop | type | default | doc |
+|---|---|---|---|
+| isOpen | `boolean` |  |  |
+| ticket | `ProjectTicket` |  |  |
+| column | `ProjectColumn` |  |  |
+| columns | `ProjectColumn[]` |  |  |
+| onClose | `() => void` |  |  |
+| onUpdate | `(patch: Partial<ProjectTicket>) => void` |  |  |
+| onMove | `(columnId: string) => void` |  |  |
+
+### project-board — `@/components/application/project-board/ticket-genie-surface`
+Template: /templates/project-board (see templates.md)
+
+**TicketGenieSurface** — Warp the actual dialog pixels, including its content, during entry/exit.
+| prop | type | default | doc |
+|---|---|---|---|
+| exiting | `boolean` |  |  |
+| children | `ReactNode` |  |  |
+
 ### questionnaire — `@/components/application/questionnaire/questionnaire`
 
 **Questionnaire** — Plan-mode questions as a chat card: one question per step with checkbox or numbered rows, a free-text Other row, step pills and Previous / Next, sliding between questions as the card animates to each…
@@ -2774,5 +2948,12 @@ No props.
 Template: /templates/medical (see templates.md)
 
 **MedicalTemplate** — BoardUI Pro "Medical profile" — patient overview: steps, sleep score, activity rings, most-active-days, alerts.
+default export
+No props.
+
+### templates — `@/pages/templates/project-board`
+Template: /templates/project-board (see templates.md)
+
+**ProjectBoardTemplate** — BoardUI Pro "Project board" — VISUAL REFERENCE.
 default export
 No props.

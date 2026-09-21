@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip } from "recharts";
+import { Area, Bar, ComposedChart, Line, ResponsiveContainer, Tooltip } from "recharts";
 import { Chip } from "@/components/base/badges/chip";
 import { TOKENS_SERIES } from "@/components/application/ai-profile/ai-profile-data";
 import { useCountUp } from "@/hooks/use-count-up";
@@ -109,15 +109,25 @@ function buildSegments(series: { value: number }[]) {
   return { segments, data };
 }
 
-export function TokensChartCard({ className }: { className?: string }) {
+export function TokensChartCard({ title = "Tokens", className, series = TOKENS_SERIES, total = TOTAL_TOKENS, change = "+9.4%", variant = "area", startLabel = "Jun 14", endLabel = "Today", plotHeight = 200 }: {
+  title?: string;
+  className?: string;
+  series?: { value: number; label?: string }[];
+  total?: number;
+  change?: string;
+  variant?: "area" | "bar";
+  startLabel?: string;
+  endLabel?: string;
+  plotHeight?: number;
+}) {
   const gradientId = useId();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const { segments, data } = useMemo(() => buildSegments(TOKENS_SERIES), []);
+  const { segments, data } = useMemo(() => buildSegments(series), [series]);
 
-  const hovering = activeIndex !== null && activeIndex < TOKENS_SERIES.length;
-  const targetValue = hovering ? TOKENS_SERIES[activeIndex].value : TOTAL_TOKENS;
-  const label = hovering ? dateLabelFor(activeIndex) : "Tokens";
+  const hovering = activeIndex !== null && activeIndex < series.length;
+  const targetValue = hovering ? series[activeIndex].value : total;
+  const label = hovering ? (series[activeIndex].label ?? dateLabelFor(activeIndex)) : title;
   // Animate in tenths so the ".7" decimal rolls too (useCountUp rounds to ints)
   const display = useCountUp(Math.round(targetValue * 10)) / 10;
 
@@ -140,14 +150,14 @@ export function TokensChartCard({ className }: { className?: string }) {
               {display.toFixed(1)}M tokens
             </p>
             <Chip variant="bold" color="purple">
-              +9.4%
+              {change}
             </Chip>
           </div>
         </div>
       </div>
 
       {/* Plot — clip-path sweep draws the line + area in left→right */}
-      <div className="animate-chart-reveal h-[200px] w-full">
+      <div className="w-full animate-chart-reveal" style={{ height: plotHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
@@ -178,16 +188,23 @@ export function TokensChartCard({ className }: { className?: string }) {
               }}
             />
             {/* Sharp joins on purpose: type="linear", not monotone */}
-            <Area
+            {variant === "bar" ? <Bar
+              dataKey="value"
+              fill="var(--color-chart-agents-bar)"
+              activeBar={{ fill: "var(--color-chart-agents-bar-active)" }}
+              radius={[3, 3, 0, 0]}
+              maxBarSize={16}
+              isAnimationActive={false}
+            /> : <Area
               type="linear"
               dataKey="value"
               stroke="none"
               fill={`url(#${gradientId})`}
               isAnimationActive={false}
-            />
+            />}
             {/* Alternating segments: dashed grey along zero runs, solid purple
                 (incl. the descent/climb touching the baseline) in between */}
-            {segments.map((seg) => (
+            {variant === "area" && segments.map((seg) => (
               <Line
                 key={seg.key}
                 type="linear"
@@ -208,8 +225,8 @@ export function TokensChartCard({ className }: { className?: string }) {
 
       {/* X axis */}
       <div className="mt-2 flex w-full items-start justify-between px-4 text-[11px] leading-[15px] font-medium tracking-[0.2px] whitespace-nowrap text-text-tertiary">
-        <p>Jun 14</p>
-        <p>Today</p>
+        <p>{startLabel}</p>
+        <p>{endLabel}</p>
       </div>
     </section>
   );

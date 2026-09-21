@@ -37,7 +37,7 @@ const FREE = [
   "radio", "radio-card", "switch", "switch-card", "select", "slider", "social-button", "dropdown", "divider",
   "file-upload", "tabs", "table", "tooltip", "badge", "chip", "status-dot", "avatar", "breadcrumb", "pagination",
   "carousel", "input-otp", "segmented-control", "announcement", "notification", "kbd", "date-picker",
-  "date-range-picker", "meeting-scheduler",
+  "date-range-picker", "meeting-scheduler", "textarea",
   // application (free)
   "theme-toggle", "agent-thinking", "agent-log", "composer-loader", "sidebar", "settings-modal", "auth-card",
   "notification-center", "data-table", "stat-cards", "revenue-chart-card", "orders-chart-card",
@@ -50,7 +50,7 @@ const PRO = [
   "bar-list-card", "area-chart-card", "combo-chart-card", "scatter-chart-card", "heatmap-chart-card", "steps-card",
   "sleep-score-card", "activity-rings-card", "most-active-days-card",
   "template-home-dashboard", "template-marketing", "template-finance", "template-hr", "template-medical-profile",
-  "template-ai-chat", "template-ai-profile", "template-ai-image-generation",
+  "template-ai-chat", "template-ai-profile", "template-ai-image-generation", "project-board",
 ];
 
 /** Pulled transitively by the CLI but not part of the blueprint. */
@@ -65,6 +65,11 @@ const EXCLUDE = [
   "src/app",                                // Next.js pages + api route
   "src/lib/og.ts",
   "public/carousel",                        // auth-card demo artwork (1.3 MB)
+  "public/avatars",                         // dummy headshots — use Avatar initials
+  "public/ai-chat/gallery",                 // dummy stills for the image-gen mock
+  "public/ai-chat/generated-footballer.jpg",
+  "public/templates",                       // cover / plan-art photography (multi-MB)
+  "public/brand",                           // BoardUI's own logo; products supply theirs
 ];
 
 /** Vendored dirs that get wiped before a sync so renamed/removed upstream files don't linger. */

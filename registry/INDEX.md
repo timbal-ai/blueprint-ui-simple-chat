@@ -8,7 +8,7 @@ be installed; nothing is fetched at build time.
 | Read | When |
 |---|---|
 | **`screens.md`** | Before the first page: what `/` opens on (six entry recipes, none of them a KPI strip) and the surface grammar (page → panel → tile, one frame per region, bare `border` is a hairline). |
-| **`templates.md`** | You need a whole screen. 9 finished pages (dashboard, finance, hr, marketing, medical, calendar, ai-profile, ai-chat, ai-image-generation), each with its route, subtree and data file. |
+| **`templates.md`** | You need a whole screen. 10 finished pages (dashboard, finance, hr, marketing, medical, calendar, project-board, ai-profile, ai-chat, ai-image-generation), each with its route, subtree and data file. |
 | **`components.md`** | The BoardUI catalog: every block and primitive with a one-line description and a usage snippet. Names are exact. |
 | **`props.md`** | Props of every component (generated from source). Look here before guessing an API. |
 | **`patterns.md`** | Page recipes: dashboard, table page, auth, AI chat, settings. |
@@ -21,9 +21,10 @@ be installed; nothing is fetched at build time.
 ```
 src/components/base/            36 primitives (button, input, select, table, tabs, date-picker, …)   BoardUI, verbatim
 src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-panel/, task-list/,
-                                web-search/, agent-progress/, questionnaire/, calendar/, settings/,
-                                notification-center/, auth/, data-table/, and one folder per template
-                                (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/, ai-chat/)  BoardUI, verbatim
+                                project-board/, web-search/, agent-progress/, questionnaire/, calendar/,
+                                settings/, notification-center/, auth/, data-table/, and one folder per
+                                template (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/,
+                                ai-chat/)  BoardUI, verbatim
 src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
                                 embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
@@ -64,6 +65,7 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 | The screen needs… | Use (exact names, all vendored) |
 |---|---|
 | Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
+| A kanban / task board (tickets, pipelines, stages) | `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` (demo `/templates/project-board`). Fork the shell, swap `project-board-data.ts`. Never hand-roll columns |
 | A record's detail beside the list | `timbal/overlays` `Sheet` (right side) opened from the row; `Modal` only for confirmations |
 | A simple list with actions | `base/table` + `base/badges`, `base/avatar`, `base/dropdown` |
 | A card region, a section, a sidebar | a **tray**: `rounded-3xl bg-background-secondary-default p-3` — no border. Things inside it are **tiles**: `rounded-2xl bg-background-primary-default`. See `screens.md` → surface grammar |
@@ -88,16 +90,17 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 
 **Never hand-roll:** tables, charts (no raw `recharts`), stat tiles, avatars, badges,
 tabs, dropdowns, date pickers, selects, file drop zones, pagination, breadcrumbs,
-tooltips, sidebars/topbars, auth forms, or any part of a chat. Every one of these
-exists above; a lookalike is a review finding. Empty and error states are the one
-thing you compose yourself — from `base/` primitives, inside the same card grammar.
+tooltips, sidebars/topbars, auth forms, kanban/task boards (`ProjectBoardShell`), or
+any part of a chat. Every one of these exists above; a lookalike is a review finding.
+Empty and error states are the one thing you compose yourself — from `base/` primitives,
+inside the same card grammar.
 
 ## Direction menu (pick one per axis; record in DESIGN.md)
 
 | Axis | Options |
 |---|---|
 | Shell | `SidebarShell` (workhorse SaaS, 4+ destinations) · `TopbarShell` (consumer/browse-first, ≤5 destinations) · focused single page (one job: form, editor, kiosk) · full-page chat (`Home` pattern) · split list/detail |
-| Entry | what `/` opens on — **list + detail** (`DataTable` + `Sheet`) · **board** · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
+| Entry | what `/` opens on — **list + detail** (`DataTable` + `Sheet`) · **board** (`ProjectBoardShell`) · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
 | Accent | **BoardUI blue, unchanged, unless the brief names a brand colour** (then set the eleven `--color-accent-*` stops in `styles/brand.css`). Never change the hue for variety. |
 | Density | airy (marketing, consumer) · regular · dense (ops, finance, dispatch) |
 | Start from | a template by slug, or "compose" |
@@ -121,3 +124,4 @@ stat tiles over a revenue chart over a customers table are the same product.
 - No `<h1>` or intro paragraph inside a page under a shell, no breadcrumb you build yourself, no page-specific button in the shell's global `actions` — the shell header owns title · description · actions (`screens.md` §3).
 - No chat re-implementations — `TimbalChat` + slots (see `timbal.md`).
 - No model picker or Auto/permission pill on the composer unless the brief strictly requires it (hidden by default; `timbal.md`).
+- No dummy photography in the repo (headshots, gallery stills, cover art). People are `Avatar` initials; drop real product images only when the brief supplies them.

@@ -21,6 +21,7 @@ const templates = {
   marketing: lazy(() => import("@/pages/templates/marketing")),
   medical: lazy(() => import("@/pages/templates/medical")),
   calendar: lazy(() => import("@/pages/templates/calendar")),
+  "project-board": lazy(() => import("@/pages/templates/project-board")),
   "ai-profile": lazy(() => import("@/pages/templates/ai-profile")),
   "ai-chat": lazy(() => import("@/pages/templates/ai-chat")),
   "ai-image-generation": lazy(() => import("@/pages/templates/ai-image-generation")),

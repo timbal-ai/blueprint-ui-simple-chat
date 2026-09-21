@@ -1,6 +1,6 @@
 # BoardUI component catalog
 
-Every installable BoardUI item, generated from the live registry (version 2026.9.7). Names are exact. Free items install with `npx boardui@latest add <name>`; Pro items need a one-time BoardUI Pro license (https://www.boardui.com/pricing) activated once with `npx boardui@latest login <key>`.
+Every installable BoardUI item, generated from the live registry (version 2026.9.20). Names are exact. Free items install with `npx boardui@latest add <name>`; Pro items need a one-time BoardUI Pro license (https://www.boardui.com/pricing) activated once with `npx boardui@latest login <key>`.
 
 One usage example is inlined per item. For the full snippet set (variants, sizes, states) ask the BoardUI MCP server's get_usage_examples tool, or fetch the item JSON at https://www.boardui.com/r/<name>.json (free items).
 
@@ -184,6 +184,33 @@ export function Example() {
       hint="This is a hint about this input."
       leadingIcon={RiUserSmileLine}
       trailingIcon={RiQuestionLine}
+    />
+  );
+}
+```
+
+### Textarea
+
+Multiline text field with auto-grow, character count, and Input's label, hint and states.
+
+- Docs: https://www.boardui.com/components/textarea
+- Install: `npx boardui@latest add textarea`
+- Registry JSON: https://www.boardui.com/r/textarea.json
+
+Usage:
+
+```tsx
+import { Textarea } from "@/components/base/textarea/textarea";
+
+export function Example() {
+  return (
+    <Textarea
+      label="Release notes"
+      isRequired
+      tooltip
+      placeholder="What changed in this version?"
+      hint="Markdown is supported."
+      rows={4}
     />
   );
 }
@@ -1483,6 +1510,7 @@ export function Example() {
       <CalendarHeader
         month={month}
         monthLabel={monthLabel}
+        headingLevel={3}
         onPrevMonth={() => setMonth((m) => m.subtract({ months: 1 }))}
         onNextMonth={() => setMonth((m) => m.add({ months: 1 }))}
         onSelectDate={(date) => {
@@ -1815,6 +1843,25 @@ export function Example() {
 }
 ```
 
+### Project Board
+
+Sortable kanban board with ticket detail side panels, editable properties, comments, purple token charts, and smooth cross-column drag and drop.
+
+- Docs: https://www.boardui.com/components/project-board
+- Install: `npx boardui@latest login YOUR_LICENSE_KEY` once, then `npx boardui@latest add project-board`. Requires a BoardUI Pro license (https://www.boardui.com/pricing).
+
+Usage:
+
+```tsx
+import { ProjectBoardShell } from "@/components/application/project-board/project-board-shell";
+
+export default function ProjectBoardPage() {
+  // Complete kanban workspace with ticket creation, detail panels,
+  // comments, token charts, and responsive project navigation.
+  return <ProjectBoardShell />;
+}
+```
+
 ## Pro templates
 
 Each installs a complete route plus the component subtree it uses.
@@ -1835,6 +1882,25 @@ export default function DashboardPage() {
   // Full screen: floating sidebar, header, KPI cards,
   // earnings bar chart, and the customers data table.
   return <DashboardShell />;
+}
+```
+
+### Project Board Template
+
+A responsive kanban workspace with sortable tickets, animated ticket creation and detail panels, editable properties, comments, and token usage charts.
+
+- Docs: https://www.boardui.com/components/project-board
+- Install: `npx boardui@latest login YOUR_LICENSE_KEY` once, then `npx boardui@latest add template-project-board`. Requires a BoardUI Pro license (https://www.boardui.com/pricing).
+
+Usage:
+
+```tsx
+import { ProjectBoardShell } from "@/components/application/project-board/project-board-shell";
+
+export default function ProjectBoardPage() {
+  // Complete kanban workspace with ticket creation, detail panels,
+  // comments, token charts, and responsive project navigation.
+  return <ProjectBoardShell />;
 }
 ```
 
