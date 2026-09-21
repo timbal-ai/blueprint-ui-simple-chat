@@ -40,3 +40,19 @@
     line-height: var(--text-base--line-height);
   }
 }
+
+/* ComposerPanel ships an add menu, Auto/permission pill, model picker and mic.
+   BoardComposerPanel replaces add with a real attach button and keeps the rest
+   off unless SHOW_MODEL_PICKER / SHOW_PERMISSION_MENU are flipped — only when
+   the brief strictly requires them (AGENTS.md, registry/timbal.md). */
+.board-composer-chrome button[aria-label^="Add"],
+.board-composer-chrome button[aria-label^="Voice"] {
+  display: none;
+}
+.board-composer-chrome:not([data-show-permission]) button[aria-label^="Permission"] {
+  display: none;
+}
+.board-composer-chrome:not([data-show-models]) button.h-8.rounded-xl,
+.board-composer-chrome:not([data-show-models]) .flex.shrink-0.items-center.gap-4 > button {
+  display: none;
+}

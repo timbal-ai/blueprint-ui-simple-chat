@@ -28,11 +28,23 @@ import { boardChatComponents } from "@/components/timbal/chat/chrome";
 
 `ThreadComponents` slots: `Composer`, `UserMessage`, `AssistantMessage`, `Welcome`,
 `Suggestions`, `EditComposer`, `ScrollToBottom`. Ours live in
-`components/timbal/chat/` (composer on BoardUI `ComposerPanel`, messages, welcome,
-tool renderer on `TaskList` / `WebSearch` / `AgentProgress`). To change the chat
-look, edit those files — they are plain React on assistant-ui primitives
-(`ComposerPrimitive`, `MessagePrimitive`, `ActionBarPrimitive`, `useThread`,
-`useComposerRuntime`, all re-exported by the runtime).
+`components/timbal/chat/` (composer on BoardUI `ComposerPanel` with the model
+picker and Auto/permission pill hidden by default, messages, welcome, tool
+renderer on `TaskList` / `WebSearch` / `AgentProgress`, consecutive tool calls
+collapsed into one dropdown). To change the chat look, edit those files — they
+are plain React on assistant-ui primitives (`ComposerPrimitive`,
+`MessagePrimitive`, `ActionBarPrimitive`, `useThread`, `useComposerRuntime`, all
+re-exported by the runtime).
+
+## Composer extras (off by default)
+
+BoardUI's `ComposerPanel` ships a **model picker** and an **Auto / Manual / Plan
+/ Bypass** permission pill. Both stay hidden in `BoardComposerPanel`. Do not
+show them unless the brief **strictly** requires the user to switch models or
+workforces, or to pick a permission mode, **and** the runtime actually honours
+that choice. To turn one on, flip `SHOW_MODEL_PICKER` or `SHOW_PERMISSION_MENU`
+in `src/components/timbal/chat/composer-panel.tsx` — nowhere else. Never re-skin
+or rebuild those menus.
 
 Runtime pieces you reuse inside slots, never rebuild: `MarkdownText`,
 `ToolArtifactFallback` (charts/tables/ui/html/json artifacts), `ComposerAttachments`,

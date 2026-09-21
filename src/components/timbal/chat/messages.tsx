@@ -12,7 +12,7 @@ import {
   userMessageRootClass,
 } from "@timbal-ai/timbal-react/chat";
 
-import { TimbalToolPart } from "@/components/timbal/chat/tools";
+import { groupConsecutiveToolCalls, TimbalToolPart, ToolCallGroup } from "@/components/timbal/chat/tools";
 import { cx } from "@/utils/cx";
 
 /**
@@ -29,9 +29,10 @@ import { cx } from "@/utils/cx";
  * staggered reveal keyed to hand-authored `Line`s — so this file keeps the same
  * tokens on its own markup and wires the actions to the runtime instead.
  *
- * Content rendering stays in the runtime: `MessagePrimitive.Parts` with the
- * runtime's `MarkdownText` for text and `TimbalToolPart` (BoardUI agent logs,
- * runtime artifacts) for tool calls.
+ * Content rendering stays in the runtime: `MessagePrimitive.Unstable_PartsGrouped`
+ * with the runtime's `MarkdownText` for text and `TimbalToolPart` (BoardUI
+ * agent logs, runtime artifacts) for tool calls. Consecutive tools collapse
+ * into one `ToolCallGroup` dropdown so a burst of the same call is one row.
  */
 export function BoardUserMessage() {
   return (
@@ -51,10 +52,12 @@ export function BoardAssistantMessage() {
       data-role="assistant"
     >
       <div className="wrap-break-word px-1 text-body-regular leading-relaxed text-text-primary">
-        <MessagePrimitive.Parts
+        <MessagePrimitive.Unstable_PartsGrouped
+          groupingFunction={groupConsecutiveToolCalls}
           components={{
             Text: MarkdownText,
             tools: { Override: TimbalToolPart },
+            Group: ToolCallGroup,
           }}
         />
       </div>

@@ -6,10 +6,11 @@ import type { UseWorkforcesResult } from "@timbal-ai/timbal-react";
  *
  * `ThreadComponents` slots take no custom props, so the page that already owns
  * `useWorkforces()` (Home) hands its selection down through this context and
- * the composer's model picker lists the real workforces instead of a fake
- * model catalogue. Without a provider the chrome falls back to its own
- * `useWorkforces()` call, so `boardChatComponents` still works inside
- * `TimbalChatShell` / `EmbeddedChat`.
+ * the composer's model picker (off unless `SHOW_MODEL_PICKER` is flipped)
+ * would list the real workforces instead of a fake model catalogue. Without a
+ * provider the chrome falls back to its own `useWorkforces()` call, so
+ * `boardChatComponents` still works inside `TimbalChatShell` / `EmbeddedChat`.
+ * The status tab still names the selection.
  */
 export type BoardChatWorkforces = Pick<
   UseWorkforcesResult,

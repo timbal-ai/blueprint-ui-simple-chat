@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 277 components · 19 hooks · generated 2026-09-15
+BoardUI 0.5.3 · 278 components · 19 hooks · generated 2026-09-15
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2369,7 +2369,14 @@ No props.
 **TimbalToolPart** — `tools.Override` for the BoardUI assistant message: tool calls rendered with BoardUI's agent log components on top of the Timbal runtime. - A result that parses as a registered Timbal artifact (chart…
 No props.
 
-Other exports: `humanizeToolName(name: string)` · `summarizeArgs(args: unknown, argsText?: string) => string | undefined` · `previewResult(result: unknown) => string | undefined` · `collectSources(result: unknown) => WebSearchSource[]`
+**ToolCallGroup** — Wraps a run of tool parts in one TaskList-shaped header.
+| prop | type | default | doc |
+|---|---|---|---|
+| groupKey | `string \| undefined` |  |  |
+| indices | `number[]` |  |  |
+| children | `ReactNode` |  |  |
+
+Other exports: `groupConsecutiveToolCalls(parts: readonly GroupablePart[])` · `humanizeToolName(name: string)` · `summarizeArgs(args: unknown, argsText?: string) => string | undefined` · `previewResult(result: unknown) => string | undefined` · `collectSources(result: unknown) => WebSearchSource[]`
 
 ### chat — `@/components/timbal/chat/welcome`
 

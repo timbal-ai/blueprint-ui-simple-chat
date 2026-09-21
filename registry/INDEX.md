@@ -120,3 +120,4 @@ stat tiles over a revenue chart over a customers table are the same product.
 - No `useState` page switching — every page is a route.
 - No `<h1>` or intro paragraph inside a page under a shell, no breadcrumb you build yourself, no page-specific button in the shell's global `actions` — the shell header owns title · description · actions (`screens.md` §3).
 - No chat re-implementations — `TimbalChat` + slots (see `timbal.md`).
+- No model picker or Auto/permission pill on the composer unless the brief strictly requires it (hidden by default; `timbal.md`).

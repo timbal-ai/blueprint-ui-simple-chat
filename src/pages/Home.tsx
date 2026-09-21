@@ -36,8 +36,10 @@ import { SHELL_DESKTOP_QUERY, useMediaQuery, useShellUser } from "@/components/t
  *   `loadMessages`, clears the thread on `/chat`, and once a fresh thread's
  *   first turn lands, rewrites the URL to its run id so the rail selects it.
  *
- * Workforce: `useWorkforces` picks the first one; the composer's picker can
- * switch (shared through `BoardChatProvider`), which starts a new thread.
+ * Workforce: `useWorkforces` picks the first one. The composer's model picker
+ * and Auto/permission pill stay hidden unless the brief strictly requires them
+ * (`SHOW_*` in `BoardComposerPanel`); `BoardChatProvider` still shares the
+ * selection with the status tab.
  */
 export default function Home() {
   const { conversationId } = useParams<{ conversationId?: string }>();

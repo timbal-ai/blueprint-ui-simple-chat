@@ -23,17 +23,19 @@ import { cx } from "@/utils/cx";
  * The vendored panel is used verbatim and driven through its props: the draft
  * is the composer runtime's text (`value`/`onValueChange` ↔ `setText`), Enter /
  * the send button call `composer.send()`, `disabled` follows the thread run
- * state, the tile strip mirrors the runtime's attachment list and the model
- * picker lists the real Timbal workforces (no fake model catalogue).
+ * state and the tile strip mirrors the runtime's attachment list. `providers`
+ * still feed the vendored panel so it keeps a selection.
  *
  * Where the panel has no slot, the wrapper layers on top of it instead of
  * forking the file:
- * - The vendored add menu (mock "Goal / Plan mode / Plugins" rows), the
- *   permission menu and the voice-input toggle have no runtime meaning here.
- *   They are hidden with wrapper-scoped attribute selectors on their
- *   accessible names, and an attach button that opens the runtime's file
- *   picker (hidden `<input type="file">` → `composer.addAttachment`) sits in
- *   the add menu's spot.
+ * - The vendored add menu (mock "Goal / Plan mode / Plugins" rows) and the
+ *   voice-input toggle have no runtime meaning here. They stay hidden, and an
+ *   attach button that opens the runtime's file picker (hidden
+ *   `<input type="file">` → `composer.addAttachment`) sits in the add menu's
+ *   spot.
+ * - The model picker and the Auto/permission pill stay hidden by default
+ *   (`SHOW_MODEL_PICKER` / `SHOW_PERMISSION_MENU`). Turn them on only when the
+ *   brief strictly requires it.
  * - While a run is in flight a Stop button (`ComposerPrimitive.Cancel`) is
  *   positioned over the (disabled) send button.
  * - The status tab shows the workforce name + message count, and swaps to
@@ -45,23 +47,26 @@ import { cx } from "@/utils/cx";
  * slot and the message list stays the only scroll container.
  */
 
-/* Wrapper-scoped rules that retire the vendored controls without editing the
- * vendored file. They key off the buttons' accessible names ("Add attachment",
- * "Permission: …", "Voice input"); our own attach button is labelled
- * "Attach files" so the first rule leaves it alone. */
-const HIDE_VENDORED_CONTROLS = cx(
-  "[&_button[aria-label^=Add]]:hidden",
-  "[&_button[aria-label^=Permission]]:hidden",
-  "[&_button[aria-label^=Voice]]:hidden",
-  "[&_textarea]:placeholder:text-text-secondary",
-  "[&_button.rounded-xl_span]:text-text-primary",
-);
+/**
+ * Vendor extras on BoardUI's ComposerPanel. Both stay **off** unless the brief
+ * strictly requires them **and** the runtime actually honours the choice:
+ * - Model picker — the user must switch models or workforces themselves.
+ * - Permission (Auto) pill — the product implements Auto / Manual / Plan / Bypass.
+ * Flip only these flags. Do not un-hide the menus some other way.
+ */
+const SHOW_MODEL_PICKER = false;
+const SHOW_PERMISSION_MENU = false;
+
+/* Wrapper class hooks the hide rules in `src/index.css` (real CSS, so the
+ * attribute selectors survive Tailwind). The add menu is labelled "Add
+ * attachment"; our overlay button is "Attach files" and is left alone. */
+const FIELD = "[&_textarea]:placeholder:text-text-secondary";
 
 /* The vendored card is white with a 2% shadow — designed for the template's
  * grey container, where it reads as a card. Give it a hairline so it also
  * holds its edge when a page puts it on a white ground. The card's own
- * circular controls (send, model picker chevron) are squared to the `lg`
- * radius so they match every other control in the console look. */
+ * circular controls (send) are squared to the `lg` radius so they match every
+ * other control in the console look. */
 const CARD_EDGE = cx(
   "[&_.rounded-3xl]:border [&_.rounded-3xl]:border-border-button-default",
   "[&_button.rounded-full]:rounded-lg",
@@ -140,7 +145,12 @@ export function BoardComposerPanel({
   };
 
   const panel = (
-    <div className={cx("relative", HIDE_VENDORED_CONTROLS, CARD_EDGE)} onPasteCapture={onPaste}>
+    <div
+      className={cx("board-composer-chrome relative", FIELD, CARD_EDGE)}
+      data-show-models={SHOW_MODEL_PICKER ? "" : undefined}
+      data-show-permission={SHOW_PERMISSION_MENU ? "" : undefined}
+      onPasteCapture={onPaste}
+    >
       <ComposerPanel
         value={text}
         onValueChange={(next) => composer.setText(next)}

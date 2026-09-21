@@ -10,7 +10,7 @@
  *   GET  /api/config                    → open project (auth.required=false) with email+google+github providers
  *   GET  /api/workforce                 → three workforces
  *   POST /api/files/upload              → { url } (images come back as data URLs so tiles render)
- *   POST /api/workforce/:id/stream      → SSE run: generic tool → web search → chart artifact → markdown
+ *   POST /api/workforce/:id/stream      → SSE run: 3× knowledge_base_query → generic tool → web search → chart artifact → markdown
  *                                          prompt containing "fail" → HTTP 500; "slow" → 6 s first tool
  *   POST /api/auth/magic-link           → 200 (kept for parity with the platform API; the UI has no login screen of its own)
  *   GET  /api/runs?roots=true&workforce_id=…  → past conversations (thread roots) for the history rail
@@ -115,6 +115,34 @@ async function stream(res, prompt) {
   });
   sse(res, { type: "START", run_id: `run-${Date.now()}`, path: "agent" });
   await sleep(200);
+
+  // A burst of the same tool — the thread collapses these into one dropdown.
+  for (const [id, query] of [
+    ["t0a", "validez del acta"],
+    ["t0b", "obligatoriedad de normas"],
+    ["t0c", "puntos clave"],
+  ]) {
+    sse(res, {
+      type: "DELTA",
+      path: "agent.llm",
+      item: { type: "tool_use", id, name: "knowledge_base_query", input: { query } },
+    });
+    await sleep(280);
+    sse(res, {
+      type: "OUTPUT",
+      path: "agent.llm",
+      output: {
+        content: [
+          {
+            type: "tool_result",
+            tool_use_id: id,
+            content: JSON.stringify({ hits: 3, query }),
+          },
+        ],
+      },
+    });
+    await sleep(80);
+  }
 
   // 1. generic tool — held so the running state is visible
   sse(res, {

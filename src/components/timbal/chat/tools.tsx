@@ -1,6 +1,7 @@
-import { RiGlobalLine, RiSearchLine, RiToolsLine } from "@remixicon/react";
-import type { ToolCallMessagePartComponent, ToolCallMessagePartProps } from "@assistant-ui/react";
-import { Component, type ReactNode } from "react";
+import { RiArrowDownSLine, RiGlobalLine, RiSearchLine, RiToolsLine } from "@remixicon/react";
+import { useAuiState, type ToolCallMessagePartComponent, type ToolCallMessagePartProps } from "@assistant-ui/react";
+import { Component, useState, type ReactNode } from "react";
+import { motion } from "motion/react";
 import {
   ToolArtifactFallback,
   ToolFallback,
@@ -9,6 +10,7 @@ import {
   useToolRunning,
 } from "@timbal-ai/timbal-react";
 
+import { SOFT_EASE } from "@/components/application/agent-log/agent-log";
 import { TaskList, type TaskListStep, type TaskListTask } from "@/components/application/task-list/task-list";
 import {
   WebSearch,
@@ -16,6 +18,7 @@ import {
   type WebSearchSource,
   type WebSearchStep,
 } from "@/components/application/web-search/web-search";
+import { cx } from "@/utils/cx";
 
 /**
  * `tools.Override` for the BoardUI assistant message: tool calls rendered with
@@ -31,8 +34,9 @@ import {
  * - Everything else is one BoardUI `TaskList` task: the humanised tool name as
  *   the header (shimmering while it runs, with the log's working indicator),
  *   the argument summary and a 200-character result preview as its steps.
- *   Finished tasks collapse to their header, so a run of tool calls reads as a
- *   compact list of rows that expand on demand.
+ *   Finished tasks collapse to their header. Consecutive tools are then
+ *   wrapped by `ToolCallGroup` (see `messages.tsx`) so a burst of the same
+ *   call reads as one dropdown instead of a stack of rows.
  *
  * Both logs are driven through their controlled `revealed` prop from the real
  * part status — nothing here runs on a timer. A render error inside falls back
@@ -43,6 +47,127 @@ export const TimbalToolPart: ToolCallMessagePartComponent = (props) => (
     <TimbalToolPartImpl {...props} />
   </ToolPartBoundary>
 );
+
+/**
+ * Consecutive `tool-call` parts become one group so a run of five "Knowledge
+ * base query" rows collapses to a single dropdown. Text, images, a lone tool
+ * and a tool that resolved to a Timbal artifact stay ungrouped (`groupKey`
+ * undefined) so a chart or table is not buried inside the log.
+ */
+export function groupConsecutiveToolCalls(parts: readonly GroupablePart[]) {
+  const groups: { groupKey: string | undefined; indices: number[] }[] = [];
+  let tools: number[] = [];
+  const flush = () => {
+    if (tools.length === 0) return;
+    groups.push({
+      groupKey: tools.length > 1 ? "tools" : undefined,
+      indices: tools,
+    });
+    tools = [];
+  };
+  parts.forEach((part, index) => {
+    if (isGroupableToolCall(part)) {
+      tools.push(index);
+    } else {
+      flush();
+      groups.push({ groupKey: undefined, indices: [index] });
+    }
+  });
+  flush();
+  return groups;
+}
+
+type GroupablePart = { type?: string; result?: unknown };
+
+function isGroupableToolCall(part: GroupablePart) {
+  return part.type === "tool-call" && !parseArtifactFromToolResult(part.result);
+}
+
+/**
+ * Wraps a run of tool parts in one TaskList-shaped header. Open while any call
+ * is still running; collapses when they all settle. A single tool (or text)
+ * is not wrapped — `groupKey` is undefined then.
+ */
+export function ToolCallGroup({
+  groupKey,
+  indices,
+  children,
+}: {
+  groupKey: string | undefined;
+  indices: number[];
+  children: ReactNode;
+}) {
+  if (groupKey !== "tools" || indices.length < 2) return children;
+  return <CollapsedToolCalls indices={indices}>{children}</CollapsedToolCalls>;
+}
+
+function CollapsedToolCalls({ indices, children }: { indices: number[]; children: ReactNode }) {
+  const parts = useAuiState((s) => s.message.parts);
+  const running = indices.some((index) => isToolPartRunning(parts[index]));
+  const names = [
+    ...new Set(
+      indices
+        .map((index) => {
+          const part = parts[index];
+          return part && typeof part === "object" && "toolName" in part && typeof part.toolName === "string"
+            ? humanizeToolName(part.toolName)
+            : null;
+        })
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ];
+  const count = indices.length;
+  const label =
+    names.length === 1 ? `${names[0]} · ${count}` : `${count} tool calls`;
+  const [manualOpen, setManualOpen] = useState<boolean | null>(null);
+  const open = manualOpen ?? running;
+
+  return (
+    <div className="py-0.5" data-testid="tool-call-group">
+      <button
+        type="button"
+        onClick={() => setManualOpen(!open)}
+        aria-expanded={open}
+        aria-label={label}
+        className="group flex w-full cursor-pointer items-center gap-2 rounded-md py-0.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+      >
+        <RiToolsLine className="size-4 shrink-0 text-foreground-icon-secondary" aria-hidden />
+        <span className="min-w-0 flex-1 text-body-medium text-text-secondary">{label}</span>
+        <RiArrowDownSLine
+          aria-hidden
+          className={cx(
+            "size-4 shrink-0 text-foreground-icon-tertiary transition-transform duration-300 ease group-hover:text-foreground-icon-secondary",
+            open ? "rotate-180" : "rotate-0",
+          )}
+        />
+      </button>
+      <motion.div
+        animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
+        transition={{
+          height: { duration: 0.3, ease: SOFT_EASE },
+          opacity: { duration: 0.22, ease: "easeOut" },
+        }}
+        className="overflow-hidden"
+      >
+        <div className="flex flex-col">{children}</div>
+      </motion.div>
+    </div>
+  );
+}
+
+function isToolPartRunning(part: unknown) {
+  if (!part || typeof part !== "object") return false;
+  const record = part as { type?: string; status?: unknown; result?: unknown };
+  if (record.type !== "tool-call") return false;
+  const status = record.status;
+  if (status === "running") return true;
+  if (status && typeof status === "object" && "type" in status) {
+    const type = (status as { type?: string }).type;
+    if (type === "running") return true;
+    if (type === "complete" || type === "incomplete") return false;
+  }
+  return record.result === undefined;
+}
 
 const SEARCH_TOOL = /search|browse|fetch|crawl|web/i;
 const PREVIEW_CHARS = 200;

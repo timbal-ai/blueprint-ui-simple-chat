@@ -16,10 +16,11 @@ import { BoardSuggestions, BoardWelcome } from "@/components/timbal/chat/welcome
  * ```
  *
  * `boardChatComponents` is the Pro set: the two-row `ComposerPanel` (tile
- * strip, workforce picker, status tab) and tool calls rendered as BoardUI
- * agent logs. Wrap the page in `BoardChatProvider` (see `context.tsx`) so the
- * picker can switch workforces; without it the picker just names the current
- * one.
+ * strip, status tab; model picker and Auto/permission pill stay hidden unless
+ * the brief strictly requires them — `SHOW_*` in `composer-panel.tsx`) and tool
+ * calls rendered as BoardUI agent logs, consecutive ones collapsed into one
+ * dropdown. Wrap the page in `BoardChatProvider` (see `context.tsx`) if the
+ * picker is turned on; the status tab still names the current workforce.
  */
 export const boardChatComponents: ThreadComponents = {
   Composer: BoardComposerPanel,

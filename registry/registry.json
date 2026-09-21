@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-15T09:06:43.365Z",
+  "generatedAt": "2026-09-15T09:38:17.388Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -19100,6 +19100,55 @@
         "chat",
         "tools",
         "timbal-tool-part"
+      ]
+    },
+    {
+      "name": "groupConsecutiveToolCalls",
+      "kind": "util",
+      "path": "src/components/timbal/chat/tools.tsx",
+      "importFrom": "@/components/timbal/chat/tools",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "Consecutive `tool-call` parts become one group so a run of five \"Knowledge base query\" rows collapses to a single dropdown.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "chat",
+        "tools",
+        "group-consecutive-tool-calls"
+      ],
+      "type": "(parts: readonly GroupablePart[])"
+    },
+    {
+      "name": "ToolCallGroup",
+      "kind": "component",
+      "path": "src/components/timbal/chat/tools.tsx",
+      "importFrom": "@/components/timbal/chat/tools",
+      "layer": "timbal",
+      "group": "chat",
+      "summary": "Wraps a run of tool parts in one TaskList-shaped header.",
+      "props": [
+        {
+          "name": "groupKey",
+          "type": "string | undefined",
+          "optional": false
+        },
+        {
+          "name": "indices",
+          "type": "number[]",
+          "optional": false
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "chat",
+        "tools",
+        "tool-call-group"
       ]
     },
     {

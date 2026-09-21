@@ -47,7 +47,12 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    `Line` variants for chrome, `Fill` only where BoardUI uses it (stop, alerts).
 5. **Chat is the runtime.** `TimbalChat` + `boardChatComponents` (Home pattern),
    `EmbeddedChat` for a chat page in an app, `AssistantPill` for in-page AI. Never
-   hand-roll a message list, composer, upload or streaming.
+   hand-roll a message list, composer, upload or streaming. The composer hides
+   the **model picker** and the **Auto/permission pill** by default — do not turn
+   them on unless the brief strictly requires switching models/workforces or
+   picking Auto / Manual / Plan / Bypass, and the runtime honours that choice
+   (`SHOW_MODEL_PICKER` / `SHOW_PERMISSION_MENU` in
+   `src/components/timbal/chat/composer-panel.tsx`).
 6. **Auth is the platform.** `SessionProvider` + `AuthGuard` (no `renderLogin`): signed-out
    users go to the Timbal login page and come back. Never build a login screen. API
    calls go through `/api` with `authFetch`. Never swallow fetch errors.
