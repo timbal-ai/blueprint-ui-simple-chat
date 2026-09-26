@@ -82,8 +82,9 @@ pinned, or a screen that looks like the last one you built.
 For requested browser voice, use `LiveKitVoiceSession` from
 `@timbal-ai/timbal-sdk/voice/livekit` (SDK 0.18.0 is installed). Follow the
 [README voice recipe](README.md#native-voice-calls). Fetch connection material from
-an authenticated `/api` route with `authFetch`; the backend uses
-`wf.voice.createSession()` with SDK >=0.18.0. Keep platform credentials server-side.
+the API blueprint’s authenticated `/api/workforce/:id/voice/session` route with
+`authFetch` (API SDK >=0.18.0). It uses native LiveKit session creation through the
+request-scoped SDK client. Keep platform credentials server-side.
 Let the SDK handle media and `timbal.events`; do not implement SDP offers or
 infer readiness from participant presence. Preserve the Agent's voice settings;
 when no greeting is configured, show “Ready — start speaking”. Cancel on unmount.

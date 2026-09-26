@@ -91,7 +91,10 @@ import { LiveKitVoiceSession } from "@timbal-ai/timbal-sdk/voice/livekit";
 const controller = new AbortController();
 const session = await LiveKitVoiceSession.start({
   signal: controller.signal,
-  connect: signal => authFetch("/api/voice/session", { method: "POST", signal }),
+  connect: signal => authFetch(
+    `/api/workforce/${encodeURIComponent(agentId)}/voice/session`,
+    { method: "POST", signal },
+  ),
   onStatus: status => setCallStatus(status),
   onUserTranscript: transcript => updateUserCaption(transcript),
   onAgentText: text => updateAgentCaption(text),
@@ -104,17 +107,21 @@ const session = await LiveKitVoiceSession.start({
 // Mute button: await session.setMuted(true); unmute: await session.setMuted(false).
 ```
 
-The callbacks above represent your page's state and caption handlers. Catch a
+The callbacks above represent your page's state and caption handlers; `agentId` is the selected Agent identifier. Catch a
 rejected `start()` in the click handler, prevent duplicate starts, and abort the
 controller on unmount so a pending microphone/connection cannot outlive the page.
 Use `session.inputVolume` for microphone feedback. `ready` means the microphone
 was published and Timbal emitted `session_started`; room/participant presence is
 not readiness. With no configured greeting, prompt the caller to start speaking.
 
-The corresponding **API project** must also install SDK >=0.18.0. Its authenticated
-`POST /api/voice/session` route authorizes the caller for the chosen workforce,
-then returns the result of `timbal.workforce.get(id).voice.createSession()` as JSON.
-That result contains a short-lived caller token, not the platform API key. Browser
+The corresponding **API project** must also install SDK >=0.18.0. The updated API
+blueprint provides `POST /api/workforce/:id/voice/session` under its existing auth
+plugin. It forwards `{ transport: "livekit" }` through the request-scoped SDK client,
+preserving platform error statuses and the session-id header, and returns fresh
+caller connection material with `Cache-Control: private, no-store`. Older projects
+need that route added; use `voice.createSession()` for a typed result or the raw
+`voice.rtc({ transport: "livekit" })` response when proxying HTTP errors unchanged.
+The caller token is short-lived; platform API keys stay on the backend. Browser
 code imports only the SDK's browser voice subpath; platform/data operations stay
 behind `/api`. The blueprint's fake API does not provide real voice sessions.
 
