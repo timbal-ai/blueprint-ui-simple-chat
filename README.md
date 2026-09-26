@@ -77,3 +77,55 @@ scripts/                  boardui-sync.mjs · registry-build.mjs · screenshots.
 
 Read `AGENTS.md`, then `registry/INDEX.md`. Decide the direction (shell, accent,
 density, template-or-compose) and write it in `DESIGN.md` before building.
+
+## Native voice calls
+
+The blueprint includes `@timbal-ai/timbal-sdk` **0.18.0** and `livekit-client`
+**^2.22.3**. When the product needs browser voice, use the SDK's supported client:
+
+```typescript
+import { authFetch } from "@timbal-ai/timbal-react";
+import { LiveKitVoiceSession } from "@timbal-ai/timbal-sdk/voice/livekit";
+
+// Start from a user click; hold the controller/session in refs in a React component.
+const controller = new AbortController();
+const session = await LiveKitVoiceSession.start({
+  signal: controller.signal,
+  connect: signal => authFetch("/api/voice/session", { method: "POST", signal }),
+  onStatus: status => setCallStatus(status),
+  onUserTranscript: transcript => updateUserCaption(transcript),
+  onAgentText: text => updateAgentCaption(text),
+  onInterrupted: ({ heardText }) => replaceAgentCaption(heardText),
+  onAudioBlocked: () => showEnableAudioButton(),
+  onError: error => showCallError(error.message),
+});
+// End button: session.end(). Unmount/cancel during startup: controller.abort().
+// Enable-audio button: await session.resumeAudio() from that click handler.
+// Mute button: await session.setMuted(true); unmute: await session.setMuted(false).
+```
+
+The callbacks above represent your page's state and caption handlers. Catch a
+rejected `start()` in the click handler, prevent duplicate starts, and abort the
+controller on unmount so a pending microphone/connection cannot outlive the page.
+Use `session.inputVolume` for microphone feedback. `ready` means the microphone
+was published and Timbal emitted `session_started`; room/participant presence is
+not readiness. With no configured greeting, prompt the caller to start speaking.
+
+The corresponding **API project** must also install SDK >=0.18.0. Its authenticated
+`POST /api/voice/session` route authorizes the caller for the chosen workforce,
+then returns the result of `timbal.workforce.get(id).voice.createSession()` as JSON.
+That result contains a short-lived caller token, not the platform API key. Browser
+code imports only the SDK's browser voice subpath; platform/data operations stay
+behind `/api`. The blueprint's fake API does not provide real voice sessions.
+
+The SDK handles LiveKit audio and Timbal's `timbal.events`, including chunked
+transcripts, errors, interruptions and reconnects. Do not generate legacy SDP
+`/voice/offer` routes or wire `lk.transcription`/`lk.agent.state` yourself. Inherit
+`voice_config` from the native Timbal Agent; no greeting, filler or background
+sound is added by this recipe. Durable call history comes from platform sessions,
+not just the browser's final transcript callback.
+
+Dependency updates alone do not migrate an existing project's voice code. Use
+`createSession()` on its API side and this client on its UI side. Validate a real
+spoken round trip as well as build/lint; the blueprint's screenshots cannot test
+microphone/provider behavior.
