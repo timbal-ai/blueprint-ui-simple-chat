@@ -212,7 +212,7 @@ export function DataTable<TData>({
                 <TableColumn
                   key={header.id}
                   id={header.id}
-                  isRowHeader={isLead}
+                  isRowHeader={id === leadId}
                   className={columnWidth(header.column.columnDef.meta)}
                 >
                   {isLead ? (
