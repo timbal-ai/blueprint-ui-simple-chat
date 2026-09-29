@@ -30,8 +30,13 @@ import { boardChatComponents } from "@/components/timbal/chat/chrome";
 `Suggestions`, `EditComposer`, `ScrollToBottom`. Ours live in
 `components/timbal/chat/` (composer on BoardUI `ComposerPanel` with the model
 picker and Auto/permission pill hidden by default, messages, welcome, tool
-renderer on `TaskList` / `WebSearch` / `AgentProgress`, consecutive tool calls
-collapsed into one dropdown). To change the chat look, edit those files — they
+renderer on the agent log / `WebSearch`, consecutive tool calls collapsed into
+one dropdown). Every tool call renders as one row that mounts **closed** —
+while it runs and once it settles; only the reader opens it. Do not make tool
+logs open by default. Anything placed inside `ChatFrame` above the thread (a
+header, a banner) takes its height from the thread, never from the page: the
+frame sizes the runtime's thread root to the space that is left, so the
+composer stays pinned. To change the chat look, edit those files — they
 are plain React on assistant-ui primitives (`ComposerPrimitive`,
 `MessagePrimitive`, `ActionBarPrimitive`, `useThread`, `useComposerRuntime`, all
 re-exported by the runtime).

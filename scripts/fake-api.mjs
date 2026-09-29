@@ -11,6 +11,7 @@
  *   GET  /api/workforce                 → three workforces
  *   POST /api/files/upload              → { url } (images come back as data URLs so tiles render)
  *   POST /api/workforce/:id/stream      → SSE run: 3× knowledge_base_query → generic tool → web search → chart artifact → markdown
+ *                                          (first text chunk as a `text` item, the rest as `text_delta`, like Timbal)
  *                                          prompt containing "fail" → HTTP 500; "slow" → 6 s first tool
  *   POST /api/auth/magic-link           → 200 (kept for parity with the platform API; the UI has no login screen of its own)
  *   GET  /api/runs?roots=true&workforce_id=…  → past conversations (thread roots) for the history rail
@@ -237,8 +238,16 @@ async function stream(res, prompt) {
     "- Highs climb to **24 °C by Friday**\n" +
     "- Wind stays light (14 km/h)\n\n" +
     "Sources agree the week trends warmer; see the chart above for the daily highs.";
-  for (const chunk of text.match(/.{1,24}/gs) ?? []) {
-    sse(res, { type: "DELTA", path: "agent.llm", item: { type: "text_delta", text_delta: chunk } });
+  // Timbal opens a text block with a `text` item carrying the first chunk
+  // (OpenAI collector), then streams `text_delta`s. A runtime that only reads
+  // `text_delta` shows the answer without its first words.
+  const chunks = text.match(/.{1,24}/gs) ?? [];
+  for (const [index, chunk] of chunks.entries()) {
+    const item =
+      index === 0
+        ? { type: "text", id: "text-0", text: chunk }
+        : { type: "text_delta", id: "text-0", text_delta: chunk };
+    sse(res, { type: "DELTA", path: "agent.llm", item });
     await sleep(40);
   }
   sse(res, { type: "OUTPUT", path: "agent", output: { content: [{ type: "text", text }] }, status: { code: "success" } });

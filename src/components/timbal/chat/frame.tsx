@@ -36,7 +36,13 @@ export function ChatFrame({
       className={cx(
         // The hairline keeps the panel's edge where the tray and the page sit
         // one neutral step apart (near-black on black, grey on grey).
-        "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border-button-white bg-background-secondary-default",
+        "flex min-h-80 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border-button-white bg-background-secondary-default",
+        // The runtime's thread root is `h-full max-h-dvh`: sized from its
+        // content it asks for a full viewport, which pushes the frame (and
+        // any header or banner above the thread) past the fold and makes the
+        // page scroll instead of the thread. A zero flex basis makes it take
+        // only the height left in the frame, whatever sits above it.
+        "[&_.aui-thread-root]:h-auto [&_.aui-thread-root]:min-h-0 [&_.aui-thread-root]:flex-[1_1_0px]",
         className,
       )}
       style={{ ["--thread-canvas" as string]: "var(--color-background-secondary-default)" }}

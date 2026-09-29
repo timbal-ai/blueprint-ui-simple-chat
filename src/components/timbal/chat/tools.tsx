@@ -1,6 +1,6 @@
 import { RiArrowDownSLine, RiGlobalLine, RiSearchLine, RiToolsLine } from "@remixicon/react";
 import { useAuiState, type ToolCallMessagePartComponent, type ToolCallMessagePartProps } from "@assistant-ui/react";
-import { Component, useState, type ReactNode } from "react";
+import { Component, useState, type ComponentType, type ReactNode } from "react";
 import { motion } from "motion/react";
 import {
   ToolArtifactFallback,
@@ -10,8 +10,7 @@ import {
   useToolRunning,
 } from "@timbal-ai/timbal-react";
 
-import { SOFT_EASE } from "@/components/application/agent-log/agent-log";
-import { TaskList, type TaskListStep, type TaskListTask } from "@/components/application/task-list/task-list";
+import { LogRow, SOFT_EASE, ShimmerText, useLogMotion } from "@/components/application/agent-log/agent-log";
 import {
   WebSearch,
   type WebSearchBrand,
@@ -24,23 +23,25 @@ import { cx } from "@/utils/cx";
  * `tools.Override` for the BoardUI assistant message: tool calls rendered with
  * BoardUI's agent log components on top of the Timbal runtime.
  *
+ * Every tool call is ONE collapsed row (`ToolDisclosure`): icon, humanised
+ * tool name (shimmering while it runs) and a chevron. It mounts closed —
+ * while running and once settled — and only the reader opens it, so a reply
+ * never arrives with its tool log unfolded above the answer.
+ *
  * - A result that parses as a registered Timbal artifact (chart, table, ui,
  *   html, json, question) is delegated to the runtime's `ToolArtifactFallback`,
- *   so artifacts render exactly as with the stock message.
+ *   so artifacts render exactly as with the stock message (content, not log).
  * - A search-shaped tool (`/search|browse|fetch|crawl|web/i`) whose result
- *   carries URLs renders as BoardUI `WebSearch`: the query as the heading and
- *   the URLs as a Sources row (hostname as the label, brand marks for the sites
- *   the design system draws).
- * - Everything else is one BoardUI `TaskList` task: the humanised tool name as
- *   the header (shimmering while it runs, with the log's working indicator),
- *   the argument summary and a 200-character result preview as its steps.
- *   Finished tasks collapse to their header. Consecutive tools are then
- *   wrapped by `ToolCallGroup` (see `messages.tsx`) so a burst of the same
- *   call reads as one dropdown instead of a stack of rows.
+ *   carries URLs opens onto BoardUI `WebSearch`: the query and the URLs as a
+ *   Sources row (hostname as the label, brand marks for the sites the design
+ *   system draws).
+ * - Everything else opens onto the argument summary and a 200-character
+ *   result preview on the agent log's guide. Consecutive tools are wrapped by
+ *   `ToolCallGroup` (see `messages.tsx`) so a burst of the same call reads as
+ *   one row instead of a stack of rows.
  *
- * Both logs are driven through their controlled `revealed` prop from the real
- * part status — nothing here runs on a timer. A render error inside falls back
- * to the runtime's `ToolFallback`.
+ * Everything is driven from the real part status — nothing here runs on a
+ * timer. A render error inside falls back to the runtime's `ToolFallback`.
  */
 export const TimbalToolPart: ToolCallMessagePartComponent = (props) => (
   <ToolPartBoundary fallback={<ToolFallback {...props} />}>
@@ -84,9 +85,9 @@ function isGroupableToolCall(part: GroupablePart) {
 }
 
 /**
- * Wraps a run of tool parts in one TaskList-shaped header. Open while any call
- * is still running; collapses when they all settle. A single tool (or text)
- * is not wrapped — `groupKey` is undefined then.
+ * Wraps a run of tool parts in one collapsed `ToolDisclosure` row that
+ * shimmers while any call is still running. A single tool (or text) is not
+ * wrapped — `groupKey` is undefined then.
  */
 export function ToolCallGroup({
   groupKey,
@@ -119,20 +120,47 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
   const count = indices.length;
   const label =
     names.length === 1 ? `${names[0]} · ${count}` : `${count} tool calls`;
-  const [manualOpen, setManualOpen] = useState<boolean | null>(null);
-  const open = manualOpen ?? running;
 
   return (
-    <div className="py-0.5" data-testid="tool-call-group">
+    <ToolDisclosure label={label} running={running} testId="tool-call-group">
+      <div className="flex flex-col">{children}</div>
+    </ToolDisclosure>
+  );
+}
+
+/**
+ * The one row every tool call renders as. Closed on mount and never opened
+ * by the runtime — not while the call runs, not when it settles; only the
+ * reader's click opens it. The body stays mounted so closing can animate.
+ */
+function ToolDisclosure({
+  label,
+  icon: Icon = RiToolsLine,
+  running = false,
+  testId,
+  children,
+}: {
+  label: string;
+  icon?: ComponentType<{ className?: string }>;
+  running?: boolean;
+  testId?: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="py-0.5" data-testid={testId}>
       <button
         type="button"
-        onClick={() => setManualOpen(!open)}
+        onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={label}
         className="group flex w-full cursor-pointer items-center gap-2 rounded-md py-0.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring"
       >
-        <RiToolsLine className="size-4 shrink-0 text-foreground-icon-secondary" aria-hidden />
-        <span className="min-w-0 flex-1 text-body-medium text-text-secondary">{label}</span>
+        <Icon className="size-4 shrink-0 text-foreground-icon-secondary" aria-hidden />
+        <span className="min-w-0 flex-1 truncate text-body-medium text-text-secondary">
+          {running ? <ShimmerText>{label}</ShimmerText> : label}
+        </span>
         <RiArrowDownSLine
           aria-hidden
           className={cx(
@@ -141,6 +169,8 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
           )}
         />
       </button>
+      {/* No `initial`: the body renders at its target (closed) on mount and
+          only animates when the reader toggles it. */}
       <motion.div
         animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
         transition={{
@@ -148,8 +178,10 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
           opacity: { duration: 0.22, ease: "easeOut" },
         }}
         className="overflow-hidden"
+        aria-hidden={!open}
+        inert={!open}
       >
-        <div className="flex flex-col">{children}</div>
+        {children}
       </motion.div>
     </div>
   );
@@ -188,95 +220,60 @@ function TimbalToolPartImpl(props: ToolCallMessagePartProps) {
   const label = humanizeToolName(toolName);
   const argsSummary = summarizeArgs(args, argsText);
 
-  if (!running && !failed && SEARCH_TOOL.test(toolName)) {
-    const sources = collectSources(result);
-    if (sources.length > 0) {
+  const title = failed ? `${label} · failed` : label;
+
+  if (SEARCH_TOOL.test(toolName) && !failed) {
+    const sources = running ? [] : collectSources(result);
+    if (running || sources.length > 0) {
       return (
-        <div className="py-0.5">
-          <SearchToolLog label={label} query={queryOf(args)} sources={sources} />
-        </div>
+        <ToolDisclosure label={title} icon={RiSearchLine} running={running}>
+          <SearchToolLog query={queryOf(args)} sources={sources} running={running} />
+        </ToolDisclosure>
       );
     }
   }
-  if (running && SEARCH_TOOL.test(toolName)) {
-    return (
-      <div className="py-0.5">
-        <SearchToolLog label={label} query={queryOf(args)} sources={[]} running />
-      </div>
-    );
-  }
+
+  const lines: string[] = [];
+  if (argsSummary) lines.push(argsSummary);
+  lines.push(running ? "Waiting for result" : (previewResult(result) ?? "No result"));
 
   return (
-    <div className="py-0.5">
-      <GenericToolLog
-        label={label}
-        argsSummary={argsSummary}
-        preview={running ? undefined : previewResult(result)}
-        running={running}
-        failed={failed}
-      />
-    </div>
+    <ToolDisclosure label={title} running={running}>
+      <ToolLogLines lines={lines} />
+    </ToolDisclosure>
   );
 }
 
 /* --------------------------------------------------------------- generic */
 
-function GenericToolLog({
-  label,
-  argsSummary,
-  preview,
-  running,
-  failed,
-}: {
-  label: string;
-  argsSummary?: string;
-  preview?: string;
-  running: boolean;
-  failed: boolean;
-}) {
-  const steps: TaskListStep[] = [];
-  if (argsSummary) steps.push({ label: argsSummary });
-  // A pending result keeps the header shimmering and the working indicator at
-  // the tail until the real one lands; the row itself stays unrevealed.
-  steps.push({ label: running ? "Waiting for result" : (preview ?? "No result") });
-
-  const task: TaskListTask = {
-    title: failed ? `${label} · failed` : label,
-    runningTitle: label,
-    icon: RiToolsLine,
-    steps,
-  };
-  const total = 1 + steps.length;
-  const revealed = running ? total - 1 : total;
-
+/** The argument summary and result preview on the agent log's guide. */
+function ToolLogLines({ lines }: { lines: string[] }) {
+  const reduce = useLogMotion();
   return (
-    <TaskList
-      // Re-keyed on completion so the settled log mounts collapsed instead of
-      // animating the running rows shut.
-      key={running ? "running" : "settled"}
-      tasks={[task]}
-      revealed={revealed}
-      collapseOnComplete
-      working="Working"
-    />
+    <ul className="mt-0.5 ml-2 flex flex-col">
+      {lines.map((line, index) => (
+        <LogRow key={`${index}-${line}`} first={index === 0} last={index === lines.length - 1} reduce={reduce}>
+          <span className="block py-1 text-body-regular break-words text-text-secondary">{line}</span>
+        </LogRow>
+      ))}
+    </ul>
   );
 }
 
 /* ---------------------------------------------------------------- search */
 
 function SearchToolLog({
-  label,
   query,
   sources,
-  running = false,
+  running,
 }: {
-  label: string;
   query?: string;
   sources: WebSearchSource[];
-  running?: boolean;
+  running: boolean;
 }) {
-  const steps: WebSearchStep[] = [
-    { heading: true, label, query, icon: RiSearchLine },
+  const steps: WebSearchStep[] = [];
+  if (query) steps.push({ label: "Query", query, icon: RiSearchLine });
+  steps.push(
     running
       ? { label: "Searching", icon: RiGlobalLine }
       : {
@@ -284,16 +281,13 @@ function SearchToolLog({
           icon: RiGlobalLine,
           sources,
         },
-  ];
-  // Units: heading, step, and the sources row once there are sources.
-  const total = running ? 2 : 3;
+  );
+  // One unit per step, plus the Sources row under the step that found them.
+  const total = steps.length + (running ? 0 : 1);
   return (
-    <WebSearch
-      key={running ? "running" : "settled"}
-      steps={steps}
-      revealed={running ? 1 : total}
-      working="Searching"
-    />
+    <div className="mt-0.5 ml-2">
+      <WebSearch key={running ? "running" : "settled"} steps={steps} revealed={total} working={false} />
+    </div>
   );
 }
 

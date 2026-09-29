@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-21T09:56:58.497Z",
+  "generatedAt": "2026-09-29T08:55:45.438Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -6923,6 +6923,7 @@
       "templates": [
         "project-board"
       ],
+      "catalog": "textarea",
       "type": "\"none\" | \"vertical\""
     },
     {
@@ -6942,6 +6943,7 @@
       "templates": [
         "project-board"
       ],
+      "catalog": "textarea",
       "extends": [
         "Omit<AriaTextAreaProps, \"size\" | \"className\" | \"rows\">"
       ],
@@ -7028,6 +7030,7 @@
       "templates": [
         "project-board"
       ],
+      "catalog": "textarea",
       "extends": [
         "Omit<AriaTextAreaProps, \"size\" | \"className\" | \"rows\">"
       ]
@@ -7049,6 +7052,7 @@
       "templates": [
         "project-board"
       ],
+      "catalog": "textarea",
       "extends": [
         "Omit<TextFieldProps, \"children\">",
         "Pick<TextareaBaseProps, | \"rows\" | \"autoResize\" | \"maxRows\" | \"resize\" | \"fieldClassName\" | \"groupRef\" | \"ref\">"
@@ -7064,7 +7068,7 @@
       "importFrom": "@/components/base/textarea/textarea",
       "layer": "base",
       "group": "textarea",
-      "summary": "Multiline sibling of `Input` — same React Aria plumbing, same field shell, same tokens.",
+      "summary": "Multiline text field with auto-grow, character count, and Input's label, hint and states.",
       "props": [
         {
           "name": "label",
@@ -7152,6 +7156,7 @@
       "templates": [
         "project-board"
       ],
+      "catalog": "textarea",
       "extends": [
         "Omit<TextFieldProps, \"children\">",
         "Pick<TextareaBaseProps, | \"rows\" | \"autoResize\" | \"maxRows\" | \"resize\" | \"fieldClassName\" | \"groupRef\" | \"ref\">"
@@ -18309,7 +18314,8 @@
       "template": "project-board",
       "templates": [
         "project-board"
-      ]
+      ],
+      "catalog": "project-board"
     },
     {
       "name": "ProjectBoard",
@@ -20499,7 +20505,7 @@
       "importFrom": "@/components/timbal/chat/tools",
       "layer": "timbal",
       "group": "chat",
-      "summary": "`tools.Override` for the BoardUI assistant message: tool calls rendered with BoardUI's agent log components on top of the Timbal runtime. - A result that parses as a registered Timbal artifact (chart…",
+      "summary": "`tools.Override` for the BoardUI assistant message: tool calls rendered with BoardUI's agent log components on top of the Timbal runtime.",
       "props": [],
       "tags": [
         "timbal",
@@ -20532,7 +20538,7 @@
       "importFrom": "@/components/timbal/chat/tools",
       "layer": "timbal",
       "group": "chat",
-      "summary": "Wraps a run of tool parts in one TaskList-shaped header.",
+      "summary": "Wraps a run of tool parts in one collapsed `ToolDisclosure` row that shimmers while any call is still running.",
       "props": [
         {
           "name": "groupKey",

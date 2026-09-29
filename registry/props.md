@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 293 components · 19 hooks · generated 2026-09-21
+BoardUI 0.5.3 · 293 components · 19 hooks · generated 2026-09-29
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -855,7 +855,7 @@ Extends: `Omit<AriaTextAreaProps, "size" | "className" | "rows">`
 | groupRef? | `Ref<HTMLDivElement>` |  | Ref to the field shell wrapper. |
 | onInput | — |  | (inherited) |
 
-**Textarea** — Multiline sibling of `Input` — same React Aria plumbing, same field shell, same tokens.
+**Textarea** — Multiline text field with auto-grow, character count, and Input's label, hint and states.
 Extends: `Omit<TextFieldProps, "children">`, `Pick<TextareaBaseProps, | "rows" | "autoResize" | "maxRows" | "resize" | "fieldClassName" | "groupRef" | "ref">`
 | prop | type | default | doc |
 |---|---|---|---|
@@ -2540,10 +2540,10 @@ No props.
 
 ### chat — `@/components/timbal/chat/tools`
 
-**TimbalToolPart** — `tools.Override` for the BoardUI assistant message: tool calls rendered with BoardUI's agent log components on top of the Timbal runtime. - A result that parses as a registered Timbal artifact (chart…
+**TimbalToolPart** — `tools.Override` for the BoardUI assistant message: tool calls rendered with BoardUI's agent log components on top of the Timbal runtime.
 No props.
 
-**ToolCallGroup** — Wraps a run of tool parts in one TaskList-shaped header.
+**ToolCallGroup** — Wraps a run of tool parts in one collapsed `ToolDisclosure` row that shimmers while any call is still running.
 | prop | type | default | doc |
 |---|---|---|---|
 | groupKey | `string \| undefined` |  |  |
