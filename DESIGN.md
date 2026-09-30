@@ -13,9 +13,9 @@ style). The direction below is what varies per product.
 | Axis | Decision | Why |
 |---|---|---|
 | Product | _what this app is, in one line_ | |
-| First job | _the first thing a user DOES on `/`, as a verb + object: "reply to the oldest ticket", "chase an overdue invoice", "approve a booking". "See metrics" is not a job_ | |
+| First job | _the first thing a user DOES on `/`, as a verb + object: "reply to the oldest ticket", "chase an overdue invoice", "approve a booking". "See metrics" is not a job; "spot the degraded service and react" (a monitor) is_ | |
 | Shell | _SidebarShell · TopbarShell · focused · full-page chat · split_ | |
-| Entry | _what `/` opens on: the object of that job — list · board · record · editor · schedule · conversation · work queue (several modules). A KPI dashboard needs a reason here_ | |
+| Entry | _what `/` opens on: the object of that job — list · board · record · editor · schedule · conversation · work queue (several modules, first job = what needs attention). A KPI dashboard needs a reason here — a monitor is the one case_ | |
 | Accent | `blue` (BoardUI default) unless the brief names a brand colour | |
 | Density | _airy · regular · dense_ | |
 | Start from | _template slug (`finance`, `hr`, `calendar`, …) or "compose" — `dashboard` needs a reason here_ | |
@@ -56,4 +56,9 @@ Previous project used: _shell / entry / template / density_ → this one differs
 - 2026-09-30 — switch track on BoardUI's 4px unit, react-aria toggle labels and the shells' scrollers
   positioned · the md switch thumb sat on the track's edge, and clicking any switch scrolled the
   whole `h-dvh` app off screen (its hidden input was laid out against the document).
+- 2026-09-30 — `WorkQueue` narrowed to several-module products whose first job is working through
+  what needs attention (a pipeline opens on the board, bookings on the schedule); a monitor is the
+  one product whose `/` may open on metrics, with the reason in the Why cell; templates are
+  started from the closest *entry* template, never trimmed from a KPI one · the work queue was
+  reading as the next universal template, and INDEX still said "copy the closest, delete the rest".
 - YYYY-MM-DD — _decision · reason_

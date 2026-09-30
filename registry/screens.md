@@ -23,14 +23,16 @@ Numbers about the screen go in the header's one line (`<PageHeader description>`
 
 **Every KPI tile is a filter.** "Overdue invoices: 3" is a query that returned three rows.
 Show the three rows, each with its verb (Send reminder), and the count becomes the
-group's badge. That is the work queue below, and it is what a product with several
-modules opens on: the data work is the same as for the tiles, the screen is useful.
+group's badge. That is the work queue below. It is what a several-module product opens
+on when its first job is working through what needs attention; a pipeline opens on the
+board and bookings on the schedule. The data work is the same as for the tiles, the
+screen is useful.
 
 ### Seven recipes (pick one, record it in `DESIGN.md`)
 
 | Entry | Shape | Built from |
 |---|---|---|
-| **Work queue** (a product with several modules: CRM, ERP, fleet, back office, audit — the "Inicio" / "Overview" of a many-table app) | Header description = one line of live counts → one `WorkQueue`: groups ordered by urgency ("Follow-ups due", "Overdue invoices", "Below reorder point"), each row = record + the fact that makes it urgent + one action; row opens a `Sheet`; "View all" goes to the module's list route | `WorkQueue` from `@/components/timbal/work-queue`, `timbal/overlays` `Sheet`, `PageHeader`. Model: `/examples/workspace` (`TodayDemo`) |
+| **Work queue** (a product with several modules — CRM, ERP, fleet, back office, audit — whose first job is working through what needs attention: the "Inicio" / "Overview" of a many-table app) | Header description = one line of live counts → one `WorkQueue`: groups ordered by urgency ("Follow-ups due", "Overdue invoices", "Below reorder point"), each row = record + the fact that makes it urgent + one action; row opens a `Sheet`; "View all" goes to the module's list route | `WorkQueue` from `@/components/timbal/work-queue`, `timbal/overlays` `Sheet`, `PageHeader`. Model: `/examples/workspace` (`TodayDemo`) |
 | **List + detail** (queues, inventories, customers, assets) | Title row with the primary action → one `DataTable` (search, filter selects, chips, row menu, pagination) → row click opens a `Sheet` with the record | `timbal/data-table`, `base/select`, `base/badges/chip`, `timbal/overlays` `Sheet`. Model: `/examples/shell-sidebar` (`TicketsDemo`) |
 | **Board** (pipelines, stages, kanban, tasks) | `ProjectBoardShell` — sortable columns, ticket cards, detail panel. Fork it; do not rebuild a kanban. Demo: `/templates/project-board` | `application/project-board` (`ProjectBoardShell`, `ProjectBoard`). Swap `project-board-data.ts`. DnD ships with the block (`@dnd-kit`) |
 | **Record** (one customer, one incident, one deal) | Header: identity + status `Chip` + actions; two-column body: left = the object's fields in a `divide-y` card, right = activity / related list; tabs for sections | `base/tabs`, `base/badges`, `base/table`, `application/notification-center` for activity |
@@ -39,9 +41,15 @@ modules opens on: the data work is the same as for the tiles, the screen is usef
 | **Conversation** (the product *is* the assistant) | Full-page chat, history rail | `TimbalChat` + `boardChatComponents` (`pages/Home.tsx`), or `EmbeddedChat` as a `bare` route inside a shell |
 
 Metrics, when the brief asks for them, go on their own route (`/reports`): `StatCards`
-(≤ 4 tiles) + one chart card + one table, straight from `/templates/dashboard`. Only when
-the brief makes metrics the product does `/` open on them — then `DESIGN.md` records
-`Entry: KPI dashboard` with the brief's words in the Why cell.
+(≤ 4 tiles) + one chart card + one table, straight from `/templates/dashboard`.
+
+**The exception — a monitor.** Uptime, fleet telemetry, an ops centre: the first job is
+*watching* a live system and reacting when it changes, so `/` may open on the metrics.
+Keep it a console, not the default dashboard: `StatCards` (≤ 4) that are filters into the
+rows behind them, one chart card, and the table of what is off right now. `DESIGN.md`
+records `Entry: KPI dashboard` with the brief's words in the Why cell; `design:check`
+requires that reason. A business app with an "overview" is not a monitor, and "see
+metrics" is not a first job.
 
 ## 2. Surface grammar (page → panel → tile)
 
@@ -143,7 +151,8 @@ Rules that fall out of it:
 ## 6. What a reviewer flags
 
 - `StatCards` (or four hand-made tiles, or `MetricRow`) as the first thing on `/` without a recorded reason.
-- A product with several modules whose `/` is a grid of counters instead of a `WorkQueue` of the rows behind them.
+- A several-module product whose first job is working through what needs attention, with a `/` that is a grid of counters instead of a `WorkQueue` of the rows behind them.
+- A `WorkQueue` forced onto a product whose first job is a pipeline, a schedule or a single record.
 - An explanation paragraph, a caption under every number, the same "as of" date on every card.
 - The page title printed twice (shell header + an `<h1>` or card title in the page); a breadcrumb on a top-level page; a page-specific button in the shell's global `actions`.
 - A bordered card inside a bordered card; a "filter bar" card above a table card.

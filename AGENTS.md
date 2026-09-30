@@ -40,9 +40,14 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    strip above the primary object is the same screen**: `/` opens on the object of that
    first job (list, board, record, editor, schedule, conversation — recipes in
    `registry/screens.md`). A product with several modules (CRM, ERP, fleet, back office)
-   opens on a **`WorkQueue`** (`components/timbal/work-queue`, demo `/examples/workspace`):
-   the rows a KPI tile would have counted, each with its verb. `design:check` reads the
-   `index` route and rejects `StatCards`, `MetricRow` or hand-rolled tiles there without a reason.
+   whose first job is working through what needs attention opens on a **`WorkQueue`**
+   (`components/timbal/work-queue`, demo `/examples/workspace`): the rows a KPI tile
+   would have counted, each with its verb. It is one of seven shapes, not the answer
+   for every multi-module app: a pipeline opens on the board, bookings on the schedule.
+   A **monitor** (the first job is watching a live system and reacting) is the one
+   product whose `/` may open on metrics, with the reason in the `DESIGN.md` Why cell.
+   `design:check` reads the `index` route and rejects `StatCards`, `MetricRow` or
+   hand-rolled tiles there without a reason.
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.

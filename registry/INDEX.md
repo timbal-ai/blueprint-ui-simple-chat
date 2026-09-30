@@ -43,20 +43,25 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 2. **Entry screen = the product's primary object.** What does the user come to
    work on — tickets, invoices, bookings, documents, a conversation? `/` opens on
    that (a list with a detail sheet, a board, a record, an editor, a schedule). A
-   product with **several modules** (CRM, ERP, fleet, back office) has no single
-   object: its `/` is a **`WorkQueue`** — what needs the user now, across modules,
-   as rows with a verb. The KPI dashboard (stat tiles + trend chart + table) is a
-   screen for briefs that ask for metrics, not the default, and **a row of stat
+   product with **several modules** (CRM, ERP, fleet, back office) whose first job is
+   working through *what needs attention* has no single object: its `/` is a
+   **`WorkQueue`** — what needs the user now, across modules, as rows with a verb.
+   If its first job is a pipeline it opens on the board; if it is bookings, the
+   schedule — `WorkQueue` is one of seven shapes, not the answer for every
+   multi-module app. The KPI dashboard (stat tiles + trend chart + table) is a
+   screen for briefs that ask for metrics — and the entry only for a **monitor**
+   (the first job is watching a live system) — not the default, and **a row of stat
    tiles above the primary object is the same screen**: `design:check` reads the
    `index` route and fails when it renders `StatCards`, `MetricRow` or hand-rolled
    tiles without a recorded dashboard reason. Recipes for the seven entry shapes
    are in `screens.md`; `/examples/workspace` (work queue), `/examples/shell-sidebar`
    (ticket queue) and `/examples/shell-topbar` (schedule) show three of them running.
-3. **Whole screen?** Start from the closest **template** (`templates.md`) → copy its
-   shell into `src/pages/`, swap data + nav, delete what the brief doesn't need.
-   The dashboard-family templates (dashboard, finance, hr, marketing, medical,
-   ai-profile) are metrics screens: fork them for `/reports`, never for `/`. If no
-   template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
+3. **Whole screen?** Start from the closest **entry** template for the object of the
+   first job (`templates.md`, "use as" column) → copy its shell into `src/pages/`, swap
+   data + nav. The dashboard-family templates (dashboard, finance, hr, marketing,
+   medical, ai-profile) are metrics screens: fork them for `/reports`, never for `/`
+   (a monitor is the one exception), and never trim one down into an entry screen.
+   If no template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
 4. **Block or card?** `components.md` → `props.md`. Chart cards (`application/charts`),
    agent UI (`task-list`, `web-search`, `agent-progress`, `questionnaire`,
    `agent-limits`), `data-table`, `stat-cards`, `settings-modal`,
@@ -107,7 +112,7 @@ inside the same card grammar.
 | Axis | Options |
 |---|---|
 | Shell | `SidebarShell` (workhorse SaaS, 4+ destinations) · `TopbarShell` (consumer/browse-first, ≤5 destinations) · focused single page (one job: form, editor, kiosk) · full-page chat (`Home` pattern) · split list/detail |
-| Entry | what `/` opens on — **work queue** (`WorkQueue`, several modules) · **list + detail** (`DataTable` + `Sheet`) · **board** (`ProjectBoardShell`) · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
+| Entry | what `/` opens on — **work queue** (`WorkQueue`, several modules, first job = what needs attention) · **list + detail** (`DataTable` + `Sheet`) · **board** (`ProjectBoardShell`) · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only for a monitor, or a brief that makes metrics the product — with the reason recorded* |
 | Accent | **BoardUI blue, unchanged, unless the brief names a brand colour** (then set the eleven `--color-accent-*` stops in `styles/brand.css`). Never change the hue for variety. |
 | Density | airy (marketing, consumer) · regular · dense (ops, finance, dispatch) |
 | Start from | a template by slug, or "compose" |

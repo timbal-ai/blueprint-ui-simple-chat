@@ -21,6 +21,7 @@
     "screenshots": "node scripts/screenshots.mjs",
     "design:check": "node scripts/design-check.mjs",
     "dna:check": "node scripts/design-check.mjs",
+    "ui:refresh": "node scripts/ui-refresh.mjs",
     "dev:fake": "node scripts/fake-api.mjs & VITE_API_PROXY_TARGET=http://localhost:5301 vite; kill %1",
     "fake-api": "node scripts/fake-api.mjs"
   },

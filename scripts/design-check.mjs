@@ -151,7 +151,7 @@ for (const axis of ["Entry", "Start from"]) {
   if (/dashboard|overview|kpi/i.test(d.decision) && !/^_/.test(d.decision) && (!d.why || /^_/.test(d.why))) {
     directionProblems.push(
       `DESIGN.md: "${axis}" is the KPI dashboard with an empty "Why" — that is the screen every project ships by default. ` +
-        `Either name the brief's metrics that justify it, or open on the product's primary object (list, board, record, editor, schedule, conversation, or a WorkQueue for a product with several modules).`,
+        `Either say why (a monitor: the first job is watching a live system) or open on the product's primary object (list, board, record, editor, schedule, conversation, or a WorkQueue when the first job is working through what needs attention across modules).`,
     );
   }
 }
