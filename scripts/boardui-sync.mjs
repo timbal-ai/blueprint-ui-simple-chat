@@ -13,8 +13,10 @@
  *  - BoardUI's globals.css header (its own `@import "tailwindcss"` and the dark
  *    variant) is stripped because src/index.css and the Timbal runtime stylesheet
  *    already provide both. Everything else in the file is upstream verbatim.
- *  - The BoardUI agent skill references are refreshed into registry/ so the
- *    catalog the agent reads is the one BoardUI publishes.
+ *  - The BoardUI agent skill's catalog (components.md) and motion reference are
+ *    refreshed into registry/ so the catalog the agent reads is the one BoardUI
+ *    publishes. theming.md and patterns.md are blueprint-owned (house style,
+ *    page recipes) and never overwritten.
  *  - The pinned CLI version lives in package.json → "timbal.boardui".
  */
 import { execSync } from "node:child_process";
@@ -187,15 +189,37 @@ if (existsSync(togglePath)) {
 }
 
 // ── 5. refresh the BoardUI agent skill references into registry/ ────────────
+// Only BoardUI's own catalog and motion language. Its theming.md and
+// patterns.md are generic (Next.js, `npx boardui add`, a KPI dashboard as the
+// first page recipe); the blueprint's versions carry the house style and the
+// entry-screen rules, so they are not overwritten.
 const skillTmp = join(ROOT, "node_modules/.tmp/boardui-skill");
 rmSync(skillTmp, { recursive: true, force: true });
 mkdirSync(skillTmp, { recursive: true });
 sh(`npx -y boardui@${VERSION} skill -p ${skillTmp} --force`);
 const registry = join(ROOT, "registry");
 mkdirSync(registry, { recursive: true });
-for (const f of ["components.md", "patterns.md", "theming.md", "motion.md"]) {
+for (const f of ["components.md", "motion.md"]) {
   const from = join(skillTmp, "references", f);
   if (existsSync(from)) cpSync(from, join(registry, f));
+}
+
+// ── 5b. components.md: StatCards is a metrics-route component here ─────────
+// The upstream entry is a bare "KPI stat card row" with the footer variant as
+// its snippet — read as "the first thing on a page", it is how every
+// generated app opened on the same tile strip.
+const catalogPath = join(registry, "components.md");
+const STAT_CARDS_NOTE =
+  "> **Blueprint:** a metrics-route component (`/reports`), ≤ 4 tiles, only when the brief asks for metrics. " +
+  "Never on `/`, never above a list or board. The same numbers on `/` are the header's one-line description " +
+  "or `WorkQueue` group counts (`registry/screens.md`).";
+if (existsSync(catalogPath)) {
+  const catalog = readFileSync(catalogPath, "utf8");
+  if (!catalog.includes(STAT_CARDS_NOTE)) {
+    const patched = catalog.replace(/(### Stat Cards\n\n[^\n]+\n)/, `$1\n${STAT_CARDS_NOTE}\n`);
+    if (patched === catalog) console.warn("boardui-sync: components.md has no \"### Stat Cards\" entry — re-apply the StatCards note by hand.");
+    else writeFileSync(catalogPath, patched);
+  }
 }
 
 // ── 6. sanity: no kept file imports an excluded path; no `next/` import escapes the shims ──

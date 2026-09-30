@@ -4,11 +4,23 @@ React 19 · Vite · Tailwind v4 · react-router · `@timbal-ai/timbal-react` (ch
 streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source under
 `src/components/{base,application,foundations}` — never edited by hand
 (`bun run boardui:sync` overwrites it). Project code: `src/components/timbal/`
-(chat slots, shells, overlays) and `src/pages/`.
+(chat slots, shells, overlays, data-table, work-queue) and `src/pages/`.
+
+**This file and `registry/` are the truth for this project.** They ship with the code, so
+they are always the current version; a platform rule or skill (`timbal-ui`, the composer's
+system prompt) is the generic guide, and on any design decision where the two disagree this
+file wins. Keep the platform's loop: direction in `DESIGN.md`, discover in `registry/`,
+run the checks yourself, screenshot and critique.
+There is no `dna.json` / `tokens.css` / `@/components/blocks` / `discovery.ts` /
+`PAGES_CATALOG` here (`dna:check` runs `design:check`). If anything you read points at the
+legacy app kit (`AppShell`, `Page`, `Section`, `MetricRow`, `StatTile`, a "Dashboard" at
+`/`, "lead with 3–5 Stats", "copy the closest template and delete what you don't need"),
+ignore that part: `design:check` fails on it. A template is a starting composition for the
+**object of the first job**, not a page to trim; the KPI templates are `/reports` material.
 
 **Read `registry/INDEX.md` before writing UI.** It lists every template, block,
 primitive and their props, plus the direction menu. **Then `registry/screens.md`**:
-what `/` opens on and how a card sits on the page.
+what `/` opens on, how a card sits on the page, and what waits for a click.
 **The baseline look is a console** (`registry/theming.md` → House style): light by
 default (dark one toggle away), 3.5 px grid, 4–16 px concentric radii, 13 px body, BoardUI's colours and
 elevated buttons (monochrome primary: charcoal in light, white in dark) — all tokens in `src/styles/brand.css`.
@@ -20,14 +32,17 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
 
 ## Rules
 
-1. **Direction first.** Before code, write in `DESIGN.md`: shell, entry screen,
-   density, template-or-compose, tone, references. Accent stays BoardUI blue unless
-   the brief names a brand colour. Variety comes from shell, entry screen, template
- and density — never from a random hue. **The KPI dashboard (stat tiles + trend
- chart + table) is not the default entry screen, and a stat-tile strip above the
- primary object is the same screen**: `/` opens on the product's primary object
- (list, board, record, editor, schedule, conversation — recipes in `registry/screens.md`);
- `design:check` reads the `index` route and rejects `StatCards` there without a reason.
+1. **Direction first.** Before code, write in `DESIGN.md`: the user's first job on `/`
+   (a verb), shell, entry screen, density, template-or-compose, tone, references. Accent
+   stays BoardUI blue unless the brief names a brand colour. Variety comes from shell,
+   entry screen, template and density — never from a random hue. **The KPI dashboard
+   (stat tiles + trend chart + table) is not the default entry screen, and a stat-tile
+   strip above the primary object is the same screen**: `/` opens on the object of that
+   first job (list, board, record, editor, schedule, conversation — recipes in
+   `registry/screens.md`). A product with several modules (CRM, ERP, fleet, back office)
+   opens on a **`WorkQueue`** (`components/timbal/work-queue`, demo `/examples/workspace`):
+   the rows a KPI tile would have counted, each with its verb. `design:check` reads the
+   `index` route and rejects `StatCards`, `MetricRow` or hand-rolled tiles there without a reason.
 2. **Every page is a route.** One `<Route>` per screen in `src/App.tsx`. Multi-page
    apps mount `SidebarShell` or `TopbarShell` (`components/timbal/shells`) once as a
    layout route and render pages through `<Outlet />`. Never switch pages with state.
@@ -40,7 +55,8 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    card (`registry/components.md`, `props.md`) → `base/` primitive →
    `timbal/overlays` → write your own. Never rebuild something the registry has.
    A task / ticket / kanban screen is `ProjectBoardShell` (`/templates/project-board`)
-   — never a hand-rolled column board.
+   — never a hand-rolled column board. The dashboard / finance / hr / marketing /
+   medical templates are metrics screens: fork them for `/reports`, not for `/`.
 4. **Color and type only through tokens.** BoardUI semantic tokens
    (`text-text-primary`, `bg-background-primary-default`, `border-border-button-default`)
    and composite type utilities (`text-body-regular`, `text-title-2-medium`). No
@@ -62,14 +78,21 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    375 px must work: shells collapse to a drawer, tables scroll in their container.
 8. **Forms and menus on react-aria-components** (what BoardUI uses). No Radix, no
    native `<select>` / `<input type="date">` — use `base/select`, `base/date-picker`.
+   `Switch` / `Checkbox` `onChange` receive a boolean (`onChange={setOn}`), not an event.
    People are `Avatar` initials. Do not commit dummy headshots, gallery stills or
    cover art into `public/`.
+9. **Reveal progressively.** A screen shows the object and its next action; detail
+   waits for a click. The header description is one line of live values (≤ 90
+   characters). Lists show their first rows ("Show N more", "View all"), a record opens
+   in a `Sheet`, how a number is computed sits behind an info `Tooltip` / `Popover`,
+   and empty groups disappear instead of showing 0. No explanation paragraphs, no caption
+   under every number, no "as of" date on every card (`registry/screens.md` §4;
+   `design:check` fails on long descriptions and hard-coded paragraphs).
 
 ## Verify before finishing
 
 ```
-bun run design:check               # DESIGN.md direction filled, and does `/` match it? (the platform gate runs this too)
-bun run lint && bun run build      # tsc + vite; the platform gate runs the same
+bun run lint && bun run build      # eslint + design:check (DESIGN.md filled? does `/` match it?), then tsc + vite (deploys run build)
 bun run screenshots                # every route at 1280/375, light/dark → screenshots/
 bun run registry:build             # only if you added/renamed a component under components/timbal — CI fails on drift
 ```

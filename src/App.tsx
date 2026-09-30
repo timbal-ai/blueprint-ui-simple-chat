@@ -14,6 +14,8 @@ import Placeholder from "@/pages/Placeholder";
 //
 // BoardUI Pro templates, mounted so they can be seen running (dev / VITE_TEMPLATES).
 // Fork the shell you start from into src/pages/<yours>.tsx, then delete these.
+// dashboard / finance / hr / marketing / medical are metrics screens: a
+// `/reports` route, never the index route (registry/templates.md → use as).
 const templates = {
   dashboard: lazy(() => import("@/pages/templates/dashboard")),
   finance: lazy(() => import("@/pages/templates/finance")),
@@ -27,11 +29,13 @@ const templates = {
   "ai-image-generation": lazy(() => import("@/pages/templates/ai-image-generation")),
 };
 
-// Shell examples (dev): SidebarShell / TopbarShell with overview, settings
-// (modal, sheet, toasts) and an EmbeddedChat route — the two multi-page grammars.
+// Shell examples (dev): SidebarShell / TopbarShell with a ticket queue, a
+// schedule, settings (modal, sheet, toasts) and an EmbeddedChat route; the
+// workspace example is the `/` of a product with several modules (WorkQueue).
 const examples = {
   "shell-sidebar": lazy(() => import("@/pages/examples/shell-sidebar")),
   "shell-topbar": lazy(() => import("@/pages/examples/shell-topbar")),
+  workspace: lazy(() => import("@/pages/examples/workspace")),
 };
 
 function App() {
@@ -44,8 +48,9 @@ function App() {
               users to the Timbal login page and back. Do not build a login screen.
               The index route is a neutral placeholder on a fresh scaffold — a
               build should never open on a chat the user didn't ask for. Replace
-              it with the real surface (<Home /> for a chat product, a template
-              shell, or your own page) and delete Placeholder.tsx. */}
+              it with the entry screen registry/screens.md picks (a WorkQueue,
+              list, board, record, editor, schedule; <Home /> for a chat
+              product) and delete Placeholder.tsx. */}
           <Route
             index
             element={

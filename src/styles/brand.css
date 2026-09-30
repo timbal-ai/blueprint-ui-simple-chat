@@ -19,9 +19,11 @@
  * chips are tinted (10–14% of the hue) instead of BoardUI's /200 pastel slabs.
  *
  * Nothing in here targets a component class: every rule is a token that
- * BoardUI already reads, so `bun run boardui:sync` cannot undo it. The one
- * exception is the `@layer base` block at the end, which fixes Tailwind v4's
- * `currentColor` default for borders — also not something sync touches.
+ * BoardUI already reads, so `bun run boardui:sync` cannot undo it. The
+ * exceptions are the `@layer base` blocks at the end: Tailwind v4's
+ * `currentColor` border default, and the react-aria toggle fixes (hidden
+ * input positioning, the switch track on BoardUI's 4px grid). They match DOM
+ * structure, not class names, so sync does not touch them either.
  * --------------------------------------------------------------------------- */
 @theme {
   /* Accent ramp (default: BoardUI blue — keep it). To re-tint for a brand,
@@ -279,5 +281,30 @@ body {
   }
   :focus-visible {
     outline-color: var(--color-border-focus-ring);
+  }
+}
+
+/* react-aria toggles (Switch, SwitchCard, Checkbox, CheckboxCard, Radio,
+   RadioCard) render `<label><span visually-hidden><input></span>…</label>`.
+   The hidden input is `position: absolute`; with no positioned ancestor it is
+   laid out against the document at its static position, deep below the
+   `h-dvh` shell, so the document grows taller than the viewport and clicking
+   the control (which focuses the input) scrolls the document: the whole app
+   slides off screen and the page reads as blank. A positioned label keeps the
+   input on its control. In `@layer base` so `absolute`/`fixed`/`sticky`
+   utilities on the control still win. */
+@layer base {
+  label:has(> span > input:is([type="checkbox"], [type="radio"])) {
+    position: relative;
+  }
+
+  /* BoardUI's Switch mixes spacing units (`h-6`, `top-0.5`, `translate-x-3`)
+     with fixed pixels (`w-[42px]`, `size-[18px]`, `left-[3px]`). At the 3.5px
+     unit the md track shrinks to 21px while its 18px thumb does not, so the
+     thumb sits on the bottom edge. The track keeps BoardUI's own 4px unit,
+     which restores the Figma geometry for every size (sm 28×16, md 42×24,
+     lg 56×32). */
+  label:has(> span > input[role="switch"]) span[aria-hidden="true"] {
+    --spacing: 0.25rem;
   }
 }

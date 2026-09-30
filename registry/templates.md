@@ -2,23 +2,26 @@
 
 BoardUI Pro template routes mounted by `src/App.tsx` (dev / `VITE_TEMPLATES`). Each page under `src/pages/templates/` renders exactly one shell from `src/components/application/<domain>/<domain>-shell.tsx`; the shell composes the cards, tables and sidebar listed below and reads its demo data from the domain's `*-data.ts(x)` file. Fork the shell, don't rebuild it. Props for every module are in `props.md`.
 
-| slug | route | domain | what's inside | modules (≤ depth 3 / all) | cards |
-|---|---|---|---|---|---|
-| ai-chat | `/templates/ai-chat` | ai-chat | BoardUI Pro "AI chat" — VISUAL REFERENCE ONLY (scripted mock thread). | 28 / 48 | 0 |
-| ai-image-generation | `/templates/ai-image-generation` | ai-chat | BoardUI Pro "AI image generation" — the AI chat shell on its image-generation scenario (mock). | 28 / 48 | 0 |
-| ai-profile | `/templates/ai-profile` | ai-profile | BoardUI Pro "AI profile" — cover card with contributions heatmap, agents bar chart, tokens trend. | 27 / 41 | 4 |
-| calendar | `/templates/calendar` | calendar | BoardUI Pro "Calendar" — month grid with event chips, details popover, month switcher, inbox feed. | 27 / 44 | 0 |
-| dashboard | `/templates/dashboard` | dashboard | BoardUI Pro "Home Dashboard" — KPI stat cards, revenue trend, earnings, contributions, customers table. | 40 / 46 | 5 |
-| finance | `/templates/finance` | finance | BoardUI Pro "Finance" — balance KPIs, cash-flow sankey, spending rings, portfolio bubbles, heatmap, transactions table. | 41 / 48 | 6 |
-| hr | `/templates/hr` | hr | BoardUI Pro "HR" — headcount KPIs, recent hires, pipeline, engagement radar, hires vs attrition, employees table. | 43 / 50 | 7 |
-| marketing | `/templates/marketing` | marketing | BoardUI Pro "Marketing" — campaign KPIs, acquisition funnel, spend by channel, ROAS, campaigns table. | 43 / 50 | 7 |
-| medical | `/templates/medical` | medical | BoardUI Pro "Medical profile" — patient overview: steps, sleep score, activity rings, most-active-days, alerts. | 42 / 48 | 6 |
-| project-board | `/templates/project-board` | project-board | BoardUI Pro "Project board" — VISUAL REFERENCE. | 39 / 53 | 1 |
+**Most of these are metrics screens.** dashboard, finance, hr, marketing and medical open on KPI tiles over charts: fork them for a `/reports` route the brief asks for, never for `/`. What `/` opens on is `screens.md` §1 — a `WorkQueue`, a list, a board, a record, an editor, a schedule or a conversation.
+
+| slug | route | use as | domain | what's inside | modules (≤ depth 3 / all) | cards |
+|---|---|---|---|---|---|---|
+| ai-chat | `/templates/ai-chat` | visual reference for a chat product (the real one is `src/pages/Home.tsx`) | ai-chat | BoardUI Pro "AI chat" — VISUAL REFERENCE ONLY (scripted mock thread). | 28 / 48 | 0 |
+| ai-image-generation | `/templates/ai-image-generation` | visual reference for an image-generation chat | ai-chat | BoardUI Pro "AI image generation" — the AI chat shell on its image-generation scenario (mock). | 28 / 48 | 0 |
+| calendar | `/templates/calendar` | entry — schedule (bookings, shifts, deadlines) | calendar | BoardUI Pro "Calendar" — month grid with event chips, details popover, month switcher, inbox feed. | 27 / 44 | 0 |
+| project-board | `/templates/project-board` | entry — board (tasks, tickets, pipelines) | project-board | BoardUI Pro "Project board" — VISUAL REFERENCE. | 39 / 53 | 1 |
+| ai-profile | `/templates/ai-profile` | profile route (one person's or agent's page) — not `/` | ai-profile | BoardUI Pro "AI profile" — cover card with contributions heatmap, agents bar chart, tokens trend. | 27 / 41 | 4 |
+| dashboard | `/templates/dashboard` | metrics route (`/reports`) — not `/` | dashboard | BoardUI Pro "Home Dashboard" (a metrics screen despite the name) — KPI stat cards, revenue trend, earnings, contributions, customers table. | 40 / 46 | 5 |
+| finance | `/templates/finance` | metrics route (`/reports`) — not `/` | finance | BoardUI Pro "Finance" — balance KPIs, cash-flow sankey, spending rings, portfolio bubbles, heatmap, transactions table. | 41 / 48 | 6 |
+| hr | `/templates/hr` | metrics route (`/reports`) — not `/` | hr | BoardUI Pro "HR" — headcount KPIs, recent hires, pipeline, engagement radar, hires vs attrition, employees table. | 43 / 50 | 7 |
+| marketing | `/templates/marketing` | metrics route (`/reports`) — not `/` | marketing | BoardUI Pro "Marketing" — campaign KPIs, acquisition funnel, spend by channel, ROAS, campaigns table. | 43 / 50 | 7 |
+| medical | `/templates/medical` | metrics route (a patient or person's report) — not `/` | medical | BoardUI Pro "Medical profile" — patient overview: steps, sleep score, activity rings, most-active-days, alerts. | 42 / 48 | 6 |
 
 ## ai-chat — `/templates/ai-chat`
 
 BoardUI Pro "AI chat" — VISUAL REFERENCE ONLY (scripted mock thread).
 
+- Use as: visual reference for a chat product (the real one is `src/pages/Home.tsx`)
 - Page: `src/pages/templates/ai-chat.tsx` (default export `AiChatTemplate`)
 - Shell: `AiChatShell` from `@/components/application/ai-chat/ai-chat-shell` — `src/components/application/ai-chat/ai-chat-shell.tsx`, mounted as `<AiChatShell />`
 - Shell doc: Full AI chat app: sidebar, resizable code panel, composer with model/effort controls.
@@ -77,6 +80,7 @@ _20 more module(s) below depth 3 — see `registry.json` → templates[].modules
 
 BoardUI Pro "AI image generation" — the AI chat shell on its image-generation scenario (mock).
 
+- Use as: visual reference for an image-generation chat
 - Page: `src/pages/templates/ai-image-generation.tsx` (default export `AiImageGenerationTemplate`)
 - Shell: `AiChatShell` from `@/components/application/ai-chat/ai-chat-shell` — `src/components/application/ai-chat/ai-chat-shell.tsx`, mounted as `<AiChatShell defaultScenario="image-generation" />`
 - Shell doc: Full AI chat app: sidebar, resizable code panel, composer with model/effort controls.
@@ -131,69 +135,11 @@ _20 more module(s) below depth 3 — see `registry.json` → templates[].modules
 3. Swap the nav items in the sidebar: `src/components/application/ai-chat/ai-chat-sidebar.tsx`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
 
-## ai-profile — `/templates/ai-profile`
-
-BoardUI Pro "AI profile" — cover card with contributions heatmap, agents bar chart, tokens trend.
-
-- Page: `src/pages/templates/ai-profile.tsx` (default export `AiProfileTemplate`)
-- Shell: `AiProfileShell` from `@/components/application/ai-profile/ai-profile-shell` — `src/components/application/ai-profile/ai-profile-shell.tsx`, mounted as `<AiProfileShell />`
-- Shell doc: Same floating sidebar / mobile-drawer shell as `MedicalShell` — the content is a single centered 680px column: profile card, agents bar chart, tokens line chart, stacked with a 16px gap.
-- Shell props: `contained?: boolean = false`
-
-### Component subtree (imports walked to depth 3)
-
-**base**
-- `@/components/base/avatar/avatar` → `Avatar` — component (depth 3)
-- `@/components/base/badges/badge` → `Badge` — component (depth 2)
-- `@/components/base/badges/chip` → `Chip` — component (depth 2)
-- `@/components/base/buttons/button` → `Button` — component (depth 2)
-- `@/components/base/buttons/close-button` → `CloseButton` — component (depth 2)
-- `@/components/base/buttons/icon-button` → `IconButton` — component
-- `@/components/base/date-picker/shared` → `ChevronLeft16`, `ChevronRight16`, `DateChipInput`, `MonthPanel`, `formatTriggerDate`, `popoverClassName`, `triggerButtonClassName` — component/util (depth 3)
-- `@/components/base/kbd/kbd` → `Kbd` — component (depth 2)
-- `@/components/base/segmented-control/segmented-control` → `SegmentedControl`, `SegmentedControlItem` — component (depth 2)
-- `@/components/base/switch/switch` → `Switch`, `SwitchTrack` — component (depth 3)
-- `@/components/base/tooltip/tooltip` → `Tooltip`, `TooltipTrigger` — component (depth 3)
-
-**application**
-- `@/components/application/ai-profile/agents-chart-card` → `AgentsChartCard` — component
-- `@/components/application/ai-profile/ai-profile-card` → `AiProfileCard` — component
-- `@/components/application/ai-profile/ai-profile-data` → `AGENTS_TRACK_HEIGHT`, `AGENTS_ZERO_BAR`, `MONTH_NAMES`, `TOKENS_SERIES`, `agentBarsFor`, `agentCountFor` — data/util (depth 2)
-- `@/components/application/ai-profile/tokens-chart-card` → `TokensChartCard` — component
-- `@/components/application/dashboard/contributions-card` → `ContributionsGrid` — component (depth 2)
-- `@/components/application/dashboard/dashboard-sidebar` → `DashboardSidebar` — component
-- `@/components/application/dashboard/dashboard-team-menu` → `DashboardTeamMenu` — component (depth 2)
-- `@/components/application/dashboard/dashboard-user-menu` → `DashboardUserMenu` — component (depth 2)
-- `@/components/application/medical/week-range-pill` → `WeekRangePill` — component (depth 2)
-- `@/components/application/settings/settings-general` → `SettingsGeneral` — component (depth 3)
-- `@/components/application/settings/settings-modal` → `SettingsModal` — component (depth 2)
-- `@/components/application/settings/settings-profile` → `SettingsProfile` — component (depth 3)
-- `@/components/application/settings/settings-storage` → `SettingsStorage` — component (depth 3)
-- `@/components/application/settings/settings-tools` → `SettingsTools` — component (depth 3)
-- `@/components/application/theme/theme-toggle` → `ThemeToggle` — component (depth 2)
-
-**foundations**
-- `@/components/foundations/icons/chevrons` → `ChevronDownSmall`, `ChevronSortDown`, `ChevronUpDownSmall` — component (depth 3)
-
-_14 more module(s) below depth 3 — see `registry.json` → templates[].modules._
-
-### Data
-
-- `src/components/application/ai-profile/ai-profile-data.ts` — Mock data for the AI contributions profile template (Figma node 4063:5675).
-  - data: `MONTH_NAMES: array(12)`, `AGENTS_TRACK_HEIGHT: number`, `AGENTS_MAX_BAR: number`, `AGENTS_ZERO_BAR: number`, `TOKENS_SERIES: [ 34.2, 28.6, 6.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31.4, 4.8, 2.2, 1.1, 5.6, 1.4, 0.…`
-  - helpers: `agentBarsFor(month: number) => number[]`, `agentCountFor(month: number) => number`
-
-### How to adapt
-
-1. Copy `src/components/application/ai-profile/ai-profile-shell.tsx` into `src/pages/<yours>.tsx` (rename `AiProfileShell`), register a `<Route>` for it in `src/App.tsx`.
-2. Replace the exports of `src/components/application/ai-profile/ai-profile-data.ts` with real data (fetch or props) — keep the shapes.
-3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="profile"`.
-4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
-
 ## calendar — `/templates/calendar`
 
 BoardUI Pro "Calendar" — month grid with event chips, details popover, month switcher, inbox feed.
 
+- Use as: entry — schedule (bookings, shifts, deadlines)
 - Page: `src/pages/templates/calendar.tsx` (default export `CalendarTemplate`)
 - Shell: `CalendarShell` from `@/components/application/calendar/calendar-shell` — `src/components/application/calendar/calendar-shell.tsx`, mounted as `<CalendarShell />`
 - Shell doc: Same responsive shell as `DashboardShell` (floating sidebar in-flow at `lg`+, slide-in drawer with backdrop below it) — mirrored here rather than shared, since the two templates' main content differs…
@@ -251,10 +197,144 @@ _17 more module(s) below depth 3 — see `registry.json` → templates[].modules
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="calendar"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
 
+## project-board — `/templates/project-board`
+
+BoardUI Pro "Project board" — VISUAL REFERENCE.
+
+- Use as: entry — board (tasks, tickets, pipelines)
+- Page: `src/pages/templates/project-board.tsx` (default export `ProjectBoardTemplate`)
+- Shell: `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` — `src/components/application/project-board/project-board-shell.tsx`, mounted as `<ProjectBoardShell />`
+- Shell doc: The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…
+- Shell props: `contained?: boolean = false`
+
+### Component subtree (imports walked to depth 3)
+
+**base**
+- `@/components/base/avatar/avatar` → `Avatar`, `AvatarProps` — type/component (depth 2)
+- `@/components/base/badges/badge` → `Badge` — component (depth 2)
+- `@/components/base/badges/chip` → `Chip` — component (depth 2)
+- `@/components/base/breadcrumb/breadcrumb` → `Breadcrumb`, `BreadcrumbItem` — component (depth 2)
+- `@/components/base/buttons/button` → `Button`, `ButtonProps` — type/component (depth 2)
+- `@/components/base/buttons/close-button` → `CloseButton` — component (depth 2)
+- `@/components/base/buttons/icon-button` → `IconButton` — component (depth 2)
+- `@/components/base/checkbox/checkbox` → `Checkbox` — component (depth 3)
+- `@/components/base/dropdown/dropdown` → `Dropdown`, `DropdownGroup`, `DropdownItem`, `DropdownPopover`, `DropdownTrigger` — component (depth 3)
+- `@/components/base/kbd/kbd` → `Kbd` — component (depth 2)
+- `@/components/base/select/select` → `Select`, `SelectItem` — component (depth 3)
+- `@/components/base/switch/switch` → `Switch`, `SwitchTrack` — component (depth 3)
+- `@/components/base/textarea/textarea` → `Textarea` — component (depth 3)
+- `@/components/base/tooltip/tooltip` → `Tooltip`, `TooltipTrigger` — component (depth 3)
+
+**application**
+- `@/components/application/ai-profile/tokens-chart-card` → `TokensChartCard` — component (depth 3)
+- `@/components/application/dashboard/dashboard-sidebar` → `DashboardSidebar` — component
+- `@/components/application/dashboard/dashboard-team-menu` → `DashboardTeamMenu` — component (depth 2)
+- `@/components/application/dashboard/dashboard-user-menu` → `DashboardUserMenu` — component (depth 2)
+- `@/components/application/notification-center/notification-center` → `NotificationCenter`, `NotificationCenterItem` — type/component (depth 3)
+- `@/components/application/notification-center/template-notification-center-menu` → `TemplateNotificationCenterMenu` — component (depth 2)
+- `@/components/application/project-board/create-ticket-modal` → `CreateTicketModal`, `NewProjectTicket` — type/component (depth 2)
+- `@/components/application/project-board/project-board-controls` → `BoardSort`, `ProjectBoardControls` — type/component (depth 2)
+- `@/components/application/project-board/project-board-data` → `PROJECT_COLUMNS`, `PROJECT_MEMBERS`, `ProjectColumn`, `ProjectTicket`, `TicketPriority`, `TicketSubtask` — type/data (depth 2)
+- `@/components/application/project-board/project-board-empty-state` → `ProjectBoardEmptyState` — component (depth 2)
+- `@/components/application/project-board/project-board-icons` → `TicketAssigneeIcon`, `TicketFavoriteIcon`, `TicketStatusIcon`, `TicketUrgencyIcon` — component (depth 3)
+- `@/components/application/project-board/project-board` → `ProjectBoard` — component
+- `@/components/application/project-board/ticket-corner-genie-surface` → `TicketCornerGenieSurface` — component (depth 3)
+- `@/components/application/project-board/ticket-detail-data` → `ticketBrief`, `ticketDemoActivity` — util (depth 3)
+- `@/components/application/project-board/ticket-detail-modal` → `TicketDetailModal` — component (depth 2)
+- `@/components/application/project-board/ticket-genie-surface` → `TicketGenieSurface` — component (depth 3)
+- `@/components/application/settings/settings-general` → `SettingsGeneral` — component (depth 3)
+- `@/components/application/settings/settings-modal` → `SettingsModal` — component (depth 2)
+- `@/components/application/settings/settings-profile` → `SettingsProfile` — component (depth 3)
+- `@/components/application/settings/settings-storage` → `SettingsStorage` — component (depth 3)
+- `@/components/application/settings/settings-tools` → `SettingsTools` — component (depth 3)
+- `@/components/application/theme/theme-toggle` → `ThemeToggle` — component (depth 2)
+
+**foundations**
+- `@/components/foundations/icons/chevrons` → `ChevronDownSmall`, `ChevronRightSmall`, `ChevronSortDown`, `ChevronUpDownSmall` — component (depth 3)
+
+_14 more module(s) below depth 3 — see `registry.json` → templates[].modules._
+
+### Data
+
+- `src/components/application/project-board/project-board-data.ts`
+  - data: `PROJECT_MEMBERS: Record<string, ProjectMember>`, `PROJECT_COLUMNS: ProjectColumn[]`
+  - exported types: `TicketSubtask`, `TicketComment`, `ProjectMember`, `TicketPriority`, `ProjectTicket`, `ProjectColumn`
+  - shapes to keep: `ProjectMember` (`@/components/application/project-board/project-board-data`), `ProjectColumn` (`@/components/application/project-board/project-board-data`), `TicketSubtask` (`@/components/application/project-board/project-board-data`), `TicketComment` (`@/components/application/project-board/project-board-data`), `TicketPriority` (`@/components/application/project-board/project-board-data`), `ProjectTicket` (`@/components/application/project-board/project-board-data`)
+- `src/components/application/project-board/ticket-detail-data.ts` — Demo briefs belong to this template, not the shared component library.
+  - helpers: `ticketBrief(ticket: ProjectTicket) => TicketBrief`, `ticketSubtasks(ticket: ProjectTicket, columnId: string) => TicketSubtask[]`, `ticketDemoActivity(ticket: ProjectTicket)`
+
+### How to adapt
+
+1. Copy `src/components/application/project-board/project-board-shell.tsx` into `src/pages/<yours>.tsx` (rename `ProjectBoardShell`), register a `<Route>` for it in `src/App.tsx`.
+2. Replace the exports of `src/components/application/project-board/project-board-data.ts`, `src/components/application/project-board/ticket-detail-data.ts` with real data (fetch or props) — keep the shapes: `ProjectMember`, `ProjectColumn`, `TicketSubtask`, `TicketComment`, `TicketPriority`, `ProjectTicket`.
+3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="project-board"`.
+4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
+
+## ai-profile — `/templates/ai-profile`
+
+BoardUI Pro "AI profile" — cover card with contributions heatmap, agents bar chart, tokens trend.
+
+- Use as: profile route (one person's or agent's page) — not `/`
+- Page: `src/pages/templates/ai-profile.tsx` (default export `AiProfileTemplate`)
+- Shell: `AiProfileShell` from `@/components/application/ai-profile/ai-profile-shell` — `src/components/application/ai-profile/ai-profile-shell.tsx`, mounted as `<AiProfileShell />`
+- Shell doc: Same floating sidebar / mobile-drawer shell as `MedicalShell` — the content is a single centered 680px column: profile card, agents bar chart, tokens line chart, stacked with a 16px gap.
+- Shell props: `contained?: boolean = false`
+
+### Component subtree (imports walked to depth 3)
+
+**base**
+- `@/components/base/avatar/avatar` → `Avatar` — component (depth 3)
+- `@/components/base/badges/badge` → `Badge` — component (depth 2)
+- `@/components/base/badges/chip` → `Chip` — component (depth 2)
+- `@/components/base/buttons/button` → `Button` — component (depth 2)
+- `@/components/base/buttons/close-button` → `CloseButton` — component (depth 2)
+- `@/components/base/buttons/icon-button` → `IconButton` — component
+- `@/components/base/date-picker/shared` → `ChevronLeft16`, `ChevronRight16`, `DateChipInput`, `MonthPanel`, `formatTriggerDate`, `popoverClassName`, `triggerButtonClassName` — component/util (depth 3)
+- `@/components/base/kbd/kbd` → `Kbd` — component (depth 2)
+- `@/components/base/segmented-control/segmented-control` → `SegmentedControl`, `SegmentedControlItem` — component (depth 2)
+- `@/components/base/switch/switch` → `Switch`, `SwitchTrack` — component (depth 3)
+- `@/components/base/tooltip/tooltip` → `Tooltip`, `TooltipTrigger` — component (depth 3)
+
+**application**
+- `@/components/application/ai-profile/agents-chart-card` → `AgentsChartCard` — component
+- `@/components/application/ai-profile/ai-profile-card` → `AiProfileCard` — component
+- `@/components/application/ai-profile/ai-profile-data` → `AGENTS_TRACK_HEIGHT`, `AGENTS_ZERO_BAR`, `MONTH_NAMES`, `TOKENS_SERIES`, `agentBarsFor`, `agentCountFor` — data/util (depth 2)
+- `@/components/application/ai-profile/tokens-chart-card` → `TokensChartCard` — component
+- `@/components/application/dashboard/contributions-card` → `ContributionsGrid` — component (depth 2)
+- `@/components/application/dashboard/dashboard-sidebar` → `DashboardSidebar` — component
+- `@/components/application/dashboard/dashboard-team-menu` → `DashboardTeamMenu` — component (depth 2)
+- `@/components/application/dashboard/dashboard-user-menu` → `DashboardUserMenu` — component (depth 2)
+- `@/components/application/medical/week-range-pill` → `WeekRangePill` — component (depth 2)
+- `@/components/application/settings/settings-general` → `SettingsGeneral` — component (depth 3)
+- `@/components/application/settings/settings-modal` → `SettingsModal` — component (depth 2)
+- `@/components/application/settings/settings-profile` → `SettingsProfile` — component (depth 3)
+- `@/components/application/settings/settings-storage` → `SettingsStorage` — component (depth 3)
+- `@/components/application/settings/settings-tools` → `SettingsTools` — component (depth 3)
+- `@/components/application/theme/theme-toggle` → `ThemeToggle` — component (depth 2)
+
+**foundations**
+- `@/components/foundations/icons/chevrons` → `ChevronDownSmall`, `ChevronSortDown`, `ChevronUpDownSmall` — component (depth 3)
+
+_14 more module(s) below depth 3 — see `registry.json` → templates[].modules._
+
+### Data
+
+- `src/components/application/ai-profile/ai-profile-data.ts` — Mock data for the AI contributions profile template (Figma node 4063:5675).
+  - data: `MONTH_NAMES: array(12)`, `AGENTS_TRACK_HEIGHT: number`, `AGENTS_MAX_BAR: number`, `AGENTS_ZERO_BAR: number`, `TOKENS_SERIES: [ 34.2, 28.6, 6.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31.4, 4.8, 2.2, 1.1, 5.6, 1.4, 0.…`
+  - helpers: `agentBarsFor(month: number) => number[]`, `agentCountFor(month: number) => number`
+
+### How to adapt
+
+1. Copy `src/components/application/ai-profile/ai-profile-shell.tsx` into `src/pages/<yours>.tsx` (rename `AiProfileShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
+2. Replace the exports of `src/components/application/ai-profile/ai-profile-data.ts` with real data (fetch or props) — keep the shapes.
+3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="profile"`.
+4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
+
 ## dashboard — `/templates/dashboard`
 
-BoardUI Pro "Home Dashboard" — KPI stat cards, revenue trend, earnings, contributions, customers table.
+BoardUI Pro "Home Dashboard" (a metrics screen despite the name) — KPI stat cards, revenue trend, earnings, contributions, customers table.
 
+- Use as: metrics route (`/reports`) — not `/`
 - Page: `src/pages/templates/dashboard.tsx` (default export `DashboardTemplate`)
 - Shell: `DashboardShell` from `@/components/application/dashboard/dashboard-shell` — `src/components/application/dashboard/dashboard-shell.tsx`, mounted as `<DashboardShell />`
 - Shell doc: Responsive layout host for the dashboard template. lg+ sidebar sits in-flow (collapsible via its own control) below lg sidebar is hidden; the header shows a hamburger that opens it as a slide-in draw…
@@ -316,7 +396,7 @@ _6 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 ### How to adapt
 
-1. Copy `src/components/application/dashboard/dashboard-shell.tsx` into `src/pages/<yours>.tsx` (rename `DashboardShell`), register a `<Route>` for it in `src/App.tsx`.
+1. Copy `src/components/application/dashboard/dashboard-shell.tsx` into `src/pages/<yours>.tsx` (rename `DashboardShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
 2. Replace the demo constants inside the domain modules above with real data — keep the exported types listed under Data.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
@@ -325,6 +405,7 @@ _6 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 BoardUI Pro "Finance" — balance KPIs, cash-flow sankey, spending rings, portfolio bubbles, heatmap, transactions table.
 
+- Use as: metrics route (`/reports`) — not `/`
 - Page: `src/pages/templates/finance.tsx` (default export `FinanceTemplate`)
 - Shell: `FinanceShell` from `@/components/application/finance/finance-shell` — `src/components/application/finance/finance-shell.tsx`, mounted as `<FinanceShell />`
 - Shell doc: Finance template — same floating sidebar / mobile-drawer shell as `DashboardShell` and `MedicalShell`.
@@ -390,7 +471,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 ### How to adapt
 
-1. Copy `src/components/application/finance/finance-shell.tsx` into `src/pages/<yours>.tsx` (rename `FinanceShell`), register a `<Route>` for it in `src/App.tsx`.
+1. Copy `src/components/application/finance/finance-shell.tsx` into `src/pages/<yours>.tsx` (rename `FinanceShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
 2. Replace the exports of `src/components/application/finance/finance-data.tsx` with real data (fetch or props) — keep the shapes: `Stat`, `SankeyNodeDatum`, `SankeyRange`, `RadialRange`, `ScatterSeries`, `ScatterRange`, `HeatmapRange`.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="finance"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
@@ -399,6 +480,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 BoardUI Pro "HR" — headcount KPIs, recent hires, pipeline, engagement radar, hires vs attrition, employees table.
 
+- Use as: metrics route (`/reports`) — not `/`
 - Page: `src/pages/templates/hr.tsx` (default export `HrTemplate`)
 - Shell: `HrShell` from `@/components/application/hr/hr-shell` — `src/components/application/hr/hr-shell.tsx`, mounted as `<HrShell />`
 - Shell doc: HR management template — same floating sidebar / mobile-drawer shell as `DashboardShell` and `MedicalShell`.
@@ -465,7 +547,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 ### How to adapt
 
-1. Copy `src/components/application/hr/hr-shell.tsx` into `src/pages/<yours>.tsx` (rename `HrShell`), register a `<Route>` for it in `src/App.tsx`.
+1. Copy `src/components/application/hr/hr-shell.tsx` into `src/pages/<yours>.tsx` (rename `HrShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
 2. Replace the exports of `src/components/application/hr/hr-data.tsx` with real data (fetch or props) — keep the shapes: `Stat`, `StageBarsRange`, `RadarRange`, `ComboSeries`, `ComboRange`, `BarListTab`.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="hr"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
@@ -474,6 +556,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 BoardUI Pro "Marketing" — campaign KPIs, acquisition funnel, spend by channel, ROAS, campaigns table.
 
+- Use as: metrics route (`/reports`) — not `/`
 - Page: `src/pages/templates/marketing.tsx` (default export `MarketingTemplate`)
 - Shell: `MarketingShell` from `@/components/application/marketing/marketing-shell` — `src/components/application/marketing/marketing-shell.tsx`, mounted as `<MarketingShell />`
 - Shell doc: Marketing analytics template — same floating sidebar / mobile-drawer shell as `DashboardShell` and `MedicalShell`.
@@ -541,7 +624,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 ### How to adapt
 
-1. Copy `src/components/application/marketing/marketing-shell.tsx` into `src/pages/<yours>.tsx` (rename `MarketingShell`), register a `<Route>` for it in `src/App.tsx`.
+1. Copy `src/components/application/marketing/marketing-shell.tsx` into `src/pages/<yours>.tsx` (rename `MarketingShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
 2. Replace the exports of `src/components/application/marketing/marketing-data.tsx` with real data (fetch or props) — keep the shapes: `Stat`, `FunnelRange`, `RadialRange`, `BarListTab`, `ComboSeries`, `ComboRange`, `AreaSeries`, `AreaRange`.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="marketing"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
@@ -550,6 +633,7 @@ _7 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 BoardUI Pro "Medical profile" — patient overview: steps, sleep score, activity rings, most-active-days, alerts.
 
+- Use as: metrics route (a patient or person's report) — not `/`
 - Page: `src/pages/templates/medical.tsx` (default export `MedicalTemplate`)
 - Shell: `MedicalShell` from `@/components/application/medical/medical-shell` — `src/components/application/medical/medical-shell.tsx`, mounted as `<MedicalShell />`
 - Shell doc: Same floating sidebar / mobile-drawer shell as `DashboardShell` and `CalendarShell` — two rows of three 330px-tall cards (node 3950:5655), then the patients table.
@@ -617,79 +701,7 @@ _6 more module(s) below depth 3 — see `registry.json` → templates[].modules.
 
 ### How to adapt
 
-1. Copy `src/components/application/medical/medical-shell.tsx` into `src/pages/<yours>.tsx` (rename `MedicalShell`), register a `<Route>` for it in `src/App.tsx`.
+1. Copy `src/components/application/medical/medical-shell.tsx` into `src/pages/<yours>.tsx` (rename `MedicalShell`) and register it on its own route (`/reports`) in `src/App.tsx` — not the `index` route: `design:check` fails a stat-tile strip on `/` unless `DESIGN.md` records the brief's reason. Under a shell, drop the template's own sidebar and header.
 2. Replace the exports of `src/components/application/medical/medical-data.ts` with real data (fetch or props) — keep the shapes: `DayActivity`, `SelectedDay`.
 3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="medical"`.
-4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.
-
-## project-board — `/templates/project-board`
-
-BoardUI Pro "Project board" — VISUAL REFERENCE.
-
-- Page: `src/pages/templates/project-board.tsx` (default export `ProjectBoardTemplate`)
-- Shell: `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` — `src/components/application/project-board/project-board-shell.tsx`, mounted as `<ProjectBoardShell />`
-- Shell doc: The layout follows the Figma frame: 12px floating sidebar inset, content at x=296, 24px header inset, 10px header-to-board gap, and five 273px columns, expanding equally to fill spare space above 144…
-- Shell props: `contained?: boolean = false`
-
-### Component subtree (imports walked to depth 3)
-
-**base**
-- `@/components/base/avatar/avatar` → `Avatar`, `AvatarProps` — type/component (depth 2)
-- `@/components/base/badges/badge` → `Badge` — component (depth 2)
-- `@/components/base/badges/chip` → `Chip` — component (depth 2)
-- `@/components/base/breadcrumb/breadcrumb` → `Breadcrumb`, `BreadcrumbItem` — component (depth 2)
-- `@/components/base/buttons/button` → `Button`, `ButtonProps` — type/component (depth 2)
-- `@/components/base/buttons/close-button` → `CloseButton` — component (depth 2)
-- `@/components/base/buttons/icon-button` → `IconButton` — component (depth 2)
-- `@/components/base/checkbox/checkbox` → `Checkbox` — component (depth 3)
-- `@/components/base/dropdown/dropdown` → `Dropdown`, `DropdownGroup`, `DropdownItem`, `DropdownPopover`, `DropdownTrigger` — component (depth 3)
-- `@/components/base/kbd/kbd` → `Kbd` — component (depth 2)
-- `@/components/base/select/select` → `Select`, `SelectItem` — component (depth 3)
-- `@/components/base/switch/switch` → `Switch`, `SwitchTrack` — component (depth 3)
-- `@/components/base/textarea/textarea` → `Textarea` — component (depth 3)
-- `@/components/base/tooltip/tooltip` → `Tooltip`, `TooltipTrigger` — component (depth 3)
-
-**application**
-- `@/components/application/ai-profile/tokens-chart-card` → `TokensChartCard` — component (depth 3)
-- `@/components/application/dashboard/dashboard-sidebar` → `DashboardSidebar` — component
-- `@/components/application/dashboard/dashboard-team-menu` → `DashboardTeamMenu` — component (depth 2)
-- `@/components/application/dashboard/dashboard-user-menu` → `DashboardUserMenu` — component (depth 2)
-- `@/components/application/notification-center/notification-center` → `NotificationCenter`, `NotificationCenterItem` — type/component (depth 3)
-- `@/components/application/notification-center/template-notification-center-menu` → `TemplateNotificationCenterMenu` — component (depth 2)
-- `@/components/application/project-board/create-ticket-modal` → `CreateTicketModal`, `NewProjectTicket` — type/component (depth 2)
-- `@/components/application/project-board/project-board-controls` → `BoardSort`, `ProjectBoardControls` — type/component (depth 2)
-- `@/components/application/project-board/project-board-data` → `PROJECT_COLUMNS`, `PROJECT_MEMBERS`, `ProjectColumn`, `ProjectTicket`, `TicketPriority`, `TicketSubtask` — type/data (depth 2)
-- `@/components/application/project-board/project-board-empty-state` → `ProjectBoardEmptyState` — component (depth 2)
-- `@/components/application/project-board/project-board-icons` → `TicketAssigneeIcon`, `TicketFavoriteIcon`, `TicketStatusIcon`, `TicketUrgencyIcon` — component (depth 3)
-- `@/components/application/project-board/project-board` → `ProjectBoard` — component
-- `@/components/application/project-board/ticket-corner-genie-surface` → `TicketCornerGenieSurface` — component (depth 3)
-- `@/components/application/project-board/ticket-detail-data` → `ticketBrief`, `ticketDemoActivity` — util (depth 3)
-- `@/components/application/project-board/ticket-detail-modal` → `TicketDetailModal` — component (depth 2)
-- `@/components/application/project-board/ticket-genie-surface` → `TicketGenieSurface` — component (depth 3)
-- `@/components/application/settings/settings-general` → `SettingsGeneral` — component (depth 3)
-- `@/components/application/settings/settings-modal` → `SettingsModal` — component (depth 2)
-- `@/components/application/settings/settings-profile` → `SettingsProfile` — component (depth 3)
-- `@/components/application/settings/settings-storage` → `SettingsStorage` — component (depth 3)
-- `@/components/application/settings/settings-tools` → `SettingsTools` — component (depth 3)
-- `@/components/application/theme/theme-toggle` → `ThemeToggle` — component (depth 2)
-
-**foundations**
-- `@/components/foundations/icons/chevrons` → `ChevronDownSmall`, `ChevronRightSmall`, `ChevronSortDown`, `ChevronUpDownSmall` — component (depth 3)
-
-_14 more module(s) below depth 3 — see `registry.json` → templates[].modules._
-
-### Data
-
-- `src/components/application/project-board/project-board-data.ts`
-  - data: `PROJECT_MEMBERS: Record<string, ProjectMember>`, `PROJECT_COLUMNS: ProjectColumn[]`
-  - exported types: `TicketSubtask`, `TicketComment`, `ProjectMember`, `TicketPriority`, `ProjectTicket`, `ProjectColumn`
-  - shapes to keep: `ProjectMember` (`@/components/application/project-board/project-board-data`), `ProjectColumn` (`@/components/application/project-board/project-board-data`), `TicketSubtask` (`@/components/application/project-board/project-board-data`), `TicketComment` (`@/components/application/project-board/project-board-data`), `TicketPriority` (`@/components/application/project-board/project-board-data`), `ProjectTicket` (`@/components/application/project-board/project-board-data`)
-- `src/components/application/project-board/ticket-detail-data.ts` — Demo briefs belong to this template, not the shared component library.
-  - helpers: `ticketBrief(ticket: ProjectTicket) => TicketBrief`, `ticketSubtasks(ticket: ProjectTicket, columnId: string) => TicketSubtask[]`, `ticketDemoActivity(ticket: ProjectTicket)`
-
-### How to adapt
-
-1. Copy `src/components/application/project-board/project-board-shell.tsx` into `src/pages/<yours>.tsx` (rename `ProjectBoardShell`), register a `<Route>` for it in `src/App.tsx`.
-2. Replace the exports of `src/components/application/project-board/project-board-data.ts`, `src/components/application/project-board/ticket-detail-data.ts` with real data (fetch or props) — keep the shapes: `ProjectMember`, `ProjectColumn`, `TicketSubtask`, `TicketComment`, `TicketPriority`, `ProjectTicket`.
-3. Swap the nav items in the sidebar: `DASHBOARD_NAV` (`DashboardNavItem[]`) in `src/components/application/dashboard/dashboard-sidebar.tsx`; the shell marks the active entry with `selected="project-board"`.
 4. Delete the template routes you don't use: their entries in the `templates` map of `src/App.tsx` and the matching `src/pages/templates/*.tsx`.

@@ -117,8 +117,12 @@ export function SidebarShell({
           <span className="min-w-0 truncate text-body-medium text-text-primary">{brand.name}</span>
         </div>
 
-        {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
-        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it.
+            `relative` makes it the containing block of every absolutely
+            positioned descendant (visually hidden inputs, `sr-only` fields):
+            without it they lay out against the document, which then grows past
+            the `h-dvh` frame and scrolls the whole shell away on focus. */}
+        <main className="relative flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
           <PageHeaderProvider>
             <div
               className={cx(

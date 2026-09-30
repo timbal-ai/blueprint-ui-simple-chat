@@ -7,11 +7,11 @@ be installed; nothing is fetched at build time.
 
 | Read | When |
 |---|---|
-| **`screens.md`** | Before the first page: what `/` opens on (six entry recipes, none of them a KPI strip) and the surface grammar (page → panel → tile, one frame per region, bare `border` is a hairline). |
-| **`templates.md`** | You need a whole screen. 10 finished pages (dashboard, finance, hr, marketing, medical, calendar, project-board, ai-profile, ai-chat, ai-image-generation), each with its route, subtree and data file. |
+| **`screens.md`** | Before the first page: what `/` opens on (seven entry recipes, none of them a KPI strip), the surface grammar (page → panel → tile, one frame per region, bare `border` is a hairline) and progressive disclosure (what the page shows vs. what waits for a click). |
+| **`templates.md`** | You need a whole screen. 10 finished pages, each with its route, subtree and data file. Six of them (dashboard, finance, hr, marketing, medical, ai-profile) are **metrics screens** — a `/reports` route, never `/`. calendar, project-board and ai-chat can be an entry. |
 | **`components.md`** | The BoardUI catalog: every block and primitive with a one-line description and a usage snippet. Names are exact. |
 | **`props.md`** | Props of every component (generated from source). Look here before guessing an API. |
-| **`patterns.md`** | Page recipes: dashboard, table page, auth, AI chat, settings. |
+| **`patterns.md`** | Page recipes after `/`: module list, record route, settings, form, metrics (reports) page. |
 | **`theming.md`** · `motion.md` | Tokens, type scale, accent ramp, dark mode; the motion language. |
 | **`timbal.md`** | The Timbal seam: chat surfaces, slots, auth, uploads, `/api`. The only non-BoardUI knowledge you need. |
 | `registry.json` | Machine index (name → path → exports → props → tags → template). |
@@ -26,7 +26,7 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
                                 template (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/,
                                 ai-chat/)  BoardUI, verbatim
 src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
-                                embedded-chat.tsx · assistant-pill.tsx
+                                work-queue · embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
 src/styles/brand.css            the ONE file that restyles the product: page surface, density (--spacing),
                                 radius ladder, type ramp, tinted light chips, monochrome primary button,
@@ -42,16 +42,21 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
    previous project's choices are not a default. See the direction menu below.
 2. **Entry screen = the product's primary object.** What does the user come to
    work on — tickets, invoices, bookings, documents, a conversation? `/` opens on
-   that (a list with a detail sheet, a board, a record, an editor, a schedule). The
-   KPI dashboard (stat tiles + trend chart + table) is a screen for briefs that ask
-   for metrics, not the default, and **a row of stat tiles above the primary object
-   is the same screen**: `design:check` reads the `index` route and fails when it
-   renders `StatCards` without a recorded dashboard reason. Recipes for the six
-   entry shapes are in `screens.md`; `/examples/shell-sidebar` (ticket queue) and
-   `/examples/shell-topbar` (schedule) show two of them running.
+   that (a list with a detail sheet, a board, a record, an editor, a schedule). A
+   product with **several modules** (CRM, ERP, fleet, back office) has no single
+   object: its `/` is a **`WorkQueue`** — what needs the user now, across modules,
+   as rows with a verb. The KPI dashboard (stat tiles + trend chart + table) is a
+   screen for briefs that ask for metrics, not the default, and **a row of stat
+   tiles above the primary object is the same screen**: `design:check` reads the
+   `index` route and fails when it renders `StatCards`, `MetricRow` or hand-rolled
+   tiles without a recorded dashboard reason. Recipes for the seven entry shapes
+   are in `screens.md`; `/examples/workspace` (work queue), `/examples/shell-sidebar`
+   (ticket queue) and `/examples/shell-topbar` (schedule) show three of them running.
 3. **Whole screen?** Start from the closest **template** (`templates.md`) → copy its
-   shell into `src/pages/`, swap data + nav, delete what the brief doesn't need. If
-   no template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
+   shell into `src/pages/`, swap data + nav, delete what the brief doesn't need.
+   The dashboard-family templates (dashboard, finance, hr, marketing, medical,
+   ai-profile) are metrics screens: fork them for `/reports`, never for `/`. If no
+   template fits (a wizard, an editor, a kiosk, a feed…), compose from blocks.
 4. **Block or card?** `components.md` → `props.md`. Chart cards (`application/charts`),
    agent UI (`task-list`, `web-search`, `agent-progress`, `questionnaire`,
    `agent-limits`), `data-table`, `stat-cards`, `settings-modal`,
@@ -64,13 +69,15 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 
 | The screen needs… | Use (exact names, all vendored) |
 |---|---|
+| What needs attention across modules — the `/` of a product with several modules (overdue invoices, low stock, follow-ups due) | `WorkQueue` from `@/components/timbal/work-queue`: groups by urgency, one action per row, "Show N more" / "View all", row → `Sheet`, loading / error / empty built in. Demo `/examples/workspace`. It replaces the stat-tile strip: list the rows a tile would have counted |
 | Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
 | A kanban / task board (tickets, pipelines, stages) | `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` (demo `/templates/project-board`). Fork the shell, swap `project-board-data.ts`. Never hand-roll columns |
 | A record's detail beside the list | `timbal/overlays` `Sheet` (right side) opened from the row; `Modal` only for confirmations |
 | A simple list with actions | `base/table` + `base/badges`, `base/avatar`, `base/dropdown` |
 | A card region, a section, a sidebar | a **tray**: `rounded-3xl bg-background-secondary-default p-3` — no border. Things inside it are **tiles**: `rounded-2xl bg-background-primary-default`. See `screens.md` → surface grammar |
 | Status, priority, category label | `base/badges/chip` (`lime` ok · `yellow` waiting · `rose` blocked · `cyan`/`blue` info · `neutral`); counts → `base/badges/badge` |
-| KPI tiles (a metrics screen the brief asked for — not `/` by default) | `application/dashboard/stat-cards` |
+| KPI tiles (a metrics screen the brief asked for — not `/` by default) | `application/dashboard/stat-cards`, ≤ 4 tiles, on its own route |
+| An explanation (how a score is computed, what a metric means) | an info `Tooltip` (`base/tooltip`) or `Popover` (`timbal/overlays`) beside the label — never a paragraph or a collapsible card on the page |
 | A trend over time | `application/charts/area-chart-card`, `dashboard/line-chart-card`, `dashboard/revenue-chart-card` |
 | Compare categories | `charts/bar-list-card` (ranked bars), `charts/combo-chart-card`, `charts/stage-bars-card` |
 | Share of a whole | `charts/radial-chart-card` (donut), `charts/funnel-chart-card` |
@@ -100,7 +107,7 @@ inside the same card grammar.
 | Axis | Options |
 |---|---|
 | Shell | `SidebarShell` (workhorse SaaS, 4+ destinations) · `TopbarShell` (consumer/browse-first, ≤5 destinations) · focused single page (one job: form, editor, kiosk) · full-page chat (`Home` pattern) · split list/detail |
-| Entry | what `/` opens on — **list + detail** (`DataTable` + `Sheet`) · **board** (`ProjectBoardShell`) · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
+| Entry | what `/` opens on — **work queue** (`WorkQueue`, several modules) · **list + detail** (`DataTable` + `Sheet`) · **board** (`ProjectBoardShell`) · **record** · **editor** · **schedule** (`application/calendar`) · **conversation** (`EmbeddedChat`) · KPI dashboard *only with a reason* |
 | Accent | **BoardUI blue, unchanged, unless the brief names a brand colour** (then set the eleven `--color-accent-*` stops in `styles/brand.css`). Never change the hue for variety. |
 | Density | airy (marketing, consumer) · regular · dense (ops, finance, dispatch) |
 | Start from | a template by slug, or "compose" |
@@ -118,6 +125,8 @@ stat tiles over a revenue chart over a customers table are the same product.
 - No hand-stacked type (`text-sm font-medium`) — composite utilities (`text-body-medium`).
 - No per-component "softening" (`rounded-2xl` on a control, `p-6`, `shadow-lg`) — radius and density are set once in `brand.css`; use the step the ladder gives the element.
 - No default KPI dashboard as the entry screen, and no stat-tile strip above the primary object on `/` — see "How to pick" step 2.
+- No explanation walls: header descriptions are one line of live values, detail opens on click (`screens.md` §4).
+- No legacy runtime app kit (`AppShell`, `Page`, `Section`, `MetricRow`, `StatTile` from `@timbal-ai/timbal-react` / `/app`) — `design:check` fails on it. The shells, `DataTable` and `WorkQueue` here replace it.
 - No lookalikes of anything in `components.md`.
 - No editing under `base/`, `application/`, `foundations/`, `styles/theme.css|typography.css|globals.css` — they are overwritten by `bun run boardui:sync`. Wrap, don't fork.
 - No `useState` page switching — every page is a route.

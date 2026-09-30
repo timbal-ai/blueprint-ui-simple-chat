@@ -1,9 +1,11 @@
-# Screens — entry recipes and the surface grammar
+# Screens — entry recipes, surface grammar, progressive disclosure
 
-Two things every generated app got wrong, fixed at the base and written down here:
-**what `/` opens on** (it drifted to the same four stat tiles over a chart over a table
-every time) and **how a card sits on the page** (borders painted in `currentColor`,
-cards the same grey as the page, bordered cards inside bordered cards).
+Three things every generated app got wrong, fixed at the base and written down here:
+**what `/` opens on** (it drifted to the same stat tiles over a chart over a table
+every time), **how a card sits on the page** (borders painted in `currentColor`,
+cards the same grey as the page, bordered cards inside bordered cards), and **how
+much the screen says at once** (every number captioned, every definition printed,
+every record's detail inline — nothing left for a click).
 
 ## 1. The entry screen is the primary object
 
@@ -13,15 +15,22 @@ board, one record, an editor, a schedule, a chat. Numbers about the object are a
 second screen (`/overview`, `/reports`) and only when the brief asks for metrics.
 
 **A KPI strip above the primary object is the drift, not a compromise.** `design:check`
-resolves the `index` route in `src/App.tsx` and fails when the page renders
-`StatCards` while `DESIGN.md`'s Entry says anything other than a dashboard with a reason.
-Four numbers in a header can be a `Chip` row or a one-line summary under the title
-(`8 zones · 4 elevated · 23 active`) — not four tiles.
+resolves the `index` route in `src/App.tsx` (through a `<Navigate>`, two imports deep) and
+fails when it renders `StatCards`, the legacy `MetricRow` / `StatTile`, or hand-rolled
+tiles while `DESIGN.md`'s Entry says anything other than a dashboard with a reason.
+Numbers about the screen go in the header's one line (`<PageHeader description>`:
+`8 zones · 4 elevated · 23 active`) — not in tiles.
 
-### Six recipes (pick one, record it in `DESIGN.md`)
+**Every KPI tile is a filter.** "Overdue invoices: 3" is a query that returned three rows.
+Show the three rows, each with its verb (Send reminder), and the count becomes the
+group's badge. That is the work queue below, and it is what a product with several
+modules opens on: the data work is the same as for the tiles, the screen is useful.
+
+### Seven recipes (pick one, record it in `DESIGN.md`)
 
 | Entry | Shape | Built from |
 |---|---|---|
+| **Work queue** (a product with several modules: CRM, ERP, fleet, back office, audit — the "Inicio" / "Overview" of a many-table app) | Header description = one line of live counts → one `WorkQueue`: groups ordered by urgency ("Follow-ups due", "Overdue invoices", "Below reorder point"), each row = record + the fact that makes it urgent + one action; row opens a `Sheet`; "View all" goes to the module's list route | `WorkQueue` from `@/components/timbal/work-queue`, `timbal/overlays` `Sheet`, `PageHeader`. Model: `/examples/workspace` (`TodayDemo`) |
 | **List + detail** (queues, inventories, customers, assets) | Title row with the primary action → one `DataTable` (search, filter selects, chips, row menu, pagination) → row click opens a `Sheet` with the record | `timbal/data-table`, `base/select`, `base/badges/chip`, `timbal/overlays` `Sheet`. Model: `/examples/shell-sidebar` (`TicketsDemo`) |
 | **Board** (pipelines, stages, kanban, tasks) | `ProjectBoardShell` — sortable columns, ticket cards, detail panel. Fork it; do not rebuild a kanban. Demo: `/templates/project-board` | `application/project-board` (`ProjectBoardShell`, `ProjectBoard`). Swap `project-board-data.ts`. DnD ships with the block (`@dnd-kit`) |
 | **Record** (one customer, one incident, one deal) | Header: identity + status `Chip` + actions; two-column body: left = the object's fields in a `divide-y` card, right = activity / related list; tabs for sections | `base/tabs`, `base/badges`, `base/table`, `application/notification-center` for activity |
@@ -29,8 +38,9 @@ Four numbers in a header can be a `Chip` row or a one-line summary under the tit
 | **Schedule** (bookings, shifts, deadlines) | Month/week switcher → calendar grid → event `Sheet` | `application/calendar` (`CalendarMonthGrid`, `CalendarMonthSwitcher`). Model: `/examples/shell-topbar` (`ScheduleDemo`) |
 | **Conversation** (the product *is* the assistant) | Full-page chat, history rail | `TimbalChat` + `boardChatComponents` (`pages/Home.tsx`), or `EmbeddedChat` as a `bare` route inside a shell |
 
-Metrics, when the brief asks for them, go on their own route: `StatCards` + one chart
-card + one table, straight from `/templates/dashboard`. Then `DESIGN.md` records
+Metrics, when the brief asks for them, go on their own route (`/reports`): `StatCards`
+(≤ 4 tiles) + one chart card + one table, straight from `/templates/dashboard`. Only when
+the brief makes metrics the product does `/` open on them — then `DESIGN.md` records
 `Entry: KPI dashboard` with the brief's words in the Why cell.
 
 ## 2. Surface grammar (page → panel → tile)
@@ -95,16 +105,46 @@ Rules:
 - **One header per screen.** A `Sheet` or `Modal` has its own (`SheetHeader`); a card inside
   the page has a `text-body-medium` label, not a heading that repeats the page title.
 
-## 4. States are part of the screen
+## 4. Progressive disclosure — show the object, reveal the detail
+
+A screen answers one question at a glance and keeps the rest one click away. The
+test: cover everything but the primary object and its actions — if what is left is
+captions, definitions and dates, it did not belong on the page.
+
+| On the page | One click away |
+|---|---|
+| Header description: **one line of live values**, ≤ 90 characters (`3 overdue · $11,119 outstanding`) | What the numbers mean, how a score is computed → an info `Tooltip` or `Popover` next to the label |
+| A list's first rows (`WorkQueue` shows 3 per group, `DataTable` pages at 8) | The rest → "Show N more" (in place) or "View all" (the module's route) |
+| A row: the record, one line of the fact that matters, one status `Chip`, one action | The record's fields, history, secondary actions → a `Sheet` from the row |
+| Groups that have rows | Empty groups → not rendered (no "0" tiles, no "Nothing here" per section) |
+| The date the data is from, once, in the header line | — not repeated on every card |
+| Sections the user needs now | Settings, audit details, "about this screen" → a route, a `Tabs` panel or a `Popover` |
+
+Rules that fall out of it:
+
+- **No explanation paragraphs.** Fixed copy on a page is a label or one sentence. A
+  paragraph of how-it-works is a `Popover`; `design:check` fails on header descriptions
+  over 90 characters and on hard-coded paragraphs over 180.
+- **One caption per number, at most.** A value with a label above, a caption below and a
+  chip beside it says the same thing three times. Keep the label; the chip only when it
+  changes a decision (overdue, critical).
+- **Counts belong to their lists.** "7 open orders" is the badge on the list's group or
+  the table's summary, not a tile of its own above it.
+- **Motion carries the reveal**, from `motion.md`: rows grow in (400 ms), collapse out
+  (225 ms); `WorkQueue` already does it, and honours reduced motion.
+
+## 5. States are part of the screen
 
 - **Loading**: skeleton rows in the same panel (`animate-pulse` tiles of `bg-background-tertiary-default`), never a centred spinner.
 - **Empty**: inside the same panel — an icon in a `size-9 rounded-lg bg-background-tertiary-default` tile, a `text-body-medium` line, a `text-body-regular text-text-secondary` line, one secondary `Button`.
 - **Error**: same shape as empty, `RiErrorWarningLine` in `text-foreground-icon-error`, the real message, a retry `Button`. Never swallow the fetch error.
 - **375 px**: shells collapse to a drawer, tables scroll inside their panel (`overflow-x-auto` on the panel, not the page), boards scroll horizontally, two-column records stack.
 
-## 5. What a reviewer flags
+## 6. What a reviewer flags
 
-- `StatCards` (or four hand-made tiles) as the first thing on `/` without a recorded reason.
+- `StatCards` (or four hand-made tiles, or `MetricRow`) as the first thing on `/` without a recorded reason.
+- A product with several modules whose `/` is a grid of counters instead of a `WorkQueue` of the rows behind them.
+- An explanation paragraph, a caption under every number, the same "as of" date on every card.
 - The page title printed twice (shell header + an `<h1>` or card title in the page); a breadcrumb on a top-level page; a page-specific button in the shell's global `actions`.
 - A bordered card inside a bordered card; a "filter bar" card above a table card.
 - Page-coloured cards (`bg-background-full` or nothing on a card) — the "all grey" screen.

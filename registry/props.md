@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 293 components · 19 hooks · generated 2026-09-29
+BoardUI 0.5.3 · 294 components · 19 hooks · generated 2026-09-30
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2643,7 +2643,7 @@ Re-exports: from `react-aria-components`: `ModalTrigger` (= `DialogTrigger`) · 
 | className? | `string` |  |  |
 | children? | `ReactNode` |  | Extra content under the title/description (tabs, a search field…). |
 
-**OverlayBody** — The scrolling region: `min-h-0 flex-1` so the header/footer stay pinned.
+**OverlayBody** — The scrolling region: `min-h-0 flex-1` so the header/footer stay pinned; `relative` so hidden inputs inside it scroll with it instead of with the panel.
 | prop | type | default | doc |
 |---|---|---|---|
 | className? | `string` |  |  |
@@ -2849,6 +2849,22 @@ Other exports: `SidebarShellProps` (props of SidebarShell)
 
 Other exports: `TopbarShellProps` (props of TopbarShell)
 
+### work-queue — `@/components/timbal/work-queue`
+
+**WorkQueue** — WorkQueue — the home screen of a product with several modules (CRM, ERP, fleet, audit, back office): what needs the user now, across every module, as rows they can act on.
+| prop | type | default | doc |
+|---|---|---|---|
+| groups | `WorkQueueGroup[]` |  |  |
+| aria-label | `string` |  |  |
+| initialVisible? | `number` | `3` | Rows per group before "Show N more". |
+| loading? | `boolean` | `false` |  |
+| error? | `{ message: string; onRetry?: () => void } \| null` | `null` | Renders the error state in place of the queue. |
+| empty? | `{ title: string; description?: string; action?: ReactNode }` |  | Shown when every group is empty. |
+| className? | `string` |  |  |
+
+Types: `WorkQueueItem` = `{ id: string; title: ReactNode; meta?: ReactNode; icon?: IconComponent; aside?: ReactNode; status?: { label: string; color: NonNullable<ChipProps["color"]> }; action?: { label: string; icon?: IconComponent; onPress: () => void }; onOpen?:…` · `WorkQueueGroup` = `{ id: string; label: string; summary?: ReactNode; items: WorkQueueItem[]; total?: number; href?: string }`
+Other exports: `WorkQueueProps` (props of WorkQueue)
+
 ## foundations
 
 ### brand — `@/components/foundations/brand/logo`
@@ -2919,7 +2935,7 @@ No props.
 ### templates — `@/pages/templates/dashboard`
 Template: /templates/dashboard (see templates.md)
 
-**DashboardTemplate** — BoardUI Pro "Home Dashboard" — KPI stat cards, revenue trend, earnings, contributions, customers table.
+**DashboardTemplate** — BoardUI Pro "Home Dashboard" (a metrics screen despite the name) — KPI stat cards, revenue trend, earnings, contributions, customers table.
 default export
 No props.
 

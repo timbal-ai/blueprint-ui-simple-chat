@@ -6,9 +6,10 @@ import { TimbalMark } from "@timbal-ai/timbal-react";
  * ─────────────────────────────────────────────────────────────────────────────
  * AGENT: This is a stand-in, NOT the real app. When you build the UI you MUST
  * replace it: in `App.tsx` the index route renders `<Placeholder />` — swap it
- * for the real surface (`<Home />` for a chat-first product, a template shell
- * from `registry/templates.md`, or your own page) and delete this file once
- * nothing references it. Never ship the placeholder.
+ * for the entry screen `registry/screens.md` §1 picks (a `WorkQueue` for a
+ * product with several modules, a list, a board, a record, an editor, a
+ * schedule, or `<Home />` for a chat product — not a KPI dashboard) and delete
+ * this file once nothing references it. Never ship the placeholder.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 export default function Placeholder() {

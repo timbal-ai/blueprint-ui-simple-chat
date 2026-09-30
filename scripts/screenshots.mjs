@@ -47,6 +47,8 @@ const ROUTES = (
       "/examples/shell-sidebar/chat",
       "/examples/shell-topbar",
       "/examples/shell-topbar/chat",
+      "/examples/workspace",
+      "/examples/workspace/invoices",
     ].join(","),
   )
 ).split(",");

@@ -14,12 +14,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . && node scripts/design-check.mjs",
     "preview": "vite preview",
     "boardui:sync": "node scripts/boardui-sync.mjs",
     "registry:build": "bun scripts/registry-build.mjs",
     "screenshots": "node scripts/screenshots.mjs",
     "design:check": "node scripts/design-check.mjs",
+    "dna:check": "node scripts/design-check.mjs",
     "dev:fake": "node scripts/fake-api.mjs & VITE_API_PROXY_TARGET=http://localhost:5301 vite; kill %1",
     "fake-api": "node scripts/fake-api.mjs"
   },

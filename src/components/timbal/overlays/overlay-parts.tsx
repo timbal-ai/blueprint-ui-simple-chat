@@ -66,10 +66,11 @@ export interface OverlayBodyProps {
   children?: ReactNode;
 }
 
-/** The scrolling region: `min-h-0 flex-1` so the header/footer stay pinned. */
+/** The scrolling region: `min-h-0 flex-1` so the header/footer stay pinned;
+ *  `relative` so hidden inputs inside it scroll with it instead of with the panel. */
 export function OverlayBody({ className, children }: OverlayBodyProps) {
   return (
-    <div className={cx("min-h-0 flex-1 overflow-y-auto px-6 py-4 text-body-regular text-text-primary", className)}>
+    <div className={cx("relative min-h-0 flex-1 overflow-y-auto px-6 py-4 text-body-regular text-text-primary", className)}>
       {children}
     </div>
   );

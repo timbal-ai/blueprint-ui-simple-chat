@@ -13,8 +13,9 @@ style). The direction below is what varies per product.
 | Axis | Decision | Why |
 |---|---|---|
 | Product | _what this app is, in one line_ | |
+| First job | _the first thing a user DOES on `/`, as a verb + object: "reply to the oldest ticket", "chase an overdue invoice", "approve a booking". "See metrics" is not a job_ | |
 | Shell | _SidebarShell · TopbarShell · focused · full-page chat · split_ | |
-| Entry | _what `/` opens on: the product's primary object — list · board · record · editor · schedule · conversation. A KPI dashboard needs a reason here_ | |
+| Entry | _what `/` opens on: the object of that job — list · board · record · editor · schedule · conversation · work queue (several modules). A KPI dashboard needs a reason here_ | |
 | Accent | `blue` (BoardUI default) unless the brief names a brand colour | |
 | Density | _airy · regular · dense_ | |
 | Start from | _template slug (`finance`, `hr`, `calendar`, …) or "compose" — `dashboard` needs a reason here_ | |
@@ -47,4 +48,12 @@ Previous project used: _shell / entry / template / density_ → this one differs
 - 2026-09-15 — the shell owns the page header (title · nav `description` · page actions via
   `<PageHeader>`); breadcrumbs only for nested routes; `design:check` fails on an `<h1>` in a
   page under a shell · generated screens opened on "Home › Markets / Markets / Markets".
+- 2026-09-30 — a product with several modules opens on a `WorkQueue` (the rows a KPI tile would
+  count, each with its verb); `First job` row added; progressive-disclosure budgets (one-line
+  header description, no hard-coded paragraphs) checked by `design:check`, which now runs inside
+  `bun run lint`, follows `<Navigate>` on `/` and catches `MetricRow` / hand-rolled tiles · generated
+  homes kept opening on stat-tile strips and printed every caption and definition on screen.
+- 2026-09-30 — switch track on BoardUI's 4px unit, react-aria toggle labels and the shells' scrollers
+  positioned · the md switch thumb sat on the track's edge, and clicking any switch scrolled the
+  whole `h-dvh` app off screen (its hidden input was laid out against the document).
 - YYYY-MM-DD — _decision · reason_

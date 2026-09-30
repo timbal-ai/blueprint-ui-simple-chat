@@ -331,7 +331,7 @@ export function ScheduleDemo() {
 
 function SettingsRow({ title, hint, children }: { title: string; hint: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-col gap-0.5">
         <span className="text-body-medium text-text-primary">{title}</span>
         <span className="text-body-regular text-text-secondary">{hint}</span>
@@ -352,47 +352,53 @@ const TOAST_DEMOS = [
 export function SettingsDemo() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [digest, setDigest] = useState(true);
 
   return (
-    <section className="flex flex-col divide-y divide-separator-border rounded-3xl border border-border-button-default bg-background-primary-default p-6">
-      <SettingsRow title="Profile" hint="Name and email shown to your team.">
-        <Button variant="secondary" onClick={() => setProfileOpen(true)}>
-          Edit profile
-        </Button>
-      </SettingsRow>
-      <SettingsRow title="Notifications" hint="Choose what reaches your inbox.">
-        <Button variant="secondary" onClick={() => setNotificationsOpen(true)}>
-          Open panel
-        </Button>
-      </SettingsRow>
-      <SettingsRow title="Toasts" hint="Feedback for saves, failures and warnings.">
-        {TOAST_DEMOS.map(({ label, fire }) => (
-          <Button key={label} size="small" variant="secondary" onClick={fire}>
-            {label}
+    <section className="rounded-3xl bg-background-secondary-default p-1">
+      <div className="flex flex-col divide-y rounded-2xl bg-background-primary-default">
+        <SettingsRow title="Profile" hint="Name and email shown to your team.">
+          <Button variant="secondary" onClick={() => setProfileOpen(true)}>
+            Edit profile
           </Button>
-        ))}
-      </SettingsRow>
-      <SettingsRow title="Help" hint="An anchored popover for inline guidance.">
-        <PopoverTrigger>
-          <AriaButton className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-lg border border-border-button-default bg-background-primary-default px-2 text-body-medium text-text-primary shadow-xs outline-none transition-colors duration-150 ease hover:bg-background-primary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring">
-            <RiQuestionLine className="size-[18px] text-foreground-icon-secondary" aria-hidden />
-            Why these settings?
-          </AriaButton>
-          <Popover aria-label="About settings" placement="bottom end" className="w-72 p-4" dialogClassName="gap-2">
-            {({ close }) => (
-              <>
-                <p className="text-body-medium text-text-primary">Workspace defaults</p>
-                <p className="text-body-regular text-text-secondary">
-                  These apply to every member unless they override them in their own profile.
-                </p>
-                <Button size="small" variant="secondary" className="self-end" onClick={close}>
-                  Got it
-                </Button>
-              </>
-            )}
-          </Popover>
-        </PopoverTrigger>
-      </SettingsRow>
+        </SettingsRow>
+        <SettingsRow title="Notifications" hint="Choose what reaches your inbox.">
+          <Button variant="secondary" onClick={() => setNotificationsOpen(true)}>
+            Open panel
+          </Button>
+        </SettingsRow>
+        <SettingsRow title="Daily summary" hint="Open work at 9:00, every weekday.">
+          <Switch aria-label="Daily summary" isSelected={digest} onChange={setDigest} />
+        </SettingsRow>
+        <SettingsRow title="Toasts" hint="Feedback for saves, failures and warnings.">
+          {TOAST_DEMOS.map(({ label, fire }) => (
+            <Button key={label} size="small" variant="secondary" onClick={fire}>
+              {label}
+            </Button>
+          ))}
+        </SettingsRow>
+        <SettingsRow title="Help" hint="An anchored popover for inline guidance.">
+          <PopoverTrigger>
+            <AriaButton className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-lg border border-border-button-default bg-background-primary-default px-2 text-body-medium text-text-primary shadow-xs outline-none transition-colors duration-150 ease hover:bg-background-primary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+              <RiQuestionLine className="size-[18px] text-foreground-icon-secondary" aria-hidden />
+              Why these settings?
+            </AriaButton>
+            <Popover aria-label="About settings" placement="bottom end" className="w-72 p-4" dialogClassName="gap-2">
+              {({ close }) => (
+                <>
+                  <p className="text-body-medium text-text-primary">Workspace defaults</p>
+                  <p className="text-body-regular text-text-secondary">
+                    These apply to every member unless they override them in their own profile.
+                  </p>
+                  <Button size="small" variant="secondary" className="self-end" onClick={close}>
+                    Got it
+                  </Button>
+                </>
+              )}
+            </Popover>
+          </PopoverTrigger>
+        </SettingsRow>
+      </div>
 
       <Modal isOpen={profileOpen} onOpenChange={setProfileOpen} size="md">
         <ModalHeader title="Edit profile" description="Changes apply across the workspace." />

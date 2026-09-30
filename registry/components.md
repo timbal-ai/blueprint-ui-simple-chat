@@ -1171,6 +1171,8 @@ export function Example() {
 
 KPI stat card row with delta chips.
 
+> **Blueprint:** a metrics-route component (`/reports`), ≤ 4 tiles, only when the brief asks for metrics. Never on `/`, never above a list or board. The same numbers on `/` are the header's one-line description or `WorkQueue` group counts (`registry/screens.md`).
+
 - Docs: https://www.boardui.com/components/stat-cards
 - Install: `npx boardui@latest add stat-cards`
 - Registry JSON: https://www.boardui.com/r/stat-cards.json

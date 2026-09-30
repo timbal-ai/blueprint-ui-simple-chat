@@ -116,8 +116,10 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
         </div>
       </header>
 
-      {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it. */}
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      {/* The ONLY scroller: pages scroll here, a min-h-0 page fills it.
+          `relative`: absolutely positioned descendants (hidden inputs) lay out
+          and scroll inside it instead of stretching the document. */}
+      <main className="relative flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <PageHeaderProvider>
           <div
             className={cx(

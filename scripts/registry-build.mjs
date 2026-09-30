@@ -40,6 +40,26 @@ const LAYERS = {
 const TEMPLATES_DIR = "src/pages/templates";
 const LAYER_ORDER = ["base", "application", "timbal", "foundations", "pages"];
 
+/**
+ * What each template is for. Six of the ten open on KPI tiles over charts: they
+ * are metrics screens a brief asks for, forked onto their own route. Listed
+ * that way (and after the entry-capable ones) so "start from the closest
+ * template" stops meaning "start from a dashboard".
+ */
+const TEMPLATE_ROLE = {
+  "project-board": { entry: true, useAs: "entry — board (tasks, tickets, pipelines)" },
+  calendar: { entry: true, useAs: "entry — schedule (bookings, shifts, deadlines)" },
+  "ai-chat": { entry: true, useAs: "visual reference for a chat product (the real one is `src/pages/Home.tsx`)" },
+  "ai-image-generation": { entry: true, useAs: "visual reference for an image-generation chat" },
+  dashboard: { entry: false, useAs: "metrics route (`/reports`) — not `/`" },
+  finance: { entry: false, useAs: "metrics route (`/reports`) — not `/`" },
+  hr: { entry: false, useAs: "metrics route (`/reports`) — not `/`" },
+  marketing: { entry: false, useAs: "metrics route (`/reports`) — not `/`" },
+  medical: { entry: false, useAs: "metrics route (a patient or person's report) — not `/`" },
+  "ai-profile": { entry: false, useAs: "profile route (one person's or agent's page) — not `/`" },
+};
+const roleOf = (slug) => TEMPLATE_ROLE[slug] ?? { entry: false, useAs: "—" };
+
 const SUBTREE_DEPTH = 3;
 const TYPE_TEXT_MAX = 160;
 const SUMMARY_MAX = 200;
@@ -1121,6 +1141,8 @@ function analyzeTemplates(files, byRel) {
     templates.push({
       slug,
       route: `/templates/${slug}`,
+      useAs: roleOf(slug).useAs,
+      entry: roleOf(slug).entry,
       domain,
       summary: pageItem?.summary || shellItem?.summary || "",
       page: { path: page.rel, importFrom: page.importFrom, export: pageItem?.name ?? null, isDefault: !!pageItem?.isDefault },
@@ -1148,7 +1170,8 @@ function analyzeTemplates(files, byRel) {
         : null,
     });
   }
-  return templates;
+  // Entry-capable templates first, then the metrics screens (alphabetical within each).
+  return templates.sort((a, b) => Number(roleOf(b.slug).entry) - Number(roleOf(a.slug).entry) || a.slug.localeCompare(b.slug));
 }
 
 /** Referenced type names in a type node, resolved to same-file exports or imports. */
@@ -1346,16 +1369,23 @@ function renderTemplatesMd(templates, files) {
       "Props for every module are in `props.md`.",
     "",
   );
-  lines.push(`| slug | route | domain | what's inside | modules (≤ depth ${SUBTREE_DEPTH} / all) | cards |`);
-  lines.push("|---|---|---|---|---|---|");
+  lines.push(
+    "**Most of these are metrics screens.** dashboard, finance, hr, marketing and medical open on KPI tiles over charts: fork them " +
+      "for a `/reports` route the brief asks for, never for `/`. What `/` opens on is `screens.md` §1 — a `WorkQueue`, a list, a board, " +
+      "a record, an editor, a schedule or a conversation.",
+    "",
+  );
+  lines.push(`| slug | route | use as | domain | what's inside | modules (≤ depth ${SUBTREE_DEPTH} / all) | cards |`);
+  lines.push("|---|---|---|---|---|---|---|");
   for (const t of templates) {
     const near = t.modules.filter((m) => m.depth <= SUBTREE_DEPTH).length;
-    lines.push(`| ${t.slug} | ${code(t.route)} | ${t.domain ?? "—"} | ${cell(t.summary)} | ${near} / ${t.modules.length} | ${t.cards.length} |`);
+    lines.push(`| ${t.slug} | ${code(t.route)} | ${inline(t.useAs)} | ${t.domain ?? "—"} | ${cell(t.summary)} | ${near} / ${t.modules.length} | ${t.cards.length} |`);
   }
   lines.push("");
   for (const t of templates) {
     lines.push(`## ${t.slug} — ${code(t.route)}`, "");
     if (t.summary) lines.push(inline(t.summary), "");
+    lines.push(`- Use as: ${inline(t.useAs)}`);
     lines.push(`- Page: ${code(t.page.path)}${t.page.export ? ` (${t.page.isDefault ? "default export " : ""}${code(t.page.export)})` : ""}`);
     if (t.shell) {
       lines.push(`- Shell: ${code(t.shell.name)} from ${code(t.shell.importFrom)} — ${code(t.shell.path)}${t.shell.mountedAs ? `, mounted as ${code(t.shell.mountedAs)}` : ""}`);
@@ -1415,7 +1445,11 @@ function renderTemplatesMd(templates, files) {
     lines.push("### How to adapt", "");
     const shellPath = t.shell?.path ?? "the shell";
     const shellName = t.shell?.name ?? "the shell";
-    lines.push(`1. Copy ${code(shellPath)} into ${code("src/pages/<yours>.tsx")} (rename ${code(shellName)}), register a ${code("<Route>")} for it in ${code("src/App.tsx")}.`);
+    lines.push(
+      t.entry
+        ? `1. Copy ${code(shellPath)} into ${code("src/pages/<yours>.tsx")} (rename ${code(shellName)}), register a ${code("<Route>")} for it in ${code("src/App.tsx")}.`
+        : `1. Copy ${code(shellPath)} into ${code("src/pages/<yours>.tsx")} (rename ${code(shellName)}) and register it on its own route (${code("/reports")}) in ${code("src/App.tsx")} — not the ${code("index")} route: ${code("design:check")} fails a stat-tile strip on ${code("/")} unless ${code("DESIGN.md")} records the brief's reason. Under a shell, drop the template's own sidebar and header.`,
+    );
     if (t.dataFiles.length) {
       const shapes = uniq(t.dataFiles.flatMap((d) => d.shapes.map((s) => code(s.name))));
       lines.push(
@@ -1531,6 +1565,8 @@ function main() {
     templates: templates.map((t) => ({
       slug: t.slug,
       route: t.route,
+      useAs: t.useAs,
+      entry: t.entry,
       domain: t.domain,
       summary: t.summary,
       page: t.page,
