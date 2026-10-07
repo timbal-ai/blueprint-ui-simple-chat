@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-09-30T06:38:53.846Z",
+  "generatedAt": "2026-10-07T01:10:27.007Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -19642,6 +19642,61 @@
       "returns": "ThemeMode"
     },
     {
+      "name": "ThemeToggleLabels",
+      "kind": "type",
+      "path": "src/components/application/theme/theme-toggle.tsx",
+      "importFrom": "@/components/application/theme/theme-toggle",
+      "layer": "application",
+      "group": "theme",
+      "summary": "Patched by scripts/boardui-sync.mjs (see \"theme labels\" step): upstream hardcodes English accessible names, so non-English products pass `labels`.",
+      "props": [
+        {
+          "name": "theme",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "lightMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "darkMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "useLightMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "useDarkMode",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "application",
+        "theme",
+        "theme-toggle",
+        "theme-toggle-labels"
+      ],
+      "templates": [
+        "ai-chat",
+        "ai-image-generation",
+        "ai-profile",
+        "calendar",
+        "dashboard",
+        "finance",
+        "hr",
+        "marketing",
+        "medical",
+        "project-board"
+      ],
+      "catalog": "theme-toggle"
+    },
+    {
       "name": "ThemeToggleProps",
       "kind": "type",
       "path": "src/components/application/theme/theme-toggle.tsx",
@@ -19707,6 +19762,11 @@
           "optional": true,
           "doc": "Circular reveal duration in milliseconds.",
           "default": "THEME_TRANSITION_DURATION"
+        },
+        {
+          "name": "labels",
+          "type": "ThemeToggleLabels",
+          "optional": true
         }
       ],
       "tags": [
@@ -22980,6 +23040,26 @@
       }
     },
     {
+      "name": "resolveShellLabels",
+      "kind": "util",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `resolveShellLabels` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "resolve-shell-labels"
+      ],
+      "reexportOf": {
+        "name": "resolveShellLabels",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
       "name": "useActiveNavItem",
       "kind": "hook",
       "path": "src/components/timbal/shells/index.ts",
@@ -23076,6 +23156,26 @@
       ],
       "reexportOf": {
         "name": "ShellBrand",
+        "from": "@/components/timbal/shells/shell-nav"
+      }
+    },
+    {
+      "name": "ShellLabels",
+      "kind": "type",
+      "path": "src/components/timbal/shells/index.ts",
+      "importFrom": "@/components/timbal/shells/index",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Re-export of `ShellLabels` from `@/components/timbal/shells/shell-nav`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "index",
+        "shell-labels"
+      ],
+      "reexportOf": {
+        "name": "ShellLabels",
         "from": "@/components/timbal/shells/shell-nav"
       }
     },
@@ -23395,6 +23495,12 @@
           "default": "\"right bottom\""
         },
         {
+          "name": "labels",
+          "type": "ShellLabels",
+          "optional": true,
+          "doc": "The shell's `labels`: account trigger, menu and Sign out."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true
@@ -23484,6 +23590,12 @@
           "type": "() => void",
           "optional": true,
           "doc": "Fired when a nav row is clicked (drawers close on it)."
+        },
+        {
+          "name": "labels",
+          "type": "ShellLabels",
+          "optional": true,
+          "doc": "The shell's `labels`: drawer, collapse control, nav groups, theme toggle, account menu."
         },
         {
           "name": "className",
@@ -23660,7 +23772,8 @@
         {
           "name": "name",
           "type": "string",
-          "optional": false
+          "optional": false,
+          "doc": "Empty when the identity has no name; the menu then shows `labels.account`."
         },
         {
           "name": "email",
@@ -23684,6 +23797,117 @@
         "shell-nav",
         "shell-user"
       ]
+    },
+    {
+      "name": "ShellLabels",
+      "kind": "type",
+      "path": "src/components/timbal/shells/shell-nav.ts",
+      "importFrom": "@/components/timbal/shells/shell-nav",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "Every string the shells render on their own — accessible names included.",
+      "props": [
+        {
+          "name": "openNavigation",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "closeNavigation",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "navigation",
+          "type": "string",
+          "optional": true,
+          "doc": "The phone drawer."
+        },
+        {
+          "name": "primaryNav",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "secondaryNav",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "expandSidebar",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "collapseSidebar",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "account",
+          "type": "string",
+          "optional": true,
+          "doc": "Account trigger: \"Account: Ada Lovelace\"; also the name when the identity has none."
+        },
+        {
+          "name": "accountMenu",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "signOut",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "lightMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "darkMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "useLightMode",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "useDarkMode",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "shells",
+        "shell-nav",
+        "shell-labels"
+      ]
+    },
+    {
+      "name": "resolveShellLabels",
+      "kind": "util",
+      "path": "src/components/timbal/shells/shell-nav.ts",
+      "importFrom": "@/components/timbal/shells/shell-nav",
+      "layer": "timbal",
+      "group": "shells",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "shells",
+        "shell-nav",
+        "resolve-shell-labels"
+      ],
+      "type": "(labels?: ShellLabels) => Required<ShellLabels>"
     },
     {
       "name": "SHELL_INSET_CLASS",
@@ -23880,7 +24104,7 @@
       "importFrom": "@/components/timbal/shells/shell-nav",
       "layer": "timbal",
       "group": "shells",
-      "summary": "\"Ada Lovelace\" → \"AL\"; single word → first letter.",
+      "summary": "\"Ada Lovelace\" → \"AL\"; single word → first letter; nothing → \"?\".",
       "props": [],
       "tags": [
         "timbal",
@@ -23888,7 +24112,7 @@
         "shell-nav",
         "initials-of"
       ],
-      "type": "(name: string) => string"
+      "type": "(name: string | null | undefined) => string"
     },
     {
       "name": "SidebarShellProps",
@@ -23956,6 +24180,12 @@
           "type": "ReactNode",
           "optional": true,
           "doc": "Floating chrome rendered once, e.g. `<AssistantPill />`."
+        },
+        {
+          "name": "labels",
+          "type": "ShellLabels",
+          "optional": true,
+          "doc": "The shell's own strings (drawer, account menu, theme toggle) in the product's language."
         },
         {
           "name": "children",
@@ -24035,6 +24265,12 @@
           "type": "ReactNode",
           "optional": true,
           "doc": "Floating chrome rendered once, e.g. `<AssistantPill />`."
+        },
+        {
+          "name": "labels",
+          "type": "ShellLabels",
+          "optional": true,
+          "doc": "The shell's own strings (menu button, account menu, theme toggle) in the product's language."
         },
         {
           "name": "children",

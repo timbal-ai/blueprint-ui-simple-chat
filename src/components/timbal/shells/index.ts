@@ -28,11 +28,13 @@ export {
   resolveActiveNavItem,
   resolveHomeNavItem,
   resolveNavTrail,
+  resolveShellLabels,
   useActiveNavItem,
   useMediaQuery,
   useShellUser,
   type RemixIcon,
   type ShellBrand,
+  type ShellLabels,
   type ShellNavItem,
   type ShellUser,
 } from "./shell-nav";

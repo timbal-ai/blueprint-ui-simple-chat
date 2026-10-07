@@ -17,8 +17,10 @@ import {
   resolveHomeNavItem,
   useActiveNavItem,
   useMediaQuery,
+  resolveShellLabels,
   useShellUser,
   type ShellBrand,
+  type ShellLabels,
   type ShellNavItem,
   type ShellUser,
 } from "./shell-nav";
@@ -48,6 +50,8 @@ export interface TopbarShellProps {
   actions?: ReactNode;
   /** Floating chrome rendered once, e.g. `<AssistantPill />`. */
   dock?: ReactNode;
+  /** The shell's own strings (menu button, account menu, theme toggle) in the product's language. */
+  labels?: ShellLabels;
   /** Defaults to the router `<Outlet />`. */
   children?: ReactNode;
   className?: string;
@@ -74,7 +78,8 @@ function TopbarNavLink({ item, isSelected }: { item: ShellNavItem; isSelected: b
   );
 }
 
-export function TopbarShell({ brand, nav, user, header, actions, dock, children, className }: TopbarShellProps) {
+export function TopbarShell({ brand, nav, user, header, actions, dock, labels, children, className }: TopbarShellProps) {
+  const text = resolveShellLabels(labels);
   const [menuOpen, setMenuOpen] = useState(false);
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);
   const active = useActiveNavItem(nav);
@@ -91,7 +96,7 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
         <IconButton
           icon={RiMenuLine}
           size="small"
-          aria-label="Open navigation"
+          aria-label={text.openNavigation}
           onClick={() => setMenuOpen(true)}
           className="md:hidden"
         />
@@ -103,7 +108,7 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
           <span className="min-w-0 truncate text-body-medium text-text-primary">{brand.name}</span>
         </Link>
 
-        <nav aria-label="Primary" className="ml-4 hidden min-w-0 items-center gap-1 overflow-x-auto md:flex">
+        <nav aria-label={text.primaryNav} className="ml-4 hidden min-w-0 items-center gap-1 overflow-x-auto md:flex">
           {nav.map((item) => (
             <TopbarNavLink key={item.path} item={item} isSelected={active?.path === item.path} />
           ))}
@@ -111,8 +116,10 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
 
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {actions}
-          <ThemeToggle appearance="segmented" className="hidden sm:inline-flex" />
-          {resolvedUser ? <ShellUserMenu user={resolvedUser} variant="topbar" placement="bottom end" /> : null}
+          <ThemeToggle appearance="segmented" className="hidden sm:inline-flex" labels={text} />
+          {resolvedUser ? (
+            <ShellUserMenu user={resolvedUser} variant="topbar" placement="bottom end" labels={labels} />
+          ) : null}
         </div>
       </header>
 
@@ -141,11 +148,19 @@ export function TopbarShell({ brand, nav, user, header, actions, dock, children,
         onOpenChange={setMenuOpen}
         side="left"
         size="sm"
-        aria-label="Navigation"
+        aria-label={text.navigation}
         backdropClassName="bg-black/10"
         className="border-border-button-white bg-background-secondary-default shadow-sidebar"
       >
-        <ShellSidebar brand={brand} nav={nav} user={resolvedUser} mobile onClose={closeMenu} onNavigate={closeMenu} />
+        <ShellSidebar
+          brand={brand}
+          nav={nav}
+          user={resolvedUser}
+          labels={labels}
+          mobile
+          onClose={closeMenu}
+          onNavigate={closeMenu}
+        />
       </Sheet>
     </div>
   );

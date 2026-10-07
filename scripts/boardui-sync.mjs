@@ -185,6 +185,52 @@ if (existsSync(togglePath)) {
   } else if (!next.includes(patchedKey)) {
     console.warn("boardui-sync: theme-toggle.tsx THEME_STORAGE_KEY changed upstream — re-apply the `timbal:theme` patch by hand.");
   }
+  // Theme labels: upstream hardcodes English accessible names and titles. The
+  // shells pass the product's language through `labels`.
+  const labelsMarker = 'Patched by scripts/boardui-sync.mjs (see "theme labels" step)';
+  const labelsDecl = `// ${labelsMarker}: upstream
+// hardcodes English accessible names, so non-English products pass \`labels\`.
+export interface ThemeToggleLabels {
+  theme?: string;
+  lightMode?: string;
+  darkMode?: string;
+  useLightMode?: string;
+  useDarkMode?: string;
+}
+
+const DEFAULT_THEME_TOGGLE_LABELS: Required<ThemeToggleLabels> = {
+  theme: "Theme",
+  lightMode: "Light mode",
+  darkMode: "Dark mode",
+  useLightMode: "Use light mode",
+  useDarkMode: "Use dark mode",
+};
+
+`;
+  const labelPatches = [
+    ["export interface ThemeToggleProps {\n", labelsDecl + "export interface ThemeToggleProps {\n"],
+    ["  transitionDuration?: number;\n}", "  transitionDuration?: number;\n  labels?: ThemeToggleLabels;\n}"],
+    [
+      "  transitionDuration = THEME_TRANSITION_DURATION,\n}: ThemeToggleProps) {\n",
+      "  transitionDuration = THEME_TRANSITION_DURATION,\n  labels,\n}: ThemeToggleProps) {\n  const text = { ...DEFAULT_THEME_TOGGLE_LABELS, ...labels };\n",
+    ],
+    ['label: "Use light mode"', "label: text.useLightMode"],
+    ['label: "Use dark mode"', "label: text.useDarkMode"],
+    ['aria-label="Theme"', "aria-label={text.theme}"],
+    ['title={mode === "light" ? "Light mode" : "Dark mode"}', 'title={mode === "light" ? text.lightMode : text.darkMode}'],
+    ['aria-label={dark ? "Use light mode" : "Use dark mode"}', "aria-label={dark ? text.useLightMode : text.useDarkMode}"],
+    ['title={dark ? "Light mode" : "Dark mode"}', "title={dark ? text.lightMode : text.darkMode}"],
+    ['aria-label="Dark mode"', "aria-label={text.darkMode}"],
+    ['text-text-secondary">Dark mode</span>', 'text-text-secondary">{text.darkMode}</span>'],
+  ];
+  if (!next.includes(labelsMarker)) {
+    const missing = labelPatches.filter(([from]) => !next.includes(from)).length;
+    if (missing) {
+      console.warn(`boardui-sync: theme-toggle.tsx changed upstream — re-apply the theme labels patch by hand (${missing} anchors missing).`);
+    } else {
+      for (const [from, to] of labelPatches) next = next.replace(from, to);
+    }
+  }
   if (next !== src) writeFileSync(togglePath, next);
 }
 

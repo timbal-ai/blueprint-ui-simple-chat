@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 294 components · 19 hooks · generated 2026-09-30
+BoardUI 0.5.3 · 294 components · 19 hooks · generated 2026-10-07
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2417,8 +2417,9 @@ No parameters.
 | appearance? | `"sidebar" \| "segmented" \| "sidebar-segmented" \| "glass-segmented"` | `"sidebar"` | Visual treatment for the control. `glass-segmented` is the landing nav's skin: literal black/white rather than theme tokens, because it sits on the hero shader's near-white band in both themes and a token that follows the page would invert out of sight in dark mode. |
 | className? | `string` |  |  |
 | transitionDuration? | `number` | `THEME_TRANSITION_DURATION` | Circular reveal duration in milliseconds. |
+| labels? | `ThemeToggleLabels` |  |  |
 
-Types: `ThemeMode` = `"light" | "dark"`
+Types: `ThemeMode` = `"light" | "dark"` · `ThemeToggleLabels` = `{ theme?: string; lightMode?: string; darkMode?: string; useLightMode?: string; useDarkMode?: string }`
 Other exports: `ThemeToggleProps` (props of ThemeToggle) · `THEME_STORAGE_KEY`: `string` · `THEME_CHANGE_EVENT`: `string` · `applyTheme(theme: ThemeMode, { persist = true }: { persist?: boolean } = {})` · `applyThemeWithTransition(theme: ThemeMode, { origin = null, element = null, duration = THEME_TRANSITION_DURATION, }: { origin?: ThemeTransitionOrigin | null; element?: HTMLElement | n…`
 
 ### web-search — `@/components/application/web-search/web-search`
@@ -2713,7 +2714,7 @@ Other exports: `ToasterProps` (props of Toaster)
 
 ### shells — `@/components/timbal/shells/index`
 
-Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/page-header`: `PageHeader`, `PageHeaderProvider`, `usePageHeaderState`, `PageHeaderProps`, `PageHeaderValues` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `normalizeNavPath`, `resolveActiveNavItem`, `resolveHomeNavItem`, `resolveNavTrail`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellNavItem`, `ShellUser`
+Re-exports: from `@/components/timbal/shells/sidebar-shell`: `SidebarShell`, `SidebarShellProps` · from `@/components/timbal/shells/topbar-shell`: `TopbarShell`, `TopbarShellProps` · from `@/components/timbal/shells/page-header`: `PageHeader`, `PageHeaderProvider`, `usePageHeaderState`, `PageHeaderProps`, `PageHeaderValues` · from `@/components/timbal/shells/shell-chrome`: `Collapsible`, `ShellBrandMark`, `ShellHeader`, `ShellNavRow`, `ShellSidebar`, `ShellUserMenu`, `ShellSidebarProps`, `ShellUserMenuProps` · from `@/components/timbal/shells/shell-nav`: `SHELL_DESKTOP_QUERY`, `SHELL_FRAME_INSET_CLASS`, `SHELL_INSET_CLASS`, `initialsOf`, `normalizeNavPath`, `resolveActiveNavItem`, `resolveHomeNavItem`, `resolveNavTrail`, `resolveShellLabels`, `useActiveNavItem`, `useMediaQuery`, `useShellUser`, `RemixIcon`, `ShellBrand`, `ShellLabels`, `ShellNavItem`, `ShellUser`
 
 ### shells — `@/components/timbal/shells/page-header`
 
@@ -2766,6 +2767,7 @@ Other exports: `PageHeaderProps` (props of PageHeader)
 | variant? | `"sidebar" \| "topbar"` | `"sidebar"` | `sidebar` = the team-card trigger (full row, collapses to the avatar); `topbar` = name + chevron, no avatar. |
 | collapsed? | `boolean` | `false` |  |
 | placement? | `DropdownPopoverProps["placement"]` | `"right bottom"` | Where the menu opens relative to the trigger. |
+| labels? | `ShellLabels` |  | The shell's `labels`: account trigger, menu and Sign out. |
 | className? | `string` |  |  |
 
 **ShellSidebar** — The sidebar panel: brand + collapse control, primary rows, then theme toggle, secondary rows and the account card pinned to the bottom.
@@ -2780,6 +2782,7 @@ Other exports: `PageHeaderProps` (props of PageHeader)
 | mobile? | `boolean` | `false` | Rendered inside the phone drawer: always expanded, close control instead of collapse. |
 | onClose? | `() => void` |  |  |
 | onNavigate? | `() => void` |  | Fired when a nav row is clicked (drawers close on it). |
+| labels? | `ShellLabels` |  | The shell's `labels`: drawer, collapse control, nav groups, theme toggle, account menu. |
 | className? | `string` |  |  |
 
 **ShellHeader** — The one header a routed page gets — DashboardHeader grammar, with the noise removed: - **Title** = the active nav item's label, or what the page's `<PageHeader title>` says (a record's name).
@@ -2813,8 +2816,8 @@ returns `boolean`
 |---|---|---|---|
 | query | `string` |  |  |
 
-Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; description?: string; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }`
-Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string) => string`
+Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; description?: string; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }` · `ShellLabels` = `{ openNavigation?: string; closeNavigation?: string; navigation?: string; primaryNav?: string; secondaryNav?: string; expandSidebar?: string; collapseSidebar?: string; account?: string; accountMenu?: string; signOut?: string; theme?: strin…`
+Other exports: `resolveShellLabels(labels?: ShellLabels) => Required<ShellLabels>` · `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string | null | undefined) => string`
 
 ### shells — `@/components/timbal/shells/sidebar-shell`
 
@@ -2828,6 +2831,7 @@ Other exports: `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `stri
 | header? | `ReactNode \| false` |  | Header above the page. Default: `ShellHeader` — the nav item's label as the title, its `description` under it, a breadcrumb only for nested routes, and the page's `<PageHeader actions>` on the right. `false` hides it. |
 | actions? | `ReactNode` |  | Shell-wide actions, shown on every page after the page's own. Use for the rare global control; a page-specific button ("New ticket") goes in that page's `<PageHeader actions>`, not here. |
 | dock? | `ReactNode` |  | Floating chrome rendered once, e.g. `<AssistantPill />`. |
+| labels? | `ShellLabels` |  | The shell's own strings (drawer, account menu, theme toggle) in the product's language. |
 | children? | `ReactNode` |  | Defaults to the router `<Outlet />`. |
 | className? | `string` |  |  |
 
@@ -2844,6 +2848,7 @@ Other exports: `SidebarShellProps` (props of SidebarShell)
 | header? | `ReactNode \| false` |  | Row above the page. Default: `ShellHeader` — the nav item's label, its `description`, a breadcrumb only for nested routes, the page's `<PageHeader actions>` on the right. `false` hides it. |
 | actions? | `ReactNode` |  | Right side of the bar, before the theme toggle and account menu (global controls only). |
 | dock? | `ReactNode` |  | Floating chrome rendered once, e.g. `<AssistantPill />`. |
+| labels? | `ShellLabels` |  | The shell's own strings (menu button, account menu, theme toggle) in the product's language. |
 | children? | `ReactNode` |  | Defaults to the router `<Outlet />`. |
 | className? | `string` |  |  |
 

@@ -212,6 +212,24 @@ export function useThemeMode(): ThemeMode {
   return useSyncExternalStore(subscribe, currentTheme, () => "light");
 }
 
+// Patched by scripts/boardui-sync.mjs (see "theme labels" step): upstream
+// hardcodes English accessible names, so non-English products pass `labels`.
+export interface ThemeToggleLabels {
+  theme?: string;
+  lightMode?: string;
+  darkMode?: string;
+  useLightMode?: string;
+  useDarkMode?: string;
+}
+
+const DEFAULT_THEME_TOGGLE_LABELS: Required<ThemeToggleLabels> = {
+  theme: "Theme",
+  lightMode: "Light mode",
+  darkMode: "Dark mode",
+  useLightMode: "Use light mode",
+  useDarkMode: "Use dark mode",
+};
+
 export interface ThemeToggleProps {
   /** Compact icon-only treatment for a collapsed sidebar rail. */
   collapsed?: boolean;
@@ -225,6 +243,7 @@ export interface ThemeToggleProps {
   className?: string;
   /** Circular reveal duration in milliseconds. */
   transitionDuration?: number;
+  labels?: ThemeToggleLabels;
 }
 
 /** Manual light/dark control. It never reads the operating-system theme. */
@@ -233,7 +252,9 @@ export function ThemeToggle({
   appearance = "sidebar",
   className,
   transitionDuration = THEME_TRANSITION_DURATION,
+  labels,
 }: ThemeToggleProps) {
+  const text = { ...DEFAULT_THEME_TOGGLE_LABELS, ...labels };
   const theme = useThemeMode();
   const dark = theme === "dark";
   const switchRef = useRef<HTMLLabelElement | null>(null);
@@ -253,14 +274,14 @@ export function ThemeToggle({
     const glass = appearance === "glass-segmented";
     const sidebarSurface = appearance === "sidebar-segmented";
     const options = [
-      { mode: "light" as const, label: "Use light mode", Icon: RiSunLine },
-      { mode: "dark" as const, label: "Use dark mode", Icon: RiMoonLine },
+      { mode: "light" as const, label: text.useLightMode, Icon: RiSunLine },
+      { mode: "dark" as const, label: text.useDarkMode, Icon: RiMoonLine },
     ];
 
     return (
       <div
         role="group"
-        aria-label="Theme"
+        aria-label={text.theme}
         className={cx(
           "relative inline-flex w-fit items-center gap-1 rounded-full p-1",
           // Mobile: 2px padding + 28px segments = 32px tall, matching the
@@ -300,7 +321,7 @@ export function ThemeToggle({
               type="button"
               aria-label={label}
               aria-pressed={selected}
-              title={mode === "light" ? "Light mode" : "Dark mode"}
+              title={mode === "light" ? text.lightMode : text.darkMode}
               onClick={(event) => {
                 if (selected) return;
                 const pointerOrigin =
@@ -342,9 +363,9 @@ export function ThemeToggle({
     return (
       <button
         type="button"
-        aria-label={dark ? "Use light mode" : "Use dark mode"}
+        aria-label={dark ? text.useLightMode : text.useDarkMode}
         aria-pressed={dark}
-        title={dark ? "Light mode" : "Dark mode"}
+        title={dark ? text.lightMode : text.darkMode}
         onClick={(event) => {
           const pointerOrigin =
             event.clientX === 0 && event.clientY === 0
@@ -385,7 +406,7 @@ export function ThemeToggle({
           duration: transitionDuration,
         });
       }}
-      aria-label="Dark mode"
+      aria-label={text.darkMode}
       className={({ isFocusVisible }) =>
         cx(
           "flex w-full cursor-pointer items-center justify-between rounded-2lg p-2",
@@ -399,7 +420,7 @@ export function ThemeToggle({
         <>
           <span className="flex min-w-0 items-center gap-2">
             <RiMoonLine className="size-5 shrink-0 text-foreground-icon-secondary" aria-hidden />
-            <span className="text-body-medium text-text-secondary">Dark mode</span>
+            <span className="text-body-medium text-text-secondary">{text.darkMode}</span>
           </span>
           <SwitchTrack state={state} size="sm" shape="pill" />
         </>

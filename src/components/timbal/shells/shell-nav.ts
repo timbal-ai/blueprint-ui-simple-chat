@@ -49,10 +49,58 @@ export interface ShellBrand {
 
 /** The signed-in user for the account menu. Sign out is the only action. */
 export interface ShellUser {
+  /** Empty when the identity has no name; the menu then shows `labels.account`. */
   name: string;
   email?: string;
   avatarUrl?: string;
   onSignOut?: () => void;
+}
+
+/**
+ * Every string the shells render on their own — accessible names included.
+ * A product that is not in English passes all of them, in its language, as
+ * the shell's `labels`; the menu items, drawer and theme toggle follow.
+ */
+export interface ShellLabels {
+  openNavigation?: string;
+  closeNavigation?: string;
+  /** The phone drawer. */
+  navigation?: string;
+  primaryNav?: string;
+  secondaryNav?: string;
+  expandSidebar?: string;
+  collapseSidebar?: string;
+  /** Account trigger: "Account: Ada Lovelace"; also the name when the identity has none. */
+  account?: string;
+  accountMenu?: string;
+  signOut?: string;
+  theme?: string;
+  lightMode?: string;
+  darkMode?: string;
+  useLightMode?: string;
+  useDarkMode?: string;
+}
+
+const DEFAULT_SHELL_LABELS: Required<ShellLabels> = {
+  openNavigation: "Open navigation",
+  closeNavigation: "Close navigation",
+  navigation: "Navigation",
+  primaryNav: "Primary",
+  secondaryNav: "Secondary",
+  expandSidebar: "Expand sidebar",
+  collapseSidebar: "Collapse sidebar",
+  account: "Account",
+  accountMenu: "Account menu",
+  signOut: "Sign out",
+  theme: "Theme",
+  lightMode: "Light mode",
+  darkMode: "Dark mode",
+  useLightMode: "Use light mode",
+  useDarkMode: "Use dark mode",
+};
+
+export function resolveShellLabels(labels?: ShellLabels): Required<ShellLabels> {
+  return { ...DEFAULT_SHELL_LABELS, ...labels };
 }
 
 /**
@@ -138,7 +186,8 @@ export function useShellUser(user?: ShellUser): ShellUser | undefined {
   const sessionUser = session?.user;
   if (!sessionUser) return undefined;
   return {
-    name: sessionUser.user_name,
+    // Typed `string`, but identities without a profile name arrive as null.
+    name: sessionUser.user_name?.trim() || sessionUser.user_email || "",
     email: sessionUser.user_email,
     avatarUrl: sessionUser.user_photo_url ?? undefined,
     onSignOut: session.logout,
@@ -165,9 +214,9 @@ export function useMediaQuery(query: string): boolean {
 /** The shells switch from in-flow sidebar / inline nav to a drawer below `md`. */
 export const SHELL_DESKTOP_QUERY = "(min-width: 768px)";
 
-/** "Ada Lovelace" → "AL"; single word → first letter. */
-export function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+/** "Ada Lovelace" → "AL"; single word → first letter; nothing → "?". */
+export function initialsOf(name: string | null | undefined): string {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();

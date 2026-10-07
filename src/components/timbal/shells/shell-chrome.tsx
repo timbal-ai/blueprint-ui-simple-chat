@@ -24,8 +24,10 @@ import {
   normalizeNavPath,
   resolveHomeNavItem,
   resolveNavTrail,
+  resolveShellLabels,
   useActiveNavItem,
   type ShellBrand,
+  type ShellLabels,
   type ShellNavItem,
   type ShellUser,
 } from "./shell-nav";
@@ -198,6 +200,8 @@ export interface ShellUserMenuProps {
   collapsed?: boolean;
   /** Where the menu opens relative to the trigger. */
   placement?: DropdownPopoverProps["placement"];
+  /** The shell's `labels`: account trigger, menu and Sign out. */
+  labels?: ShellLabels;
   className?: string;
 }
 
@@ -206,13 +210,16 @@ export interface ShellUserMenuProps {
  * `onSignOut` there is nothing to do, so it renders as a static identity card.
  */
 export function ShellUserMenu({
-  user,
+  user: userProp,
   variant = "sidebar",
   collapsed = false,
   placement = "right bottom",
+  labels,
   className,
 }: ShellUserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const text = resolveShellLabels(labels);
+  const user = userProp.name ? userProp : { ...userProp, name: text.account };
   const interactive = Boolean(user.onSignOut);
 
   const sidebarTriggerClass = cx(
@@ -268,7 +275,7 @@ export function ShellUserMenu({
         // there competes with the brand mark. Below `sm` the drawer's account
         // card takes over, so the trigger hides rather than shrinking to a dot.
         <DropdownTrigger
-          aria-label={`Account: ${user.name}`}
+          aria-label={`${text.account}: ${user.name}`}
           className={cx(
             "hidden h-8 shrink-0 items-center gap-1 rounded-lg pr-1.5 pl-2 sm:flex",
             "transition-colors duration-150 ease hover:bg-background-primary-hover",
@@ -285,12 +292,12 @@ export function ShellUserMenu({
           />
         </DropdownTrigger>
       ) : (
-        <DropdownTrigger aria-label={`Account: ${user.name}`} className={sidebarTriggerClass}>
+        <DropdownTrigger aria-label={`${text.account}: ${user.name}`} className={sidebarTriggerClass}>
           {sidebarTriggerContent}
         </DropdownTrigger>
       )}
 
-      <DropdownPopover aria-label="Account menu" placement={placement} offset={8} dialogClassName="gap-[7px]">
+      <DropdownPopover aria-label={text.accountMenu} placement={placement} offset={8} dialogClassName="gap-[7px]">
         <div className="flex w-full items-center gap-2 px-2 pt-1">
           <UserAvatar user={user} />
           <UserIdentity user={user} />
@@ -305,7 +312,7 @@ export function ShellUserMenu({
             }}
           >
             <RiLogoutBoxRLine className="size-5 shrink-0" aria-hidden />
-            <span className="text-body-medium">Sign out</span>
+            <span className="text-body-medium">{text.signOut}</span>
           </DropdownItem>
         </DropdownGroup>
       </DropdownPopover>
@@ -328,6 +335,8 @@ export interface ShellSidebarProps {
   onClose?: () => void;
   /** Fired when a nav row is clicked (drawers close on it). */
   onNavigate?: () => void;
+  /** The shell's `labels`: drawer, collapse control, nav groups, theme toggle, account menu. */
+  labels?: ShellLabels;
   className?: string;
 }
 
@@ -347,8 +356,10 @@ export function ShellSidebar({
   mobile = false,
   onClose,
   onNavigate,
+  labels,
   className,
 }: ShellSidebarProps) {
+  const text = resolveShellLabels(labels);
   const collapsed = mobile ? false : collapsedProp;
   const active = useActiveNavItem(nav, secondaryNav);
   const navClass = cx("flex w-full flex-col gap-1", !collapsed && "px-0.5");
@@ -393,7 +404,7 @@ export function ShellSidebar({
           {mobile ? (
             <button
               type="button"
-              aria-label="Close navigation"
+              aria-label={text.closeNavigation}
               onClick={onClose}
               className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-2lg text-foreground-icon-secondary outline-none transition-colors duration-150 ease hover:bg-background-secondary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring"
             >
@@ -402,7 +413,7 @@ export function ShellSidebar({
           ) : (
             <button
               type="button"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={collapsed ? text.expandSidebar : text.collapseSidebar}
               aria-expanded={!collapsed}
               onClick={onToggleCollapsed}
               className={cx(
@@ -418,7 +429,7 @@ export function ShellSidebar({
           )}
         </div>
 
-        <nav aria-label="Primary" className={navClass}>
+        <nav aria-label={text.primaryNav} className={navClass}>
           {nav.map((item) => (
             <ShellNavRow
               key={item.path}
@@ -432,9 +443,9 @@ export function ShellSidebar({
       </div>
 
       <div className="flex w-full shrink-0 flex-col gap-3">
-        {collapsed ? <ThemeToggle collapsed /> : <ThemeToggle appearance="sidebar-segmented" />}
+        {collapsed ? <ThemeToggle collapsed labels={text} /> : <ThemeToggle appearance="sidebar-segmented" labels={text} />}
         {secondaryNav?.length ? (
-          <nav aria-label="Secondary" className={navClass}>
+          <nav aria-label={text.secondaryNav} className={navClass}>
             {secondaryNav.map((item) => (
               <ShellNavRow
                 key={item.path}
@@ -452,6 +463,7 @@ export function ShellSidebar({
             variant="sidebar"
             collapsed={collapsed}
             placement={mobile ? "top start" : "right bottom"}
+            labels={labels}
           />
         ) : null}
       </div>

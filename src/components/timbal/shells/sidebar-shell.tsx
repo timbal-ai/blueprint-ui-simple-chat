@@ -14,8 +14,10 @@ import {
   SHELL_INSET_CLASS,
   useActiveNavItem,
   useMediaQuery,
+  resolveShellLabels,
   useShellUser,
   type ShellBrand,
+  type ShellLabels,
   type ShellNavItem,
   type ShellUser,
 } from "./shell-nav";
@@ -71,6 +73,8 @@ export interface SidebarShellProps {
   actions?: ReactNode;
   /** Floating chrome rendered once, e.g. `<AssistantPill />`. */
   dock?: ReactNode;
+  /** The shell's own strings (drawer, account menu, theme toggle) in the product's language. */
+  labels?: ShellLabels;
   /** Defaults to the router `<Outlet />`. */
   children?: ReactNode;
   className?: string;
@@ -84,9 +88,11 @@ export function SidebarShell({
   header,
   actions,
   dock,
+  labels,
   children,
   className,
 }: SidebarShellProps) {
+  const text = resolveShellLabels(labels);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);
@@ -96,7 +102,7 @@ export function SidebarShell({
   // A `bare` route (EmbeddedChat, canvases) owns its chrome: no header, no dock.
   const bare = active?.bare === true;
 
-  const sidebarProps = { brand, nav, secondaryNav, user: resolvedUser };
+  const sidebarProps = { brand, nav, secondaryNav, user: resolvedUser, labels };
 
   return (
     <div className={cx("flex h-dvh w-full bg-background-full text-text-primary", className)}>
@@ -112,7 +118,7 @@ export function SidebarShell({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Phone brand bar with the drawer opener */}
         <div className="flex h-14 shrink-0 items-center gap-2.5 overflow-visible px-3 md:hidden">
-          <IconButton icon={RiMenuLine} size="small" aria-label="Open navigation" onClick={() => setDrawerOpen(true)} className="shrink-0" />
+          <IconButton icon={RiMenuLine} size="small" aria-label={text.openNavigation} onClick={() => setDrawerOpen(true)} className="shrink-0" />
           <ShellBrandMark brand={brand} className="shrink-0" />
           <span className="min-w-0 truncate text-body-medium text-text-primary">{brand.name}</span>
         </div>
@@ -146,7 +152,7 @@ export function SidebarShell({
         onOpenChange={setDrawerOpen}
         side="left"
         size="sm"
-        aria-label="Navigation"
+        aria-label={text.navigation}
         backdropClassName="bg-black/10"
         className="border-border-button-white bg-background-secondary-default shadow-sidebar"
       >

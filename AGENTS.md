@@ -54,6 +54,8 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    **The shell owns the page header**: title from the nav item, `description` under it,
    actions on the right. Pages render no `<h1>`; they pass live values and page-only
    buttons up with `<PageHeader description actions />` (`design:check` fails on an `<h1>`).
+   A product not in English passes every `ShellLabels` string, translated, as the shell's
+   `labels` (account menu, drawer, theme toggle); never fork the shell to translate it.
    `/` ships as `Placeholder.tsx`: replace it with the real entry screen and delete the
    file. Chat lives at `/chat` unless the product IS a chat — never a chat at `/` by default.
 3. **Use what exists, in this order:** template (`registry/templates.md`) → block or
