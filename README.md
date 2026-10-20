@@ -81,7 +81,29 @@ density, template-or-compose) and write it in `DESIGN.md` before building.
 ## Native voice calls
 
 The blueprint includes `@timbal-ai/timbal-sdk` **0.18.0** and `livekit-client`
-**^2.22.3**. When the product needs browser voice, use the SDK's supported client:
+**^2.22.3**. When the product needs browser voice, use the call component:
+
+```tsx
+import { authFetch } from "@timbal-ai/timbal-react";
+import { useVoiceCall, VoiceCall } from "@/components/timbal/voice-call";
+
+const call = useVoiceCall({
+  connect: signal => authFetch(
+    `/api/workforce/${encodeURIComponent(agentId)}/voice/session`,
+    { method: "POST", signal },
+  ),
+  messages: { failed: "Couldn't start the call. Try again." },
+});
+
+<VoiceCall call={call} label="Talk to support" labels={{ agent: "Support" }} />
+```
+
+`useVoiceCall` makes one attempt at a time, cancels a call that is still starting,
+marks it ready only once `start()` resolves, keeps captions in step with re-heard
+and interrupted turns, and handles mute, blocked audio and microphone errors.
+`VoiceCall` draws the button, status, microphone level, captions, mute, end and
+"enable audio"; draw your own controls from the hook's state when the design calls
+for it. Without the component, the SDK's client is used like this:
 
 ```typescript
 import { authFetch } from "@timbal-ai/timbal-react";

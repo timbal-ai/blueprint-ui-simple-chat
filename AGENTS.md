@@ -4,7 +4,7 @@ React 19 · Vite · Tailwind v4 · react-router · `@timbal-ai/timbal-react` (ch
 streaming, uploads, artifacts). Design system: **BoardUI**, vendored as source under
 `src/components/{base,application,foundations}` — never edited by hand
 (`bun run boardui:sync` overwrites it). Project code: `src/components/timbal/`
-(chat slots, shells, overlays, data-table, work-queue) and `src/pages/`.
+(chat slots, shells, overlays, data-table, work-queue, voice-call) and `src/pages/`.
 
 **This file and `registry/` are the truth for this project.** They ship with the code, so
 they are always the current version; a platform rule or skill (`timbal-ui`, the composer's
@@ -109,8 +109,12 @@ pinned, or a screen that looks like the last one you built.
 
 ## Native voice calls
 
-For requested browser voice, use `LiveKitVoiceSession` from
-`@timbal-ai/timbal-sdk/voice/livekit` (SDK 0.18.0 is installed). Follow the
+For requested browser voice, use `useVoiceCall` and `VoiceCall` from
+`@/components/timbal/voice-call`: the hook runs the SDK's `LiveKitVoiceSession`
+(SDK 0.18.0 is installed) with everything below handled, and the component draws
+the call. Pass `messages` and `labels` in the product's language. Drive your own
+controls from the hook when the design needs them; write against
+`LiveKitVoiceSession` directly only when the hook cannot do the job, following the
 [README voice recipe](README.md#native-voice-calls). Fetch connection material from
 the API blueprint’s authenticated `/api/workforce/:id/voice/session` route with
 `authFetch` (API SDK >=0.18.0). It uses native LiveKit session creation through the
