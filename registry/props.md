@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 294 components · 19 hooks · generated 2026-10-07
+BoardUI 0.5.3 · 295 components · 20 hooks · generated 2026-10-20
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2853,6 +2853,33 @@ Other exports: `SidebarShellProps` (props of SidebarShell)
 | className? | `string` |  |  |
 
 Other exports: `TopbarShellProps` (props of TopbarShell)
+
+### voice-call — `@/components/timbal/voice-call/use-voice-call`
+
+**useVoiceCall()** — useVoiceCall — one browser voice call with a Timbal agent, over the SDK's LiveKit session.
+returns `VoiceCallState`
+| param | type | default | doc |
+|---|---|---|---|
+| options | `UseVoiceCallOptions` |  |  |
+
+Types: `VoiceCallPhase` = `"idle" | "connecting" | "ready" | "reconnecting" | "error"` · `VoiceCallMode` = `"listening" | "thinking" | "speaking"` · `VoiceCaptions` = `{ user: string; userFinal: boolean; agent: string; agentDone: boolean }` · `VoiceCallMessages` = `{ microphoneBlocked: string; noMicrophone: string; failed: string; muteFailed: string }` · `UseVoiceCallOptions` = `{ connect: (signal: AbortSignal) => Promise<Response | VoiceSessionConnection>; messages?: Partial<VoiceCallMessages>; startupTimeoutMs?: number; onEvent?: (event: VoiceEvent) => void }` · `VoiceCallState` = `{ phase: VoiceCallPhase; mode: VoiceCallMode; muted: boolean; audioBlocked: boolean; error: string | null; captions: VoiceCaptions; level: number; sessionId: string | null; start: () => void; end: () => void; toggleMute: () => void; resume…` · `CaptionEvent` = `{ type: "user"; text: string; final: boolean; replace?: boolean } | { type: "agent"; text?: string; delta?: string; done?: boolean } | { type: "interrupted"; h…`
+Data: `VOICE_CALL_MESSAGES`: `VoiceCallMessages` · `EMPTY_CAPTIONS`: `VoiceCaptions`
+Other exports: `reduceCaptions(state: VoiceCaptions, event: CaptionEvent) => VoiceCaptions` · `phaseFromStatus(status: LiveKitVoiceStatus) => VoiceCallPhase` · `describeCallError(error: unknown, messages: VoiceCallMessages = VOICE_CALL_MESSAGES) => string`
+
+### voice-call — `@/components/timbal/voice-call/voice-call`
+
+**VoiceCall** — VoiceCall — the controls of a browser voice call driven by `useVoiceCall`: a start button, then status, microphone level, captions, mute, end (cancel while starting), "enable audio" when the browser…
+| prop | type | default | doc |
+|---|---|---|---|
+| call | `VoiceCallState` |  |  |
+| label | `string` |  | The start button's text, e.g. "Talk to support". |
+| labels? | `Partial<VoiceCallLabels>` |  |  |
+| captions? | `boolean` | `true` | Show captions when the call starts (the user can toggle them). Default true. |
+| className? | `string` |  |  |
+
+Types: `VoiceCallLabels` = `{ call: string; connecting: string; reconnecting: string; ready: string; listening: string; thinking: string; speaking: string; muted: string; mute: string; unmute: string; end: string; cancel: string; enableAudio: string; showCaptions: st…`
+Data: `VOICE_CALL_LABELS`: `VoiceCallLabels`
+Other exports: `VoiceCallProps` (props of VoiceCall)
 
 ### work-queue — `@/components/timbal/work-queue`
 

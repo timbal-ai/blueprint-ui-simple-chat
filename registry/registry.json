@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-10-07T01:10:27.007Z",
+  "generatedAt": "2026-10-20T09:36:28.902Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -24288,6 +24288,543 @@
         "timbal",
         "shells",
         "topbar-shell"
+      ]
+    },
+    {
+      "name": "VoiceCallPhase",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-call-phase"
+      ],
+      "type": "\"idle\" | \"connecting\" | \"ready\" | \"reconnecting\" | \"error\""
+    },
+    {
+      "name": "VoiceCallMode",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-call-mode"
+      ],
+      "type": "\"listening\" | \"thinking\" | \"speaking\""
+    },
+    {
+      "name": "VoiceCaptions",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "The latest exchange: what the user said and the agent's reply to it.",
+      "props": [
+        {
+          "name": "user",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "userFinal",
+          "type": "boolean",
+          "optional": false,
+          "doc": "`false` while the user is still speaking."
+        },
+        {
+          "name": "agent",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "agentDone",
+          "type": "boolean",
+          "optional": false,
+          "doc": "The reply's text is complete (its audio may still be playing)."
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-captions"
+      ]
+    },
+    {
+      "name": "VoiceCallMessages",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "What the user reads when a call fails, in the app's language.",
+      "props": [
+        {
+          "name": "microphoneBlocked",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "noMicrophone",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "failed",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "muteFailed",
+          "type": "string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-call-messages"
+      ]
+    },
+    {
+      "name": "VOICE_CALL_MESSAGES",
+      "kind": "data",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-call-messages"
+      ],
+      "type": "VoiceCallMessages"
+    },
+    {
+      "name": "UseVoiceCallOptions",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [
+        {
+          "name": "connect",
+          "type": "(signal: AbortSignal) => Promise<Response | VoiceSessionConnection>",
+          "optional": false,
+          "doc": "Ask your API for the call's connection: return its `Response` or the parsed connection."
+        },
+        {
+          "name": "messages",
+          "type": "Partial<VoiceCallMessages>",
+          "optional": true
+        },
+        {
+          "name": "startupTimeoutMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Startup budget: microphone, your route, the room and the agent. Default 120 000 ms."
+        },
+        {
+          "name": "onEvent",
+          "type": "(event: VoiceEvent) => void",
+          "optional": true,
+          "doc": "Every raw session event (metrics, usage, approvals), for what the hook does not surface."
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "use-voice-call-options"
+      ]
+    },
+    {
+      "name": "VoiceCallState",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [
+        {
+          "name": "phase",
+          "type": "VoiceCallPhase",
+          "optional": false
+        },
+        {
+          "name": "mode",
+          "type": "VoiceCallMode",
+          "optional": false
+        },
+        {
+          "name": "muted",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "audioBlocked",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "error",
+          "type": "string | null",
+          "optional": false,
+          "doc": "A message from `messages`, never the SDK's raw text."
+        },
+        {
+          "name": "captions",
+          "type": "VoiceCaptions",
+          "optional": false
+        },
+        {
+          "name": "level",
+          "type": "number",
+          "optional": false,
+          "doc": "Microphone level 0–1 while the call is live; zero when muted."
+        },
+        {
+          "name": "sessionId",
+          "type": "string | null",
+          "optional": false
+        },
+        {
+          "name": "start",
+          "type": "() => void",
+          "optional": false,
+          "doc": "Start a call; ignored while one is starting or live."
+        },
+        {
+          "name": "end",
+          "type": "() => void",
+          "optional": false,
+          "doc": "End the call, or cancel it while it starts."
+        },
+        {
+          "name": "toggleMute",
+          "type": "() => void",
+          "optional": false
+        },
+        {
+          "name": "resumeAudio",
+          "type": "() => void",
+          "optional": false,
+          "doc": "Call from a tap when `audioBlocked`."
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "voice-call-state"
+      ]
+    },
+    {
+      "name": "EMPTY_CAPTIONS",
+      "kind": "data",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "empty-captions"
+      ],
+      "type": "VoiceCaptions"
+    },
+    {
+      "name": "CaptionEvent",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "caption-event"
+      ],
+      "type": "{ type: \"user\"; text: string; final: boolean; replace?: boolean } | { type: \"agent\"; text?: string; delta?: string; done?: boolean } | { type: \"interrupted\"; h…"
+    },
+    {
+      "name": "reduceCaptions",
+      "kind": "util",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "reduce-captions"
+      ],
+      "type": "(state: VoiceCaptions, event: CaptionEvent) => VoiceCaptions"
+    },
+    {
+      "name": "phaseFromStatus",
+      "kind": "util",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "phase-from-status"
+      ],
+      "type": "(status: LiveKitVoiceStatus) => VoiceCallPhase"
+    },
+    {
+      "name": "describeCallError",
+      "kind": "util",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "By the browser's error name only: a failed `connect` (a 403, \"access denied\") is not a microphone problem.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call",
+        "describe-call-error"
+      ],
+      "type": "(error: unknown, messages: VoiceCallMessages = VOICE_CALL_MESSAGES) => string"
+    },
+    {
+      "name": "useVoiceCall",
+      "kind": "hook",
+      "path": "src/components/timbal/voice-call/use-voice-call.ts",
+      "importFrom": "@/components/timbal/voice-call/use-voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "useVoiceCall — one browser voice call with a Timbal agent, over the SDK's LiveKit session.",
+      "props": [
+        {
+          "name": "options",
+          "type": "UseVoiceCallOptions",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "use-voice-call"
+      ],
+      "returns": "VoiceCallState"
+    },
+    {
+      "name": "VoiceCallLabels",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/voice-call.tsx",
+      "importFrom": "@/components/timbal/voice-call/voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [
+        {
+          "name": "call",
+          "type": "string",
+          "optional": false,
+          "doc": "The section's accessible name."
+        },
+        {
+          "name": "connecting",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "reconnecting",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "ready",
+          "type": "string",
+          "optional": false,
+          "doc": "Live, before anyone has spoken."
+        },
+        {
+          "name": "listening",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "thinking",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "speaking",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "muted",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "mute",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "unmute",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "end",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "cancel",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "enableAudio",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "showCaptions",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "hideCaptions",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "you",
+          "type": "string",
+          "optional": false,
+          "doc": "Caption prefixes."
+        },
+        {
+          "name": "agent",
+          "type": "string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "voice-call-labels"
+      ]
+    },
+    {
+      "name": "VOICE_CALL_LABELS",
+      "kind": "data",
+      "path": "src/components/timbal/voice-call/voice-call.tsx",
+      "importFrom": "@/components/timbal/voice-call/voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "voice-call-labels"
+      ],
+      "type": "VoiceCallLabels"
+    },
+    {
+      "name": "VoiceCallProps",
+      "kind": "type",
+      "path": "src/components/timbal/voice-call/voice-call.tsx",
+      "importFrom": "@/components/timbal/voice-call/voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "Props of `VoiceCall`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "voice-call",
+        "voice-call-props"
+      ],
+      "propsOf": [
+        "VoiceCall"
+      ]
+    },
+    {
+      "name": "VoiceCall",
+      "kind": "component",
+      "path": "src/components/timbal/voice-call/voice-call.tsx",
+      "importFrom": "@/components/timbal/voice-call/voice-call",
+      "layer": "timbal",
+      "group": "voice-call",
+      "summary": "VoiceCall — the controls of a browser voice call driven by `useVoiceCall`: a start button, then status, microphone level, captions, mute, end (cancel while starting), \"enable audio\" when the browser…",
+      "props": [
+        {
+          "name": "call",
+          "type": "VoiceCallState",
+          "optional": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "doc": "The start button's text, e.g. \"Talk to support\"."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<VoiceCallLabels>",
+          "optional": true
+        },
+        {
+          "name": "captions",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Show captions when the call starts (the user can toggle them). Default true.",
+          "default": "true"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ],
+      "tags": [
+        "timbal",
+        "voice-call"
       ]
     },
     {

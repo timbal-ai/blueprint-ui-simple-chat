@@ -26,7 +26,7 @@ src/components/application/     blocks + Pro kits: charts/ (12 cards), composer-
                                 template (dashboard/, finance/, hr/, marketing/, medical/, ai-profile/,
                                 ai-chat/)  BoardUI, verbatim
 src/components/timbal/          the seam (ours): chat/ slots · shells/ · overlays/ · data-table ·
-                                work-queue · embedded-chat.tsx · assistant-pill.tsx
+                                work-queue · voice-call/ · embedded-chat.tsx · assistant-pill.tsx
 src/pages/                      routes. templates/* mount the BoardUI shells (dev only)
 src/styles/brand.css            the ONE file that restyles the product: page surface, density (--spacing),
                                 radius ladder, type ramp, tinted light chips, monochrome primary button,
@@ -75,6 +75,7 @@ Import through `@/`: `import { Button } from "@/components/base/buttons/button"`
 | The screen needs… | Use (exact names, all vendored) |
 |---|---|
 | What needs attention across modules — the `/` of a product with several modules (overdue invoices, low stock, follow-ups due) | `WorkQueue` from `@/components/timbal/work-queue`: groups by urgency, one action per row, "Show N more" / "View all", row → `Sheet`, loading / error / empty built in. Demo `/examples/workspace`. It replaces the stat-tile strip: list the rows a tile would have counted |
+| A voice call with an agent in the browser (talk button, captions, mute) | `VoiceCall` + `useVoiceCall` from `@/components/timbal/voice-call`: the hook runs the SDK's LiveKit call (one attempt, cancel while starting, ready only after `start()` resolves, captions, mute, blocked audio, microphone errors); `connect` calls the API's `/api/workforce/:id/voice/session` with `authFetch`. `<VoiceCall call label labels />` draws it; pass the texts in the app's language |
 | Rows of records (sort, filter, paginate, select) | `DataTable` from `@/components/timbal/data-table` (BoardUI grammar: framed card, toolbar, chips, avatars, selection, pagination). Pass your `data` + `columns`. `DataTableExample` in `application/data-table` is the customers demo only. Never a hand-built `<table>` grid |
 | A kanban / task board (tickets, pipelines, stages) | `ProjectBoardShell` from `@/components/application/project-board/project-board-shell` (demo `/templates/project-board`). Fork the shell, swap `project-board-data.ts`. Never hand-roll columns |
 | A record's detail beside the list | `timbal/overlays` `Sheet` (right side) opened from the row; `Modal` only for confirmations |
