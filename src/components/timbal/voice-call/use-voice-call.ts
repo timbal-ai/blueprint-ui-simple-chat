@@ -139,15 +139,11 @@ export function phaseFromStatus(status: LiveKitVoiceStatus): VoiceCallPhase {
   }
 }
 
+/** By the browser's error name only: a failed `connect` (a 403, "access denied") is not a microphone problem. */
 export function describeCallError(error: unknown, messages: VoiceCallMessages = VOICE_CALL_MESSAGES): string {
   const name = error instanceof Error ? error.name : "";
-  const text = error instanceof Error ? error.message.toLowerCase() : "";
-  if (name === "NotAllowedError" || name === "SecurityError" || text.includes("permission") || text.includes("denied")) {
-    return messages.microphoneBlocked;
-  }
-  if (name === "NotFoundError" || name === "OverconstrainedError" || text.includes("no microphone") || text.includes("device not found")) {
-    return messages.noMicrophone;
-  }
+  if (name === "NotAllowedError" || name === "SecurityError") return messages.microphoneBlocked;
+  if (name === "NotFoundError" || name === "OverconstrainedError") return messages.noMicrophone;
   return messages.failed;
 }
 
@@ -180,6 +176,7 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
     setCaptions(EMPTY_CAPTIONS);
     setLevel(0);
     setSessionId(null);
+    setError(null);
   }, []);
 
   const teardown = useCallback(() => {
@@ -199,7 +196,6 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
     controllerRef.current = controller;
 
     reset();
-    setError(null);
     setPhase("connecting");
 
     const fail = (cause: unknown) => {
@@ -262,7 +258,6 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
   const end = useCallback(() => {
     teardown();
     reset();
-    setError(null);
     setPhase("idle");
   }, [reset, teardown]);
 
@@ -272,7 +267,9 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
     session
       .setMuted(!session.muted)
       .then(() => {
-        if (sessionRef.current === session) setMuted(session.muted);
+        if (sessionRef.current !== session) return;
+        setMuted(session.muted);
+        setError(null);
       })
       .catch(() => {
         if (sessionRef.current === session) setError(messages().muteFailed);

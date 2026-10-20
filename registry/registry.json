@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-10-20T09:16:12.041Z",
+  "generatedAt": "2026-10-20T09:36:28.902Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -24614,7 +24614,7 @@
       "importFrom": "@/components/timbal/voice-call/use-voice-call",
       "layer": "timbal",
       "group": "voice-call",
-      "summary": "",
+      "summary": "By the browser's error name only: a failed `connect` (a 403, \"access denied\") is not a microphone problem.",
       "props": [],
       "tags": [
         "timbal",
