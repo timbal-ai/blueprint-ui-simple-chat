@@ -23,6 +23,16 @@ function shipped(locale: string): boolean {
   return tag in KIT_CATALOGS || tag.split("-")[0] in KIT_CATALOGS;
 }
 
+/** The tag `Intl` formats with: a malformed one (`es-`) falls back to its language, a missing catalog to English. */
+function formatLocale(locale: string): string {
+  if (!shipped(locale)) return "en";
+  try {
+    return Intl.getCanonicalLocales(locale)[0];
+  } catch {
+    return locale.toLowerCase().split("-")[0];
+  }
+}
+
 export interface KitText {
   locale: string;
   t: KitMessages;
@@ -48,7 +58,7 @@ export function kitText(locale: string, overrides?: KitMessageOverrides): KitTex
       ) as unknown as KitMessages)
     : base;
   // A language without a catalog shows English text: its numbers and dates stay English too.
-  const format = shipped(locale) ? locale : "en";
+  const format = formatLocale(locale);
   const numbers = new Intl.NumberFormat(format);
   return {
     locale,
@@ -57,11 +67,16 @@ export function kitText(locale: string, overrides?: KitMessageOverrides): KitTex
     relative: (iso) => {
       if (!iso) return "";
       const minutes = Math.round(Math.max(0, Date.now() - Date.parse(iso)) / 60_000);
+      if (!Number.isFinite(minutes)) return "";
       if (minutes < 1) return t.chat.now;
       const [, size, unit] = UNITS.find(([limit]) => minutes < limit)!;
-      return new Intl.NumberFormat(format, { style: "unit", unit, unitDisplay: "narrow" }).format(
-        Math.max(1, Math.round(minutes / size)),
-      );
+      const value = Math.max(1, Math.round(minutes / size));
+      try {
+        return new Intl.NumberFormat(format, { style: "unit", unit, unitDisplay: "narrow" }).format(value);
+      } catch {
+        // Browsers without unit formatting (Safari before 14.1): the template's compact chip.
+        return `${value}${unit[0]}`;
+      }
     },
     date: (iso, options) => new Date(iso).toLocaleDateString(format, options),
   };
