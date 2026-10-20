@@ -6,6 +6,8 @@ import "katex/dist/katex.min.css";
 
 import "./index.css";
 import App from "./App.tsx";
+import { KitLocale } from "@/components/timbal/i18n";
+import { LOCALE } from "@/config";
 
 
 window.addEventListener('message', (event) => {
@@ -20,6 +22,8 @@ window.addEventListener('message', (event) => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <KitLocale locale={LOCALE}>
+      <App />
+    </KitLocale>
   </StrictMode>,
 )

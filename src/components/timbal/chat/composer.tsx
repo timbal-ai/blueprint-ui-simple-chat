@@ -16,6 +16,7 @@ import {
 
 import { AgentThinking } from "@/components/application/agent-thinking/agent-thinking";
 import { ComposerLoader } from "@/components/application/composer-loader/composer-loader";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -30,12 +31,14 @@ import { cx } from "@/utils/cx";
  * exactly as with the stock composer. Nothing in here talks to the network.
  */
 export function BoardComposer({
-  placeholder = "Ask me anything",
+  placeholder,
   showAttachments,
   toolbar,
   noAutoFocus,
   className,
 }: ComposerProps) {
+  const kit = useKit();
+  const { t } = kit;
   const isRunning = useThread((s) => s.isRunning);
   const messageCount = useThread((s) => s.messages.length);
   const attachUi = showAttachments !== false;
@@ -43,7 +46,7 @@ export function BoardComposer({
   const pill = (
     <div className="flex w-full flex-col gap-2.5">
       {isRunning ? (
-        <AgentThinking variant="stars" label="Thinking" className="px-3" />
+        <AgentThinking variant="stars" label={t.chat.thinking} className="px-3" />
       ) : null}
 
       {attachUi ? <ComposerAttachments /> : null}
@@ -61,7 +64,7 @@ export function BoardComposer({
             <ComposerPrimitive.AddAttachment asChild>
               <button
                 type="button"
-                aria-label="Add attachment"
+                aria-label={t.chat.addAttachment}
                 className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-ai-chat-composer-add-background text-foreground-icon-primary transition-colors duration-150 hover:bg-ai-chat-composer-add-hover-background disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <RiAttachment2 className="size-5" aria-hidden />
@@ -69,7 +72,7 @@ export function BoardComposer({
             </ComposerPrimitive.AddAttachment>
           ) : null}
 
-          <BoardComposerInput placeholder={placeholder} autoFocus={!noAutoFocus} />
+          <BoardComposerInput placeholder={placeholder ?? t.chat.placeholder} autoFocus={!noAutoFocus} />
 
           <div className="flex shrink-0 items-center gap-2 pl-1.5">
             {toolbar}
@@ -77,7 +80,7 @@ export function BoardComposer({
               <ComposerPrimitive.Cancel asChild>
                 <button
                   type="button"
-                  aria-label="Stop generating"
+                  aria-label={t.chat.stop}
                   className="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-background-secondary-default text-foreground-icon-secondary transition-colors hover:bg-background-secondary-hover"
                 >
                   <RiStopFill className="size-5" aria-hidden />
@@ -88,7 +91,7 @@ export function BoardComposer({
               <ComposerPrimitive.Send asChild>
                 <button
                   type="submit"
-                  aria-label="Send message"
+                  aria-label={t.chat.send}
                   className="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-button-primary text-text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <RiArrowUpLine className="size-5" aria-hidden />
@@ -106,7 +109,7 @@ export function BoardComposer({
             aria-hidden
           />
           <span className="whitespace-nowrap text-body-2-medium text-text-secondary">
-            {messageCount === 0 ? "New chat" : `${messageCount} messages`}
+            {messageCount === 0 ? t.chat.newChat : t.chat.messages(messageCount, kit.count(messageCount))}
           </span>
         </span>
       </div>
@@ -136,6 +139,7 @@ function BoardComposerInput({
   autoFocus: boolean;
 }) {
   const composer = useComposerRuntime();
+  const { t } = useKit();
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -148,7 +152,7 @@ function BoardComposerInput({
       placeholder={placeholder}
       rows={1}
       autoFocus={autoFocus}
-      aria-label="Message input"
+      aria-label={t.chat.input}
       onKeyDown={onKeyDown}
     >
       <textarea className="my-2 max-h-40 min-h-5 min-w-0 flex-1 resize-none self-center bg-transparent text-body-regular text-text-primary caret-text-primary outline-none field-sizing-content placeholder:text-text-secondary" />

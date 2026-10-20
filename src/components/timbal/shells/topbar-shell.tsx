@@ -8,6 +8,7 @@ import { Badge } from "@/components/base/badges/badge";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Sheet } from "@/components/timbal/overlays/sheet";
 import { cx } from "@/utils/cx";
+import { useKit } from "@/components/timbal/i18n";
 import { PageHeaderProvider } from "./page-header";
 import { ShellBrandMark, ShellHeader, ShellSidebar, ShellUserMenu } from "./shell-chrome";
 import {
@@ -79,7 +80,8 @@ function TopbarNavLink({ item, isSelected }: { item: ShellNavItem; isSelected: b
 }
 
 export function TopbarShell({ brand, nav, user, header, actions, dock, labels, children, className }: TopbarShellProps) {
-  const text = resolveShellLabels(labels);
+  const kit = useKit();
+  const text = resolveShellLabels(labels, kit.t.shell);
   const [menuOpen, setMenuOpen] = useState(false);
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);
   const active = useActiveNavItem(nav);

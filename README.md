@@ -55,7 +55,7 @@ registry/                 what exists: INDEX.md → screens.md · templates.md �
 src/components/base/      BoardUI primitives           ┐
 src/components/application/  BoardUI blocks, charts, agent UI, template subtrees  │ vendored, never hand-edited
 src/components/foundations/  brand mark, chevrons      ┘   (bun run boardui:sync)
-src/components/timbal/    the seam: chat/ slots · shells/ · overlays/ · embedded-chat · assistant-pill
+src/components/timbal/    the seam: chat/ slots · shells/ · overlays/ · embedded-chat · assistant-pill · i18n/ (kit text per language)
 src/pages/                routes: Placeholder ("/" — replace it) · Home (chat) · NotFound · templates/* · examples/*
 src/styles/               theme.css typography.css globals.css (BoardUI) · brand.css (yours) · timbal-bridge.css
 src/shims/                next/image, next/link, next/navigation → Vite/react-router
@@ -77,6 +77,19 @@ scripts/                  boardui-sync.mjs · registry-build.mjs · screenshots.
 
 Read `AGENTS.md`, then `registry/INDEX.md`. Decide the direction (shell, accent,
 density, template-or-compose) and write it in `DESIGN.md` before building.
+
+## Language
+
+The product's language is `LOCALE` in `src/config.ts`. `main.tsx` mounts it as
+`<KitLocale locale={LOCALE}>`, and every kit component follows: shells, chat,
+data table, work queue, overlays, assistant pill and voice call, with dates,
+numbers and relative times formatted for it. `es`, `ca`, `fr`, `pt`, `de` and
+`it` ship next to the English defaults in `components/timbal/i18n`; another
+language is one file typed `KitMessages` (the typecheck fails on a missing
+string), added to `KIT_CATALOGS`. A single string changes with
+`<KitLocale locale={LOCALE} messages={{ chat: { welcome: "¿Qué factura revisamos?" } }}>`
+or a shell's `labels`. Components read the strings with `useKit()`; never
+translate kit text by editing a component.
 
 ## Native voice calls
 

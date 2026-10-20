@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { RemixiconComponentType } from "@remixicon/react";
 
 import { Breadcrumb, BreadcrumbItem } from "@/components/base/breadcrumb/breadcrumb";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -73,9 +74,10 @@ export function ChatFrameHeader({
   actions?: ReactNode;
   className?: string;
 }) {
+  const { t } = useKit();
   return (
     <header className={cx("flex w-full shrink-0 items-center justify-between gap-2 px-4 pt-4", className)}>
-      <Breadcrumb aria-label="Chat location" className="min-w-0 flex-1">
+      <Breadcrumb aria-label={t.chat.location} className="min-w-0 flex-1">
         {crumbs.map((crumb) => (
           <BreadcrumbItem key={crumb.label} icon={crumb.icon} href={crumb.href} current={crumb.current}>
             {crumb.label}

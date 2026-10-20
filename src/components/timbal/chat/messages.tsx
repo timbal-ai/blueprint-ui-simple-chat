@@ -13,6 +13,7 @@ import {
 } from "@timbal-ai/timbal-react/chat";
 
 import { groupConsecutiveToolCalls, TimbalToolPart, ToolCallGroup } from "@/components/timbal/chat/tools";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -67,6 +68,7 @@ export function BoardAssistantMessage() {
 }
 
 function BoardMessageActions() {
+  const { t } = useKit();
   return (
     <ActionBarPrimitive.Root
       hideWhenRunning
@@ -74,7 +76,7 @@ function BoardMessageActions() {
       className="mt-1.5 flex items-center gap-1.5 px-1 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100 focus-within:opacity-100"
     >
       <ActionBarPrimitive.Copy asChild>
-        <FeedbackButton label="Copy response">
+        <FeedbackButton label={t.chat.copy}>
           <span className="relative inline-flex size-4 shrink-0 items-center justify-center">
             <AuiIf condition={(s) => !s.message.isCopied}>
               <RiFileCopyLine className={FEEDBACK_GLYPH} aria-hidden />
@@ -86,7 +88,7 @@ function BoardMessageActions() {
         </FeedbackButton>
       </ActionBarPrimitive.Copy>
       <ActionBarPrimitive.Reload asChild>
-        <FeedbackButton label="Regenerate response">
+        <FeedbackButton label={t.chat.regenerate}>
           <RiRefreshLine className={FEEDBACK_GLYPH} aria-hidden />
         </FeedbackButton>
       </ActionBarPrimitive.Reload>

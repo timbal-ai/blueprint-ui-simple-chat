@@ -18,6 +18,7 @@ import {
 } from "@/components/base/dropdown/dropdown";
 import { ChevronDownSmall } from "@/components/foundations/icons/chevrons";
 import { cx } from "@/utils/cx";
+import { useKit } from "@/components/timbal/i18n";
 import { usePageHeaderState } from "./page-header";
 import {
   initialsOf,
@@ -218,7 +219,8 @@ export function ShellUserMenu({
   className,
 }: ShellUserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const text = resolveShellLabels(labels);
+  const kit = useKit();
+  const text = resolveShellLabels(labels, kit.t.shell);
   const user = userProp.name ? userProp : { ...userProp, name: text.account };
   const interactive = Boolean(user.onSignOut);
 
@@ -359,7 +361,8 @@ export function ShellSidebar({
   labels,
   className,
 }: ShellSidebarProps) {
-  const text = resolveShellLabels(labels);
+  const kit = useKit();
+  const text = resolveShellLabels(labels, kit.t.shell);
   const collapsed = mobile ? false : collapsedProp;
   const active = useActiveNavItem(nav, secondaryNav);
   const navClass = cx("flex w-full flex-col gap-1", !collapsed && "px-0.5");

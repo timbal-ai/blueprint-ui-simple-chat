@@ -54,8 +54,13 @@ card inside a bordered card. A bare `border` is always the hairline (set in `bra
    **The shell owns the page header**: title from the nav item, `description` under it,
    actions on the right. Pages render no `<h1>`; they pass live values and page-only
    buttons up with `<PageHeader description actions />` (`design:check` fails on an `<h1>`).
-   A product not in English passes every `ShellLabels` string, translated, as the shell's
-   `labels` (account menu, drawer, theme toggle); never fork the shell to translate it.
+   **The product's language is `LOCALE` in `src/config.ts`**, set once: every kit
+   component (shells, chat, data table, work queue, overlays, assistant pill, voice
+   call) and its dates, numbers and relative times follow it. Never edit or fork kit
+   components to translate them. A language without a catalog is one `KitMessages` file
+   in `components/timbal/i18n`, added to `KIT_CATALOGS`; single strings change with
+   `<KitLocale messages>` in `main.tsx` or a shell's `labels`. Your own pages' copy is
+   written in that language.
    `/` ships as `Placeholder.tsx`: replace it with the real entry screen and delete the
    file. Chat lives at `/chat` unless the product IS a chat — never a chat at `/` by default.
 3. **Use what exists, in this order:** template (`registry/templates.md`) → block or
@@ -112,7 +117,8 @@ pinned, or a screen that looks like the last one you built.
 For requested browser voice, use `useVoiceCall` and `VoiceCall` from
 `@/components/timbal/voice-call`: the hook runs the SDK's `LiveKitVoiceSession`
 (SDK 0.18.0 is installed) with everything below handled, and the component draws
-the call. Pass `messages` and `labels` in the product's language. Drive your own
+the call. Both follow `LOCALE`; pass `messages` and `labels` only for wording the
+product needs. Drive your own
 controls from the hook when the design needs them; write against
 `LiveKitVoiceSession` directly only when the hook cannot do the job, following the
 [README voice recipe](README.md#native-voice-calls). Fetch connection material from

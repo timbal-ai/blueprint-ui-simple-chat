@@ -6,6 +6,7 @@ import {
   type ThreadWelcomeProps,
 } from "@timbal-ai/timbal-react";
 
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -20,6 +21,7 @@ export function BoardWelcome({
   Suggestions = BoardSuggestions,
 }: ThreadWelcomeProps) {
   const isEmpty = useThread((s) => s.messages.length === 0);
+  const { t } = useKit();
   if (!isEmpty) return null;
 
   return (
@@ -33,7 +35,7 @@ export function BoardWelcome({
         </div>
       ) : null}
       <h1 className="max-w-xl text-title-2-medium text-text-primary">
-        {config?.heading ?? "What can I help with?"}
+        {config?.heading ?? t.chat.welcome}
       </h1>
       {config?.subheading ? (
         <p className="max-w-md text-body-regular text-text-secondary">

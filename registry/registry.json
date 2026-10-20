@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-10-20T09:36:28.902Z",
+  "generatedAt": "2026-10-20T13:44:41.777Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -20038,8 +20038,7 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Pill text + panel label. Default \"Assistant\".",
-          "default": "\"Assistant\""
+          "doc": "Pill text + panel label. Default \"Assistant\"."
         },
         {
           "name": "className",
@@ -20159,8 +20158,6 @@
       "props": [
         {
           "name": "placeholder",
-          "default": "\"Ask me anything\"",
-          "optional": true,
           "from": "ComposerProps"
         },
         {
@@ -20197,8 +20194,6 @@
       "props": [
         {
           "name": "placeholder",
-          "default": "\"Ask me anything\"",
-          "optional": true,
           "from": "ComposerProps"
         },
         {
@@ -20507,7 +20502,7 @@
         "history-rail",
         "conversation-label"
       ],
-      "type": "(run: RunPreview) => string"
+      "type": "(run: RunPreview, kit: KitText = kitText(\"en\")) => string"
     },
     {
       "name": "relativeTime",
@@ -20516,7 +20511,7 @@
       "importFrom": "@/components/timbal/chat/history-rail",
       "layer": "timbal",
       "group": "chat",
-      "summary": "\"now\" · \"34m\" · \"2h\" · \"3d\" · \"2w\" — the template's chip vocabulary.",
+      "summary": "\"now\" · \"34m\" · \"2h\" · \"3d\" · \"2w\" in English — the template's chip vocabulary, in the kit's language.",
       "props": [],
       "tags": [
         "timbal",
@@ -20524,7 +20519,7 @@
         "history-rail",
         "relative-time"
       ],
-      "type": "(iso?: string) => string"
+      "type": "(iso?: string, kit: KitText = kitText(\"en\")) => string"
     },
     {
       "name": "BoardUserMessage",
@@ -20638,7 +20633,7 @@
         "tools",
         "humanize-tool-name"
       ],
-      "type": "(name: string)"
+      "type": "(name: string, fallback = \"Tool\")"
     },
     {
       "name": "summarizeArgs",
@@ -21021,6 +21016,698 @@
       "extends": [
         "Omit<TimbalChatProps, \"workforceId\">"
       ]
+    },
+    {
+      "name": "ca",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/ca.ts",
+      "importFrom": "@/components/timbal/i18n/ca",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "ca"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "KIT_CATALOGS",
+      "kind": "data",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "The languages the kit ships.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "kit-catalogs"
+      ],
+      "type": "Record<string, KitMessages>"
+    },
+    {
+      "name": "kitCatalog",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "`es-MX` → `es` → English.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "kit-catalog"
+      ],
+      "type": "(locale: string) => KitMessages"
+    },
+    {
+      "name": "KitText",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "t",
+          "type": "KitMessages",
+          "optional": false
+        },
+        {
+          "name": "count",
+          "type": "(n: number) => string",
+          "optional": false,
+          "doc": "`1234` → \"1,234\" / \"1.234\"."
+        },
+        {
+          "name": "relative",
+          "type": "(iso?: string) => string",
+          "optional": false,
+          "doc": "The history chips: \"now\", then the locale's narrow units (\"34m\", \"34 min\", \"2 sem\")."
+        },
+        {
+          "name": "date",
+          "type": "(iso: string, options?: Intl.DateTimeFormatOptions) => string",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "kit-text"
+      ]
+    },
+    {
+      "name": "kitText",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "kit-text"
+      ],
+      "type": "(locale: string, overrides?: KitMessageOverrides) => KitText"
+    },
+    {
+      "name": "KitContext",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "kit-context"
+      ],
+      "type": "createContext<KitText>(…)"
+    },
+    {
+      "name": "useKit",
+      "kind": "hook",
+      "path": "src/components/timbal/i18n/context.ts",
+      "importFrom": "@/components/timbal/i18n/context",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "The kit's strings and formatters in the product's language (`KitLocale`), English outside one.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "context",
+        "use-kit"
+      ],
+      "returns": "KitText"
+    },
+    {
+      "name": "de",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/de.ts",
+      "importFrom": "@/components/timbal/i18n/de",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Formal address (Sie), the default for business apps.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "de"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "en",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/en.ts",
+      "importFrom": "@/components/timbal/i18n/en",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "en"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "es",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/es.ts",
+      "importFrom": "@/components/timbal/i18n/es",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "es"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "fr",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/fr.ts",
+      "importFrom": "@/components/timbal/i18n/fr",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "fr"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "KIT_CATALOGS",
+      "kind": "data",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KIT_CATALOGS` from `@/components/timbal/i18n/context`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-catalogs"
+      ],
+      "reexportOf": {
+        "name": "KIT_CATALOGS",
+        "from": "@/components/timbal/i18n/context"
+      }
+    },
+    {
+      "name": "kitCatalog",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `kitCatalog` from `@/components/timbal/i18n/context`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-catalog"
+      ],
+      "reexportOf": {
+        "name": "kitCatalog",
+        "from": "@/components/timbal/i18n/context"
+      }
+    },
+    {
+      "name": "kitText",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `kitText` from `@/components/timbal/i18n/context`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-text"
+      ],
+      "reexportOf": {
+        "name": "kitText",
+        "from": "@/components/timbal/i18n/context"
+      }
+    },
+    {
+      "name": "useKit",
+      "kind": "hook",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `useKit` from `@/components/timbal/i18n/context`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "use-kit"
+      ],
+      "reexportOf": {
+        "name": "useKit",
+        "from": "@/components/timbal/i18n/context"
+      }
+    },
+    {
+      "name": "KitText",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KitText` from `@/components/timbal/i18n/context`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-text"
+      ],
+      "reexportOf": {
+        "name": "KitText",
+        "from": "@/components/timbal/i18n/context"
+      }
+    },
+    {
+      "name": "KitLocale",
+      "kind": "component",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KitLocale` from `@/components/timbal/i18n/kit-locale`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-locale"
+      ],
+      "reexportOf": {
+        "name": "KitLocale",
+        "from": "@/components/timbal/i18n/kit-locale"
+      }
+    },
+    {
+      "name": "KitLocaleProps",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KitLocaleProps` from `@/components/timbal/i18n/kit-locale`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-locale-props"
+      ],
+      "reexportOf": {
+        "name": "KitLocaleProps",
+        "from": "@/components/timbal/i18n/kit-locale"
+      }
+    },
+    {
+      "name": "KitMessageOverrides",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KitMessageOverrides` from `@/components/timbal/i18n/messages`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-message-overrides"
+      ],
+      "reexportOf": {
+        "name": "KitMessageOverrides",
+        "from": "@/components/timbal/i18n/messages"
+      }
+    },
+    {
+      "name": "KitMessages",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `KitMessages` from `@/components/timbal/i18n/messages`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "kit-messages"
+      ],
+      "reexportOf": {
+        "name": "KitMessages",
+        "from": "@/components/timbal/i18n/messages"
+      }
+    },
+    {
+      "name": "ca",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `ca` from `@/components/timbal/i18n/ca`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "ca"
+      ],
+      "reexportOf": {
+        "name": "ca",
+        "from": "@/components/timbal/i18n/ca"
+      }
+    },
+    {
+      "name": "de",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `de` from `@/components/timbal/i18n/de`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "de"
+      ],
+      "reexportOf": {
+        "name": "de",
+        "from": "@/components/timbal/i18n/de"
+      }
+    },
+    {
+      "name": "en",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `en` from `@/components/timbal/i18n/en`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "en"
+      ],
+      "reexportOf": {
+        "name": "en",
+        "from": "@/components/timbal/i18n/en"
+      }
+    },
+    {
+      "name": "es",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `es` from `@/components/timbal/i18n/es`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "es"
+      ],
+      "reexportOf": {
+        "name": "es",
+        "from": "@/components/timbal/i18n/es"
+      }
+    },
+    {
+      "name": "fr",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `fr` from `@/components/timbal/i18n/fr`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "fr"
+      ],
+      "reexportOf": {
+        "name": "fr",
+        "from": "@/components/timbal/i18n/fr"
+      }
+    },
+    {
+      "name": "it",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `it` from `@/components/timbal/i18n/it`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "it"
+      ],
+      "reexportOf": {
+        "name": "it",
+        "from": "@/components/timbal/i18n/it"
+      }
+    },
+    {
+      "name": "pt",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/index.ts",
+      "importFrom": "@/components/timbal/i18n/index",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Re-export of `pt` from `@/components/timbal/i18n/pt`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "index",
+        "pt"
+      ],
+      "reexportOf": {
+        "name": "pt",
+        "from": "@/components/timbal/i18n/pt"
+      }
+    },
+    {
+      "name": "it",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/it.ts",
+      "importFrom": "@/components/timbal/i18n/it",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "it"
+      ],
+      "type": "KitMessages"
+    },
+    {
+      "name": "KitLocaleProps",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/kit-locale.tsx",
+      "importFrom": "@/components/timbal/i18n/kit-locale",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Props of `KitLocale`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "kit-locale",
+        "kit-locale-props"
+      ],
+      "propsOf": [
+        "KitLocale"
+      ]
+    },
+    {
+      "name": "KitLocale",
+      "kind": "component",
+      "path": "src/components/timbal/i18n/kit-locale.tsx",
+      "importFrom": "@/components/timbal/i18n/kit-locale",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "KitLocale — the product's language for every kit component: the shells, chat, data table, work queue, overlays, assistant pill and voice call, with dates, numbers and relative times formatted for it.",
+      "props": [
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": false,
+          "doc": "BCP 47 tag of the product's language: `es`, `ca`, `fr`, `pt`, `de`, `it` ship; others fall back to English."
+        },
+        {
+          "name": "messages",
+          "type": "KitMessageOverrides",
+          "optional": true,
+          "doc": "Replace single strings: `{ chat: { welcome: \"¿Qué factura revisamos?\" } }`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "i18n",
+        "kit-locale"
+      ]
+    },
+    {
+      "name": "KitMessages",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/messages.ts",
+      "importFrom": "@/components/timbal/i18n/messages",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Every string the kit (`components/timbal`) renders on its own, accessible names included.",
+      "props": [
+        {
+          "name": "shell",
+          "type": "Required<ShellLabels>",
+          "optional": false
+        },
+        {
+          "name": "chat",
+          "type": "{ placeholder: string; welcome: string; newChat: string; /** The composer's thread counter once a message is sent. */ messages: (n: number, count: string) => s…",
+          "optional": false
+        },
+        {
+          "name": "tools",
+          "type": "{ waiting: string; noResult: string; failed: (tool: string) => string; query: string; searching: string; found: (n: number, count: string) => string; unnamed:…",
+          "optional": false
+        },
+        {
+          "name": "table",
+          "type": "{ /** The summary's label above the row count. */ total: string; rows: (n: number, count: string) => string; search: string; selectAll: string; selectRow: stri…",
+          "optional": false
+        },
+        {
+          "name": "queue",
+          "type": "{ showLess: string; showMore: (n: number, count: string) => string; loadError: string; retry: string; emptyTitle: string; emptyDescription: string }",
+          "optional": false
+        },
+        {
+          "name": "overlay",
+          "type": "{ close: string }",
+          "optional": false
+        },
+        {
+          "name": "assistant",
+          "type": "{ label: string }",
+          "optional": false
+        },
+        {
+          "name": "voiceCall",
+          "type": "Required<VoiceCallLabels>",
+          "optional": false
+        },
+        {
+          "name": "voiceErrors",
+          "type": "Required<VoiceCallMessages>",
+          "optional": false
+        }
+      ],
+      "tags": [
+        "timbal",
+        "i18n",
+        "messages",
+        "kit-messages"
+      ]
+    },
+    {
+      "name": "KitMessageOverrides",
+      "kind": "type",
+      "path": "src/components/timbal/i18n/messages.ts",
+      "importFrom": "@/components/timbal/i18n/messages",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "Replace any of a catalog's strings: `{ chat: { welcome: \"…\" } }`.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "messages",
+        "kit-message-overrides"
+      ],
+      "type": "{ [Group in keyof KitMessages]?: Partial<KitMessages[Group]> }"
+    },
+    {
+      "name": "pt",
+      "kind": "util",
+      "path": "src/components/timbal/i18n/pt.ts",
+      "importFrom": "@/components/timbal/i18n/pt",
+      "layer": "timbal",
+      "group": "i18n",
+      "summary": "European Portuguese; a Brazilian product overrides the few words that differ.",
+      "props": [],
+      "tags": [
+        "timbal",
+        "i18n",
+        "pt"
+      ],
+      "type": "KitMessages"
     },
     {
       "name": "Pressable",
@@ -21904,8 +22591,7 @@
           "name": "closeLabel",
           "type": "string",
           "optional": true,
-          "doc": "Accessible name of the close control.",
-          "default": "\"Close\""
+          "doc": "Accessible name of the close control."
         },
         {
           "name": "hideClose",
@@ -23899,7 +24585,7 @@
       "importFrom": "@/components/timbal/shells/shell-nav",
       "layer": "timbal",
       "group": "shells",
-      "summary": "",
+      "summary": "`defaults`: the kit language's shell strings (`useKit().t.shell`).",
       "props": [],
       "tags": [
         "timbal",
@@ -23907,7 +24593,7 @@
         "shell-nav",
         "resolve-shell-labels"
       ],
-      "type": "(labels?: ShellLabels) => Required<ShellLabels>"
+      "type": "(labels?: ShellLabels, defaults: Required<ShellLabels> = en.shell) => Required<ShellLabels>"
     },
     {
       "name": "SHELL_INSET_CLASS",
@@ -24402,12 +25088,12 @@
     },
     {
       "name": "VOICE_CALL_MESSAGES",
-      "kind": "data",
+      "kind": "util",
       "path": "src/components/timbal/voice-call/use-voice-call.ts",
       "importFrom": "@/components/timbal/voice-call/use-voice-call",
       "layer": "timbal",
       "group": "voice-call",
-      "summary": "",
+      "summary": "English; the hook follows the kit's language (`KitLocale`).",
       "props": [],
       "tags": [
         "timbal",
@@ -24752,12 +25438,12 @@
     },
     {
       "name": "VOICE_CALL_LABELS",
-      "kind": "data",
+      "kind": "util",
       "path": "src/components/timbal/voice-call/voice-call.tsx",
       "importFrom": "@/components/timbal/voice-call/voice-call",
       "layer": "timbal",
       "group": "voice-call",
-      "summary": "",
+      "summary": "English; the component follows the kit's language (`KitLocale`).",
       "props": [],
       "tags": [
         "timbal",
