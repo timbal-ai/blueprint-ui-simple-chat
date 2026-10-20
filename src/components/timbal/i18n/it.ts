@@ -53,6 +53,7 @@ export const it: KitMessages = {
     query: "Ricerca",
     searching: "Ricerca in corso",
     found: (n, count) => `${count} ${n === 1 ? "fonte trovata" : "fonti trovate"}`,
+    calls: (n, count) => `${count} ${n === 1 ? "chiamata a strumento" : "chiamate a strumenti"}`,
     unnamed: "Strumento",
   },
   table: {
@@ -67,6 +68,7 @@ export const it: KitMessages = {
   queue: {
     showLess: "Mostra meno",
     showMore: (_n, count) => `Mostra altri ${count}`,
+    viewAll: "Mostra tutto",
     loadError: "Impossibile caricare le attività in sospeso",
     retry: "Riprova",
     emptyTitle: "Niente da fare per ora",

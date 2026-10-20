@@ -104,6 +104,8 @@ export function ToolCallGroup({
 }
 
 function CollapsedToolCalls({ indices, children }: { indices: number[]; children: ReactNode }) {
+  const kit = useKit();
+  const { t } = kit;
   const parts = useAuiState((s) => s.message.parts);
   const running = indices.some((index) => isToolPartRunning(parts[index]));
   const names = [
@@ -112,7 +114,7 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
         .map((index) => {
           const part = parts[index];
           return part && typeof part === "object" && "toolName" in part && typeof part.toolName === "string"
-            ? humanizeToolName(part.toolName)
+            ? humanizeToolName(part.toolName, t.tools.unnamed)
             : null;
         })
         .filter((name): name is string => Boolean(name)),
@@ -120,7 +122,7 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
   ];
   const count = indices.length;
   const label =
-    names.length === 1 ? `${names[0]} · ${count}` : `${count} tool calls`;
+    names.length === 1 ? `${names[0]} · ${kit.count(count)}` : t.tools.calls(count, kit.count(count));
 
   return (
     <ToolDisclosure label={label} running={running} testId="tool-call-group">

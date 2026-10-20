@@ -233,7 +233,7 @@ function QueueGroup({ group, initialVisible }: { group: WorkQueueGroup; initialV
             to={group.href}
             className="ml-auto shrink-0 rounded-md text-body-medium text-text-secondary outline-none transition-colors duration-150 ease hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
           >
-            View all
+            {t.queue.viewAll}
           </Link>
         ) : null}
       </div>

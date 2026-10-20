@@ -53,6 +53,7 @@ export const en: KitMessages = {
     query: "Query",
     searching: "Searching",
     found: (n, count) => `Found ${count} ${n === 1 ? "source" : "sources"}`,
+    calls: (n, count) => `${count} ${n === 1 ? "tool call" : "tool calls"}`,
     unnamed: "Tool",
   },
   table: {
@@ -67,6 +68,7 @@ export const en: KitMessages = {
   queue: {
     showLess: "Show less",
     showMore: (_n, count) => `Show ${count} more`,
+    viewAll: "View all",
     loadError: "Couldn't load what needs attention",
     retry: "Retry",
     emptyTitle: "Nothing needs you right now",

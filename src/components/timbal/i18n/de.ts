@@ -54,6 +54,7 @@ export const de: KitMessages = {
     query: "Suchanfrage",
     searching: "Suche läuft",
     found: (n, count) => `${count} ${n === 1 ? "Quelle" : "Quellen"} gefunden`,
+    calls: (n, count) => `${count} ${n === 1 ? "Werkzeugaufruf" : "Werkzeugaufrufe"}`,
     unnamed: "Werkzeug",
   },
   table: {
@@ -68,6 +69,7 @@ export const de: KitMessages = {
   queue: {
     showLess: "Weniger anzeigen",
     showMore: (_n, count) => `${count} weitere anzeigen`,
+    viewAll: "Alle anzeigen",
     loadError: "Offene Aufgaben konnten nicht geladen werden",
     retry: "Erneut versuchen",
     emptyTitle: "Gerade ist nichts zu tun",

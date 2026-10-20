@@ -53,6 +53,7 @@ export const ca: KitMessages = {
     query: "Consulta",
     searching: "S'està cercant",
     found: (n, count) => `${count} ${n === 1 ? "font trobada" : "fonts trobades"}`,
+    calls: (n, count) => `${count} ${n === 1 ? "crida a eina" : "crides a eines"}`,
     unnamed: "Eina",
   },
   table: {
@@ -67,6 +68,7 @@ export const ca: KitMessages = {
   queue: {
     showLess: "Mostra'n menys",
     showMore: (_n, count) => `Mostra'n ${count} més`,
+    viewAll: "Mostra-ho tot",
     loadError: "No s'ha pogut carregar el que està pendent",
     retry: "Torna-ho a provar",
     emptyTitle: "No hi ha res pendent ara mateix",

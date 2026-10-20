@@ -1,7 +1,7 @@
 {
   "version": 1,
   "boardui": "0.5.3",
-  "generatedAt": "2026-10-20T13:44:41.777Z",
+  "generatedAt": "2026-10-20T17:47:25.942Z",
   "items": [
     {
       "name": "AnnouncementProps",
@@ -21635,7 +21635,7 @@
         },
         {
           "name": "tools",
-          "type": "{ waiting: string; noResult: string; failed: (tool: string) => string; query: string; searching: string; found: (n: number, count: string) => string; unnamed:…",
+          "type": "{ waiting: string; noResult: string; failed: (tool: string) => string; query: string; searching: string; found: (n: number, count: string) => string; /** The r…",
           "optional": false
         },
         {
@@ -21645,7 +21645,7 @@
         },
         {
           "name": "queue",
-          "type": "{ showLess: string; showMore: (n: number, count: string) => string; loadError: string; retry: string; emptyTitle: string; emptyDescription: string }",
+          "type": "{ showLess: string; showMore: (n: number, count: string) => string; /** A group's link to the module's own list. */ viewAll: string; loadError: string; retry:…",
           "optional": false
         },
         {

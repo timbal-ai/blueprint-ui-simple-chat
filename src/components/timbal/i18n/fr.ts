@@ -53,6 +53,7 @@ export const fr: KitMessages = {
     query: "Requête",
     searching: "Recherche en cours",
     found: (n, count) => `${count} ${n === 1 ? "source trouvée" : "sources trouvées"}`,
+    calls: (n, count) => `${count} ${n === 1 ? "appel d'outil" : "appels d'outils"}`,
     unnamed: "Outil",
   },
   table: {
@@ -67,6 +68,7 @@ export const fr: KitMessages = {
   queue: {
     showLess: "Afficher moins",
     showMore: (_n, count) => `Afficher ${count} de plus`,
+    viewAll: "Tout afficher",
     loadError: "Impossible de charger les éléments à traiter",
     retry: "Réessayer",
     emptyTitle: "Rien à traiter pour l'instant",

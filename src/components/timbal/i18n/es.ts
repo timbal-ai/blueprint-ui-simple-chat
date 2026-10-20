@@ -53,6 +53,7 @@ export const es: KitMessages = {
     query: "Consulta",
     searching: "Buscando",
     found: (n, count) => `${count} ${n === 1 ? "fuente encontrada" : "fuentes encontradas"}`,
+    calls: (n, count) => `${count} ${n === 1 ? "llamada a herramienta" : "llamadas a herramientas"}`,
     unnamed: "Herramienta",
   },
   table: {
@@ -67,6 +68,7 @@ export const es: KitMessages = {
   queue: {
     showLess: "Ver menos",
     showMore: (_n, count) => `Ver ${count} más`,
+    viewAll: "Ver todo",
     loadError: "No se ha podido cargar lo pendiente",
     retry: "Reintentar",
     emptyTitle: "Nada pendiente por ahora",

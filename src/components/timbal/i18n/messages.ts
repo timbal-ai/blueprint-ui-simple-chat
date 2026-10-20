@@ -47,6 +47,8 @@ export interface KitMessages {
     query: string;
     searching: string;
     found: (n: number, count: string) => string;
+    /** The row that groups consecutive tool calls with different names. */
+    calls: (n: number, count: string) => string;
     unnamed: string;
   };
   table: {
@@ -62,6 +64,8 @@ export interface KitMessages {
   queue: {
     showLess: string;
     showMore: (n: number, count: string) => string;
+    /** A group's link to the module's own list. */
+    viewAll: string;
     loadError: string;
     retry: string;
     emptyTitle: string;
