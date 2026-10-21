@@ -17,6 +17,7 @@ import {
   type WebSearchSource,
   type WebSearchStep,
 } from "@/components/application/web-search/web-search";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -103,6 +104,8 @@ export function ToolCallGroup({
 }
 
 function CollapsedToolCalls({ indices, children }: { indices: number[]; children: ReactNode }) {
+  const kit = useKit();
+  const { t } = kit;
   const parts = useAuiState((s) => s.message.parts);
   const running = indices.some((index) => isToolPartRunning(parts[index]));
   const names = [
@@ -111,7 +114,7 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
         .map((index) => {
           const part = parts[index];
           return part && typeof part === "object" && "toolName" in part && typeof part.toolName === "string"
-            ? humanizeToolName(part.toolName)
+            ? humanizeToolName(part.toolName, t.tools.unnamed)
             : null;
         })
         .filter((name): name is string => Boolean(name)),
@@ -119,7 +122,7 @@ function CollapsedToolCalls({ indices, children }: { indices: number[]; children
   ];
   const count = indices.length;
   const label =
-    names.length === 1 ? `${names[0]} · ${count}` : `${count} tool calls`;
+    names.length === 1 ? `${names[0]} · ${kit.count(count)}` : t.tools.calls(count, kit.count(count));
 
   return (
     <ToolDisclosure label={label} running={running} testId="tool-call-group">
@@ -209,6 +212,7 @@ function TimbalToolPartImpl(props: ToolCallMessagePartProps) {
   const { toolName, args, argsText, result, status, isError } = props;
   const running = useToolRunning({ status, result });
   const registry = useArtifactRegistry();
+  const { t } = useKit();
 
   if (!running) {
     const artifact = parseArtifactFromToolResult(result);
@@ -217,10 +221,10 @@ function TimbalToolPartImpl(props: ToolCallMessagePartProps) {
 
   const failed =
     !running && (isError === true || (status?.type === "incomplete" && status.reason !== "cancelled"));
-  const label = humanizeToolName(toolName);
+  const label = humanizeToolName(toolName, t.tools.unnamed);
   const argsSummary = summarizeArgs(args, argsText);
 
-  const title = failed ? `${label} · failed` : label;
+  const title = failed ? t.tools.failed(label) : label;
 
   if (SEARCH_TOOL.test(toolName) && !failed) {
     const sources = running ? [] : collectSources(result);
@@ -235,7 +239,7 @@ function TimbalToolPartImpl(props: ToolCallMessagePartProps) {
 
   const lines: string[] = [];
   if (argsSummary) lines.push(argsSummary);
-  lines.push(running ? "Waiting for result" : (previewResult(result) ?? "No result"));
+  lines.push(running ? t.tools.waiting : (previewResult(result) ?? t.tools.noResult));
 
   return (
     <ToolDisclosure label={title} running={running}>
@@ -271,13 +275,15 @@ function SearchToolLog({
   sources: WebSearchSource[];
   running: boolean;
 }) {
+  const kit = useKit();
+  const { t } = kit;
   const steps: WebSearchStep[] = [];
-  if (query) steps.push({ label: "Query", query, icon: RiSearchLine });
+  if (query) steps.push({ label: t.tools.query, query, icon: RiSearchLine });
   steps.push(
     running
-      ? { label: "Searching", icon: RiGlobalLine }
+      ? { label: t.tools.searching, icon: RiGlobalLine }
       : {
-          label: `Found ${sources.length} ${sources.length === 1 ? "source" : "sources"}`,
+          label: t.tools.found(sources.length, kit.count(sources.length)),
           icon: RiGlobalLine,
           sources,
         },
@@ -294,14 +300,14 @@ function SearchToolLog({
 /* ------------------------------------------------------------- formatting */
 
 /** `get_weather` → "Get weather", `fetchUserProfile` → "Fetch user profile". */
-export function humanizeToolName(name: string) {
+export function humanizeToolName(name: string, fallback = "Tool") {
   const spaced = name
     .replace(/[_\-.]+/g, " ")
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
-  if (!spaced) return "Tool";
+  if (!spaced) return fallback;
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 

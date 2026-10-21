@@ -15,6 +15,7 @@ import { ComposerPanel } from "@/components/application/composer-panel/composer-
 import type { ModelProvider } from "@/components/application/composer-panel/model-picker";
 import { useTileAttachments } from "@/components/timbal/chat/attachment-tiles";
 import { useBoardChatWorkforces } from "@/components/timbal/chat/context";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -87,12 +88,14 @@ function workforceKey(item: { id?: string; uid?: string | null; name?: string })
 }
 
 export function BoardComposerPanel({
-  placeholder = "Ask me anything",
+  placeholder,
   showAttachments,
   noAutoFocus,
   className,
 }: ComposerProps) {
   const composer = useComposerRuntime();
+  const kit = useKit();
+  const { t } = kit;
   const text = useComposer((s) => s.text);
   const isEmpty = useComposer((s) => s.isEmpty);
   const attachments = useComposer((s) => s.attachments);
@@ -106,15 +109,15 @@ export function BoardComposerPanel({
   const shared = useBoardChatWorkforces();
   const own = useWorkforces({ enabled: shared === null });
   const workforces = shared ?? own;
-  const selectedName = workforces.selected?.name ?? "Workforce";
+  const selectedName = workforces.selected?.name ?? t.chat.workforce;
   const providers = useMemo<ModelProvider[]>(() => {
     const items = shared && workforces.workforces.length > 0 ? workforces.workforces : [];
     const models =
       items.length > 0
         ? items.map((item) => ({ id: workforceKey(item), name: item.name ?? workforceKey(item) }))
         : [{ id: workforces.selectedId || "workforce", name: selectedName }];
-    return [{ id: "timbal", name: "Workforces", logo: WORKFORCE_LOGO, logoSize: 18, models }];
-  }, [shared, workforces.workforces, workforces.selectedId, selectedName]);
+    return [{ id: "timbal", name: t.chat.workforces, logo: WORKFORCE_LOGO, logoSize: 18, models }];
+  }, [shared, workforces.workforces, workforces.selectedId, selectedName, t.chat.workforces]);
   const selectedModel = workforces.selectedId || providers[0].models[0].id;
 
   const tiles = useTileAttachments(attachments);
@@ -158,7 +161,7 @@ export function BoardComposerPanel({
           if (!isRunning && !isEmpty) composer.send();
         }}
         disabled={isRunning || isEmpty}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t.chat.placeholder}
         attachments={attachUi ? tiles : undefined}
         onRemoveAttachment={(id) => {
           const index = attachments.findIndex((attachment) => attachment.id === id);
@@ -189,8 +192,8 @@ export function BoardComposerPanel({
         <>
           <button
             type="button"
-            aria-label="Attach files"
-            title="Attach files"
+            aria-label={t.chat.attachFiles}
+            title={t.chat.attachFiles}
             onClick={() => fileRef.current?.click()}
             className={cx(
               OVERLAY_BUTTON,
@@ -217,8 +220,8 @@ export function BoardComposerPanel({
         <ComposerPrimitive.Cancel asChild>
           <button
             type="button"
-            aria-label="Stop generating"
-            title="Stop generating"
+            aria-label={t.chat.stop}
+            title={t.chat.stop}
             className={cx(
               OVERLAY_BUTTON,
               "right-2.5 bg-background-secondary-default text-foreground-icon-secondary hover:bg-background-secondary-hover",
@@ -259,6 +262,8 @@ function BoardStatusTab({
   messageCount: number;
   isRunning: boolean;
 }) {
+  const kit = useKit();
+  const { t } = kit;
   return (
     <div className="mx-7 flex h-[34px] items-center justify-between gap-3 rounded-t-2xl bg-composer-panel-tab-background px-2 py-1 text-text-primary">
       {isRunning ? (
@@ -266,7 +271,7 @@ function BoardStatusTab({
           variant="stars"
           tone="primary"
           shimmer={false}
-          label="Thinking"
+          label={t.chat.thinking}
           className="min-w-0 px-1"
         />
       ) : (
@@ -279,7 +284,7 @@ function BoardStatusTab({
         </span>
       )}
       <span className="shrink-0 text-body-2-medium whitespace-nowrap tabular-nums">
-        {messageCount === 0 ? "New chat" : `${messageCount} messages`}
+        {messageCount === 0 ? t.chat.newChat : t.chat.messages(messageCount, kit.count(messageCount))}
       </span>
     </div>
   );

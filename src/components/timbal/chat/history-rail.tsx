@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/application/theme/theme-toggle";
 import { Button } from "@/components/base/buttons/button";
 import { ShellBrandMark, ShellUserMenu } from "@/components/timbal/shells/shell-chrome";
 import type { ShellBrand, ShellUser } from "@/components/timbal/shells/shell-nav";
+import { kitText, useKit, type KitText } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -56,6 +57,8 @@ export function ChatHistoryRail({
     workforceId: workforceId ?? null,
     enabled: Boolean(workforceId),
   });
+  const kit = useKit();
+  const { t } = kit;
   useEffect(() => {
     if (refreshKey > 0) refresh().catch((err: unknown) => console.error("[chat] history refresh failed", err));
     // `refresh` is recreated by the hook; the key is the intent.
@@ -87,7 +90,7 @@ export function ChatHistoryRail({
           {mobile ? (
             <button
               type="button"
-              aria-label="Close navigation"
+              aria-label={t.shell.closeNavigation}
               onClick={onClose}
               className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-2lg text-foreground-icon-secondary outline-none transition-colors duration-150 ease hover:bg-background-secondary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring"
             >
@@ -96,7 +99,7 @@ export function ChatHistoryRail({
           ) : null}
         </div>
 
-        <nav aria-label="Chat" className="flex w-full flex-col gap-1">
+        <nav aria-label={t.chat.navigation} className="flex w-full flex-col gap-1">
           <Link
             to={newChatPath}
             onClick={onNavigate}
@@ -119,15 +122,15 @@ export function ChatHistoryRail({
             <span
               className={cx("text-body-medium whitespace-nowrap", activeId ? "text-text-secondary" : "text-text-primary")}
             >
-              New chat
+              {t.chat.newChat}
             </span>
           </Link>
         </nav>
 
         <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto [scrollbar-width:none]">
-          <span className="px-2 text-body-medium text-text-secondary">Recent</span>
+          <span className="px-2 text-body-medium text-text-secondary">{t.chat.recent}</span>
           {error ? (
-            <p className="px-2 text-body-regular text-text-error-primary">Couldn't load conversations.</p>
+            <p className="px-2 text-body-regular text-text-error-primary">{t.chat.loadError}</p>
           ) : isLoading ? (
             <ul aria-busy className="flex flex-col gap-0.5">
               {Array.from({ length: 4 }, (_, i) => (
@@ -139,10 +142,10 @@ export function ChatHistoryRail({
             </ul>
           ) : conversations.length === 0 ? (
             <p className="px-2 text-body-regular text-text-tertiary">
-              {workforceId ? "No conversations yet." : "Pick a workforce to see its history."}
+              {workforceId ? t.chat.empty : t.chat.pickWorkforce}
             </p>
           ) : (
-            <nav aria-label="Recent conversations" className="flex w-full flex-col gap-0.5">
+            <nav aria-label={t.chat.recentConversations} className="flex w-full flex-col gap-0.5">
               {conversations.map((run) => {
                 const id = String(run.id);
                 const selected = id === activeId;
@@ -152,7 +155,7 @@ export function ChatHistoryRail({
                     to={conversationPath(id)}
                     onClick={onNavigate}
                     aria-current={selected ? "page" : undefined}
-                    title={conversationLabel(run)}
+                    title={conversationLabel(run, kit)}
                     className={cx(
                       "flex w-full items-center gap-2.5 rounded-2lg py-[5px] pr-2 pl-2 outline-none transition-colors duration-150 ease",
                       "focus-visible:ring-2 focus-visible:ring-border-focus-ring",
@@ -165,10 +168,10 @@ export function ChatHistoryRail({
                         selected ? "text-text-primary" : "text-text-secondary",
                       )}
                     >
-                      {conversationLabel(run)}
+                      {conversationLabel(run, kit)}
                     </span>
                     <span className="inline-flex shrink-0 items-center justify-center rounded-sm bg-background-tertiary-default px-1 py-px text-caption-1-medium whitespace-nowrap text-text-secondary">
-                      {relativeTime(run.created_at)}
+                      {kit.relative(run.created_at)}
                     </span>
                   </Link>
                 );
@@ -183,7 +186,7 @@ export function ChatHistoryRail({
                   }}
                   className="mt-1 self-start"
                 >
-                  {isLoadingMore ? "Loading…" : "Load more"}
+                  {isLoadingMore ? t.chat.loading : t.chat.loadMore}
                 </Button>
               ) : null}
             </nav>
@@ -192,7 +195,7 @@ export function ChatHistoryRail({
       </div>
 
       <div className="flex w-full shrink-0 flex-col gap-3 pt-3">
-        <ThemeToggle appearance="sidebar-segmented" />
+        <ThemeToggle appearance="sidebar-segmented" labels={t.shell} />
         {user ? <ShellUserMenu user={user} variant="sidebar" placement={mobile ? "top start" : "right bottom"} /> : null}
       </div>
     </aside>
@@ -204,7 +207,7 @@ export function ChatHistoryRail({
  * so this reads whatever the row does expose (`title`, `input.prompt`, a
  * string `input`) and otherwise falls back to the date.
  */
-export function conversationLabel(run: RunPreview): string {
+export function conversationLabel(run: RunPreview, kit: KitText = kitText("en")): string {
   const title = run.title;
   if (typeof title === "string" && title.trim()) return title.trim();
   const input = run.input;
@@ -214,8 +217,8 @@ export function conversationLabel(run: RunPreview): string {
     if (typeof prompt === "string" && prompt.trim()) return firstLine(prompt);
   }
   return run.created_at
-    ? `Chat · ${new Date(run.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
-    : "Conversation";
+    ? kit.t.chat.dated(kit.date(run.created_at, { month: "short", day: "numeric" }))
+    : kit.t.chat.untitled;
 }
 
 function firstLine(text: string): string {
@@ -223,16 +226,7 @@ function firstLine(text: string): string {
   return line.length > 60 ? `${line.slice(0, 57)}…` : line;
 }
 
-/** "now" · "34m" · "2h" · "3d" · "2w" — the template's chip vocabulary. */
-export function relativeTime(iso?: string): string {
-  if (!iso) return "";
-  const diff = Math.max(0, Date.now() - Date.parse(iso));
-  const m = Math.round(diff / 60_000);
-  if (m < 1) return "now";
-  if (m < 60) return `${m}m`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h}h`;
-  const d = Math.round(h / 24);
-  if (d < 7) return `${d}d`;
-  return `${Math.round(d / 7)}w`;
+/** "now" · "34m" · "2h" · "3d" · "2w" in English — the template's chip vocabulary, in the kit's language. */
+export function relativeTime(iso?: string, kit: KitText = kitText("en")): string {
+  return kit.relative(iso);
 }

@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { IconButton } from "@/components/base/buttons/icon-button";
 import { Sheet } from "@/components/timbal/overlays/sheet";
 import { cx } from "@/utils/cx";
+import { useKit } from "@/components/timbal/i18n";
 import { PageHeaderProvider } from "./page-header";
 import { ShellBrandMark, ShellHeader, ShellSidebar } from "./shell-chrome";
 import {
@@ -92,7 +93,8 @@ export function SidebarShell({
   children,
   className,
 }: SidebarShellProps) {
-  const text = resolveShellLabels(labels);
+  const kit = useKit();
+  const text = resolveShellLabels(labels, kit.t.shell);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isDesktop = useMediaQuery(SHELL_DESKTOP_QUERY);

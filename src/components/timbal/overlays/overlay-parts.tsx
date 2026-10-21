@@ -3,6 +3,7 @@
 import { useContext, type ReactNode } from "react";
 import { Heading, OverlayTriggerStateContext } from "react-aria-components";
 import { CloseButton } from "@/components/base/buttons/close-button";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -30,12 +31,13 @@ export interface OverlayHeaderProps {
 export function OverlayHeader({
   title,
   description,
-  closeLabel = "Close",
+  closeLabel,
   hideClose = false,
   className,
   children,
 }: OverlayHeaderProps) {
   const state = useContext(OverlayTriggerStateContext);
+  const { t } = useKit();
   return (
     <div className={cx("flex shrink-0 items-start justify-between gap-4 px-6 pt-6 pb-2", className)}>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -52,7 +54,7 @@ export function OverlayHeader({
       {!hideClose && state ? (
         <CloseButton
           size="sm"
-          aria-label={closeLabel}
+          aria-label={closeLabel ?? t.overlay.close}
           onClick={() => state.close()}
           className="-mt-0.5 -mr-1 shrink-0"
         />

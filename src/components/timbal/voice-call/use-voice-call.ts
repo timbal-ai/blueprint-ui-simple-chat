@@ -7,6 +7,8 @@ import {
   type VoiceSessionConnection,
 } from "@timbal-ai/timbal-sdk/voice/livekit";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useKit } from "@/components/timbal/i18n";
+import { en } from "@/components/timbal/i18n/en";
 
 /**
  * useVoiceCall — one browser voice call with a Timbal agent, over the SDK's
@@ -49,12 +51,8 @@ export interface VoiceCallMessages {
   muteFailed: string;
 }
 
-export const VOICE_CALL_MESSAGES: VoiceCallMessages = {
-  microphoneBlocked: "Microphone access is blocked. Allow it in your browser settings and try again.",
-  noMicrophone: "No microphone found. Connect one and try again.",
-  failed: "Couldn't start the call. Try again.",
-  muteFailed: "Couldn't change the microphone. Try again.",
-};
+/** English; the hook follows the kit's language (`KitLocale`). */
+export const VOICE_CALL_MESSAGES: VoiceCallMessages = en.voiceErrors;
 
 export interface UseVoiceCallOptions {
   /** Ask your API for the call's connection: return its `Response` or the parsed connection. */
@@ -158,8 +156,11 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   const optionsRef = useRef(options);
+  const { t } = useKit();
+  const errorsRef = useRef(t.voiceErrors);
   useEffect(() => {
     optionsRef.current = options;
+    errorsRef.current = t.voiceErrors;
   });
   const sessionRef = useRef<LiveKitVoiceSession | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
@@ -167,7 +168,7 @@ export function useVoiceCall(options: UseVoiceCallOptions): VoiceCallState {
   // or replaced) attempt must never touch the current one.
   const attemptRef = useRef(0);
 
-  const messages = useCallback(() => ({ ...VOICE_CALL_MESSAGES, ...optionsRef.current.messages }), []);
+  const messages = useCallback(() => ({ ...errorsRef.current, ...optionsRef.current.messages }), []);
 
   const reset = useCallback(() => {
     setMode("listening");

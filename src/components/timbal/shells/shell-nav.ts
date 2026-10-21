@@ -2,6 +2,7 @@ import { useCallback, useSyncExternalStore, type ReactNode } from "react";
 import type { RemixiconComponentType } from "@remixicon/react";
 import { useOptionalSession } from "@timbal-ai/timbal-react";
 import { matchPath, useLocation } from "react-router-dom";
+import { en } from "@/components/timbal/i18n/en";
 
 /**
  * Shared shell vocabulary — the nav/brand/user contracts both shells accept,
@@ -58,8 +59,9 @@ export interface ShellUser {
 
 /**
  * Every string the shells render on their own — accessible names included.
- * A product that is not in English passes all of them, in its language, as
- * the shell's `labels`; the menu items, drawer and theme toggle follow.
+ * They follow the kit's language (`KitLocale`, set once from `LOCALE` in
+ * `src/config.ts`); the shell's `labels` replaces single ones. The menu
+ * items, drawer and theme toggle follow.
  */
 export interface ShellLabels {
   openNavigation?: string;
@@ -81,26 +83,9 @@ export interface ShellLabels {
   useDarkMode?: string;
 }
 
-const DEFAULT_SHELL_LABELS: Required<ShellLabels> = {
-  openNavigation: "Open navigation",
-  closeNavigation: "Close navigation",
-  navigation: "Navigation",
-  primaryNav: "Primary",
-  secondaryNav: "Secondary",
-  expandSidebar: "Expand sidebar",
-  collapseSidebar: "Collapse sidebar",
-  account: "Account",
-  accountMenu: "Account menu",
-  signOut: "Sign out",
-  theme: "Theme",
-  lightMode: "Light mode",
-  darkMode: "Dark mode",
-  useLightMode: "Use light mode",
-  useDarkMode: "Use dark mode",
-};
-
-export function resolveShellLabels(labels?: ShellLabels): Required<ShellLabels> {
-  return { ...DEFAULT_SHELL_LABELS, ...labels };
+/** `defaults`: the kit language's shell strings (`useKit().t.shell`). */
+export function resolveShellLabels(labels?: ShellLabels, defaults: Required<ShellLabels> = en.shell): Required<ShellLabels> {
+  return { ...defaults, ...labels };
 }
 
 /**

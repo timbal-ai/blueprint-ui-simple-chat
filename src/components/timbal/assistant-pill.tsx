@@ -5,6 +5,7 @@ import { RiSparkling2Fill } from "@remixicon/react";
 import { useWorkforces } from "@timbal-ai/timbal-react";
 import { AppCopilot, type AppCopilotProps } from "@timbal-ai/timbal-react/app";
 import { boardChatComponents } from "@/components/timbal/chat/chrome";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -34,7 +35,7 @@ export interface AssistantPillProps extends Omit<AppCopilotProps, "workforceId" 
 
 export function AssistantPill({
   workforceId,
-  label = "Assistant",
+  label: labelProp,
   className,
   open: openProp,
   defaultOpen = false,
@@ -43,6 +44,8 @@ export function AssistantPill({
   ...copilotProps
 }: AssistantPillProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const kit = useKit();
+  const label = labelProp ?? kit.t.assistant.label;
   const open = openProp ?? uncontrolledOpen;
   const setOpen = (next: boolean) => {
     setUncontrolledOpen(next);

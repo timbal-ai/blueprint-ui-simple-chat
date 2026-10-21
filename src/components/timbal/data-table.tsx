@@ -33,6 +33,7 @@ import {
 import type { TableSize } from "@/components/base/table/table";
 import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip";
 import { ChevronSortDown } from "@/components/foundations/icons/chevrons";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 declare module "@tanstack/react-table" {
@@ -150,6 +151,8 @@ export function DataTable<TData>({
   const headers = table.getHeaderGroups()[0]?.headers ?? [];
   const rows = table.getRowModel().rows;
   const totalPages = table.getPageCount();
+  const kit = useKit();
+  const { t } = kit;
 
   return (
     <section
@@ -163,9 +166,9 @@ export function DataTable<TData>({
         <div className="flex flex-col justify-center">
           {summary ?? (
             <>
-              <p className="text-body-medium whitespace-nowrap text-text-tertiary">Total Results</p>
+              <p className="text-body-medium whitespace-nowrap text-text-tertiary">{t.table.total}</p>
               <p className="text-body-medium whitespace-nowrap text-text-primary">
-                {data.length.toLocaleString()} {data.length === 1 ? "row" : "rows"}
+                {t.table.rows(data.length, kit.count(data.length))}
               </p>
             </>
           )}
@@ -175,8 +178,8 @@ export function DataTable<TData>({
             {filters}
             {search ? (
               <InputBase
-                aria-label={search["aria-label"] ?? "Search"}
-                placeholder={search.placeholder ?? "Search"}
+                aria-label={search["aria-label"] ?? t.table.search}
+                placeholder={search.placeholder ?? t.table.search}
                 leadingIcon={RiSearchLine}
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
@@ -219,7 +222,7 @@ export function DataTable<TData>({
                     <div className="flex items-center gap-2">
                       <Checkbox
                         slot={null}
-                        aria-label="Select all rows on this page"
+                        aria-label={t.table.selectAll}
                         isSelected={table.getIsAllPageRowsSelected()}
                         isIndeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
                         onChange={(v) => table.toggleAllPageRowsSelected(!!v)}
@@ -236,7 +239,7 @@ export function DataTable<TData>({
           <TableBody
             renderEmptyState={() => (
               <div className="flex h-40 items-center justify-center text-body-medium text-text-tertiary">
-                {empty ?? "No rows match."}
+                {empty ?? t.table.empty}
               </div>
             )}
           >
@@ -259,7 +262,7 @@ export function DataTable<TData>({
                           <div className="flex min-w-0 items-center gap-2">
                             <Checkbox
                               slot={null}
-                              aria-label="Select row"
+                              aria-label={t.table.selectRow}
                               isSelected={row.getIsSelected()}
                               onChange={(v) => row.toggleSelected(!!v)}
                             />
@@ -318,6 +321,7 @@ export function DataTableMoreMenu({
   items: { icon: RemixiconComponentType; label: string; onSelect?: () => void }[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useKit();
   return (
     <Dropdown isOpen={isOpen} onOpenChange={setIsOpen}>
       <TooltipTrigger delay={200}>
@@ -333,7 +337,7 @@ export function DataTableMoreMenu({
         >
           <RiMore2Fill className="size-4 shrink-0" aria-hidden />
         </DropdownTrigger>
-        <Tooltip size="md">More actions</Tooltip>
+        <Tooltip size="md">{t.table.moreActions}</Tooltip>
       </TooltipTrigger>
       <DropdownPopover aria-label={ariaLabel} placement="bottom end" className="w-[220px] p-2">
         <DropdownGroup>

@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/base/badges/badge";
 import { Chip, type ChipProps } from "@/components/base/badges/chip";
 import { Button } from "@/components/base/buttons/button";
+import { useKit } from "@/components/timbal/i18n";
 import { cx } from "@/utils/cx";
 
 /**
@@ -210,6 +211,8 @@ function QueueRow({ item }: { item: WorkQueueItem }) {
 function QueueGroup({ group, initialVisible }: { group: WorkQueueGroup; initialVisible: number }) {
   const [expanded, setExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
+  const kit = useKit();
+  const { t } = kit;
   const count = group.total ?? group.items.length;
   const visible = expanded ? group.items : group.items.slice(0, initialVisible);
   const hidden = group.items.length - initialVisible;
@@ -230,7 +233,7 @@ function QueueGroup({ group, initialVisible }: { group: WorkQueueGroup; initialV
             to={group.href}
             className="ml-auto shrink-0 rounded-md text-body-medium text-text-secondary outline-none transition-colors duration-150 ease hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
           >
-            View all
+            {t.queue.viewAll}
           </Link>
         ) : null}
       </div>
@@ -254,7 +257,7 @@ function QueueGroup({ group, initialVisible }: { group: WorkQueueGroup; initialV
             onClick={() => setExpanded((value) => !value)}
             className="cursor-pointer px-3 py-2 text-left text-body-medium text-text-secondary outline-none transition-colors duration-150 ease hover:bg-background-primary-hover hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-inset"
           >
-            {expanded ? "Show less" : `Show ${hidden} more`}
+            {expanded ? t.queue.showLess : t.queue.showMore(hidden, kit.count(hidden))}
           </button>
         ) : null}
       </div>
@@ -271,6 +274,7 @@ export function WorkQueue({
   empty,
   className,
 }: WorkQueueProps) {
+  const { t } = useKit();
   const open = groups.filter((group) => group.items.length > 0);
 
   let body: ReactNode;
@@ -281,12 +285,12 @@ export function WorkQueue({
       <QueueState
         icon={RiErrorWarningLine}
         iconClassName="text-foreground-icon-error"
-        title="Couldn't load what needs attention"
+        title={t.queue.loadError}
         description={error.message}
         action={
           error.onRetry ? (
             <Button size="small" variant="secondary" onClick={error.onRetry}>
-              Retry
+              {t.queue.retry}
             </Button>
           ) : undefined
         }
@@ -296,8 +300,8 @@ export function WorkQueue({
     body = (
       <QueueState
         icon={RiCheckDoubleLine}
-        title={empty?.title ?? "Nothing needs you right now"}
-        description={empty?.description ?? "New items land here as soon as they need an action."}
+        title={empty?.title ?? t.queue.emptyTitle}
+        description={empty?.description ?? t.queue.emptyDescription}
         action={empty?.action}
       />
     );

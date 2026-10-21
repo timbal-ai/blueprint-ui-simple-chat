@@ -12,6 +12,8 @@ import {
   RiVolumeUpLine,
 } from "@remixicon/react";
 import { useState } from "react";
+import { useKit } from "@/components/timbal/i18n";
+import { en } from "@/components/timbal/i18n/en";
 import { cx } from "@/utils/cx";
 import type { VoiceCallState } from "./use-voice-call";
 
@@ -50,25 +52,8 @@ export interface VoiceCallLabels {
   agent: string;
 }
 
-export const VOICE_CALL_LABELS: VoiceCallLabels = {
-  call: "Voice call",
-  connecting: "Connecting…",
-  reconnecting: "Reconnecting…",
-  ready: "Ready — start speaking",
-  listening: "Listening",
-  thinking: "Thinking…",
-  speaking: "Speaking",
-  muted: "Muted",
-  mute: "Mute microphone",
-  unmute: "Unmute microphone",
-  end: "End call",
-  cancel: "Cancel call",
-  enableAudio: "Tap to enable audio",
-  showCaptions: "Show captions",
-  hideCaptions: "Hide captions",
-  you: "You",
-  agent: "Assistant",
-};
+/** English; the component follows the kit's language (`KitLocale`). */
+export const VOICE_CALL_LABELS: VoiceCallLabels = en.voiceCall;
 
 export interface VoiceCallProps {
   call: VoiceCallState;
@@ -84,7 +69,8 @@ const ICON_BUTTON =
   "flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border-button-default bg-background-primary-default text-text-primary transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-2";
 
 export function VoiceCall({ call, label, labels, captions: captionsInitially = true, className }: VoiceCallProps) {
-  const text = { ...VOICE_CALL_LABELS, ...labels };
+  const kit = useKit();
+  const text = { ...kit.t.voiceCall, ...labels };
   const [captionsOn, setCaptionsOn] = useState(captionsInitially);
   const { phase, captions } = call;
 

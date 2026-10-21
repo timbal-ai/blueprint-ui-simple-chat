@@ -8,3 +8,12 @@ export const isAuthEnabled = Boolean(import.meta.env.VITE_TIMBAL_PROJECT_ID);
  */
 export const areTemplatesEnabled =
   import.meta.env.DEV || import.meta.env.VITE_TEMPLATES === "true";
+
+/**
+ * The product's language (BCP 47). The kit's text (`components/timbal`), its
+ * dates, numbers and relative times follow it: `es`, `ca`, `fr`, `pt`, `de`
+ * and `it` ship, and another language is one `KitMessages` file in
+ * `components/timbal/i18n`. Set it here once; never translate kit text by
+ * editing the components.
+ */
+export const LOCALE = "en";

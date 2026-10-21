@@ -1,6 +1,6 @@
 # Component props index (generated — do not edit; `bun run registry:build`)
 
-BoardUI 0.5.3 · 295 components · 20 hooks · generated 2026-10-20
+BoardUI 0.5.3 · 297 components · 22 hooks · generated 2026-10-20
 
 How to read: import path, one-line summary, then props (name · type · default · doc). Props with `?` are optional. Types are source text (≤ 160 chars, `…` = truncated); same-file union aliases are inlined. `Extends:` lists external interfaces the props inherit from (not expanded — e.g. every `ButtonHTMLAttributes` prop is accepted); a `—` type with `(inherited)` is a prop the component destructures from one of those. Components whose props type comes from another package show `Props:` with the destructured names instead of a table. After the tables: `Local types` (same-file, not exported), `Types:` (exported type shapes), `Data:` (demo datasets), `Other exports:` (helpers), `Re-exports:`. Machine-readable twin: `registry.json` (same items, plus `templates`).
 
@@ -2448,7 +2448,7 @@ Extends: `Omit<AppCopilotProps, "workforceId" | "hideTrigger" | "triggerLabel">`
 | prop | type | default | doc |
 |---|---|---|---|
 | workforceId? | `string` |  |  |
-| label? | `string` | `"Assistant"` | Pill text + panel label. Default "Assistant". |
+| label? | `string` |  | Pill text + panel label. Default "Assistant". |
 | className? | `string` |  | Extra classes on the pill (e.g. lift it above a bottom bar). |
 | open | — |  | (inherited) |
 | defaultOpen? | — | `false` | (inherited) |
@@ -2474,12 +2474,12 @@ Other exports: `boardChatComponents`: `ThreadComponents` · `boardChatComponents
 ### chat — `@/components/timbal/chat/composer-panel`
 
 **BoardComposerPanel** — BoardUI Pro `ComposerPanel` mounted as the `Composer` slot of `TimbalChat`.
-Props: `ComposerProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `placeholder` = `"Ask me anything"`, `showAttachments`, `noAutoFocus`, `className`
+Props: `ComposerProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `placeholder`, `showAttachments`, `noAutoFocus`, `className`
 
 ### chat — `@/components/timbal/chat/composer`
 
 **BoardComposer** — BoardUI composer pill mounted as the `Composer` slot of `TimbalChat`.
-Props: `ComposerProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `placeholder` = `"Ask me anything"`, `showAttachments`, `toolbar`, `noAutoFocus`, `className`
+Props: `ComposerProps` from `@timbal-ai/timbal-react` (external — members not indexed); destructured: `placeholder`, `showAttachments`, `toolbar`, `noAutoFocus`, `className`
 
 ### chat — `@/components/timbal/chat/context`
 
@@ -2529,7 +2529,7 @@ Types: `ChatFrameCrumb` = `{ label: string; icon?: RemixiconComponentType; href?
 | refreshKey? | `number` | `0` | Bump to re-list from the first page (e.g. after a new thread gets its id). |
 | className? | `string` |  |  |
 
-Other exports: `ChatHistoryRailProps` (props of ChatHistoryRail) · `conversationLabel(run: RunPreview) => string` · `relativeTime(iso?: string) => string`
+Other exports: `ChatHistoryRailProps` (props of ChatHistoryRail) · `conversationLabel(run: RunPreview, kit: KitText = kitText("en")) => string` · `relativeTime(iso?: string, kit: KitText = kitText("en")) => string`
 
 ### chat — `@/components/timbal/chat/messages`
 
@@ -2551,7 +2551,7 @@ No props.
 | indices | `number[]` |  |  |
 | children | `ReactNode` |  |  |
 
-Other exports: `groupConsecutiveToolCalls(parts: readonly GroupablePart[])` · `humanizeToolName(name: string)` · `summarizeArgs(args: unknown, argsText?: string) => string | undefined` · `previewResult(result: unknown) => string | undefined` · `collectSources(result: unknown) => WebSearchSource[]`
+Other exports: `groupConsecutiveToolCalls(parts: readonly GroupablePart[])` · `humanizeToolName(name: string, fallback = "Tool")` · `summarizeArgs(args: unknown, argsText?: string) => string | undefined` · `previewResult(result: unknown) => string | undefined` · `collectSources(result: unknown) => WebSearchSource[]`
 
 ### chat — `@/components/timbal/chat/welcome`
 
@@ -2610,6 +2610,63 @@ Extends: `Omit<TimbalChatProps, "workforceId">`
 
 Other exports: `EmbeddedChatProps` (props of EmbeddedChat)
 
+### i18n — `@/components/timbal/i18n/ca`
+
+Other exports: `ca`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/context`
+
+**useKit()** — The kit's strings and formatters in the product's language (`KitLocale`), English outside one.
+returns `KitText`
+No parameters.
+
+Types: `KitText` = `{ locale: string; t: KitMessages; count: (n: number) => string; relative: (iso?: string) => string; date: (iso: string, options?: Intl.DateTimeFormatOptions) => string }`
+Data: `KIT_CATALOGS`: `Record<string, KitMessages>`
+Other exports: `kitCatalog(locale: string) => KitMessages` · `kitText(locale: string, overrides?: KitMessageOverrides) => KitText` · `KitContext`: `createContext<KitText>(…)`
+
+### i18n — `@/components/timbal/i18n/de`
+
+Other exports: `de`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/en`
+
+Other exports: `en`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/es`
+
+Other exports: `es`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/fr`
+
+Other exports: `fr`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/index`
+
+Re-exports: from `@/components/timbal/i18n/context`: `KIT_CATALOGS`, `kitCatalog`, `kitText`, `useKit`, `KitText` · from `@/components/timbal/i18n/kit-locale`: `KitLocale`, `KitLocaleProps` · from `@/components/timbal/i18n/messages`: `KitMessageOverrides`, `KitMessages` · from `@/components/timbal/i18n/ca`: `ca` · from `@/components/timbal/i18n/de`: `de` · from `@/components/timbal/i18n/en`: `en` · from `@/components/timbal/i18n/es`: `es` · from `@/components/timbal/i18n/fr`: `fr` · from `@/components/timbal/i18n/it`: `it` · from `@/components/timbal/i18n/pt`: `pt`
+
+### i18n — `@/components/timbal/i18n/it`
+
+Other exports: `it`: `KitMessages`
+
+### i18n — `@/components/timbal/i18n/kit-locale`
+
+**KitLocale** — KitLocale — the product's language for every kit component: the shells, chat, data table, work queue, overlays, assistant pill and voice call, with dates, numbers and relative times formatted for it.
+| prop | type | default | doc |
+|---|---|---|---|
+| locale | `string` |  | BCP 47 tag of the product's language: `es`, `ca`, `fr`, `pt`, `de`, `it` ship; others fall back to English. |
+| messages? | `KitMessageOverrides` |  | Replace single strings: `{ chat: { welcome: "¿Qué factura revisamos?" } }`. |
+| children | `ReactNode` |  |  |
+
+Other exports: `KitLocaleProps` (props of KitLocale)
+
+### i18n — `@/components/timbal/i18n/messages`
+
+Types: `KitMessages` = `{ shell: Required<ShellLabels>; chat: { placeholder: string; welcome: string; newChat: string; /** The composer's thread counter once a message is sent. */ messages: (n: number, count: string) => s…; tools: { waiting: string; noResult: str…` · `KitMessageOverrides` = `{ [Group in keyof KitMessages]?: Partial<KitMessages[Group]> }`
+
+### i18n — `@/components/timbal/i18n/pt`
+
+Other exports: `pt`: `KitMessages`
+
 ### overlays — `@/components/timbal/overlays/index`
 
 Re-exports: from `react-aria-components`: `Pressable` · from `@/components/timbal/overlays/modal`: `Modal`, `ModalBody`, `ModalFooter`, `ModalHeader`, `ModalTrigger`, `ModalProps`, `ModalSize` · from `@/components/timbal/overlays/sheet`: `Sheet`, `SheetBody`, `SheetFooter`, `SheetHeader`, `SheetTrigger`, `SheetProps`, `SheetSide`, `SheetSize` · from `@/components/timbal/overlays/popover`: `Popover`, `PopoverTrigger`, `PopoverProps` · from `@/components/timbal/overlays/overlay-parts`: `OverlayBody`, `OverlayFooter`, `OverlayHeader`, `OverlayBodyProps`, `OverlayFooterProps`, `OverlayHeaderProps` · from `@/components/timbal/overlays/toast`: `Toaster`, `ToasterProps` · from `@/components/timbal/overlays/toast-store`: `toast`, `useToasts`, `ToastAction`, `ToastItem`, `ToastKind`, `ToastOptions`
@@ -2639,7 +2696,7 @@ Re-exports: from `react-aria-components`: `ModalTrigger` (= `DialogTrigger`) · 
 |---|---|---|---|
 | title? | `ReactNode` |  |  |
 | description? | `ReactNode` |  |  |
-| closeLabel? | `string` | `"Close"` | Accessible name of the close control. |
+| closeLabel? | `string` |  | Accessible name of the close control. |
 | hideClose? | `boolean` | `false` | Drop the close control (e.g. a confirm dialog that must be answered). |
 | className? | `string` |  |  |
 | children? | `ReactNode` |  | Extra content under the title/description (tabs, a search field…). |
@@ -2817,7 +2874,7 @@ returns `boolean`
 | query | `string` |  |  |
 
 Types: `RemixIcon` = `RemixiconComponentType` · `ShellNavItem` = `{ path: string; label: string; icon: RemixIcon; description?: string; badge?: string | number; end?: boolean; bare?: boolean }` · `ShellBrand` = `{ name: string; logo?: ReactNode; subtitle?: string }` · `ShellUser` = `{ name: string; email?: string; avatarUrl?: string; onSignOut?: () => void }` · `ShellLabels` = `{ openNavigation?: string; closeNavigation?: string; navigation?: string; primaryNav?: string; secondaryNav?: string; expandSidebar?: string; collapseSidebar?: string; account?: string; accountMenu?: string; signOut?: string; theme?: strin…`
-Other exports: `resolveShellLabels(labels?: ShellLabels) => Required<ShellLabels>` · `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string | null | undefined) => string`
+Other exports: `resolveShellLabels(labels?: ShellLabels, defaults: Required<ShellLabels> = en.shell) => Required<ShellLabels>` · `SHELL_INSET_CLASS`: `string` · `SHELL_FRAME_INSET_CLASS`: `string` · `normalizeNavPath(path: string) => string` · `resolveHomeNavItem(items: ShellNavItem[]) => ShellNavItem | undefined` · `resolveActiveNavItem(items: ShellNavItem[], pathname: string) => ShellNavItem | undefined` · `resolveNavTrail(items: ShellNavItem[], pathname: string) => ShellNavItem[]` · `SHELL_DESKTOP_QUERY`: `string` · `initialsOf(name: string | null | undefined) => string`
 
 ### shells — `@/components/timbal/shells/sidebar-shell`
 
@@ -2863,8 +2920,8 @@ returns `VoiceCallState`
 | options | `UseVoiceCallOptions` |  |  |
 
 Types: `VoiceCallPhase` = `"idle" | "connecting" | "ready" | "reconnecting" | "error"` · `VoiceCallMode` = `"listening" | "thinking" | "speaking"` · `VoiceCaptions` = `{ user: string; userFinal: boolean; agent: string; agentDone: boolean }` · `VoiceCallMessages` = `{ microphoneBlocked: string; noMicrophone: string; failed: string; muteFailed: string }` · `UseVoiceCallOptions` = `{ connect: (signal: AbortSignal) => Promise<Response | VoiceSessionConnection>; messages?: Partial<VoiceCallMessages>; startupTimeoutMs?: number; onEvent?: (event: VoiceEvent) => void }` · `VoiceCallState` = `{ phase: VoiceCallPhase; mode: VoiceCallMode; muted: boolean; audioBlocked: boolean; error: string | null; captions: VoiceCaptions; level: number; sessionId: string | null; start: () => void; end: () => void; toggleMute: () => void; resume…` · `CaptionEvent` = `{ type: "user"; text: string; final: boolean; replace?: boolean } | { type: "agent"; text?: string; delta?: string; done?: boolean } | { type: "interrupted"; h…`
-Data: `VOICE_CALL_MESSAGES`: `VoiceCallMessages` · `EMPTY_CAPTIONS`: `VoiceCaptions`
-Other exports: `reduceCaptions(state: VoiceCaptions, event: CaptionEvent) => VoiceCaptions` · `phaseFromStatus(status: LiveKitVoiceStatus) => VoiceCallPhase` · `describeCallError(error: unknown, messages: VoiceCallMessages = VOICE_CALL_MESSAGES) => string`
+Data: `EMPTY_CAPTIONS`: `VoiceCaptions`
+Other exports: `VOICE_CALL_MESSAGES`: `VoiceCallMessages` · `reduceCaptions(state: VoiceCaptions, event: CaptionEvent) => VoiceCaptions` · `phaseFromStatus(status: LiveKitVoiceStatus) => VoiceCallPhase` · `describeCallError(error: unknown, messages: VoiceCallMessages = VOICE_CALL_MESSAGES) => string`
 
 ### voice-call — `@/components/timbal/voice-call/voice-call`
 
@@ -2878,8 +2935,7 @@ Other exports: `reduceCaptions(state: VoiceCaptions, event: CaptionEvent) => Voi
 | className? | `string` |  |  |
 
 Types: `VoiceCallLabels` = `{ call: string; connecting: string; reconnecting: string; ready: string; listening: string; thinking: string; speaking: string; muted: string; mute: string; unmute: string; end: string; cancel: string; enableAudio: string; showCaptions: st…`
-Data: `VOICE_CALL_LABELS`: `VoiceCallLabels`
-Other exports: `VoiceCallProps` (props of VoiceCall)
+Other exports: `VoiceCallProps` (props of VoiceCall) · `VOICE_CALL_LABELS`: `VoiceCallLabels`
 
 ### work-queue — `@/components/timbal/work-queue`
 
